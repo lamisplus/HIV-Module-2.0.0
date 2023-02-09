@@ -196,6 +196,7 @@ const ArtCommencement = (props) => {
         }
         gender =props.patientObj.gender && props.patientObj.gender.display ? props.patientObj.gender.display : null
       }, [props.activeContent.id]);
+      console.log(props.patientObj)
       //GET AdultRegimenLine 
       const AdultRegimenLine =()=>{
         axios
@@ -292,7 +293,7 @@ const ArtCommencement = (props) => {
         //Get list of PREGANACY_STATUS
       const PreganacyStatus =()=>{
         axios
-           .get(`${baseUrl}application-codesets/v2/PREGANACY_STATUS`,
+           .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS`,
                { headers: {"Authorization" : `Bearer ${token}`} }
            )
            .then((response) => {
@@ -455,23 +456,7 @@ const ArtCommencement = (props) => {
             return Object.values(temp).every(x => x == "")
         }
 
-        const  heightFunction =(e)=>{
-            if(e==='cm'){
-                setHeightValue('cm')
-                if(vital.height!==""){
-                    const newHeightValue= (vital.height * 100)
-                    setVitalSignDto ({...vital,  height: newHeightValue});
-                }
-            }else if(e==='m'){
-                setHeightValue('m')
-                if(vital.height!==""){
-                    const newHeightValue= (vital.height/100)
-                    setVitalSignDto ({...vital,  height: newHeightValue});
-                }
-                
-            }
 
-        }
         /**** Submit Button Processing  */
         const handleSubmit = (e) => {                  
             e.preventDefault(); 
@@ -480,7 +465,7 @@ const ArtCommencement = (props) => {
             vital.encounterDate = objValues.visitDate
             vital.personId=props.patientObj.id
             objValues.vitalSignDto= vital
-            objValues.hivEnrollmentId= props.patientObj.enrollment.id
+            objValues.hivEnrollmentId= props.patientObj.enrollmentId
             objValues.clinicalStageId = objValues.whoStagingId 
             if(heightValue==='m'){//If height is meter convert to centi meter
                 vital.height= (vital.height/100).toFixed(2)

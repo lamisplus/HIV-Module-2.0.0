@@ -376,7 +376,7 @@ const ClinicVisit = (props) => {
     // HEPATITIS_SCREENING_RESULT	
     const PREGANACY_STATUS = () => {
     axios
-      .get(`${baseUrl}application-codesets/v2/PREGANACY_STATUS	`,
+      .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS	`,
         { headers: { "Authorization": `Bearer ${token}` } }
       )
       .then((response) => {
