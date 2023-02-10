@@ -882,6 +882,7 @@ console.log(errors)
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 
                             >
+                                <option value="">Select</option>
                                  {causeDeath.map((value) => (
                                         <option key={value.code} value={value.display}>
                                             {value.display}
