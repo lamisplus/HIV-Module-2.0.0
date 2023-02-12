@@ -75,6 +75,7 @@ const Laboratory = (props) => {
     const [showResult, setShowResult]=useState(false)
     const [showPcrLabDetail, setShowPcrLabDetail]=useState(false)
     const [labNumbers, setLabNumbers] = useState([]);//
+    const [pcrs, setPcrs] = useState([]);//
     let temp = { ...errors }
     const [showObj, setShowObj] = useState(
         {
@@ -116,6 +117,7 @@ const Laboratory = (props) => {
         CheckLabModule();
         ViraLoadIndication();
         LabTestDetail();
+        PCRLabList();
         setTests(props.activeContent.obj) 
         tests.sampleCollectionDate=moment(props.activeContent.obj.sampleCollectionDate).format("YYYY-MM-DD HH:MM:SS")
         tests.dateResultReceived=props.activeContent.obj.dateResultReceived!==null && props.activeContent.obj.dateResultReceived!=="" ? moment(props.activeContent.obj.dateResultReceived).format("YYYY-MM-DD HH:MM:SS")  : ""
@@ -145,6 +147,20 @@ const Laboratory = (props) => {
             )
             .then((response) => {
                 setLabNumbers(response.data);
+            })
+            .catch((error) => {
+            //console.log(error);
+            });
+        
+    }
+    //Get list of LabNumbers
+    const PCRLabList =()=>{
+        axios
+            .get(`${baseUrl}lims/get-prclabs/`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+                setPcrs(response.data);
             })
             .catch((error) => {
             //console.log(error);
@@ -244,31 +260,7 @@ const Laboratory = (props) => {
         })
         return Object.values(temp).every(x => x == "")
     }
-    const pcr_lab = [
-        {name: "NRL", labNo: "LIMS150002"},
-        {name: "ASOKORO Testing Lab", labNo: "LIMS150003"},
-        {name: "PLASVIREC TESTING LAB", labNo: "LIMS320002"},
-        {name: "ABUTH Testing Lab", labNo: "LIMS190001"},
-        {name: "University College Hospital (UCH) Ibadan", labNo: "LIMS310001"},
-        {name: "NIMR Testing Lab", labNo: "LIMS250002"},
-        {name: "LASUTH Testing Lab", labNo: "LIMS250001"},
-        {name: "JUTH Testing Lab", labNo: "LIMS320001"},
-        {name: "AKTH Testing Lab", labNo: "LIMS200001"},
-        {name: "FMCG Testing Lab", labNo: "LIMS160001"},
-        {name: "FMCMK Testing Lab", labNo: "LIMS070001"},
-        {name: "OAUTHC Testing Lab", labNo: "LIMS300001"},
-        {name: "UMTH Testing Lab", labNo: "LIMS080001"},
-        {name: "FMCJAL Testing Lab", labNo: "LIMS350001"},
-        {name: "NAUTH Testing Lab", labNo: "LIMS040002"},
-        {name: "UUTH Testing Lab", labNo: "LIMS320001"},
-        {name: "AKTH Testing Lab", labNo: "LIMS030001"},
-        {name: "DRL Testing Lab", labNo: "LIMS150001"},
-        {name: "68 MRH Testing Lab", labNo: "LIMS250003"},
-        {name: "UATH Abuja Testing Lab", labNo: "LIMS150004"},
-        {name: "RSUTH Testing Lab", labNo: "LIMS330001"},
-        {name: "COOUTH Testing Lab", labNo: "LIMS040001"},
-        {name: "OAUTHC ANNEX", labNo: "LIMS290001"},
-    ]
+
     const handleSubmit = (e) => {        
         e.preventDefault();
         
@@ -692,7 +684,7 @@ const Laboratory = (props) => {
                                 disabled={disabledField}                 
                                 >
                                 <option value="">Select </option>
-                                {pcr_lab.map((value) => (
+                                {pcrs.map((value) => (
                                         <option key={value.labNo} value={value.labNo}>
                                             {value.name}
                                         </option>
