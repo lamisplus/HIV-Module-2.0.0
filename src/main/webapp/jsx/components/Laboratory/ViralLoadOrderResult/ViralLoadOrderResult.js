@@ -139,7 +139,7 @@ const Laboratory = (props) => {
     //Get list of LabNumbers
     const PCRLabList =()=>{
         axios
-            .get(`${baseUrl}lims/get-prclabs/`,
+            .get(`${baseUrl}laboratory/get-prclabs/`,
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
