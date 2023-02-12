@@ -365,6 +365,7 @@ const Tracking = (props) => {
                     .then(response => {
                         setSaving(false);
                         props.TrackingDetails();
+                        props.PatientCurrentObject()
                         toast.success("Tracking from save successful",  {position: toast.POSITION.BOTTOM_CENTER});
                         props.setActiveContent({...props.activeContent, route:'tracking-form', activeTab:"history", })
                         //props.setActiveContent({...props.activeContent, route:'recent-history'})
@@ -394,7 +395,7 @@ const Tracking = (props) => {
                 }
             }  
     }
-console.log(errors)
+
   return (      
         <div>                   
             <Card className={classes.root}>

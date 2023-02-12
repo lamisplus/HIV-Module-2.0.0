@@ -401,6 +401,7 @@ const Tracking = (props) => {
                 )
                     .then(response => {
                         setSaving(false);
+                        props.PatientCurrentObject()
                         toast.success("Tracking form updated successful", {position: toast.POSITION.BOTTOM_CENTER});
                         props.setActiveContent({...props.activeContent, route:'tracking-form', id:props.activeContent.obj.id, activeTab:"history", actionType:"update", obj:props.activeContent.obj})
 

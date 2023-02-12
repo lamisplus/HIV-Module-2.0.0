@@ -97,25 +97,24 @@ function PatientCard(props) {
     const [activeContent, setActiveContent] = useState({route:"recent-history", id:"", activeTab:"home", actionType:"create", obj:{}});
     const { classes } = props;
     const patientObj = history.location && history.location.state ? history.location.state.patientObj : {}
-    //const [patientObj, setPatientObj] = useState(patientObject);
-    // useEffect(() => {
-    //   PatientCurrentObject();
-    //   //CheckBiometric();
-    // }, [patientObject.id]);
+    const [patientObj1, setPatientObj1] = useState(null);
+    useEffect(() => {
+      PatientCurrentObject();
+      //CheckBiometric();
+    }, []);
   
-    //   ///GET Patient
-    //   const PatientCurrentObject=() =>{
-    //       axios
-    //           .get(`${baseUrl}hiv/patient/${patientObject.id}`,
-    //           { headers: {"Authorization" : `Bearer ${token}`} }
-    //           )
-    //           .then((response) => {
-    //             console.log(response.data)
-    //             setPatientObj(response.data);
-    //           })
-    //           .catch((error) => {  
-    //           });        
-    //   }
+      ///GET Patient
+      const PatientCurrentObject=() =>{
+          axios
+              .get(`${baseUrl}hiv/patient/${patientObj.id}`,
+              { headers: {"Authorization" : `Bearer ${token}`} }
+              )
+              .then((response) => {
+                setPatientObj1(response.data);
+              })
+              .catch((error) => {  
+              });        
+      }
 
   return (
     <div className={classes.root}>
@@ -126,14 +125,14 @@ function PatientCard(props) {
 		  </div>
       <Card >
         <CardContent>
-            <PatientCardDetail patientObj={patientObj} setArt={setArt} setActiveContent={setActiveContent}/>
+            <PatientCardDetail patientObj={patientObj} setArt={setArt} setActiveContent={setActiveContent} patientObj1={patientObj1}/>
             <Sticky>           
             <SubMenu patientObj={patientObj} art={art} setActiveContent={setActiveContent}/>
             </Sticky>
             <br/>
           {activeContent.route==='recent-history' &&(<RecentHistory patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
           {activeContent.route==='biometrics' &&(<Biometrics patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
-          {activeContent.route==='consultation' &&( <ClinicVisit patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
+          {activeContent.route==='consultation' &&( <ClinicVisit patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent} PatientCurrentObject={PatientCurrentObject}/>)}
           {/* {activeContent==='child-consultation' &&( <ChildConsultation patientObj={patientObj} setActiveContent={setActiveContent}/>)} */}
           {activeContent.route==='pharmacy' &&( <Pharmacy patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
           {activeContent.route==='laboratory' &&( <Laboratory patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
@@ -157,9 +156,9 @@ function PatientCard(props) {
           {activeContent.route==='second-eac-history' &&( <SecondEac patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
           {activeContent.route==='completed-eac-history' &&( <ThirdEac patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
           {activeContent.route==='lab-view' &&( <ViewLaboratory patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
-          {activeContent.route==='pharmacy-update' &&( <PharmacyRefillViewUpdate patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
-          {activeContent.route==='tracking-form' &&( <TrackingForm patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
-          {activeContent.route==='client-tracker' &&( <TrackingFormUpdate patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
+          {activeContent.route==='pharmacy-update' &&( <PharmacyRefillViewUpdate patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent} PatientCurrentObject={PatientCurrentObject}/>)}
+          {activeContent.route==='tracking-form' &&( <TrackingForm patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent} PatientCurrentObject={PatientCurrentObject}/>)}
+          {activeContent.route==='client-tracker' &&( <TrackingFormUpdate patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent} PatientCurrentObject={PatientCurrentObject}/>)}
           {activeContent.route==='first-eac' &&( <FirstEacPage patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
           {activeContent.route==='eac-outcome' &&( <EACOUTCOME patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
           {activeContent.route==='eac-session' &&( <EACSESSION patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
@@ -170,7 +169,7 @@ function PatientCard(props) {
           {activeContent.route==='laboratoryViralLoadOrderResult' &&( <ViralLoadOrderResult patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
           {activeContent.route==='intensive-followup' &&( <IntensiveFollowUp patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
           {activeContent.route==='intensive-follow-up-update' &&( <IntensiveFollowUpUpdate patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
-          {activeContent.route==='transfer-form' &&( <TransferForm patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
+          {activeContent.route==='transfer-form' &&( <TransferForm patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent} PatientCurrentObject={PatientCurrentObject}/>)}
           
           {activeContent.route==='lab-view-viral-load-order-result' &&( <UpdateViewViralLoadOrderResult patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
           {activeContent.route==='lab-view-order-result' &&( <ViewUpdateLabOrderResult patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
