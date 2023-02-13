@@ -106,7 +106,7 @@ const CervicalCancer = (props) => {
                                                     screeningGross:"",
                                                     screeningRefferal:"",
                                                     screeningVisible:"",
-                                                    screenType:"",                                                
+                                                    screenTreatment:"",                                                
 
                                                 });
     const [observation, setObservation]=useState({
@@ -492,9 +492,9 @@ const CervicalCancer = (props) => {
                             <Label >Screening Treatment <span style={{ color:"red"}}> *</span></Label>
                             <Input
                                     type="select"
-                                    name="screenType"
-                                    id="screenType"
-                                    value={objValues.screenType}
+                                    name="screenTreatment"
+                                    id="screenTreatment"
+                                    value={objValues.screenTreatment}
                                     onChange={handleInputChange}
                                     required
                                     >
@@ -506,8 +506,8 @@ const CervicalCancer = (props) => {
                                             </option>
                                         ))}
                                 </Input>
-                                {errors.screenType !=="" ? (
-                                    <span className={classes.error}>{errors.screenType}</span>
+                                {errors.screenTreatment !=="" ? (
+                                    <span className={classes.error}>{errors.screenTreatment}</span>
                                 ) : "" }
                             </FormGroup>
                             </div>                        
@@ -547,7 +547,7 @@ const CervicalCancer = (props) => {
                     color="primary"
                     className={classes.button}
                     startIcon={<SaveIcon />}
-                    disabled={objValues.screeningResult==="" || objValues.screenMethod==="" || objValues.screenType==="" || objValues.visible==="" || objValues.screeningResult===""  || objValues.gross==="" || objValues.referrals==="" ? true : false}
+                    disabled={objValues.screeningResult==="" || objValues.screenMethod==="" || objValues.screenType==="" || objValues.visible==="" || objValues.screeningResult===""  || objValues.gross==="" || objValues.referrals==="" || objValues.screenTreatment==="" ? true : false}
                     onClick={handleSubmit}
                     >
                     {!saving ? (

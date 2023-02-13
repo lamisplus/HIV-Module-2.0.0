@@ -269,7 +269,7 @@ const NEWEACSESSION = (props) => {
                                     id="sessionDate"
                                     min={lastEACDate !==null ? moment(lastEACDate).format("YYYY-MM-DD") : enrollDate}
                                     value={objValues.sessionDate}
-                                    //max= {lastEACDate !==null ?  moment(lastEACDate).format("YYYY-MM-DD") : "" }
+                                    max= { moment(new Date()).format("YYYY-MM-DD") }
                                     onChange={handleInputChange}
                                     style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                     

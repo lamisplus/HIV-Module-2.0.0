@@ -315,7 +315,7 @@ const ClinicVisit = (props) => {
     // PREGANACY_STATUS
     const PREGANACY_STATUS = () => {
     axios
-      .get(`${baseUrl}application-codesets/v2/PREGANACY_STATUS	`,
+      .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS	`,
         { headers: { "Authorization": `Bearer ${token}` } }
       )
       .then((response) => {
@@ -804,7 +804,7 @@ const ClinicVisit = (props) => {
         props.ClinicVisitListHistory()
         toast.success("Clinic Visit(Care card) updated successful",  {position: toast.POSITION.BOTTOM_CENTER});
         GetVisitById(objValues.id)
-        props.setActiveContent({...props.activeContent, route:'consultation', activeTab:"history", })
+        props.setActiveContent({...props.activeContent, route:'recent-history', activeTab:"history", })
       })
       .catch(error => {
         setSaving(false);
@@ -1772,22 +1772,7 @@ const ClinicVisit = (props) => {
                           <div  className="form-group mb-3 col-md-5">
                             <FormGroup>
                                   <FormLabelName for="testGroup">Select Test</FormLabelName>
-                                  {/* <Input
-                                      type="select"
-                                      name="labTestId"
-                                      id="labTestId"
-                                      value={tests.labTestId}
-                                      onChange={handleInputChangeTest} 
-                                      style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}                  
-                                      >
-                                      <option value="">Select </option>
-                                                      
-                                          {test.map((value) => (
-                                              <option key={value.id} value={value.id}>
-                                                  {value.labTestName}
-                                              </option>
-                                          ))}
-                                  </Input> */}
+                            
                                   <Select
                                       //value={selectedOption}
                                       onChange={handleInputChangeObject}

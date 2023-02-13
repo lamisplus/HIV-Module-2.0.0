@@ -271,6 +271,7 @@ const Pharmacy = (props) => {
         { headers: {"Authorization" : `Bearer ${token}`}},)
         .then(response => {
             setSaving(false);
+            props.PatientCurrentObject()
             toast.success("Pharmacy drug refill updated successful");
              props.setActiveContent({...props.activeContent, route:'pharmacy', id:"", activeTab:"history", actionType:"view", obj:{}})
         })
