@@ -1118,6 +1118,7 @@ const UserRegistration = (props) => {
                                                     masks={{ng: '...-...-....', at: '(....) ...-....'}}
                                                     value={basicInfo.phoneNumber}
                                                    onChange={(e)=>{checkPhoneNumberBasic(e,'phoneNumber')}}
+                                                   
                                                    //onChange={(e)=>{handleInputChangeBasic(e,'phoneNumber')}}
                                                 />
                                                 {errors.phoneNumber !=="" ? (
@@ -1178,6 +1179,7 @@ const UserRegistration = (props) => {
                                                     style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
                                                     value={basicInfo.countryId}
                                                     onChange={getStates}
+                                                    disabled
                                                     >
                                                     <option value={""}>Select</option>
                                                     {countries.map((value, index) => (

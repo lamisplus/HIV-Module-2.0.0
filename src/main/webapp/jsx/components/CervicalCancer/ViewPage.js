@@ -106,7 +106,9 @@ const CervicalCancer = (props) => {
                                                     screeningGross:"",
                                                     screeningRefferal:"",
                                                     screeningVisible:"",
-                                                    screenTreatment:"",                                                
+                                                    screenTreatment:"", 
+                                                    papPendingingResult:"",
+                                                    papGettingResult:""                                               
 
                                                 });
     const [observation, setObservation]=useState({
@@ -363,6 +365,42 @@ const CervicalCancer = (props) => {
                                 ) : "" }
                             </FormGroup>
                             </div>
+                            {objValues.screenMethod==='CERVICAL_CANCER_SCREENING_METHOD_PAP_SMEAR' && (
+                                <>
+                                <div className="form-group mb-3 col-md-6">
+                                <FormGroup>
+                                <Label >PAP Smear Pending Result <span style={{ color:"red"}}> *</span></Label>
+                                <Input
+                                        type="text"
+                                        name="papPendingingResult"
+                                        id="papPendingingResult"
+                                        value={objValues.papPendingingResult}
+                                        onChange={handleInputChange}
+                                        required
+                                        >
+                                          
+                                    </Input> 
+                               
+                                </FormGroup>
+                                </div>
+                                <div className="form-group mb-3 col-md-6">
+                                <FormGroup>
+                                <Label >PAP Smear Getting Result <span style={{ color:"red"}}> *</span></Label>
+                                <Input
+                                        type="input"
+                                        name="papGettingResult"
+                                        id="papGettingResult"
+                                        value={objValues.papGettingResult}
+                                        onChange={handleInputChange}
+                                        required
+                                        >
+                                           
+                                    </Input> 
+                               
+                                </FormGroup>
+                                </div>
+                                </>
+                            )}
                             <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label >Screening Type <span style={{ color:"red"}}> *</span></Label>
