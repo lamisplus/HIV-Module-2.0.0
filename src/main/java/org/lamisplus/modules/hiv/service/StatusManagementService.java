@@ -257,10 +257,12 @@ public class StatusManagementService {
 	}
 	
 	public Deque<HIVStatusDisplay> getClientStatusSummaryLimitTwo(String personUuid, LocalDate startDate, Deque<HIVStatusDisplay> statusSummary) {
-		HIVInterQuarterStatus clientPreviousInternalQuarterStatus = getClientPreviousInternalQuarterStatus(startDate, personUuid);
+		HIVInterQuarterStatus clientPreviousInternalQuarterStatus =
+				getClientPreviousInternalQuarterStatus(startDate, personUuid);
 		Quarter currentQuarter = getCurrentQuarter(startDate);
 		if (clientPreviousInternalQuarterStatus == null) {
-			HIVInterQuarterStatus clientCurrentInternalQuarterStatus = getClientCurrentInternalQuarterStatus(personUuid, startDate);
+			HIVInterQuarterStatus clientCurrentInternalQuarterStatus =
+					getClientCurrentInternalQuarterStatus(personUuid, startDate);
 			if (clientCurrentInternalQuarterStatus != null) {
 				statusSummary.push(new HIVStatusDisplay(clientCurrentInternalQuarterStatus.getDate(),
 						clientCurrentInternalQuarterStatus.getDescription(), currentQuarter.getEnd()));

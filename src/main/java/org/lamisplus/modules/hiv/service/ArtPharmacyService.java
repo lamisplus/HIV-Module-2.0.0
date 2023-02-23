@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
 import org.lamisplus.modules.base.controller.apierror.IllegalTypeException;
+import org.lamisplus.modules.base.controller.apierror.RecordExistException;
 import org.lamisplus.modules.hiv.domain.dto.*;
 import org.lamisplus.modules.hiv.domain.entity.ArtPharmacy;
 import org.lamisplus.modules.hiv.domain.entity.Regimen;
@@ -57,10 +58,12 @@ public class ArtPharmacyService {
 	private static final String REGIMEN = "regimens";
 	
 	public RegisterArtPharmacyDTO registerArtPharmacy(RegisterArtPharmacyDTO dto) throws IOException {
+		checkIfSelectRegimenIsAlreadyDispensed(dto);
 		Visit visit = handleHIVisitEncounter.processAndCreateVisit(dto.getPersonId(), dto.getVisitDate());
 		dto.setVisitId(visit.getId());
-		if (dto.getVisitId() == null)
-			throw new IllegalTypeException(Visit.class, "visit date", "kindly create a clinic visit for this patient");
+//		if (dto.getVisitId() == null)
+//			throw new IllegalTypeException(Visit.class, "visit date", "kindly create a clinic visit for this patient");
+		
 		ArtPharmacy artPharmacy = convertRegisterDtoToEntity(dto);
 		artPharmacy.setUuid(UUID.randomUUID().toString());
 		artPharmacy.setVisit(visit);
@@ -69,6 +72,22 @@ public class ArtPharmacyService {
 		processAndSaveHIVStatus(dto);
 		processAndCheckoutHivVisit(dto.getPersonId(), visit);
 		return convertEntityToRegisterDto(save);
+	}
+	
+	private void checkIfSelectRegimenIsAlreadyDispensed(RegisterArtPharmacyDTO dto) {
+		Set<RegimenRequestDto> regimens = dto.getRegimen();
+		if(!regimens.isEmpty()){
+			System.out.println("I am in check 1");
+			Person person = getPerson(dto.getPersonId());
+			regimens.forEach(regimen -> {
+				Integer count = artPharmacyRepository.getCountForAnAlreadyDispenseRegimen(person.getUuid(),
+								regimen.getRegimenId(),
+								dto.getVisitDate());
+				System.out.println("I am in check 2");
+				if(count > 0) throw new RecordExistException(Regimen.class, "name", regimen.getRegimenName() + " is already dispensed on this " +
+						"date "+ dto.getVisitDate());
+			});
+		}
 	}
 	
 	

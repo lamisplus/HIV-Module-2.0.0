@@ -453,92 +453,91 @@ public interface HIVEacRepository extends JpaRepository<HIVEac, Long> {
 			"  AND lt.archived = 0\n" +
 			"    ),\n" +
 			"    pharmacy_details_regimen AS (\n" +
-			"SELECT\n" +
-			"    DISTINCT ON (hartp.person_uuid) hartp.person_uuid as person_uuid40,\n" +
-			"    r.visit_date as lastPickupDate,\n" +
-			"    hartp.next_appointment as nextPickupDate,\n" +
-			"    hartp.refill_period / 30 \\:\\:INTEGER as monthsOfARVRefill,\n" +
-			"    r.description as currentARTRegimen,\n" +
-			"    r.regimen_name as currentRegimenLine,\n" +
-			"    (\n" +
-			"      CASE WHEN stat.hiv_status ILIKE '%STOP%'\n" +
-			"      OR stat.hiv_status ILIKE '%DEATH%'\n" +
-			"      OR stat.hiv_status ILIKE '%OUT%' THEN stat.hiv_status WHEN hartp.visit_date + hartp.refill_period + INTERVAL '28 day' < '01-12-2022' THEN 'IIT' ELSE 'ACTIVE' END\n" +
-			"    ) AS currentStatus,\n" +
-			"    (\n" +
-			"      CASE WHEN stat.hiv_status ILIKE '%STOP%'\n" +
-			"      OR stat.hiv_status ILIKE '%DEATH%'\n" +
-			"      OR stat.hiv_status ILIKE '%OUT%' THEN stat.status_date WHEN hartp.visit_date + hartp.refill_period + INTERVAL '28 day' < '01-12-2022' THEN (\n" +
-			"        hartp.visit_date + hartp.refill_period + INTERVAL '28 day'\n" +
-			"      ) \\:\\:date ELSE hartp.visit_date END\n" +
-			"    ) AS dateOfCurrentStatus\n" +
-			"FROM\n" +
-			"    hiv_art_pharmacy hartp\n" +
-			"    INNER JOIN (\n" +
-			"    SELECT\n" +
-			"    distinct r.*\n" +
-			"    FROM\n" +
-			"    (\n" +
-			"    SELECT\n" +
-			"    h.person_uuid,\n" +
-			"    h.visit_date,\n" +
-			"    pharmacy_object ->> 'regimenName'\\:\\:VARCHAR AS regimen_name,\n" +
-			"            hrt.description\n" +
-			"          FROM\n" +
-			"            hiv_art_pharmacy h,\n" +
-			"            jsonb_array_elements(h.extra -> 'regimens') with ordinality p(pharmacy_object)\n" +
-			"            INNER JOIN hiv_regimen hr ON hr.description = pharmacy_object ->> 'regimenName' \\:\\:VARCHAR\n" +
-			"            INNER JOIN hiv_regimen_type hrt ON hrt.id = hr.regimen_type_id\n" +
-			"          WHERE\n" +
-			"            hrt.id IN (1, 2, 3, 4, 14)\n" +
-			"        ) r\n" +
-			"        INNER JOIN (\n" +
-			"          SELECT\n" +
-			"            hap.person_uuid,\n" +
-			"            MAX(visit_date) AS MAXDATE\n" +
-			"          FROM\n" +
-			"            hiv_art_pharmacy hap\n" +
-			"            INNER JOIN hiv_enrollment h ON h.person_uuid = hap.person_uuid\n" +
-			"          WHERE\n" +
-			"            h.archived = 0\n" +
-			"          GROUP BY\n" +
-			"            hap.person_uuid\n" +
-			"          ORDER BY\n" +
-			"            MAXDATE ASC\n" +
-			"        ) max ON max.MAXDATE = r.visit_date\n" +
-			"        AND r.person_uuid = max.person_uuid\n" +
-			"    ) r ON r.visit_date = hartp.visit_date\n" +
-			"    AND r.person_uuid = hartp.person_uuid\n" +
-			"    INNER JOIN hiv_enrollment he ON he.person_uuid = r.person_uuid\n" +
-			"    LEFT JOIN (\n" +
-			"    SELECT\n" +
-			"    sh1.person_id,\n" +
-			"    sh1.hiv_status,\n" +
-			"    sh1.status_date\n" +
-			"    FROM\n" +
-			"    hiv_status_tracker sh1\n" +
-			"    INNER JOIN (\n" +
-			"    SELECT\n" +
-			"    person_id as p_id,\n" +
-			"    MAX(hst.id) AS MAXID\n" +
-			"    FROM\n" +
-			"    hiv_status_tracker hst\n" +
-			"    INNER JOIN hiv_enrollment h ON h.person_uuid = person_id\n" +
-			"    GROUP BY\n" +
-			"    person_id\n" +
-			"    ORDER BY\n" +
-			"    person_id ASC\n" +
-			"    ) sh2 ON sh1.person_id = sh2.p_id\n" +
-			"    AND sh1.id = sh2.MAXID\n" +
-			"    ORDER BY\n" +
-			"    sh1.person_id ASC\n" +
-			"    ) stat ON stat.person_id = hartp.person_uuid\n" +
-			"WHERE\n" +
-			"    he.archived = 0\n" +
-			"  AND hartp.archived = 0\n" +
-			"  AND hartp.facility_id = ?1\n" +
-			"ORDER BY\n" +
-			"    hartp.person_uuid ASC\n" +
+			"SELECT  DISTINCT ON (hartp.person_uuid) hartp.person_uuid as person_uuid40, \n" +
+			"\t\t\t    r.visit_date as lastPickupDate, \n" +
+			"\t\t\t    hartp.next_appointment as nextPickupDate, \n" +
+			"\t\t\t    hartp.refill_period / 30 \\:\\:INTEGER as monthsOfARVRefill, \n" +
+			"\t\t\t    r.description as currentARTRegimen, \n" +
+			"\t\t\t    r.regimen_name as currentRegimenLine, \n" +
+			"\t\t\t    ( \n" +
+			"\t\t\t      CASE WHEN stat.hiv_status ILIKE '%STOP%' \n" +
+			"\t\t\t      OR stat.hiv_status ILIKE '%DEATH%' \n" +
+			"\t\t\t OR stat.hiv_status ILIKE '%OUT%' THEN stat.hiv_status WHEN hartp.visit_date + hartp.refill_period + INTERVAL '28 day' < '01-12-2022' THEN 'IIT' ELSE 'ACTIVE' END\n" +
+			"\t\t\t    ) AS currentStatus, \n" +
+			"\t\t\t    ( \n" +
+			"\t\t\t      CASE WHEN stat.hiv_status ILIKE '%STOP%' \n" +
+			"\t\t\t      OR stat.hiv_status ILIKE '%DEATH%' \n" +
+			"\t\t\t      OR stat.hiv_status ILIKE '%OUT%' THEN stat.status_date WHEN hartp.visit_date + hartp.refill_period  + INTERVAL '28 day' < '01-12-2022' THEN ( \n" +
+			"\t\t\t        hartp.visit_date  + hartp.refill_period  + INTERVAL '28 day' \n" +
+			"\t\t\t      ) \\:\\:date ELSE hartp.visit_date END \n" +
+			"\t\t\t    ) AS dateOfCurrentStatus \n" +
+			"\t\t\tFROM \n" +
+			"\t\t\t    hiv_art_pharmacy hartp \n" +
+			"\t\t\t    LEFT JOIN ( \n" +
+			"\t\t\t    SELECT \n" +
+			"\t\t\t    distinct r.* \n" +
+			"\t\t\t    FROM \n" +
+			"\t\t\t    ( \n" +
+			"\t\t\t    SELECT \n" +
+			"\t\t\t    h.person_uuid, \n" +
+			"\t\t\t    h.visit_date, \n" +
+			"\t\t\t    pharmacy_object ->> 'regimenName'\\:\\:VARCHAR AS regimen_name, \n" +
+			"\t\t\t            hrt.description \n" +
+			"\t\t\t          FROM \n" +
+			"\t\t\t            hiv_art_pharmacy h, \n" +
+			"\t\t\t            jsonb_array_elements(h.extra -> 'regimens') with ordinality p(pharmacy_object) \n" +
+			"\t\t\t            LEFT JOIN hiv_regimen hr ON hr.description = pharmacy_object ->> 'regimenName' \\:\\:VARCHAR \n" +
+			"\t\t\t            LEFT JOIN hiv_regimen_type hrt ON hrt.id = hr.regimen_type_id \n" +
+			"\t\t\t          WHERE \n" +
+			"\t\t\t            hrt.id IN (1, 2, 3, 4, 14) AND h.archived=0 AND visit_date >= ?2 AND visit_date <= ?3  --24026\n" +
+			"\t\t\t        ) r \n" +
+			"\t\t\t        INNER JOIN ( \n" +
+			"\t\t\t          SELECT \n" +
+			"\t\t\t            hap.person_uuid, \n" +
+			"\t\t\t            MAX(visit_date) AS MAXDATE \n" +
+			"\t\t\t          FROM \n" +
+			"\t\t\t            hiv_art_pharmacy hap \n" +
+			"\t\t\t            INNER JOIN hiv_enrollment h ON h.person_uuid = hap.person_uuid AND h.archived=0\n" +
+			"\t\t\t          WHERE \n" +
+			"\t\t\t            hap.archived = 0 AND visit_date >= ?2 AND visit_date <= ?3 \n" +
+			"\t\t\t          GROUP BY \n" +
+			"\t\t\t            hap.person_uuid \n" +
+			"\t\t\t          ORDER BY \n" +
+			"\t\t\t            MAXDATE ASC \n" +
+			"\t\t\t        ) max ON max.MAXDATE = r.visit_date AND r.person_uuid = max.person_uuid \n" +
+			"\t\t\t    ) r ON r.visit_date = hartp.visit_date \n" +
+			"\t\t\t    AND r.person_uuid = hartp.person_uuid \n" +
+			"\t\t\t    INNER JOIN hiv_enrollment he ON he.person_uuid = r.person_uuid \n" +
+			"\t\t\t    LEFT JOIN ( \n" +
+			"\t\t\t    SELECT \n" +
+			"\t\t\t    sh1.person_id, \n" +
+			"\t\t\t    sh1.hiv_status, \n" +
+			"\t\t\t    sh1.status_date \n" +
+			"\t\t\t    FROM \n" +
+			"\t\t\t    hiv_status_tracker sh1 \n" +
+			"\t\t\t    INNER JOIN ( \n" +
+			"\t\t\t    SELECT \n" +
+			"\t\t\t    person_id as p_id, \n" +
+			"\t\t\t    MAX(hst.id) AS MAXID \n" +
+			"\t\t\t    FROM \n" +
+			"\t\t\t    hiv_status_tracker hst \n" +
+			"\t\t\t    INNER JOIN hiv_enrollment h ON h.person_uuid = person_id AND h.archived=0\n" +
+			"\t\t\t\tWHERE hst.archived=0 AND hst.status_date >= ?2 AND hst.status_date <= ?3 \n" +
+			"\t\t\t    GROUP BY \n" +
+			"\t\t\t    person_id \n" +
+			"\t\t\t    ORDER BY \n" +
+			"\t\t\t    person_id ASC \n" +
+			"\t\t\t    ) sh2 ON sh1.person_id = sh2.p_id \n" +
+			"\t\t\t    AND sh1.id = sh2.MAXID \n" +
+			"\t\t\t    ORDER BY \n" +
+			"\t\t\t    sh1.person_id ASC \n" +
+			"\t\t\t    ) stat ON stat.person_id = hartp.person_uuid \n" +
+			"\t\t\tWHERE \n" +
+			"\t\t\t    he.archived = 0 \n" +
+			"\t\t\t  AND hartp.archived = 0 \n" +
+			"\t\t\t  AND hartp.facility_id = 1740\n" +
+			"\t\t\tORDER BY \n" +
+			"\t\t\t    hartp.person_uuid ASC"+
 			"    ),\n" +
 			"--7917\\n\" +\n" +
 			"    eac AS (\n" +
