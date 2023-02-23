@@ -266,15 +266,15 @@ const CervicalCancer = (props) => {
     }
 
     //FORM VALIDATION
-    const validate = () => {
-        let temp = { ...errors }
-        //temp.name = details.name ? "" : "This field is required"
-        //temp.description = details.description ? "" : "This field is required"
-        setErrors({
-            ...temp
-            })    
-        return Object.values(temp).every(x => x == "")
-    }
+    // const validate = () => {
+    //     let temp = { ...errors }
+    //     //temp.name = details.name ? "" : "This field is required"
+    //     //temp.description = details.description ? "" : "This field is required"
+    //     setErrors({
+    //         ...temp
+    //         })    
+    //     return Object.values(temp).every(x => x == "")
+    // }
         
     /**** Submit Button Processing  */
     const handleSubmit = (e) => {                  
@@ -320,8 +320,8 @@ const CervicalCancer = (props) => {
                                     value={objValues.dateOfScreening}
                                     required
                                 />
-                                {errors.screenType !=="" ? (
-                                    <span className={classes.error}>{errors.screenType}</span>
+                                {errors.dateOfScreening !=="" ? (
+                                    <span className={classes.error}>{errors.dateOfScreening}</span>
                                 ) : "" }
                                 </FormGroup>
                             </div>
@@ -347,7 +347,7 @@ const CervicalCancer = (props) => {
                            
                             </FormGroup>
                             </div>
-                            {objValues.screenMethod==='CERVICAL_CANCER_SCREENING_METHOD_PAP_SMEAR' && (
+                            {/* {objValues.screenMethod==='CERVICAL_CANCER_SCREENING_METHOD_PAP_SMEAR' && (
                                 <>
                                 <div className="form-group mb-3 col-md-6">
                                 <FormGroup>
@@ -382,7 +382,7 @@ const CervicalCancer = (props) => {
                                 </FormGroup>
                                 </div>
                                 </>
-                            )}
+                            )} */}
                             <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label >Screening Type <span style={{ color:"red"}}> *</span></Label>
@@ -409,7 +409,7 @@ const CervicalCancer = (props) => {
                             </div>
                             <div className="form-group mb-3 col-md-6">
                                 <FormGroup>
-                                <Label >Screening Result <span style={{ color:"red"}}> *</span></Label>
+                                <Label >Screening Result </Label>
                                 <Input
                                     type="select"
                                     name="screeningResult"
@@ -485,7 +485,7 @@ const CervicalCancer = (props) => {
                             )}
                             <div className="form-group mb-3 col-md-6">
                                 <FormGroup>
-                                <Label >Gross Cervical Lesions seen <span style={{ color:"red"}}> *</span></Label>
+                                <Label >Gross Cervical Lesions seen </Label>
                                 <Input
                                     type="select"
                                     name="screeningGross"
@@ -509,7 +509,7 @@ const CervicalCancer = (props) => {
                             </div>
                             <div className="form-group mb-3 col-md-6">
                             <FormGroup>
-                            <Label >Screening Treatment <span style={{ color:"red"}}> *</span></Label>
+                            <Label >Screening Treatment </Label>
                             <Input
                                     type="select"
                                     name="screenTreatment"
@@ -533,7 +533,7 @@ const CervicalCancer = (props) => {
                             </div>                        
                             <div className="form-group mb-3 col-md-6">
                                 <FormGroup>
-                                <Label >Referral <span style={{ color:"red"}}> *</span></Label>
+                                <Label >Referral </Label>
                                 <Input
                                     type="select"
                                     name="screeningRefferal"
@@ -566,7 +566,8 @@ const CervicalCancer = (props) => {
                         color="primary"
                         className={classes.button}
                         startIcon={<SaveIcon />}
-                        disabled={objValues.screeningResult==="" || objValues.screenMethod==="" || objValues.screenType==="" || objValues.visible==="" || objValues.screeningResult===""  || objValues.gross==="" || objValues.referrals==="" || objValues.screenTreatment==="" ? true : false}
+                        //disabled={objValues.screeningResult==="" || objValues.screenMethod==="" || objValues.screenType==="" || objValues.visible==="" || objValues.screeningResult===""  || objValues.gross==="" || objValues.referrals==="" || objValues.screenTreatment==="" ? true : false}
+                        disabled={objValues.dateOfScreening==="" || objValues.screenMethod==="" || objValues.screenType==="" ? true : false}
                         onClick={handleSubmit}
                     >
                         {!saving ? (

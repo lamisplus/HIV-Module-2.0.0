@@ -1545,7 +1545,7 @@ const UserRegistration = (props) => {
                                         onChange={handleInputChange}
                                         value={objValues.uniqueId}
                                         style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
-                                        disabled
+                                        
                                         
                                     />
                                     {errors.uniqueId !=="" ? (
@@ -1779,12 +1779,21 @@ const UserRegistration = (props) => {
                                         onChange={handleInputChange}
                                         style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
                                         >
-                                        <option value=""> Select</option>                    
-                                                {kP.map((value) => (
+                                        <option value=""> Select</option> 
+                                            {(basicInfo.sexId===377 || basicInfo.sexId==='377')    && ( <>      
+                                                {kP.filter((x)=>x.display!=='FSW').map((value) => (
                                                     <option key={value.id} value={value.id}>
                                                         {value.display}
                                                     </option>
                                                 ))}
+                                            </> )}
+                                            {(basicInfo.sexId===376 || basicInfo.sexId==='376')   && ( <>      
+                                                {kP.filter((x)=>x.display!=='MSM').map((value) => (
+                                                    <option key={value.id} value={value.id}>
+                                                        {value.display}
+                                                    </option>
+                                                ))}
+                                            </> )}
                                     </Input>
                                     {errors.targetGroupId !=="" ? (
                                         <span className={classes.error}>{errors.targetGroupId}</span>
