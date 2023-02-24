@@ -266,6 +266,7 @@ const ClinicVisit = (props) => {
     PREGANACY_STATUS();
     FAMILY_PLANNING_METHOD();
     GetPatientDTOObj();
+    PatientCurrentRegimen();
     if(props.patientObj.id){
       ClinicVisitList();
     }
@@ -279,8 +280,23 @@ const ClinicVisit = (props) => {
        .then((response) => {
            const patientDTO= response.data.enrollment
            setEnrollDate (patientDTO && patientDTO.dateOfRegistration ? patientDTO.dateOfRegistration :"")
-           //setEacStatusObj(response.data);
-           console.log(enrollDate)
+       })
+       .catch((error) => {
+       //console.log(error);
+       });
+   
+  }
+  //Get the patient current regimen
+  const PatientCurrentRegimen =()=>{
+    axios
+       .get(`${baseUrl}hiv/art/pharmacy/patient/current-regimen/${props.patientObj.id}`,
+           { headers: {"Authorization" : `Bearer ${token}`} }
+       )
+       .then((response) => {
+           const currentRegimenObj= response.data
+           arvDrugObj.regimenLine=currentRegimenObj.regimenType.id
+           RegimenType(currentRegimenObj.regimenType.id)
+           arvDrugObj.regimenDrug=currentRegimenObj.id
        })
        .catch((error) => {
        //console.log(error);
