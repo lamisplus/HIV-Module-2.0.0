@@ -143,6 +143,7 @@ const Pharmacy = (props) => {
         VitalSigns();
         AdultRegimenLine();
         IPT_TYPE();
+        PatientCurrentRegimen()
         setRegimenList(
             Object.entries(selectedOption && selectedOption.length>0? selectedOption : []).map(([key, value]) => ({
                 id: value.value,
@@ -162,14 +163,32 @@ const Pharmacy = (props) => {
            .then((response) => {
                const patientDTO= response.data.enrollment
                setEnrollDate (patientDTO && patientDTO.dateOfRegistration ? patientDTO.dateOfRegistration :"")
-               //setEacStatusObj(response.data);
-               console.log(enrollDate)
            })
            .catch((error) => {
            //console.log(error);
            });
        
     }
+    //Get the patient current regimen
+  const PatientCurrentRegimen =()=>{
+    axios
+       .get(`${baseUrl}hiv/art/pharmacy/patient/current-regimen/${props.patientObj.id}`,
+           { headers: {"Authorization" : `Bearer ${token}`} }
+       )
+       .then((response) => {
+           const currentRegimenObj= response.data
+           objValues.drugName=currentRegimenObj.regimenType.id
+           RegimenType(currentRegimenObj.regimenType.id)
+           objValues.regimenId=currentRegimenObj.id
+           //regimenName
+           RegimenDrug(currentRegimenObj.id)
+           setShowRegimen(true)
+       })
+       .catch((error) => {
+       //console.log(error);
+       });
+   
+  }
     const calculate_age = dob => {
         var today = new Date();
         var dateParts = dob.split("-");
@@ -226,8 +245,8 @@ const Pharmacy = (props) => {
                 const artRegimen=response.data.filter((x)=> (x.id===1 || x.id===2 || x.id===14))
                 const tbRegimen=response.data.filter((x)=> (x.id===10 ))
                 const oIRegimen=response.data.filter((x)=> (x.id===9 || x.id===15 || x.id===8))
-                const othersRegimen=response.data.filter((x)=> (x.id!==1 || x.id===2 || x.id===3 || x.id===4 || x.id===14))
-                console.log(artRegimen)
+                const othersRegimen=response.data.filter((x)=> (x.id!==1 && x.id!==2 && x.id!==14 && x.id!==10 && x.id!==9 && x.id!==15 && x.id!==8 ))
+                //console.log(othersRegimen)
                 setAdultArtRegimenLine(artRegimen);
                setTbRegimenLine(tbRegimen);
                setOIRegimenLine(oIRegimen);
@@ -378,7 +397,8 @@ const Pharmacy = (props) => {
             const response = await axios.get(`${baseUrl}hiv/regimen/drugs/${id}`,
             { headers: {"Authorization" : `Bearer ${token}`} })
             if(response.data.length >0){                   
-                setSelectedCombinedRegimen(response.data)         
+                setSelectedCombinedRegimen(response.data) 
+                console.log(id)        
                 const regimenName = regimenType.find((x) => { 
                     if(x.value==parseInt(drugId)){
                         return x
@@ -799,8 +819,9 @@ const Pharmacy = (props) => {
         const duration = (current && current.frequency ? current.frequency : "") * current.duration
         return prev + +duration
       }, 0);
-   console.log(showRegimen)  
-   console.log(showRegimenOI) 
+
+      
+
   return (      
       <div>
  
