@@ -18,6 +18,14 @@ import java.util.Optional;
 public interface ArtPharmacyRepository extends JpaRepository<ArtPharmacy, Long> {
 	List<ArtPharmacy> getArtPharmaciesByVisitAndPerson(Visit visit, Person person);
 	
+	@Query(value = "SELECT Count(*) FROM hiv_art_pharmacy p " +
+			"INNER join hiv_art_pharmacy_regimens ap ON ap.id = p.id " +
+			"INNER join hiv_regimen r ON r.id = ap.regimens_id " +
+			"WHERE person_uuid = ?1 " +
+			"AND r.id = ?2 " +
+			"AND visit_date = ?3", nativeQuery = true)
+    Integer getCountForAnAlreadyDispenseRegimen(String personUuid, Long regimenId, LocalDate visitDate);
+	
 	Page<ArtPharmacy> getArtPharmaciesByPersonAndArchived(Person person, Integer archived, Pageable pageable);
 	
 	List<ArtPharmacy> getArtPharmaciesByPersonAndArchived(Person person, Integer archived);

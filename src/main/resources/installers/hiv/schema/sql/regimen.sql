@@ -170,4 +170,3 @@ INSERT INTO hiv_regimen (id, description, composition, regimen_type_id, active, 
 INSERT INTO hiv_regimen (id, description, composition, regimen_type_id, active, priority) VALUES (240, 'Nifedipine(10mg)', 'Nifedipine', 61, true, 1);
 INSERT INTO hiv_regimen (id, description, composition, regimen_type_id, active, priority) VALUES (241, 'Telmisartan(40mg)', 'Telmisartan', 61, true, 1);
 INSERT INTO hiv_regimen (id, description, composition, regimen_type_id, active, priority) VALUES (242, 'Telmisartan(80mg)', 'Telmisartan', 61, true, 1);
-INSERT INTO hiv_regimen (id, description, composition, regimen_type_id, active, priority) VALUES (243, 'TDF(300mg)+3TC(300mg)+DTG(50mg)', 'Tenofovir+Lamivudine+Dolutegravir', 3, true, 50);
