@@ -11,11 +11,11 @@ import { Spinner } from "reactstrap";
 import { url as baseUrl, token } from "../../../../api";
 import moment from "moment";
 import { List, Label as LabelSui} from 'semantic-ui-react'
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
+// import IconButton from '@mui/material/IconButton';
+// import DeleteIcon from '@material-ui/icons/Delete';
 import { toast} from "react-toastify";
-import {Alert } from "react-bootstrap";
-import { Icon,Button, } from 'semantic-ui-react'
+// import {Alert } from "react-bootstrap";
+// import { Icon,Button, } from 'semantic-ui-react'
 
 
 const useStyles = makeStyles(theme => ({ 
@@ -83,6 +83,7 @@ const Laboratory = (props) => {
     const [eacStatusObj, setEacStatusObj] = useState()
     const [labNumberOption, setLabNumberOption] = useState("")
     const [labNumbers, setLabNumbers] = useState([]);//
+    const [pcrs, setPcrs] = useState([]);//
     let temp = { ...errors }
     const [tests, setTests]=useState({
             approvedBy: "",
@@ -118,7 +119,8 @@ const Laboratory = (props) => {
         ViraLoadIndication();
         LabTestDetail();
         CheckEACStatus();  
-        LabNumbers();  
+        LabNumbers(); 
+        PCRLabList(); 
     }, [props.patientObj.id]);
     //Get list of LabNumbers
     const LabNumbers =()=>{
@@ -128,6 +130,20 @@ const Laboratory = (props) => {
             )
             .then((response) => {
                 setLabNumbers(response.data);
+            })
+            .catch((error) => {
+            //console.log(error);
+            });
+        
+    }
+    //Get list of LabNumbers
+    const PCRLabList =()=>{
+        axios
+            .get(`${baseUrl}laboratory/get-prclabs/`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+                setPcrs(response.data);
             })
             .catch((error) => {
             //console.log(error);
@@ -313,31 +329,7 @@ const Laboratory = (props) => {
         })
         return Object.values(temp).every(x => x == "")
     }
-    const pcr_lab = [
-        {name: "NRL", labNo: "LIMS150002"},
-        {name: "ASOKORO Testing Lab", labNo: "LIMS150003"},
-        {name: "PLASVIREC TESTING LAB", labNo: "LIMS320002"},
-        {name: "ABUTH Testing Lab", labNo: "LIMS190001"},
-        {name: "University College Hospital (UCH) Ibadan", labNo: "LIMS310001"},
-        {name: "NIMR Testing Lab", labNo: "LIMS250002"},
-        {name: "LASUTH Testing Lab", labNo: "LIMS250001"},
-        {name: "JUTH Testing Lab", labNo: "LIMS320001"},
-        {name: "AKTH Testing Lab", labNo: "LIMS200001"},
-        {name: "FMCG Testing Lab", labNo: "LIMS160001"},
-        {name: "FMCMK Testing Lab", labNo: "LIMS070001"},
-        {name: "OAUTHC Testing Lab", labNo: "LIMS300001"},
-        {name: "UMTH Testing Lab", labNo: "LIMS080001"},
-        {name: "FMCJAL Testing Lab", labNo: "LIMS350001"},
-        {name: "NAUTH Testing Lab", labNo: "LIMS040002"},
-        {name: "UUTH Testing Lab", labNo: "LIMS320001"},
-        {name: "AKTH Testing Lab", labNo: "LIMS030001"},
-        {name: "DRL Testing Lab", labNo: "LIMS150001"},
-        {name: "68 MRH Testing Lab", labNo: "LIMS250003"},
-        {name: "UATH Abuja Testing Lab", labNo: "LIMS150004"},
-        {name: "RSUTH Testing Lab", labNo: "LIMS330001"},
-        {name: "COOUTH Testing Lab", labNo: "LIMS040001"},
-        {name: "OAUTHC ANNEX", labNo: "LIMS290001"},
-    ]
+
     const handleSubmit = (e) => {        
         e.preventDefault();
         if(validate()){
@@ -760,7 +752,7 @@ const Laboratory = (props) => {
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}                 
                                 >
                                 <option value="">Select </option>
-                                {pcr_lab.map((value) => (
+                                {pcrs.map((value) => (
                                         <option key={value.labNo} value={value.labNo}>
                                             {value.name}
                                         </option>

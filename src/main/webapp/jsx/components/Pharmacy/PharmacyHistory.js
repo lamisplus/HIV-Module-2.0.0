@@ -88,8 +88,7 @@ const PharmacyHistory = (props) => {
      }
      const regimenName =(regimenObj)=> {
         let regimenArr = []
-        regimenObj.forEach(function (value, index, array) { 
-          console.log(value)      
+        regimenObj.forEach(function (value, index, array) {      
             regimenArr.push(<li key={index}>{value['name']}</li>)
         })
         return regimenArr; 

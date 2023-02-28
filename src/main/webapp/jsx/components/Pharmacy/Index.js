@@ -1,8 +1,8 @@
 import React, {useState, Fragment, useEffect } from "react";
 import { Row, Col, Card,  Tab, Tabs, } from "react-bootstrap";
-import PharmacyRefill from './PharmacyRefill';
+//import PharmacyRefill from './PharmacyRefill';
 import axios from "axios";
-import PharmacyRefillUpdate from './PharmacyRefillUpdate';
+import PharmacyRefillUpdate from './PharmacyRefillViewUpdate';
 import PharmacyHistory from "./PharmacyHistory";
 import PharmacyRefillNew from './PharmacyRefillNew'
 import { token as token, url as baseUrl } from "./../../../api";

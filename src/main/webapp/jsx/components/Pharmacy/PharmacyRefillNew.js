@@ -77,7 +77,7 @@ const Pharmacy = (props) => {
     const [mmdType, setmmdType]=useState();
     const [showmmdType, setShowmmdType]=useState(false);
     const [showIptType, setIptType] = useState(false);
-    const [showAdr, setShowAdr] = useState(false);
+    //const [showAdr, setShowAdr] = useState(false);
     const [showRegimen, setShowRegimen] = useState(false);
     const [showRegimenOI, setShowRegimenOI] = useState(false);
     const [showRegimenTB, setShowRegimenTB] = useState(false);
@@ -143,6 +143,7 @@ const Pharmacy = (props) => {
         VitalSigns();
         AdultRegimenLine();
         IPT_TYPE();
+        PatientCurrentRegimen()
         setRegimenList(
             Object.entries(selectedOption && selectedOption.length>0? selectedOption : []).map(([key, value]) => ({
                 id: value.value,
@@ -153,7 +154,7 @@ const Pharmacy = (props) => {
         VitalSigns();
         ChildRegimenLine();
         GetPatientDTOObj();
-    }, [selectedOption]);
+    }, [selectedOption, regimenType.length>0, objValues.refillPeriod]);
     const GetPatientDTOObj =()=>{
         axios
            .get(`${baseUrl}hiv/patient/${props.patientObj.id}`,
@@ -162,14 +163,35 @@ const Pharmacy = (props) => {
            .then((response) => {
                const patientDTO= response.data.enrollment
                setEnrollDate (patientDTO && patientDTO.dateOfRegistration ? patientDTO.dateOfRegistration :"")
-               //setEacStatusObj(response.data);
-               console.log(enrollDate)
            })
            .catch((error) => {
            //console.log(error);
            });
        
     }
+    //Get the patient current regimen
+  const PatientCurrentRegimen =()=>{
+    axios
+       .get(`${baseUrl}hiv/art/pharmacy/patient/current-regimen/${props.patientObj.id}`,
+           { headers: {"Authorization" : `Bearer ${token}`} }
+       )
+       .then((response) => {
+           const currentRegimenObj= response.data
+           objValues.drugName=currentRegimenObj.regimenType.id
+           RegimenType(currentRegimenObj.regimenType.id)
+           objValues.regimenId=currentRegimenObj.id
+           //regimenName
+           RegimenDrug(currentRegimenObj.id)
+           //RegimenDrug(regimenId)
+           setShowRegimen(true)
+           //regimenDrug
+       })
+       .catch((error) => {
+       //console.log(error);
+       });
+   
+  }
+
     const calculate_age = dob => {
         var today = new Date();
         var dateParts = dob.split("-");
@@ -226,8 +248,8 @@ const Pharmacy = (props) => {
                 const artRegimen=response.data.filter((x)=> (x.id===1 || x.id===2 || x.id===14))
                 const tbRegimen=response.data.filter((x)=> (x.id===10 ))
                 const oIRegimen=response.data.filter((x)=> (x.id===9 || x.id===15 || x.id===8))
-                const othersRegimen=response.data.filter((x)=> (x.id!==1 || x.id===2 || x.id===3 || x.id===4 || x.id===14))
-                console.log(artRegimen)
+                const othersRegimen=response.data.filter((x)=> (x.id!==1 && x.id!==2 && x.id!==14 && x.id!==10 && x.id!==9 && x.id!==15 && x.id!==8 ))
+                //console.log(othersRegimen)
                 setAdultArtRegimenLine(artRegimen);
                setTbRegimenLine(tbRegimen);
                setOIRegimenLine(oIRegimen);
@@ -577,22 +599,22 @@ const Pharmacy = (props) => {
             RegimenDrug(objValues.regimenId)
         } 
     } 
-    const handlePrescriptionErrorCheckBox =e =>{
-        if(e.target.checked){
-            setObjValues ({...objValues,  prescriptionError: true});
-        }else{
-            setObjValues ({...objValues,  prescriptionError: false});
-        }
-    } 
-    const handleCheckBoxAdverseDrugReactions =e =>{
-        if(e.target.checked){
-            setShowAdr(true)
-            setObjValues ({...objValues,  adrScreened:true});
-        }else{
-            setShowAdr(false)
-            setObjValues ({...objValues,  adrScreened:false});
-        }
-    } 
+    // const handlePrescriptionErrorCheckBox =e =>{
+    //     if(e.target.checked){
+    //         setObjValues ({...objValues,  prescriptionError: true});
+    //     }else{
+    //         setObjValues ({...objValues,  prescriptionError: false});
+    //     }
+    // } 
+    // const handleCheckBoxAdverseDrugReactions =e =>{
+    //     if(e.target.checked){
+    //         setShowAdr(true)
+    //         setObjValues ({...objValues,  adrScreened:true});
+    //     }else{
+    //         setShowAdr(false)
+    //         setObjValues ({...objValues,  adrScreened:false});
+    //     }
+    // } 
     const handlRefillPeriod = e =>{
         let refillcount= ""
         if(e.target.value==="30"){
@@ -747,32 +769,12 @@ const Pharmacy = (props) => {
         .then(response => {
             setSaving(false);
             //props.PharmacyList();
+            objValues.visitDate=""
+            objValues.refillPeriod=""
+            objValues.nextAppointment=""
             toast.success("Pharmacy drug refill successful", {position: toast.POSITION.BOTTOM_CENTER});           
             props.setActiveContent({...props.activeContent, route:'pharmacy', activeTab:"history" })
-            setObjValues({
-                adherence: "",
-                adrScreened: "",
-                adverseDrugReactions: {},
-                dsdModel:"",
-                isDevolve:"",
-                extra: {},
-                facilityId: 2,
-                mmdType:null,
-                nextAppointment: null,
-                personId: props.patientObj.id,
-                refillPeriod:null,
-                prescriptionError: null,
-                regimenId: [],
-                regimenTypeId:"",
-                visitDate: null,
-                visitId: 0,
-                refill:"",
-                refillType:"",
-                switch:"",
-                substitute:"",
-                dsdModelType:"",
-                iptType:""
-            });
+            
             setRegimenDrugList([]);
             
         })
@@ -780,7 +782,10 @@ const Pharmacy = (props) => {
             setSaving(false);
             if(error.response && error.response.data){
                 let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
-                if(error.response.data.apierror && error.response.data.apierror.message!=="" && error.response.data.apierror && error.response.data.apierror.subErrors[0].message!==""){
+                console.log(errorMessage)
+                if(errorMessage!==""){
+                    toast.error(errorMessage, {position: toast.POSITION.BOTTOM_CENTER});
+                }else if(error.response.data.apierror && error.response.data.apierror.message!=="" && error.response.data.apierror && error.response.data.apierror.subErrors[0].message!==""){
                   toast.error(error.response.data.apierror.message + " : " + error.response.data.apierror.subErrors[0].field + " " + error.response.data.apierror.subErrors[0].message, {position: toast.POSITION.BOTTOM_CENTER});
                 }else{
                   toast.error(errorMessage, {position: toast.POSITION.BOTTOM_CENTER});
@@ -799,8 +804,9 @@ const Pharmacy = (props) => {
         const duration = (current && current.frequency ? current.frequency : "") * current.duration
         return prev + +duration
       }, 0);
-   console.log(showRegimen)  
-   console.log(showRegimenOI) 
+
+      
+
   return (      
       <div>
  

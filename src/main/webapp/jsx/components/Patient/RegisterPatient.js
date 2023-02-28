@@ -1076,7 +1076,7 @@ const UserRegistration = (props) => {
                                                     ) : "" }
                                                 </FormGroup>
                                             </div>
-                                            {/* <div className="form-group mb-3 col-md-4">
+                                            <div className="form-group mb-3 col-md-4">
                                                 <FormGroup>
                                                     <Label for="ninNumber">National Identity Number (NIN)  </Label>
                                                     <input
@@ -1091,7 +1091,7 @@ const UserRegistration = (props) => {
                                                    
                                                 </FormGroup>
                                             
-                                            </div> */}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1118,6 +1118,7 @@ const UserRegistration = (props) => {
                                                     masks={{ng: '...-...-....', at: '(....) ...-....'}}
                                                     value={basicInfo.phoneNumber}
                                                    onChange={(e)=>{checkPhoneNumberBasic(e,'phoneNumber')}}
+                                                   
                                                    //onChange={(e)=>{handleInputChangeBasic(e,'phoneNumber')}}
                                                 />
                                                 {errors.phoneNumber !=="" ? (
@@ -1178,6 +1179,7 @@ const UserRegistration = (props) => {
                                                     style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
                                                     value={basicInfo.countryId}
                                                     onChange={getStates}
+                                                    disabled
                                                     >
                                                     <option value={""}>Select</option>
                                                     {countries.map((value, index) => (
@@ -1543,7 +1545,7 @@ const UserRegistration = (props) => {
                                         onChange={handleInputChange}
                                         value={objValues.uniqueId}
                                         style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
-                                        disabled
+                                        
                                         
                                     />
                                     {errors.uniqueId !=="" ? (
@@ -1777,12 +1779,21 @@ const UserRegistration = (props) => {
                                         onChange={handleInputChange}
                                         style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
                                         >
-                                        <option value=""> Select</option>                    
-                                                {kP.map((value) => (
+                                        <option value=""> Select</option> 
+                                            {(basicInfo.sexId===377 || basicInfo.sexId==='377')    && ( <>      
+                                                {kP.filter((x)=>x.display!=='FSW').map((value) => (
                                                     <option key={value.id} value={value.id}>
                                                         {value.display}
                                                     </option>
                                                 ))}
+                                            </> )}
+                                            {(basicInfo.sexId===376 || basicInfo.sexId==='376')   && ( <>      
+                                                {kP.filter((x)=>x.display!=='MSM').map((value) => (
+                                                    <option key={value.id} value={value.id}>
+                                                        {value.display}
+                                                    </option>
+                                                ))}
+                                            </> )}
                                     </Input>
                                     {errors.targetGroupId !=="" ? (
                                         <span className={classes.error}>{errors.targetGroupId}</span>
