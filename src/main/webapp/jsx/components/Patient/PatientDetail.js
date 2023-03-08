@@ -134,7 +134,7 @@ function PatientCard(props) {
           {activeContent.route==='biometrics' &&(<Biometrics patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
           {activeContent.route==='consultation' &&( <ClinicVisit patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent} PatientCurrentObject={PatientCurrentObject}/>)}
           {/* {activeContent==='child-consultation' &&( <ChildConsultation patientObj={patientObj} setActiveContent={setActiveContent}/>)} */}
-          {activeContent.route==='pharmacy' &&( <Pharmacy patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
+          {activeContent.route==='pharmacy' &&( <Pharmacy patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent} PatientCurrentObject={PatientCurrentObject}/>)}
           {activeContent.route==='laboratory' &&( <Laboratory patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
           
           {activeContent.route==='counseling' &&( <EnhancedAdherenceCounseling patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}

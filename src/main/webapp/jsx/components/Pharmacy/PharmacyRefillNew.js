@@ -81,6 +81,8 @@ const Pharmacy = (props) => {
     const [showRegimen, setShowRegimen] = useState(false);
     const [showRegimenOI, setShowRegimenOI] = useState(false);
     const [showRegimenTB, setShowRegimenTB] = useState(false);
+    const [showRegimenOthers, setShowRegimenOthers] = useState(false);
+    
     const [regimen, setRegimen] = useState([]);
     const [regimenList, setRegimenList] = useState([]);
     const [eacStatusObj, setEacStatusObj] = useState()
@@ -97,6 +99,9 @@ const Pharmacy = (props) => {
     const [tbRegimenLine, setTbRegimenLine] = useState([]);
     //const [othersRegimenLine, setOthersRegimenLine] = useState([]);
     const [childRegimenLine, setChildRegimenLine] = useState([]);
+    const [childrenOI, setChildrenOI] = useState([]);
+    const [childrenTB, setChildrenTB] = useState([]);
+    const [otherDrugs, setOtherDrugs] = useState([]);
     const [iptType, setIPT_TYPE] = useState([]);
     //IPT_TYPE
     const [objValues, setObjValues] = useState({
@@ -143,7 +148,8 @@ const Pharmacy = (props) => {
         VitalSigns();
         AdultRegimenLine();
         IPT_TYPE();
-        PatientCurrentRegimen()
+        PatientCurrentRegimen();
+        OtherDrugs();
         setRegimenList(
             Object.entries(selectedOption && selectedOption.length>0? selectedOption : []).map(([key, value]) => ({
                 id: value.value,
@@ -215,7 +221,26 @@ const Pharmacy = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-              setChildRegimenLine(response.data);
+  
+              setChildRegimenLine(response.data.filter((x)=> (x.id===3 || x.id===4 )));
+              setChildrenOI(response.data.filter((x)=> (x.id===15 || x.id===9 || x.id===8)))
+              setChildrenTB(response.data.filter((x)=> (x.id===11 )))
+            })
+            .catch((error) => {
+            //console.log(error);
+            });        
+    }
+    //GET Other Drugd 
+    const OtherDrugs =()=>{
+        axios
+            .get(`${baseUrl}hiv/regimen/other/drugs`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+              setOtherDrugs(Object.entries(response.data).map(([key, value]) => ({
+                label: value.description,
+                value: value.id,
+                })));
             })
             .catch((error) => {
             //console.log(error);
@@ -248,7 +273,7 @@ const Pharmacy = (props) => {
                 const artRegimen=response.data.filter((x)=> (x.id===1 || x.id===2 || x.id===14))
                 const tbRegimen=response.data.filter((x)=> (x.id===10 ))
                 const oIRegimen=response.data.filter((x)=> (x.id===9 || x.id===15 || x.id===8))
-                const othersRegimen=response.data.filter((x)=> (x.id!==1 && x.id!==2 && x.id!==14 && x.id!==10 && x.id!==9 && x.id!==15 && x.id!==8 ))
+                //const othersRegimen=response.data.filter((x)=> (x.id!==1 && x.id!==2 && x.id!==14 && x.id!==10 && x.id!==9 && x.id!==15 && x.id!==8 ))
                 //console.log(othersRegimen)
                 setAdultArtRegimenLine(artRegimen);
                setTbRegimenLine(tbRegimen);
@@ -499,6 +524,41 @@ const Pharmacy = (props) => {
         }
         getCharacters(drugId);
     }
+    function RegimenDrugOther(id) {        
+        let drugId = id
+        async function getCharacters(drugId) {            
+            try{
+            const response = await axios.get(`${baseUrl}hiv/regimen/drugs/${id}`,
+            { headers: {"Authorization" : `Bearer ${token}`} })
+            if(response.data){ 
+                console.log(response.data)                  
+                setSelectedCombinedRegimen(response.data)         
+                const regimenName = otherDrugs.find((x) => { 
+                    if(x.value==parseInt(drugId)){
+                        console.log(x)
+                        return x
+                    }
+                })                           
+                
+                const drugObj=[{
+                    dispense:"",
+                    prescribed:"",
+                    dosage:"",
+                    freqency:"",
+                    duration:objValues.refillPeriod,
+                    name:regimenName.label,
+                    regimenId:regimenName.value,
+                    regimenName:regimenName.label,
+
+                }]                
+                setRegimenDrug(drugObj)
+            }
+            }catch(e) {
+
+            }
+        }
+        getCharacters(drugId);
+    }
     const handleInputChange = e => {
         if(e.target.name==='dsdModel' && e.target.value!==''){
             DsdModelType(e.target.value)
@@ -577,6 +637,17 @@ const Pharmacy = (props) => {
         }
         setObjValues ({...objValues,  [e.target.name]: e.target.value});
     }
+    const handleSelectedRegimenCombinationOthers = e => {
+        const regimenId= e.target.value
+        if(regimenId!==""){
+            RegimenDrugOther(regimenId)
+            setShowRegimenOthers(true)
+        }else{
+            //setRegimenTypeTB([])
+            setShowRegimenOthers(false)
+        }
+        setObjValues ({...objValues,  [e.target.name]: e.target.value});
+    }
 
     const handleCheckBoxRegimen =e =>{
         const originalCombination=regimenDrug
@@ -599,22 +670,7 @@ const Pharmacy = (props) => {
             RegimenDrug(objValues.regimenId)
         } 
     } 
-    // const handlePrescriptionErrorCheckBox =e =>{
-    //     if(e.target.checked){
-    //         setObjValues ({...objValues,  prescriptionError: true});
-    //     }else{
-    //         setObjValues ({...objValues,  prescriptionError: false});
-    //     }
-    // } 
-    // const handleCheckBoxAdverseDrugReactions =e =>{
-    //     if(e.target.checked){
-    //         setShowAdr(true)
-    //         setObjValues ({...objValues,  adrScreened:true});
-    //     }else{
-    //         setShowAdr(false)
-    //         setObjValues ({...objValues,  adrScreened:false});
-    //     }
-    // } 
+    
     const handlRefillPeriod = e =>{
         let refillcount= ""
         if(e.target.value==="30"){
@@ -748,6 +804,28 @@ const Pharmacy = (props) => {
      }
                   
     }
+    const addDrugOthers = e => {
+        if(validateDrugDispense()){
+         //console.log(regimenDrug)
+         setRegimenDrugList([...regimenDrugList, ...regimenDrug]) 
+         const drugObj=[{
+             dispense:"",
+             prescribed:"",
+             dosage:"",
+             freqency:"",
+             duration:"",
+             name:"",
+             regimenId:"",
+             regimenName:"",
+
+         }]                
+         setRegimenDrug([])
+         setShowRegimenOthers(false)
+     }else{
+         toast.error("All fields are required")
+     }
+                  
+    }
     
     /* Remove ADR  function **/
     const removeAttempt = index => {       
@@ -772,6 +850,7 @@ const Pharmacy = (props) => {
             objValues.visitDate=""
             objValues.refillPeriod=""
             objValues.nextAppointment=""
+            props.PatientCurrentObject();
             toast.success("Pharmacy drug refill successful", {position: toast.POSITION.BOTTOM_CENTER});           
             props.setActiveContent({...props.activeContent, route:'pharmacy', activeTab:"history" })
             
@@ -782,7 +861,7 @@ const Pharmacy = (props) => {
             setSaving(false);
             if(error.response && error.response.data){
                 let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
-                console.log(errorMessage)
+                //console.log(errorMessage)
                 if(errorMessage!==""){
                     toast.error(errorMessage, {position: toast.POSITION.BOTTOM_CENTER});
                 }else if(error.response.data.apierror && error.response.data.apierror.message!=="" && error.response.data.apierror && error.response.data.apierror.subErrors[0].message!==""){
@@ -1189,7 +1268,7 @@ const Pharmacy = (props) => {
                     >
                     <option value="">Select </option>
                                     
-                    {patientAge >5 &&  (
+                    {patientAge >15 &&  (
                           <>
                             {adultArtRegimenLine.map((value) => (
                               <option key={value.id} value={value.id}>
@@ -1407,12 +1486,24 @@ const Pharmacy = (props) => {
                     disabled={objValues.refillPeriod!==null? false : true}                 
                     >
                     <option value="">Select </option>
-                                    
+                    {patientAge >15 &&  (
+                        <>            
                         {oIRegimenLine.map((value) => (
                             <option key={value.id} value={value.id}>
                                 {value.description}
                             </option>
                         ))}
+                      </>
+                    )}
+                    {patientAge <=15 &&  (
+                    <>
+                    {childrenOI.map((value) => (
+                        <option key={value.id} value={value.id}>
+                        {value.description}
+                        </option>
+                    ))}
+                    </>
+                    )}
                 </Input>
                 
                 </FormGroup>
@@ -1622,6 +1713,7 @@ const Pharmacy = (props) => {
                 ""
                 }
             {/* End of List of OI Drug selected  */}
+            
             <LabelSui as='a' color='blue' style={{width:'106%', height:'35px'}} ribbon>
               <h4 style={{color:'#fff'}}>TB DRUG</h4>
             </LabelSui>
@@ -1639,12 +1731,25 @@ const Pharmacy = (props) => {
                     disabled={objValues.refillPeriod!==null? false : true}                 
                     >
                     <option value="">Select </option>
-                                    
+                    {patientAge >15 &&  (
+                        <>            
                         {tbRegimenLine.map((value) => (
                             <option key={value.id} value={value.id}>
                                 {value.description}
                             </option>
                         ))}
+                      </>
+                    )}
+                    {patientAge <=15 &&  (
+                    <>
+                    {childrenTB.map((value) => (
+                        <option key={value.id} value={value.id}>
+                        {value.description}
+                        </option>
+                    ))}
+                    </>
+                    )}
+                
                 </Input>
                 
                 </FormGroup>
@@ -1809,6 +1914,206 @@ const Pharmacy = (props) => {
                         <div className="row">
                         <div className="form-group mb-3 col-md-2 float-end">
                             <LabelSui as='a' color='black'  onClick={addDrugTB}  size='small' style={{ marginTop:35}}>
+                                <Icon name='plus' /> Add
+                            </LabelSui>
+                        </div>
+                        
+                        </div>
+                        
+                        </CardBody>
+                        </Card>
+                        <br/>
+                        <br/>
+                    </>                  
+                )
+                :
+                ""
+                }
+                        
+            <LabelSui as='a' color='blue' style={{width:'106%', height:'35px'}} ribbon>
+              <h4 style={{color:'#fff'}}>OTHER DRUG</h4>
+            </LabelSui>
+            <br/>
+            <div className="form-group mb-3 col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <FormGroup>
+                <Label >Drugs </Label>
+                
+                <Input
+                    type="select"
+                    name="regimenId"
+                    id="regimenId"
+                    value={objValues.regimenId}
+                    onChange={handleSelectedRegimenCombinationOthers} 
+                    style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                    disabled={objValues.refillPeriod!==null? false : true}                 
+                    >
+                    <option value="">Select </option>
+                                    
+                        {otherDrugs.map((value) => (
+                            <option key={value.id} value={value.value}>
+                                {value.label}
+                            </option>
+                        ))}
+                </Input>
+                
+                </FormGroup>
+            </div>
+            <div className="form-group mb-3 col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <FormGroup>
+                {/* <Label >OTHER</Label> */}
+                <Input
+                    type="select"
+                    name="regimen"
+                    id="regimen"
+                    hidden
+                    value={objValues.drugName}
+                    //onChange={handleSelectedRegimenTB}  
+                    style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                    disabled={objValues.refillPeriod!==null? false : true}                 
+                    >
+                    <option value="other" selected>Others </option>
+                   
+                </Input>
+                
+                </FormGroup>
+            </div>
+            
+            {showRegimenOthers && regimenDrug && regimenDrug.length >0 ? 
+                (
+                    <>
+                        <Card>
+                        <CardBody>
+                        <h4>Drugs Information </h4>
+                        <div className="form-check custom-checkbox ml-1 ">
+                        <input
+                        type="checkbox"
+                        className="form-check-input"                       
+                        name="noCombination"
+                        id="noCombination"
+                        onChange={handleCheckBoxRegimen}
+                        style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                        />
+                        <label
+                        className="form-check-label"
+                        htmlFor="basic_checkbox_1"
+                        >
+                        Has no combination
+                        </label>
+                    </div>
+                        <div className="row">
+                            <div className="form-group mb-3 col-md-4"  >Regimen Name </div>
+                            <div className="form-group mb-3 col-md-2"  >Frequency </div>
+                            <div className="form-group mb-3 col-md-2"  >Duration </div>
+                            <div className="form-group mb-3 col-md-2"  >Quantity Prescribed</div>
+                            <div className="form-group mb-3 col-md-2"  >Quantity Dispensed</div>
+                        </div>
+                        {regimenDrug.map((input, index) => (
+                            <>
+                                <div className="row">
+                                <div className="form-group mb-3 col-md-4"  >
+                                    <FormGroup>
+                                    <Label ><b>{input.name } {input.strength!=="" ? input.strength :""}</b></Label>
+                                    <Input
+                                        type="hidden"
+                                        name="id"
+                                        id="id"
+                                        value={input.id}  
+                                        onChange={event => handleFormChange(index, event)}                                    
+                                        required
+                                        >                                       
+                                    </Input>
+                                    </FormGroup>
+                                </div>
+
+                                <div className="form-group mb-3 col-md-2">
+                                    <FormGroup>
+                                    <Input
+                                        type="select"
+                                        name="frequency"
+                                        id="frequency"
+                                        //value={input.frequency}
+                                        style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                                        onChange={event => handleFormChange(index, event)}
+                                        required
+                                    >
+                                        <option value='' selected>Select</option>
+                                        <option value='1'>OD</option>
+                                        <option value='2'>BD</option>
+                                        <option value='4'>2BD</option>
+                                        <option value='6'>OD/BD</option>
+                                        <option value='8'>QDS</option>
+                                        <option value='10'>3ce/Week</option>
+                                    </Input>
+                                    {errors.frequency !=="" ? (
+                                    <span className={classes.error}>{errors.frequency}</span>
+                                    ) : "" }
+                                    </FormGroup>
+                                </div>
+                                <div className="form-group mb-3 col-md-2">
+                                    <FormGroup>
+                                    <Input
+                                        type="number"
+                                        name="duration"
+                                        id="duration"
+                                        value={input.duration}
+                                        style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                                        onChange={event => handleFormChange(index, event)}
+                                        //disabled
+                                        >
+                                        
+                                    </Input>
+                                    
+                                    </FormGroup>
+                                </div>
+                                <div className="form-group mb-3 col-md-2">
+                                    <FormGroup>
+                                    <Input
+                                        type="text"
+                                        name="prescribed"
+                                        id="prescribed"
+                                        value={(input.frequency && input.frequency!==""? input.frequency * input.duration : 0)}
+                                        style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                                        onChange={event => handleFormChange(index, event)}
+                                        disabled
+                                        >
+                                        
+                                    </Input>
+                                    
+                                    </FormGroup>
+                                </div>
+                                <div className="form-group mb-3 col-md-2">
+                                    <FormGroup>
+                                    <Input
+                                        type="number"
+                                        name="dispense"
+                                        id="dispense"
+                                        value={input.dispense}
+                                        style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                                        onChange={event => handleFormChange(index, event)}
+                                        required
+                                        >
+                                        
+                                    </Input>
+                                    {errors.dispense !=="" ? (
+                                    <span className={classes.error}>{errors.dispense}</span>
+                                    ) : "" }
+                                    </FormGroup>
+                                </div>
+                                </div>
+                                
+                            </>
+                        ))}
+                        <div className="row">
+                            <div className="form-group mb-3 col-md-4"  ></div>
+                            
+                            <div className="form-group mb-3 col-md-2"  ></div>
+                            <div className="form-group mb-3 col-md-2"  ></div>
+                            <div className="form-group mb-3 col-md-2"  ><b>Total : {TotalPrescribed}</b></div>
+                            <div className="form-group mb-3 col-md-2"  ><b>Total : {TotalDispensed}</b></div>
+                        </div>
+                        <div className="row">
+                        <div className="form-group mb-3 col-md-2 float-end">
+                            <LabelSui as='a' color='black'  onClick={addDrugOthers}  size='small' style={{ marginTop:35}}>
                                 <Icon name='plus' /> Add
                             </LabelSui>
                         </div>
