@@ -1198,7 +1198,7 @@ const Pharmacy = (props) => {
                             ))}
                           </>
                     )}
-                    {patientAge <=5 &&  (
+                    {patientAge <=15 &&  (
                         <>
                         {childRegimenLine.map((value) => (
                             <option key={value.id} value={value.id}>

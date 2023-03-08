@@ -122,7 +122,7 @@ const Patients = (props) => {
                 
             <MaterialTable
                 icons={tableIcons}
-                title= "Find Patient" 
+                title= "ART Patients" 
                 columns={[
                 // { title: " ID", field: "Id" },
                     {
@@ -144,9 +144,9 @@ const Patients = (props) => {
                         axios.get(`${baseUrl}hiv/patients?pageSize=${query.pageSize}&pageNo=${query.page}&searchValue=${query.search}`, { headers: {"Authorization" : `Bearer ${token}`} })
                             .then(response => response)
                             .then(result => {
-                                console.log(result.data.records.filter(x=> x.currentStatus=== "Not Enrolled" ))
+                                //console.log(result.data.records.filter(x=> x.currentStatus=== "Not Enrolled" ))
                                 resolve({
-                                    data: result.data.records.filter(x=> x.currentStatus=== "Not Enrolled" ).map((row) =>   ({
+                                    data: result.data.records.filter(x=> x.currentStatus!== "Not Enrolled" ).map((row) =>   ({
                                     name:row.currentStatus!== "Not Enrolled" ?
                                         (
                                         <>
