@@ -10,6 +10,6 @@
          version = 1)
  public class HivEnrollmentInstaller extends AcrossLiquibaseInstaller {
      public HivEnrollmentInstaller() {
-         super("classpath:installers/hiv/schema/schema.xml");
+         super("classpath:installers/schema/schema.xml");
      }
  }

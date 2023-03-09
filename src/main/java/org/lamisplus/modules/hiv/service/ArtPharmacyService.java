@@ -188,7 +188,7 @@ public class ArtPharmacyService {
 		Person person = getPerson(personId);
 		List<ArtPharmacy> existDrugRefills = artPharmacyRepository.getArtPharmaciesByVisitAndPerson(artPharmacy.getVisit(), person);
 		if (!existDrugRefills.isEmpty() && dto.getId() == null) {
-			throw new IllegalTypeException(ArtPharmacy.class, "visitId", "Regimen is already dispense for this visit " + dto.getVisitId());
+			throw new IllegalTypeException(ArtPharmacy.class, "visitId", "Regimen is already dispensed for this encounter " + dto.getVisitId());
 		}
 		Set<Regimen> regimenList = regimens.stream()
 				.map(regimenId -> regimenRepository.findById(regimenId.getRegimenId()).orElse(null))
