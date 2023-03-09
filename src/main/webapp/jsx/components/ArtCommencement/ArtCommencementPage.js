@@ -254,6 +254,7 @@ const ArtCommencement = (props) => {
                     
                     //const cd4CountObj=obj1.data.plan
                     objValues.cd4Count=obj1.data.plan.cd4Count
+                    console.log(obj1.data.plan)
                     objValues.cd4SemiQuantitative=obj1.data.plan.cd4SemiQuantitative
                     objValues.cd4FlowCyteometry=obj1.data.plan.cd4FlowCyteometry
                     objValues.whoStagingId = obj1.data.who.stage
@@ -593,7 +594,7 @@ const ArtCommencement = (props) => {
                     </FormGroup>
                     </div>
                     <div className="row">
-                        <div className="form-group  col-md-4">
+                        <div className="form-group  col-md-6">
                                 <FormGroup>
                                     <Label>CD4 Count </Label>
                                     <select
@@ -614,7 +615,7 @@ const ArtCommencement = (props) => {
                                 </FormGroup>
                         </div>
                         {objValues.cd4Count ==='Semi-Quantitative' && (
-                        <div className="form-group  col-md-4">
+                        <div className="form-group  col-md-6">
                             <FormGroup>
                                 <Label>CD4 Count Value(Semi-Quantitative)</Label>
                                 <select
@@ -627,8 +628,8 @@ const ArtCommencement = (props) => {
                                     disabled
                                 >
                                     <option value={""}></option>
-                                    <option value="Semi-Quantitative">{"<200"}</option>
-                                    <option value="Flow Cyteometry">{">=200"}</option>
+                                    <option value="<200">{"<200"}</option>
+                                    <option value=">=200">{">=200"}</option>
                                     
                                 </select>
                                 
@@ -839,7 +840,7 @@ const ArtCommencement = (props) => {
                                 onChange={handleInputChange}
                                 value="72"
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                                disabled
+                                //disabled
 
                             >
                                 <option value=""> Select</option>
@@ -1069,7 +1070,7 @@ const ArtCommencement = (props) => {
                       </div>
                      )}
                     <div className="row">
-                    <div className="form-group mb-3 col-md-8">
+                    <div className="form-group mb-3 col-md-12">
                         <FormGroup>
                         <Label >Blood Pressure</Label>
                         <InputGroup>

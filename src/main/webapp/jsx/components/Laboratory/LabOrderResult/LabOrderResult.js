@@ -473,22 +473,7 @@ const Laboratory = (props) => {
                     <Col md={4} className="form-group mb-3">
                         <FormGroup>
                             <Label for="testGroup">Select Test <span style={{ color:"red"}}> *</span></Label>
-                            {/* <Input
-                                type="select"
-                                name="labTestId"
-                                id="labTestId"
-                                value={tests.labTestId}
-                                onChange={handleInputChangeTest} 
-                                style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}                  
-                                >
-                                <option value="">Select </option>
-                                                
-                                    {test.map((value) => (
-                                        <option key={value.id} value={value.id}>
-                                            {value.labTestName}
-                                        </option>
-                                    ))}
-                            </Input> */}
+                           
                             <Select
                                 //value={selectedOption}
                                 onChange={handleInputChangeObject}
