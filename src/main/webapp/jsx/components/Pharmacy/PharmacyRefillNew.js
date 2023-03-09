@@ -879,7 +879,7 @@ const Pharmacy = (props) => {
             objValues.visitDate=""
             objValues.refillPeriod=""
             objValues.nextAppointment=""
-            props.PatientCurrentObject();
+            //props.PatientCurrentObject();
             toast.success("Pharmacy drug refill successful", {position: toast.POSITION.BOTTOM_CENTER});           
             props.setActiveContent({...props.activeContent, route:'pharmacy', activeTab:"history" })
             
