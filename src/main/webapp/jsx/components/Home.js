@@ -15,7 +15,7 @@ const divStyle = {
 
 const Home = () => {
     const [key, setKey] = useState('art-patients');
-
+  // tab
 
   return (
     <Fragment>  
@@ -53,7 +53,7 @@ const Home = () => {
                     <Dashboard />
                   </Tab>
                   {/* <Tab eventKey="art-patients" title="ART Patients">                   
-                    <ArtPatients />
+                    <ArtPatients  />
                   </Tab> */}
                   {/* <Tab eventKey="visualization" title="Data Visualisation">                   
                     <VisualisationHome />
