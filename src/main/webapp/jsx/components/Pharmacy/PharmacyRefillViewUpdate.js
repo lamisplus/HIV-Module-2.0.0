@@ -67,7 +67,7 @@ const Pharmacy = (props) => {
     const enrollDate = patientObj && patientObj.artCommence ? patientObj.artCommence.visitDate : null
     const classes = useStyles();
     const [saving, setSaving] = useState(false);
-    const [selectedOption, setSelectedOption] = useState([]);
+    //const [selectedOption, setSelectedOption] = useState([]);
     const [selectedOptionAdr, setSelectedOptionAdr] = useState();
     const [prepSideEffect, setPrepSideEffect] = useState([]);
     const [mmdType, setmmdType]=useState();
@@ -93,6 +93,9 @@ const Pharmacy = (props) => {
     const [childRegimenLine, setChildRegimenLine] = useState([]);
     const [iptType, setIPT_TYPE] = useState([]);
     const [showIptType, setIptType] = useState(false);
+    const [childrenOI, setChildrenOI] = useState([]);
+    const [childrenTB, setChildrenTB] = useState([]);
+    const [otherDrugs, setOtherDrugs] = useState([]);
     const [objValues, setObjValues] = useState({
             adherence: "",
             adrScreened: "",
@@ -142,6 +145,7 @@ const Pharmacy = (props) => {
         IPT_TYPE();
         VitalSigns();
         ChildRegimenLine();
+        OtherDrugs();
         if(props.activeContent && props.activeContent.actionType==='view'){
             setDisabledField(true)
         } 
@@ -159,6 +163,22 @@ const Pharmacy = (props) => {
             //console.log(error);
             });
         
+    }
+    //GET Other Drugd 
+    const OtherDrugs =()=>{
+        axios
+            .get(`${baseUrl}hiv/regimen/other/drugs`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+              setOtherDrugs(Object.entries(response.data).map(([key, value]) => ({
+                label: value.description,
+                value: value.id,
+                })));
+            })
+            .catch((error) => {
+            //console.log(error);
+            });        
     }
     const calculate_age = dob => {
         var today = new Date();
@@ -183,7 +203,9 @@ const Pharmacy = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-              setChildRegimenLine(response.data);
+                setChildRegimenLine(response.data.filter((x)=> (x.id===3 || x.id===4 )));
+                setChildrenOI(response.data.filter((x)=> (x.id===15 || x.id===9 || x.id===8)))
+                setChildrenTB(response.data.filter((x)=> (x.id===11 )))
             })
             .catch((error) => {
             //console.log(error);
@@ -467,6 +489,40 @@ const Pharmacy = (props) => {
         }
         getCharacters(drugId);
     }
+    function RegimenDrugOther(id) {        
+        let drugId = id
+        async function getCharacters(drugId) {            
+            try{
+            const response = await axios.get(`${baseUrl}hiv/regimen/drugs/${id}`,
+            { headers: {"Authorization" : `Bearer ${token}`} })
+            if(response.data){                   
+                setSelectedCombinedRegimen(response.data)         
+                const regimenName = otherDrugs.find((x) => { 
+                    if(x.value==parseInt(drugId)){
+                        console.log(x)
+                        return x
+                    }
+                })                           
+                
+                const drugObj=[{
+                    dispense:"",
+                    prescribed:"",
+                    dosage:"",
+                    freqency:"",
+                    duration:objValues.refillPeriod,
+                    name:regimenName.label,
+                    regimenId:regimenName.value,
+                    regimenName:regimenName.label,
+
+                }]                
+                setRegimenDrug(drugObj)
+            }
+            }catch(e) {
+
+            }
+        }
+        getCharacters(drugId);
+    }
     const handleInputChange = e => {
         if(e.target.name==='dsdModel' && e.target.value!==''){
             DsdModelType(e.target.value)
@@ -543,7 +599,17 @@ const Pharmacy = (props) => {
         }
         setObjValues ({...objValues,  [e.target.name]: e.target.value});
     }
-
+    const handleSelectedRegimenCombinationOthers = e => {
+        const regimenId= e.target.value
+        if(regimenId!==""){
+            RegimenDrugOther(regimenId)
+            //setShowRegimenOthers(true)
+        }else{
+            //setRegimenTypeTB([])
+            //setShowRegimenOthers(false)
+        }
+        setObjValues ({...objValues,  [e.target.name]: e.target.value});
+    }
     const handleCheckBoxRegimen =e =>{
         const originalCombination=regimenDrug
         if(e.target.checked){
@@ -563,22 +629,22 @@ const Pharmacy = (props) => {
             RegimenDrug(objValues.regimenId)
         } 
     } 
-    const handlePrescriptionErrorCheckBox =e =>{
-        if(e.target.checked){
-            setObjValues ({...objValues,  prescriptionError: true});
-        }else{
-            setObjValues ({...objValues,  prescriptionError: false});
-        }
-    } 
-    const handleCheckBoxAdverseDrugReactions =e =>{
-        if(e.target.checked){
-            setShowAdr(true)
-            setObjValues ({...objValues,  adrScreened:true});
-        }else{
-            setShowAdr(false)
-            setObjValues ({...objValues,  adrScreened:false});
-        }
-    } 
+    // const handlePrescriptionErrorCheckBox =e =>{
+    //     if(e.target.checked){
+    //         setObjValues ({...objValues,  prescriptionError: true});
+    //     }else{
+    //         setObjValues ({...objValues,  prescriptionError: false});
+    //     }
+    // } 
+    // const handleCheckBoxAdverseDrugReactions =e =>{
+    //     if(e.target.checked){
+    //         setShowAdr(true)
+    //         setObjValues ({...objValues,  adrScreened:true});
+    //     }else{
+    //         setShowAdr(false)
+    //         setObjValues ({...objValues,  adrScreened:false});
+    //     }
+    // } 
     const handlRefillPeriod = e =>{
         let refillcount= ""
         if(e.target.value==="30"){
@@ -659,7 +725,7 @@ const Pharmacy = (props) => {
         .then(response => {
             setSaving(false);
             //props.PharmacyList();
-            props.PatientCurrentObject()
+            props.PatientCurrentObject();
             toast.success("Pharmacy drug refill successful", {position: toast.POSITION.BOTTOM_CENTER});           
             props.setActiveContent({...props.activeContent, route:'pharmacy', activeTab:"history" })
             setObjValues({
@@ -1111,7 +1177,7 @@ const Pharmacy = (props) => {
                     disabled={objValues.refillPeriod!==null? false : true}                 
                     >
                     <option value="">Select </option>
-                    {patientAge >5 &&  (
+                    {patientAge >15 &&  (
                           <>
                             {adultArtRegimenLine.map((value) => (
                               <option key={value.id} value={value.id}>
@@ -1175,12 +1241,25 @@ const Pharmacy = (props) => {
                     disabled={objValues.refillPeriod!==null? false : true}                 
                     >
                     <option value="">Select </option>
-                                    
+
+                        {patientAge >15 &&  (
+                        <>            
                         {oIRegimenLine.map((value) => (
                             <option key={value.id} value={value.id}>
                                 {value.description}
                             </option>
                         ))}
+                      </>
+                    )}
+                    {patientAge <=15 &&  (
+                    <>
+                    {childrenOI.map((value) => (
+                        <option key={value.id} value={value.id}>
+                        {value.description}
+                        </option>
+                    ))}
+                    </>
+                    )}
                 </Input>
                 
                 </FormGroup>
@@ -1250,12 +1329,24 @@ const Pharmacy = (props) => {
                     disabled={objValues.refillPeriod!==null? false : true}                 
                     >
                     <option value="">Select </option>
-                                    
+                        {patientAge >15 &&  (
+                        <>            
                         {tbRegimenLine.map((value) => (
                             <option key={value.id} value={value.id}>
                                 {value.description}
                             </option>
                         ))}
+                      </>
+                    )}
+                    {patientAge <=15 &&  (
+                    <>
+                    {childrenTB.map((value) => (
+                        <option key={value.id} value={value.id}>
+                        {value.description}
+                        </option>
+                    ))}
+                    </>
+                    )}
                 </Input>
                 
                 </FormGroup>
@@ -1284,6 +1375,54 @@ const Pharmacy = (props) => {
                 
                 </FormGroup>
             </div>
+            <LabelSui as='a' color='blue' style={{width:'106%', height:'35px'}} ribbon>
+              <h4 style={{color:'#fff'}}>OTHER DRUG</h4>
+            </LabelSui>
+            <br/>
+            <div className="form-group mb-3 col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <FormGroup>
+                <Label >Drugs </Label>
+                
+                <Input
+                    type="select"
+                    name="regimenId"
+                    id="regimenId"
+                    value={objValues.regimenId}
+                    onChange={handleSelectedRegimenCombinationOthers} 
+                    style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                    disabled={objValues.refillPeriod!==null? false : true}                 
+                    >
+                    <option value="">Select </option>
+                                    
+                        {otherDrugs.map((value) => (
+                            <option key={value.id} value={value.value}>
+                                {value.label}
+                            </option>
+                        ))}
+                </Input>
+                
+                </FormGroup>
+            </div>
+            <div className="form-group mb-3 col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <FormGroup>
+                {/* <Label >OTHER</Label> */}
+                <Input
+                    type="select"
+                    name="regimen"
+                    id="regimen"
+                    hidden
+                    value={objValues.drugName}
+                    //onChange={handleSelectedRegimenTB}  
+                    style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                    disabled={objValues.refillPeriod!==null? false : true}                 
+                    >
+                    <option value="other" selected>Others </option>
+                   
+                </Input>
+                
+                </FormGroup>
+            </div>
+            
             {regimenDrug && regimenDrug.length >0 ? 
 
                 (

@@ -141,7 +141,7 @@ const UserRegistration = (props) => {
     patientId = locationState ? locationState.patientId : null;
     patientObj = locationState ? locationState.patientObj : {}; 
     const [basicInfo, setBasicInfo]= useState(patientObj)
-    objValues.uniqueId=basicInfo.hospitalNumber
+    //objValues.uniqueId=basicInfo.hospitalNumber
     useEffect(() => {        
         CareEntryPoint();
         SourceReferral();
