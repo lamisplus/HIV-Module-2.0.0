@@ -440,7 +440,7 @@ const EAC = (props) => {
                                 id="dateSwitched"
                                 value={switchs.dateSwitched}
                                 onChange={handleInputSwitchChange}
-                                // min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
+                                min= {moment(currentViralLoad && currentViralLoad.dateResultReceived ? currentViralLoad.dateResultReceived :"").format("YYYY-MM-DD") }
                                 max= {moment(new Date()).format("YYYY-MM-DD") }
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 required
@@ -518,7 +518,7 @@ const EAC = (props) => {
                                 id="dateSubstituted"
                                 value={Substitutes.dateSubstituted}
                                 onChange={handleInputSubstituteChange}
-                                // min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
+                                min= {moment(currentViralLoad && currentViralLoad.dateResultReceived ? currentViralLoad.dateResultReceived :"").format("YYYY-MM-DD") }
                                 max= {moment(new Date()).format("YYYY-MM-DD") }
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 required
@@ -553,7 +553,7 @@ const EAC = (props) => {
                                 id="outComeDate"
                                 value={objValues.outComeDate}
                                 onChange={handleInputChange}
-                                min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
+                                min= {moment(currentViralLoad && currentViralLoad.dateResultReceived ? currentViralLoad.dateResultReceived :"").format("YYYY-MM-DD") }
                                 max= {moment(new Date()).format("YYYY-MM-DD") }
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 required
@@ -564,6 +564,7 @@ const EAC = (props) => {
                             </FormGroup>
                         </div>   
                         </div>
+                        <div className="row">
                         <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label for="">Comments</Label>
@@ -571,13 +572,14 @@ const EAC = (props) => {
                                 type="textarea"
                                 name="comment"
                                 id="comment"
+                  
                                 value={objValues.comment}
                                 onChange={handleInputChange}
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                             />
                             </FormGroup>
                         </div>
-                    
+                        </div>
                     {saving ? <Spinner /> : ""}
                     <br />
                 

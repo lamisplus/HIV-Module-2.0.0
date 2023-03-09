@@ -103,6 +103,8 @@ const Pharmacy = (props) => {
     const [childrenTB, setChildrenTB] = useState([]);
     const [otherDrugs, setOtherDrugs] = useState([]);
     const [iptType, setIPT_TYPE] = useState([]);
+    const [regimenTypeOther, setRegimenTypeOther] = useState([]);
+    //
     //IPT_TYPE
     const [objValues, setObjValues] = useState({
             adherence: "",
@@ -524,6 +526,24 @@ const Pharmacy = (props) => {
         }
         getCharacters(drugId);
     }
+    function RegimenTypeOther(id) {
+        async function getCharacters() {
+            try{
+            const response = await axios.get(`${baseUrl}hiv/regimen/types/${id}`,
+            { headers: {"Authorization" : `Bearer ${token}`} })
+            if(response.data.length >0){
+                setRegimenTypeOther(
+                    Object.entries(response.data).map(([key, value]) => ({
+                    label: value.description,
+                    value: value.id,
+                    })))
+            }
+            }catch(e) {
+
+            }
+        }
+        getCharacters();
+    }
     function RegimenDrugOther(id) {        
         let drugId = id
         async function getCharacters(drugId) {            
@@ -533,9 +553,9 @@ const Pharmacy = (props) => {
             if(response.data){ 
                 console.log(response.data)                  
                 setSelectedCombinedRegimen(response.data)         
-                const regimenName = otherDrugs.find((x) => { 
+                const regimenName = regimenTypeOther.find((x) => { 
                     if(x.value==parseInt(drugId)){
-                        console.log(x)
+                        //console.log(x)
                         return x
                     }
                 })                           
@@ -601,6 +621,15 @@ const Pharmacy = (props) => {
             setRegimenTypeTB([])
         }
     }
+    const handleSelectedRegimenOther = e => {
+        const regimenId= e.target.value
+        //console.log(regimenId)
+        if(regimenId!==""){
+            RegimenTypeOther(regimenId)
+        }else{
+            setRegimenTypeTB([])
+        }
+    }
     const handleSelectedRegimenCombination = e => {
         const regimenId= e.target.value
         //console.log(regimenId)
@@ -643,7 +672,7 @@ const Pharmacy = (props) => {
             RegimenDrugOther(regimenId)
             setShowRegimenOthers(true)
         }else{
-            //setRegimenTypeTB([])
+            setRegimenTypeOther([])
             setShowRegimenOthers(false)
         }
         setObjValues ({...objValues,  [e.target.name]: e.target.value});
@@ -1936,14 +1965,14 @@ const Pharmacy = (props) => {
             <br/>
             <div className="form-group mb-3 col-xs-6 col-sm-6 col-md-6 col-lg-6">
                 <FormGroup>
-                <Label >Drugs </Label>
+                <Label >Other Drugs </Label>
                 
                 <Input
                     type="select"
-                    name="regimenId"
-                    id="regimenId"
-                    value={objValues.regimenId}
-                    onChange={handleSelectedRegimenCombinationOthers} 
+                    name="regimen"
+                    id="regimen"
+                    value={objValues.drugName}
+                    onChange={handleSelectedRegimenOther} 
                     style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                     disabled={objValues.refillPeriod!==null? false : true}                 
                     >
@@ -1960,19 +1989,22 @@ const Pharmacy = (props) => {
             </div>
             <div className="form-group mb-3 col-xs-6 col-sm-6 col-md-6 col-lg-6">
                 <FormGroup>
-                {/* <Label >OTHER</Label> */}
+                <Label >Drug</Label>
                 <Input
                     type="select"
-                    name="regimen"
-                    id="regimen"
-                    hidden
-                    value={objValues.drugName}
-                    //onChange={handleSelectedRegimenTB}  
+                    name="regimenId"
+                    id="regimenId"
+                    value={objValues.regimenId}
+                    onChange={handleSelectedRegimenCombinationOthers}   
                     style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                     disabled={objValues.refillPeriod!==null? false : true}                 
                     >
-                    <option value="other" selected>Others </option>
-                   
+                    <option value="" >Select </option>
+                    {regimenTypeOther.map((value) => (
+                            <option key={value.id} value={value.value}>
+                                {value.label}
+                            </option>
+                        ))}
                 </Input>
                 
                 </FormGroup>

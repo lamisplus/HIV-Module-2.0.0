@@ -146,7 +146,7 @@ const Patients = (props) => {
                             .then(result => {
                                 //console.log(result.data.records.filter(x=> x.currentStatus=== "Not Enrolled" ))
                                 resolve({
-                                    data: result.data.records.filter(x=> x.currentStatus=== "Not Enrolled" ).map((row) =>   ({
+                                    data: result.data.records.map((row) =>   ({
                                     name:row.currentStatus!== "Not Enrolled" ?
                                         (
                                         <>

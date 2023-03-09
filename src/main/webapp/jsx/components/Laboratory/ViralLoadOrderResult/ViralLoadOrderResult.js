@@ -64,7 +64,8 @@ const Laboratory = (props) => {
     let visitId=""
     //let labNumberOption=""
     const patientObj = props.patientObj;
-    const enrollDate = patientObj && patientObj.artCommence ? patientObj.artCommence.visitDate : null
+    //const enrollDate = patientObj && patientObj.artCommence ? patientObj.artCommence.visitDate : null
+    const [enrollDate, setEnrollDate] = useState("");
     const classes = useStyles();
     const [saving, setSaving] = useState(false);
     const [errors, setErrors] = useState({});
@@ -114,7 +115,7 @@ const Laboratory = (props) => {
             viralLoadIndication: ""
     })
     useEffect(() => {
-           
+        GetPatientDTOObj()   
         CheckLabModule();
         ViraLoadIndication();
         LabTestDetail();
@@ -136,6 +137,22 @@ const Laboratory = (props) => {
             });
         
     }
+    const GetPatientDTOObj =()=>{
+        axios
+           .get(`${baseUrl}hiv/patient/${props.patientObj.id}`,
+               { headers: {"Authorization" : `Bearer ${token}`} }
+           )
+           .then((response) => {
+               const patientDTO= response.data.enrollment
+               setEnrollDate (patientDTO && patientDTO.dateOfRegistration ? patientDTO.dateOfRegistration :"")
+               //setEacStatusObj(response.data);
+               console.log(enrollDate)
+           })
+           .catch((error) => {
+           //console.log(error);
+           });
+       
+} 
     //Get list of LabNumbers
     const PCRLabList =()=>{
         axios
@@ -544,7 +561,7 @@ const Laboratory = (props) => {
                                         id="dateOrderBy"
                                         value={tests.dateOrderBy}
                                         onChange={handleInputChange}
-                                        min={enrollDate}
+                                        min={moment(enrollDate).format("YYYY-MM-DD")}
                                         max= {moment(new Date()).format("YYYY-MM-DD") }
                                         style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                         required
