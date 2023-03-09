@@ -106,8 +106,6 @@ const BasicInfo = (props) => {
     }, [props.observation.data]);
     const [planArt, setPlanArt] = useState({previousArvExposure:"", reasonForChange:"", reasonForChangeOther:""});
     const [enroll, setEnrollIn] = useState({enrollIn:""});
-    const [hidecd4CountQuantitative, setHidecd4CountQuantitative] = useState(false);
-    const [hidecd4CountFlow, setHidecd4CountFlow] = useState(false);
     const [plan, setPlan] = useState({  lab_evaluation:"", 
                                         cd4Count:"",
                                         cd4SemiQuantitative :"",
@@ -132,20 +130,16 @@ const BasicInfo = (props) => {
         
     }
     const handlePlan =e =>{
-        if(e.target.name==='cd4Count' && e.target.value==='Semi-Quantitative'){ 
-                        
-                setHidecd4CountQuantitative(true)
-        }else{
-            setHidecd4CountQuantitative(false)
+        if(e.target.name==='cd4FlowCyteometry' && plan.cd4SemiQuantitative!==""){ 
+            plan.cd4SemiQuantitative=""
         }
-        if(e.target.name==='cd4Count' && e.target.value==='Flow Cyteometry'){          
-            setHidecd4CountFlow(true)
-        }else{
-            setHidecd4CountFlow(false)
+        if(e.target.name==='cd4SemiQuantitative' && plan.cd4FlowCyteometry!==""){          
+            plan.cd4FlowCyteometry=""
         }
         setPlan({...plan, [e.target.name]: e.target.value})
         //console.log(plan)
     }
+    console.log(plan)
     const handleEnroll =e =>{
         setEnrollIn({...enroll, [e.target.name]: e.target.value})
         
@@ -311,8 +305,8 @@ return (
                                         style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
                                     >
                                         <option value={""}></option>
-                                        <option value="Semi-Quantitative">{"<200"}</option>
-                                        <option value="Flow Cyteometry">{">=200"}</option>
+                                        <option value="<200">{"<200"}</option>
+                                        <option value=">=200">{">=200"}</option>
                                         
                                     </select>
                                     
