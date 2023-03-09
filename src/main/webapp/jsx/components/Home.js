@@ -14,7 +14,7 @@ const divStyle = {
 };
 
 const Home = () => {
-    const [key, setKey] = useState('art-patients');
+    const [key, setKey] = useState('home');
   // tab
 
   return (
