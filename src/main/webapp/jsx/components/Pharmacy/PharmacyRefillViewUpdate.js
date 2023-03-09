@@ -753,7 +753,7 @@ const Pharmacy = (props) => {
         .then(response => {
             setSaving(false);
             //props.PharmacyList();
-            props.PatientCurrentObject();
+            //props.PatientCurrentObject();
             toast.success("Pharmacy drug refill successful", {position: toast.POSITION.BOTTOM_CENTER});           
             props.setActiveContent({...props.activeContent, route:'pharmacy', activeTab:"history" })
             setObjValues({
