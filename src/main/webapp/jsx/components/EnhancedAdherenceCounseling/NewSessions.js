@@ -148,6 +148,7 @@ const NEWEACSESSION = (props) => {
                setEacStatusObj(response.data);
                const newEacDate= response.data && response.data.eacsession && response.data.eacsession!=='Default' ? moment(response.data.eacsessionDate, "YYYY-MM-DD").add(30, 'days').calendar() : null
                //console.log(moment(response.data.eacsessionDate, "YYYY-MM-DD").add(30, 'days').toDate())
+               console.log(newEacDate)
                setLastEACDate(newEacDate) 
                setEnrollDate(props.activeContent.obj.dateOfLastViralLoad)
            })
