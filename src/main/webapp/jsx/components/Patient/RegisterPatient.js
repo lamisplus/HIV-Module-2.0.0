@@ -1781,14 +1781,14 @@ const UserRegistration = (props) => {
                                         >
                                         <option value=""> Select</option> 
                                             {(basicInfo.sexId===377 || basicInfo.sexId==='377')    && ( <>      
-                                                {kP.filter((x)=>x.display!=='FSW').map((value) => (
+                                                {kP.filter((x)=>x.display!=='MSM').map((value) => (
                                                     <option key={value.id} value={value.id}>
                                                         {value.display}
                                                     </option>
                                                 ))}
                                             </> )}
                                             {(basicInfo.sexId===376 || basicInfo.sexId==='376')   && ( <>      
-                                                {kP.filter((x)=>x.display!=='MSM').map((value) => (
+                                                {kP.filter((x)=>x.display!=='FSW').map((value) => (
                                                     <option key={value.id} value={value.id}>
                                                         {value.display}
                                                     </option>
