@@ -1481,7 +1481,7 @@ const ClinicVisit = (props) => {
                     <option value="select">Select </option>
 
                     {pregnancyStatus.map((value) => (
-                            <option key={value.code} value={value.code}>
+                            <option key={value.code} value={value.display}>
                                 {value.display}
                             </option>
                         ))}

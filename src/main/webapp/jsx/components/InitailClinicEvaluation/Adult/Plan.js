@@ -114,7 +114,7 @@ const BasicInfo = (props) => {
                                         adherence:"", 
                                         cervical:"", 
                                         cryptococcal:"",
-                                        cd4FlowCyteometry :"",
+                                        cd4FlowCytometry :"",
                                         previous_arv_exposure:"", 
                                         tb_investigation:"", 
                                         expert:"", 
@@ -129,11 +129,11 @@ const BasicInfo = (props) => {
         
     }
     const handlePlan =e =>{
-        if(e.target.name==='cd4FlowCyteometry' && plan.cd4SemiQuantitative!==""){ 
+        if(e.target.name==='cd4FlowCytometry' && plan.cd4SemiQuantitative!==""){ 
             plan.cd4SemiQuantitative=""
         }
-        if(e.target.name==='cd4SemiQuantitative' && plan.cd4FlowCyteometry!==""){          
-            plan.cd4FlowCyteometry=""
+        if(e.target.name==='cd4SemiQuantitative' && plan.cd4FlowCytometry!==""){          
+            plan.cd4FlowCytometry=""
         }
         setPlan({...plan, [e.target.name]: e.target.value})
         //console.log(plan)
@@ -302,9 +302,9 @@ return (
                                 <Input
                                     type="number"
                                     min={1}
-                                    name="cd4FlowCyteometry"
-                                    id="cd4FlowCyteometry"
-                                    value={plan.cd4FlowCyteometry}
+                                    name="cd4FlowCytometry"
+                                    id="cd4FlowCytometry"
+                                    value={plan.cd4FlowCytometry}
                                     onChange={handlePlan}
                                     style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                     
