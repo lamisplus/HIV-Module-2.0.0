@@ -77,18 +77,20 @@ public class ArtPharmacyService {
 	private void checkIfSelectRegimenIsAlreadyDispensed(RegisterArtPharmacyDTO dto) {
 		Set<RegimenRequestDto> regimens = dto.getRegimen();
 		if(!regimens.isEmpty()){
-			Person person = getPerson(dto.getPersonId());
+			System.out.println("I am checking if a the give regimen exist");			Person person = getPerson(dto.getPersonId());
 			regimens.forEach(regimen -> {
 				LocalDate visitDate = dto.getVisitDate();
 				if(visitDate != null){
 					Long count = artPharmacyRepository.getCountForAnAlreadyDispenseRegimen(person.getUuid(),
 							regimen.getRegimenId(),
 							visitDate);
+					System.out.println("already exist: " + count);
 					if(count != null) throw new RecordExistException(Regimen.class, "name", regimen.getRegimenName() + " is already dispensed on this " +
 							"date "+ visitDate);
 				}
 			});
 		}
+		System.out.println("I am checking completed");
 	}
 	
 	
@@ -98,7 +100,6 @@ public class ArtPharmacyService {
 						.filter(e -> e.getStatus().equalsIgnoreCase("PENDING")
 								&& !(e.getServiceCode().equalsIgnoreCase("hiv-code")))
 						.collect(Collectors.toList());
-		//log.info("nonHIVEncounters {}", nonHIVEncounters + " visit: " + visit.getId());
 		if (nonHIVEncounters.isEmpty()) {
 			visitService.checkOutVisitById(visit.getId());
 			LocalDateTime visitStartDate = visit.getVisitStartDate();

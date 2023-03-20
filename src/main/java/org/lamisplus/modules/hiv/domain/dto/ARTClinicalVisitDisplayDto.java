@@ -1,7 +1,6 @@
 package org.lamisplus.modules.hiv.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +28,7 @@ public class ARTClinicalVisitDisplayDto implements Serializable {
 	@Convert(converter = LocalDateConverter.class)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate visitDate;
-	private Long cd4;
+	private String cd4;
 	private Long cd4Percentage;
 	private Boolean isCommencement;
 	private Long functionalStatusId;

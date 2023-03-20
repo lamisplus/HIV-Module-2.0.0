@@ -3,7 +3,6 @@ package org.lamisplus.modules.hiv.domain.entity;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.*;
 import org.hibernate.annotations.Type;
-import org.jooq.JSONB;
 import org.lamisplus.modules.patient.domain.entity.Person;
 import org.lamisplus.modules.patient.domain.entity.Visit;
 import org.lamisplus.modules.triage.domain.entity.VitalSign;
@@ -33,7 +32,7 @@ public class ARTClinical extends HivAuditEntity implements Serializable, Persist
 	private LocalDate visitDate;
 	
 	@Column(name = "cd_4")
-	private Long cd4;
+	private String cd4;
 	
 	@Column(name = "cd_4_percentage")
 	private Long cd4Percentage;
