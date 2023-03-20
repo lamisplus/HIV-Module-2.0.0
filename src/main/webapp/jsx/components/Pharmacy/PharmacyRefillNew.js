@@ -879,6 +879,20 @@ const Pharmacy = (props) => {
             objValues.visitDate=""
             objValues.refillPeriod=""
             objValues.nextAppointment=""
+            objValues.adherence=""
+            objValues.adrScreened= ""
+            objValues.dsdModel=""
+            objValues.isDevolve=""
+            objValues.mmdType=""
+            objValues.prescriptionError=""
+            objValues.visitId=""
+            objValues.refill=""
+            objValues.refillType=""
+            objValues.switch=""
+            objValues.substitute=""
+            objValues.dsdModelType=""
+            objValues.iptType=""
+            objValues.visitType=""
             //props.PatientCurrentObject();
             toast.success("Pharmacy drug refill successful", {position: toast.POSITION.BOTTOM_CENTER});           
             props.setActiveContent({...props.activeContent, route:'pharmacy', activeTab:"history" })

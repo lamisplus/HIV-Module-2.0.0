@@ -128,7 +128,7 @@ const ArtCommencement = (props) => {
                                                 dateOfViralLoadAtStartOfArt: null,
                                                 cd4Count:"",
                                                 cd4SemiQuantitative:"",
-                                                cd4FlowCyteometry:""                                                  
+                                                cd4FlowCytometry:""                                                  
 
                                                 });
 
@@ -256,7 +256,7 @@ const ArtCommencement = (props) => {
                     objValues.cd4Count=obj1.data.plan.cd4Count
                     console.log(obj1.data.plan)
                     objValues.cd4SemiQuantitative=obj1.data.plan.cd4SemiQuantitative
-                    objValues.cd4FlowCyteometry=obj1.data.plan.cd4FlowCyteometry
+                    objValues.cd4FlowCytometry=obj1.data.plan.cd4FlowCytometry
                     objValues.whoStagingId = obj1.data.who.stage
                     objValues.regimenTypeId=obj1.data.regimen.regimenLine
                     RegimenType(obj1.data.regimen.regimenLine)
@@ -298,7 +298,7 @@ const ArtCommencement = (props) => {
         
         }
         //Get list of PREGANACY_STATUS
-      const PreganacyStatus =()=>{
+        const PreganacyStatus =()=>{
         axios
            .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS`,
                { headers: {"Authorization" : `Bearer ${token}`} }
@@ -473,6 +473,15 @@ const ArtCommencement = (props) => {
         objValues.vitalSignDto= vital
         objValues.hivEnrollmentId= patientObject && patientObject.enrollment.id
         objValues.clinicalStageId = objValues.whoStagingId 
+        //Logic for cd4 value 
+        //cd4SemiQuantitative:"",
+       // cd4FlowCytometry:"" 
+        if(objValues.cd4SemiQuantitative!==""){
+            objValues.cd4 = objValues.cd4SemiQuantitative
+        }
+        if(objValues.cd4FlowCytometry!==""){
+            objValues.cd4 = objValues.cd4FlowCytometry
+        }
         
         setSaving(true);
         axios.post(`${baseUrl}hiv/art/commencement/`,objValues,
@@ -643,9 +652,9 @@ const ArtCommencement = (props) => {
                             <Input
                                 type="number"
                                 min={1}
-                                name="cd4FlowCyteometry"
-                                id="cd4FlowCyteometry"
-                                value={objValues.cd4FlowCyteometry}
+                                name="cd4FlowCytometry"
+                                id="cd4FlowCytometry"
+                                value={objValues.cd4FlowCytometry}
                                 onChange={handleInputChange}
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 disabled
