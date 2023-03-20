@@ -298,7 +298,7 @@ const ArtCommencement = (props) => {
         
         }
         //Get list of PREGANACY_STATUS
-      const PreganacyStatus =()=>{
+        const PreganacyStatus =()=>{
         axios
            .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS`,
                { headers: {"Authorization" : `Bearer ${token}`} }
@@ -473,6 +473,15 @@ const ArtCommencement = (props) => {
         objValues.vitalSignDto= vital
         objValues.hivEnrollmentId= patientObject && patientObject.enrollment.id
         objValues.clinicalStageId = objValues.whoStagingId 
+        //Logic for cd4 value 
+        //cd4SemiQuantitative:"",
+       // cd4FlowCyteometry:"" 
+        if(objValues.cd4SemiQuantitative!==""){
+            objValues.cd4 = objValues.cd4SemiQuantitative
+        }
+        if(objValues.cd4FlowCyteometry!==""){
+            objValues.cd4 = objValues.cd4FlowCyteometry
+        }
         
         setSaving(true);
         axios.post(`${baseUrl}hiv/art/commencement/`,objValues,

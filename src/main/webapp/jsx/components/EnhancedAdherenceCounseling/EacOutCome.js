@@ -4,7 +4,6 @@ import MatButton from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
 import SaveIcon from '@material-ui/icons/Save'
 import ButtonMui from "@material-ui/core/Button";
-import CancelIcon from '@material-ui/icons/Cancel'
 import axios from "axios";
 import { toast} from "react-toastify";
 import { url as baseUrl } from "../../../api";
@@ -12,9 +11,7 @@ import { token as token } from "../../../api";
 import "react-widgets/dist/css/react-widgets.css";
 import moment from "moment";
 import { Spinner } from "reactstrap";
-import { Icon,Button, } from 'semantic-ui-react'
-import FirstEAC from './EnhancedAdherenceCounseling';
-import ContinueEAC from './SecondEac';
+
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -197,22 +194,24 @@ const EAC = (props) => {
             //console.log(error);
             });    
     }
-    const handleInputSwitchChange = e => {
+    const handleInputSwitchChange = e => {//this function is to handle form input
+        //console.log(switchs)
         setSwitchs ({...switchs,  [e.target.name]: e.target.value});
     }
-    const handleInputSubstituteChange = e => {
+    const handleInputSubstituteChange = e => {//this function is to handle form input
         setSubstitutes ({...Substitutes,  [e.target.name]: e.target.value});
     } 
-    const handleInputChange = e => {
+    const handleInputChange = e => {//this function is to handle form input
         setObjValues ({...objValues,  [e.target.name]: e.target.value});
     }    
-    const BackToSession = (row, actionType) =>{  
+    const BackToSession = (row, actionType) =>{  //this function is to handle back button
         // props.setActiveContent({...props.activeContent, route:'pharmacy', activeTab:"hsitory"})
         
         props.setActiveContent({...props.activeContent, route:'eac-session', id:row.id, activeTab:"history", actionType:actionType, obj:row})
      } 
-     const handleSelectedRegimen = e => {
+     const handleSelectedRegimen = e => {//this function is to handle form input
         const regimenId= e.target.value
+        setSwitchs ({...switchs,  [e.target.name]: e.target.value});
         if(regimenId!==""){
             RegimenType(regimenId)
             //setShowRegimen(true)
@@ -221,7 +220,7 @@ const EAC = (props) => {
             //setShowRegimen(false)
         }
     } 
-    function RegimenType(id) {
+    function RegimenType(id) {//Get Regimen by regimen ID 
         async function getCharacters() {
             try{
             const response = await axios.get(`${baseUrl}hiv/regimen/types/${id}`,
@@ -416,7 +415,7 @@ const EAC = (props) => {
                                     name="switchRegimenLineType"
                                     id="switchRegimenLineType"
                                     value={switchs.switchRegimenLineType}
-                                    onChange={handleSelectedRegimen}
+                                    onChange={handleInputSwitchChange}
                                     
                                     style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                     
