@@ -476,13 +476,12 @@ const ArtCommencement = (props) => {
         //Logic for cd4 value 
         //cd4SemiQuantitative:"",
        // cd4FlowCytometry:"" 
-        if(objValues.cd4SemiQuantitative!==""){
-            objValues.cd4 = objValues.cd4SemiQuantitative
-        }
+        // if(objValues.cd4SemiQuantitative!==""){
+        //     objValues.cd4 = objValues.cd4SemiQuantitative
+        // }
         if(objValues.cd4FlowCytometry!==""){
             objValues.cd4 = objValues.cd4FlowCytometry
         }
-        
         setSaving(true);
         axios.post(`${baseUrl}hiv/art/commencement/`,objValues,
         { headers: {"Authorization" : `Bearer ${token}`}},
