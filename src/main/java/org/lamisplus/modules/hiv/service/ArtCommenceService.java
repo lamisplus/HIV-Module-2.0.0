@@ -219,6 +219,7 @@ public class ArtCommenceService {
 	@NotNull
 	public ARTClinical convertDtoToART(ARTClinicalCommenceDto artClinicalCommenceDto, Long vitalSignId) {
 		ARTClinical artClinical = new ARTClinical();
+		System.out.println(artClinicalCommenceDto.getCd4());
 		BeanUtils.copyProperties(artClinicalCommenceDto, artClinical);
 		VitalSign vitalSign = getVitalSign(vitalSignId);
 		artClinical.setVitalSign(vitalSign);

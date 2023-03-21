@@ -1961,6 +1961,6 @@ public interface HIVEacRepository extends JpaRepository<HIVEac, Long> {
 	List<RadetReportDto> getRadetReportsByFacilityIdAndDateRange(Long facilityId, LocalDate startDate, LocalDate endDate);
 	
 
-@Query(value ="SELECT date_sample_collected from laboratory_sample WHERE patient_uuid  = ?1  AND  archived = 0", nativeQuery = true)
+@Query(value ="SELECT date_sample_collected from laboratory_sample WHERE patient_uuid  = ?1  AND  archived = 0 ", nativeQuery = true)
 List<LocalDateTime> getVLSampleCollectionsByPatientUuid(String patientUuid);
 }
