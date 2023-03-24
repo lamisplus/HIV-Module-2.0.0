@@ -6,9 +6,11 @@ import org.lamisplus.modules.hiv.domain.dto.PatientActivity;
 import org.lamisplus.modules.hiv.domain.entity.HIVEacSession;
 import org.lamisplus.modules.hiv.repositories.HIVEacSessionRepository;
 import org.lamisplus.modules.hiv.service.PatientActivityProvider;
+import org.lamisplus.modules.hiv.utility.CustomDateTimeFormat;
 import org.lamisplus.modules.patient.domain.entity.Person;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,8 +29,9 @@ public class EACSessionActivityProvider implements PatientActivityProvider {
 	
 	@NotNull
 	private PatientActivity buildPatientActivity(HIVEacSession session) {
-		String name = "EAC Session";
+		StringBuilder name = new StringBuilder("EAC Session");
 		assert session.getId() != null;
-		return new PatientActivity(session.getId(), name, session.getFollowUpDate(), "", "eac-session");
+		LocalDate followUpDate = CustomDateTimeFormat.handleNullDateActivity(name, session.getFollowUpDate());
+		return new PatientActivity(session.getId(), name.toString(), followUpDate, "", "eac-session");
 	}
 }

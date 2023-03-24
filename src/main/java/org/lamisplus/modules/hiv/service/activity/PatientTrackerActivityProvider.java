@@ -6,9 +6,11 @@ import org.lamisplus.modules.hiv.domain.dto.PatientActivity;
 import org.lamisplus.modules.hiv.domain.entity.PatientTracker;
 import org.lamisplus.modules.hiv.repositories.PatientTrackerRepository;
 import org.lamisplus.modules.hiv.service.PatientActivityProvider;
+import org.lamisplus.modules.hiv.utility.CustomDateTimeFormat;
 import org.lamisplus.modules.patient.domain.entity.Person;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,8 +29,10 @@ public class PatientTrackerActivityProvider implements PatientActivityProvider {
 	
 	@NotNull
 	private PatientActivity buildPatientActivity(PatientTracker patientTracker) {
-		String name = "Client Tracker";
+		StringBuilder name = new StringBuilder("Client Tracker");
 		assert patientTracker.getId() != null;
-		return new PatientActivity(patientTracker.getId(), name, patientTracker.getDateLastAppointment(), "", "client-tracker");
+		LocalDate dateLastAppointment =
+				CustomDateTimeFormat.handleNullDateActivity(name, patientTracker.getDateLastAppointment());
+		return new PatientActivity(patientTracker.getId(), name.toString(), dateLastAppointment, "", "client-tracker");
 	}
 }

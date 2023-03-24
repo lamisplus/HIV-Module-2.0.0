@@ -63,9 +63,9 @@ public interface HIVEacRepository extends JpaRepository<HIVEac, Long> {
 	List<BiometricRadetDto> getPatientBiometricInfo(String  personUuid, LocalDate startDate, LocalDate endDate);
 	
 	@Query(value = "SELECT result.id, result.surname,\n" +
-			"result.hospital_number as hospitalNumber, result.date_of_birth as dob, result.age, result.name, result.sex,\n" +
+			"result.hospital_number as hospitalNumber, result.date_of_birth as dob, result.phone, result.age, result.name, result.sex,\n" +
 			"result.facility_id, result.address, count(b.person_uuid) as finger, b.enrollment_date as enrollment\n" +
-			"FROM (SELECT p.id, EXTRACT(YEAR from AGE(NOW(),  p.date_of_birth)) as age,\n" +
+			"FROM (SELECT p.id, EXTRACT(YEAR from AGE(NOW(),  p.date_of_birth)) as age, p.contact_point->'contactPoint'->0->'value'->>0 as phone, \n" +
 			"      concat(p.surname ,' ', p.first_name) as name, p.hospital_number, p.date_of_birth, p.sex,\n" +
 			"      p.facility_id, p.surname, p.uuid, p.archived, " +
 			"     CONCAT(REPLACE(REPLACE(REPLACE(address_object->>'line', '\"', ''), ']', ''), '[', ''), ' ', address_object->>'city') as address" +
@@ -75,7 +75,7 @@ public interface HIVEacRepository extends JpaRepository<HIVEac, Long> {
 			"where result.facility_id = ?1 and result.archived = 0 and  \n" +
 			"b.enrollment_date between ?2 and ?3 GROUP by result.surname, b.enrollment_date,\n" +
 			"result.hospital_number, result.id, result.date_of_birth, result.age, result.name, result.sex,\n" +
-			"result.facility_id, result.address;", nativeQuery = true
+			"result.facility_id, result.phone, result.address;", nativeQuery = true
 	 )
 	List<BiometricReport> getBiometricReports(Long  facilityId, LocalDate startDate, LocalDate endDate);
 	
