@@ -12,10 +12,10 @@
                 <columnExists tableName="hiv_art_clinical" columnName="pregnancy_status" />
             </not>
         </preConditions>
-        <sql>
-            ALTER TABLE hiv_art_clinical ALTER COLUMN cd_4
-                TYPE varchar (100);
-        </sql>
+<!--        <sql>-->
+<!--            ALTER TABLE hiv_art_clinical ALTER COLUMN cd_4-->
+<!--                TYPE varchar (100);-->
+<!--        </sql>-->
     </changeSet>
 
 </databaseChangeLog>

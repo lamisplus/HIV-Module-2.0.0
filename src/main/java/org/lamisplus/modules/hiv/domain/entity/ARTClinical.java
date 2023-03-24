@@ -32,7 +32,7 @@ public class ARTClinical extends HivAuditEntity implements Serializable, Persist
 	private LocalDate visitDate;
 	
 	@Column(name = "cd_4")
-	private String cd4;
+	private Long cd4;
 	
 	@Column(name = "cd_4_percentage")
 	private Long cd4Percentage;
@@ -120,7 +120,6 @@ public class ARTClinical extends HivAuditEntity implements Serializable, Persist
 	@PastOrPresent
 	@Column(name = "date_of_viral_load_at_start_of_art")
 	private LocalDate dateOfViralLoadAtStartOfArt;
-	
 	private String cryptococcalScreeningStatus;
 	private String cervicalCancerScreeningStatus;
 	private String cervicalCancerTreatmentProvided;
@@ -142,7 +141,7 @@ public class ARTClinical extends HivAuditEntity implements Serializable, Persist
 	private JsonNode extra;
 	
 	@Column(name = "cd4_count")
-	private String  cd4Count;
+	private Long  cd4Count;
 	@Column(name = "cd4_semi_quantitative")
 	private String  cd4SemiQuantitative;
 	@Column(name = "cd4_flow_cytometry")

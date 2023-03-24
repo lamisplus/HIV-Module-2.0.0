@@ -137,6 +137,11 @@ public class ArtCommenceService {
 		artClinical.setVitalSign(existArtClinical.getVitalSign());
 		artClinical.setIsCommencement(existArtClinical.getIsCommencement());
 		artClinical.setArchived(0);
+		String cd4Count = artClinicalCommenceDto.getCd4();
+		if(cd4Count != null){
+			System.out.println(" cd4:  "+ cd4Count);
+			artClinical.setCd4(Long.parseLong(cd4Count));
+		}
 		return convertArtToResponseDto(artClinicalRepository.save(artClinical));
 	}
 	
@@ -219,11 +224,15 @@ public class ArtCommenceService {
 	@NotNull
 	public ARTClinical convertDtoToART(ARTClinicalCommenceDto artClinicalCommenceDto, Long vitalSignId) {
 		ARTClinical artClinical = new ARTClinical();
-		System.out.println(artClinicalCommenceDto.getCd4());
 		BeanUtils.copyProperties(artClinicalCommenceDto, artClinical);
 		VitalSign vitalSign = getVitalSign(vitalSignId);
 		artClinical.setVitalSign(vitalSign);
 		artClinical.setFacilityId(organizationUtil.getCurrentUserOrganization());
+		String cd4Count = artClinicalCommenceDto.getCd4();
+		if(cd4Count != null){
+			System.out.println(" cd4:  "+ cd4Count);
+			artClinical.setCd4(Long.parseLong(cd4Count));
+		}
 		return artClinical;
 	}
 	
