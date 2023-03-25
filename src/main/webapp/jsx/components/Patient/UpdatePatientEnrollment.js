@@ -141,7 +141,7 @@ const UserRegistration = (props) => {
     patientObj = locationState ? locationState.patientObj : {}; 
     const [basicInfo, setBasicInfo]= useState(patientObj)
     let disabledField =locationState.actionType !=='update' ? true :false
-    objValues.uniqueId=basicInfo.hospitalNumber
+    //objValues.uniqueId=basicInfo.hospitalNumber
     useEffect(() => {        
         CareEntryPoint();
         SourceReferral();
