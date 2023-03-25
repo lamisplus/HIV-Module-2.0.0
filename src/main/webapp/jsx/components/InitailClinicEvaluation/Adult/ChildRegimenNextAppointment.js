@@ -165,8 +165,8 @@ const ChildRegimenNextAppointment = (props) => {
     } 
     const validate = () => {        
         temp.nextAppointment = objValues.nextAppointment ? "" : "This field is required"
-        temp.regimenLine = regimenObj.regimenLine ? "" : "This field is required" 
-        temp.regimen = regimenObj.regimen ? "" : "This field is required" 
+        //temp.regimenLine = regimenObj.regimenLine ? "" : "This field is required" 
+        //temp.regimen = regimenObj.regimen ? "" : "This field is required" 
        
         setErrors({
             ...temp
@@ -220,7 +220,7 @@ return (
                     <h3>Regimen</h3>
                     <div className="form-group mb-3 col-md-6">
                     <FormGroup>
-                    <Label >Original Regimen Line <span style={{ color:"red"}}> *</span></Label>
+                    <Label >Original Regimen Line </Label>
                     <Input
                             type="select"
                             name="regimenLine"
@@ -245,7 +245,7 @@ return (
                     </div>                    
                     <div className="form-group mb-3 col-md-6">
                     <FormGroup>
-                    <Label >Original Regimen <span style={{ color:"red"}}> *</span></Label>
+                    <Label >Original Regimen </Label>
                     <Input
                             type="select"
                             name="regimen"

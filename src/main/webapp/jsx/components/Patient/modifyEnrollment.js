@@ -1669,7 +1669,7 @@ const UserRegistration = (props) => {
                                         onChange={handleInputChange}
                                         value={objValues.uniqueId}
                                         style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
-                                        disabled
+                                        
                                     />
                                     {errors.uniqueId !=="" ? (
                                     <span className={classes.error}>{errors.uniqueId}</span>

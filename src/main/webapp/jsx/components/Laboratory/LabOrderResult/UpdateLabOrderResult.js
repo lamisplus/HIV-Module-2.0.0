@@ -231,13 +231,14 @@ useEffect(() => {
 
       //Validations of the forms
       const validate = () => {        
-        temp.dateAssayed = tests.dateAssayed ? "" : "This field is required"
+        //temp.dateAssayed = tests.dateAssayed ? "" : "This field is required"
         temp.labTestGroupId = tests.labTestGroupId ? "" : "This field is required"
         temp.labTestId = tests.labTestId ? "" : "This field is required"
         temp.sampleNumber = tests.sampleNumber ? "" : "This field is required"
-        temp.dateResultReceived =  tests.dateResultReceived ? "" : "This field is required"
-        //tests.labTestId==='16' && (temp.viralLoadIndication = tests.viralLoadIndication ? "" : "This field is required")
+        temp.sampleCollectionDate =  tests.sampleCollectionDate ? "" : "This field is required"
+        tests.labTestId==='16' && (temp.viralLoadIndication = tests.viralLoadIndication ? "" : "This field is required")
         temp.result = tests.result ? "" : "This field is required"
+        temp.dateResultReceived = tests.dateResultReceived ? "" : "This field is required"
         setErrors({
             ...temp
         })
@@ -287,6 +288,9 @@ useEffect(() => {
                     toast.error("Something went wrong. Please try again...",  {position: toast.POSITION.BOTTOM_CENTER}); 
                 }                  
             });
+        }else{
+            setSaving(false);
+            toast.error("All field are required" ,  {position: toast.POSITION.BOTTOM_CENTER}); 
         } 
     }
     const Back = (row, actionType) =>{  
@@ -294,6 +298,8 @@ useEffect(() => {
         
         props.setActiveContent({...props.activeContent, route:'laboratoryOrderResult', id:row.id, activeTab:"history", actionType:"", obj:{}})
      }
+
+  
 
   return (      
       <div >
@@ -351,8 +357,8 @@ useEffect(() => {
                                 <Label for="encounterDate">Sample Number <span style={{ color:"red"}}> *</span></Label>
                                 <Input
                                     type="text"
-                                    name="labNumber"
-                                    id="labNumber"
+                                    name="sampleNumber"
+                                    id="sampleNumber"
                                     value={tests.sampleNumber}
                                     onChange={handleInputChange}
                                     style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
