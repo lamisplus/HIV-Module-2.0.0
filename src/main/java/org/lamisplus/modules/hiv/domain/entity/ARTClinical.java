@@ -3,7 +3,6 @@ package org.lamisplus.modules.hiv.domain.entity;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.*;
 import org.hibernate.annotations.Type;
-import org.jooq.JSONB;
 import org.lamisplus.modules.patient.domain.entity.Person;
 import org.lamisplus.modules.patient.domain.entity.Visit;
 import org.lamisplus.modules.triage.domain.entity.VitalSign;
@@ -121,7 +120,6 @@ public class ARTClinical extends HivAuditEntity implements Serializable, Persist
 	@PastOrPresent
 	@Column(name = "date_of_viral_load_at_start_of_art")
 	private LocalDate dateOfViralLoadAtStartOfArt;
-	
 	private String cryptococcalScreeningStatus;
 	private String cervicalCancerScreeningStatus;
 	private String cervicalCancerTreatmentProvided;
@@ -143,7 +141,7 @@ public class ARTClinical extends HivAuditEntity implements Serializable, Persist
 	private JsonNode extra;
 	
 	@Column(name = "cd4_count")
-	private String  cd4Count;
+	private Long  cd4Count;
 	@Column(name = "cd4_semi_quantitative")
 	private String  cd4SemiQuantitative;
 	@Column(name = "cd4_flow_cytometry")

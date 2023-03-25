@@ -6,7 +6,6 @@ import java.util.Date;
 
 public interface RadetReportDto {
 	
-	//biodata
 	String getState();
 	
 	String getLga();
@@ -70,9 +69,15 @@ public interface RadetReportDto {
 	
 	// art status
 	
-	LocalDate getDateOfCurrentStatus();
+	LocalDate getCurrentStatusDate();
 	
 	String getCurrentStatus();
+	
+	LocalDate getPreviousStatusDate();
+	
+	String getPreviousStatus();
+	
+	
 	
 	//Biometric status
 	LocalDate getDateBiometricsEnrolled();
@@ -89,21 +94,21 @@ public interface RadetReportDto {
 	String getRepeatViralLoadResult();
 	String getTbStatus();
 	LocalDate getDateOfTbScreened();
-  LocalDate getDateOfCurrentRegimen();
-  LocalDate getDateOfIptStart();
-  LocalDate getIptCompletionDate();
-  String getIptType();
-  String getResultOfCervicalCancerScreening();
-  String getCervicalCancerScreeningType();
- 
-  String getCervicalCancerScreeningMethod();
-  LocalDate getDateOfCervicalCancerScreening();
- String getOvcNumber();
- String  getHouseholdNumber();
- 
- String getCareEntry();
- 
- Boolean getIsOvcServiceProvided();
+	LocalDate getDateOfCurrentRegimen();
+	LocalDate getDateOfIptStart();
+	LocalDate getIptCompletionDate();
+	String getIptType();
+	String getResultOfCervicalCancerScreening();
+	String getCervicalCancerScreeningType();
+	
+	String getCervicalCancerScreeningMethod();
+	LocalDate getDateOfCervicalCancerScreening();
+	String getOvcNumber();
+	String  getHouseholdNumber();
+	
+	String getCareEntry();
+	
+	String getCauseOfDeath();
 		
 	
 }

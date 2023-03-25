@@ -11,5 +11,6 @@ public interface BiometricReport {
 	String getSex();
 	String getHospitalNumber();
 	String getAddress();
+	String getPhone();
 	
 }
