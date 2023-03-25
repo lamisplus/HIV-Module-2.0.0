@@ -104,7 +104,7 @@ const Pharmacy = (props) => {
     const [otherDrugs, setOtherDrugs] = useState([]);
     const [iptType, setIPT_TYPE] = useState([]);
     const [regimenTypeOther, setRegimenTypeOther] = useState([]);
-    //
+    //const [currentRegimenValue, setCurrentRegimenValue] = useState("");//this is to get the current regimen value/ID the patient is on 
     //IPT_TYPE
     const [objValues, setObjValues] = useState({
             adherence: "",
@@ -129,7 +129,8 @@ const Pharmacy = (props) => {
             substitute:"",
             dsdModelType:"",
             iptType:"",
-            visitType:""
+            visitType:"",
+            //drugName:""
     });
     const [vital, setVitalSignDto]= useState({
         bodyWeight: "",
@@ -185,7 +186,8 @@ const Pharmacy = (props) => {
        )
        .then((response) => {
            const currentRegimenObj= response.data
-           objValues.drugName=currentRegimenObj.regimenType.id
+           //setCurrentRegimenValue(currentRegimenObj.regimenType.id)
+           objValues.regimen=currentRegimenObj.regimenType.id
            RegimenType(currentRegimenObj.regimenType.id)
            objValues.regimenId=currentRegimenObj.id
            //regimenName
@@ -215,7 +217,7 @@ const Pharmacy = (props) => {
                 }
                 return age_now;
     };
-    const patientAge=calculate_age(moment(patientObj.dateOfBirth).format("DD-MM-YYYY"));
+    const patientAge=calculate_age(moment(patientObj.dateOfBirth).format("DD-MM-YYYY"));//Age calculation
     //GET ChildRegimenLine 
     const ChildRegimenLine =()=>{
         axios
@@ -263,28 +265,28 @@ const Pharmacy = (props) => {
         
     }
     //IPT_TYPE
-     //GET AdultRegimenLine 
-     const AdultRegimenLine =()=>{
-        axios
-            .get(`${baseUrl}hiv/regimen/arv/adult`,
-                { headers: {"Authorization" : `Bearer ${token}`} }
-            )
-            .then((response) => {
-                
-                //const filterRegimen=response.data.filter((x)=> (x.id===1 || x.id===2 || x.id===3 || x.id===4 || x.id===14))
-                const artRegimen=response.data.filter((x)=> (x.id===1 || x.id===2 || x.id===14))
-                const tbRegimen=response.data.filter((x)=> (x.id===10 ))
-                const oIRegimen=response.data.filter((x)=> (x.id===9 || x.id===15 || x.id===8))
-                //const othersRegimen=response.data.filter((x)=> (x.id!==1 && x.id!==2 && x.id!==14 && x.id!==10 && x.id!==9 && x.id!==15 && x.id!==8 ))
-                //console.log(othersRegimen)
-                setAdultArtRegimenLine(artRegimen);
-               setTbRegimenLine(tbRegimen);
-               setOIRegimenLine(oIRegimen);
-            })
-            .catch((error) => {
-            //console.log(error);
-            });        
-      }
+    //GET AdultRegimenLine 
+    const AdultRegimenLine =()=>{
+    axios
+        .get(`${baseUrl}hiv/regimen/arv/adult`,
+            { headers: {"Authorization" : `Bearer ${token}`} }
+        )
+        .then((response) => {
+            
+            //const filterRegimen=response.data.filter((x)=> (x.id===1 || x.id===2 || x.id===3 || x.id===4 || x.id===14))
+            const artRegimen=response.data.filter((x)=> (x.id===1 || x.id===2 || x.id===14))
+            const tbRegimen=response.data.filter((x)=> (x.id===10 ))
+            const oIRegimen=response.data.filter((x)=> (x.id===9 || x.id===15 || x.id===8))
+            //const othersRegimen=response.data.filter((x)=> (x.id!==1 && x.id!==2 && x.id!==14 && x.id!==10 && x.id!==9 && x.id!==15 && x.id!==8 ))
+            //console.log(othersRegimen)
+            setAdultArtRegimenLine(artRegimen);
+            setTbRegimenLine(tbRegimen);
+            setOIRegimenLine(oIRegimen);
+        })
+        .catch((error) => {
+        //console.log(error);
+        });        
+    }
     //Check for the last Vital Signs
     const VitalSigns = () => {
         axios
@@ -302,7 +304,7 @@ const Pharmacy = (props) => {
           .catch((error) => {
             //console.log(error);
           });
-        }
+    }
     //Get EAC Status
     const CheckEACStatus =()=>{
         axios
@@ -589,7 +591,7 @@ const Pharmacy = (props) => {
     }
     const handleSelectedRegimen = e => {
         const regimenId= e.target.value
-        
+        setObjValues ({...objValues,  [e.target.name]: e.target.value});
         if(regimenId!==""){
             RegimenType(regimenId)
             //setShowRegimen(true)
@@ -597,7 +599,6 @@ const Pharmacy = (props) => {
             setRegimenType([])
             setShowRegimen(false)
         }
-
     }
     const handleSelectedRegimenOI = e => {
         const regimenId= e.target.value
@@ -1239,7 +1240,8 @@ const Pharmacy = (props) => {
                 </FormGroup>
             </div>
            
-             {eacStatusObj && eacStatusObj.eacsession && eacStatusObj.eacsession!=='Default' && (<>
+             {eacStatusObj && eacStatusObj.eacsession && eacStatusObj.eacsession!=='Default' && (//This is to display current EAC of a patient if they have a session that is currently opened
+            <>
                 <h3>Ehanced Adherance Counseling</h3>
                 <div className="row">
                 <div className="form-group mb-3 col-md-3">
@@ -1304,7 +1306,7 @@ const Pharmacy = (props) => {
                     type="select"
                     name="regimen"
                     id="regimen"
-                    value={objValues.drugName}
+                    value={objValues.regimen}
                     onChange={handleSelectedRegimen}  
                     style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                     disabled={objValues.refillPeriod!==null? false : true}                 
