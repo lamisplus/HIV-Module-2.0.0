@@ -164,7 +164,7 @@ const UserRegistration = (props) => {
             { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                console.log(response.data.enrollment)
+                //console.log(response.data.enrollment)
                 setObjValues(response.data.enrollment);
             })
             .catch((error) => {  
