@@ -236,7 +236,7 @@ useEffect(() => {
         temp.labTestId = tests.labTestId ? "" : "This field is required"
         temp.sampleNumber = tests.sampleNumber ? "" : "This field is required"
         temp.sampleCollectionDate =  tests.sampleCollectionDate ? "" : "This field is required"
-        tests.labTestId==='16' && (temp.viralLoadIndication = tests.viralLoadIndication ? "" : "This field is required")
+        //tests.labTestId==='16' && (temp.viralLoadIndication = tests.viralLoadIndication ? "" : "This field is required")
         temp.result = tests.result ? "" : "This field is required"
         temp.dateResultReceived = tests.dateResultReceived ? "" : "This field is required"
         setErrors({

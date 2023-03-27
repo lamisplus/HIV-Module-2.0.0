@@ -674,7 +674,7 @@ const ArtCommencement = (props) => {
                             onChange={handleSelecteRegimen}
                             required
                             style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                            disabled
+                            
                             >
                                 <option value=""> Select</option>
         
@@ -712,7 +712,7 @@ const ArtCommencement = (props) => {
                             value={objValues.regimenId}
                             onChange={handleInputChange}
                             style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                            disabled
+                            
                             >
                                 <option value=""> Select</option>    
                                 {regimenType.map((value) => (
