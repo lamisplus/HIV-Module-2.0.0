@@ -3,6 +3,7 @@ package org.lamisplus.modules.hiv.repositories;
 import org.lamisplus.modules.hiv.domain.dto.EnrollmentStatus;
 import org.lamisplus.modules.hiv.domain.dto.OVCDomainDTO;
 import org.lamisplus.modules.hiv.domain.dto.PatientProjection;
+import org.lamisplus.modules.hiv.domain.entity.HIVEacSession;
 import org.lamisplus.modules.hiv.domain.entity.HivEnrollment;
 import org.lamisplus.modules.patient.domain.entity.Person;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,4 +75,14 @@ public interface HivEnrollmentRepository extends JpaRepository<HivEnrollment, Lo
     
     @Query(value = "SELECT name from ovc_service where domain_id =?1", nativeQuery = true)
     List<String> getOVCServiceByDomainId(Long domainId);
+
+    //For central sync
+    List<HivEnrollment> findAllByFacilityId(Long facilityId);
+
+    @Query(value = "SELECT * FROM hiv_enrollment WHERE last_modified_date > ?1 AND facility_id=?2",
+            nativeQuery = true
+    )
+    List<HivEnrollment> getAllDueForServerUpload(LocalDateTime dateLastSync, Long facilityId);
+
+    Optional<HivEnrollment> findByUuid(String uuid);
 }

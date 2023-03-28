@@ -1,6 +1,7 @@
 package org.lamisplus.modules.hiv.repositories;
 
 import org.lamisplus.modules.hiv.domain.dto.PharmacyReport;
+import org.lamisplus.modules.hiv.domain.entity.ARTClinical;
 import org.lamisplus.modules.hiv.domain.entity.ArtPharmacy;
 import org.lamisplus.modules.patient.domain.entity.Person;
 import org.lamisplus.modules.patient.domain.entity.Visit;
@@ -10,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,5 +67,15 @@ public interface ArtPharmacyRepository extends JpaRepository<ArtPharmacy, Long> 
 			" AND ipt ->>'type' ILIKE'%initia%'AND ipt ->>'dateCompleted' IS NULL " +
 			" ORDER BY visit_date DESC LIMIT 1 ", nativeQuery = true)
     Optional<ArtPharmacy> getInitialIPTWithoutCompletionDate(String personUuid);
+
+	//For central sync
+	List<ArtPharmacy> findAllByFacilityId(Long facilityId);
+
+	@Query(value = "SELECT * FROM hiv_art_pharmacy WHERE last_modified_date > ?1 AND facility_id=?2 ",
+			nativeQuery = true
+	)
+	List<ArtPharmacy> getAllDueForServerUpload(LocalDateTime dateLastSync, Long facilityId);
+
+	Optional<ArtPharmacy> findByUuid(String uuid);
 }
 
