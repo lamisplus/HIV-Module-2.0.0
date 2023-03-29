@@ -1,6 +1,7 @@
 package org.lamisplus.modules.hiv.repositories;
 
 import org.lamisplus.modules.hiv.domain.dto.*;
+import org.lamisplus.modules.hiv.domain.entity.EacOutCome;
 import org.lamisplus.modules.hiv.domain.entity.HIVEac;
 import org.lamisplus.modules.patient.domain.entity.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -1961,6 +1962,18 @@ public interface HIVEacRepository extends JpaRepository<HIVEac, Long> {
 	List<RadetReportDto> getRadetReportsByFacilityIdAndDateRange(Long facilityId, LocalDate startDate, LocalDate endDate);
 	
 
-@Query(value ="SELECT date_sample_collected from laboratory_sample WHERE patient_uuid  = ?1  AND  archived = 0 ", nativeQuery = true)
-List<LocalDateTime> getVLSampleCollectionsByPatientUuid(String patientUuid);
+	@Query(value ="SELECT date_sample_collected from laboratory_sample WHERE patient_uuid  = ?1  AND  archived = 0 ", nativeQuery = true)
+	List<LocalDateTime> getVLSampleCollectionsByPatientUuid(String patientUuid);
+
+	//For central sync
+	List<HIVEac> findAllByFacilityId(Long facilityId);
+
+	@Query(value = "SELECT * FROM hiv_eac WHERE last_modified_date > ?1 AND facility_id=?2",
+			nativeQuery = true
+	)
+	List<HIVEac> getAllDueForServerUpload(LocalDateTime dateLastSync, Long facilityId);
+
+	Optional<HIVEac> findByUuid(String uuid);
+
+
 }
