@@ -29,7 +29,7 @@
             INSERT INTO hiv_regimen (id, description, composition, regimen_type_id, active, priority)
                  VALUES ((SELECT MAX(id) FROM hiv_regimen), 'ABC(120mg)/3TC(60mg)/DTG(50mg)', 'Abacavir/Lamivudine/Delotugavir', 3, true, 1);
 
-            INSERT INTO hiv_regimen_resolver (regimensys regimen)
+            INSERT INTO hiv_regimen_resolver (regimensys, regimen)
             VALUES ('ABC(120mg)/3TC(60mg)/DTG(50mg)','ABC-3TC-DTG');
         </sql>
     </changeSet>
