@@ -254,7 +254,7 @@ const ArtCommencement = (props) => {
                     
                     //const cd4CountObj=obj1.data.plan
                     objValues.cd4Count=obj1.data.plan.cd4Count
-                    console.log(obj1.data.plan)
+                    //console.log(obj1.data.plan)
                     objValues.cd4SemiQuantitative=obj1.data.plan.cd4SemiQuantitative
                     objValues.cd4FlowCytometry=obj1.data.plan.cd4FlowCytometry
                     objValues.whoStagingId = obj1.data.who.stage
@@ -612,7 +612,7 @@ const ArtCommencement = (props) => {
                                         value={objValues.cd4Count}
                                         onChange={handleInputChange}
                                         style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
-                                        disabled
+                                        
                                     >
                                         <option value={""}></option>
                                         <option value="Semi-Quantitative">Semi-Quantitative</option>
@@ -633,7 +633,7 @@ const ArtCommencement = (props) => {
                                     value={objValues.cd4SemiQuantitative}
                                     onChange={handleInputChange}
                                     style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
-                                    disabled
+                                    
                                 >
                                     <option value={""}></option>
                                     <option value="<200">{"<200"}</option>
@@ -656,7 +656,7 @@ const ArtCommencement = (props) => {
                                 value={objValues.cd4FlowCytometry}
                                 onChange={handleInputChange}
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                                disabled
+                                
                             />
                                 
                             </FormGroup>
