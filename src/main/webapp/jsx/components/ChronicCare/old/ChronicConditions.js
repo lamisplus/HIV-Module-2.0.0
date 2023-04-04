@@ -69,18 +69,19 @@ const ChronicConditions = (props) => {
     const classes = useStyles();
     //const history = useHistory();
     const [errors, setErrors] = useState({});
-    let temp = { ...errors }
-
+    let temp = { ...errors }   
     useEffect(() => { 
-       
-    }, []); 
+        if(props.observation.data ){
+            setVitalSignDto(props.observation.data.physicalExamination)           
+        }
+    }, [props.observation.data]); 
     const [vital, setVitalSignDto]= useState({
         bodyWeight: "",
         diastolic:"",
         encounterDate: "",
         facilityId: 1,
         height: "",
-        personId:"",
+        personId: props.patientObj.id,
         serviceTypeId: 1,
         systolic:"",
         pulse:"",

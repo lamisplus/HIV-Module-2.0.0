@@ -243,141 +243,160 @@ const Eligibility = (props) => {
         
             <Card className={classes.root}>
                 <CardBody>   
-                <h2 style={{color:'#000'}}>Eligibility Assessment</h2>
+                <h2 style={{color:'#000'}}>TPT Monitoring</h2>
                 <br/>
                     <form >
      
                     <div className="row">
-                    <div className="form-group mb-3 col-md-4">
+                        <div className="form-group mb-3 col-md-6">
+                                <FormGroup>
+                                <Label >Weight</Label>
+                                <InputGroup> 
+                                    <Input 
+                                        type="select"
+                                        name="typeOfClient"
+                                        id="typeOfClient"
+                                        onChange={handleMedicalHistory} 
+                                        //value={objValues.typeOfClient} 
+                                    >
+                                    <option value="">Select</option>
+                                    <option value="PLHIV New enrolled into HIV Care & Treatment">PLHIV New enrolled into HIV Care & Treatment</option>
+                                    <option value="Registered PLHIV on follow up/subsequent visit this FY">Registered PLHIV on follow up/subsequent visit this FY</option>
+                                    <option value="Registered PLHIV on first time visit this FY">Registered PLHIV on first time visit this FY</option>
+                                    </Input>
+                                </InputGroup>                    
+                                </FormGroup>
+                        </div>
+                        <div className="form-group mb-3 col-md-6">
                             <FormGroup>
-                            <Label >Visit Date *</Label>
-                            <InputGroup> 
-                                <Input 
-                                    type="date"
-                                    
-                                    name="visitDate"
-                                    id="visitDate"
-                                    
-                                    onChange={handleInputChangeobjValues} 
-                                />
-                            </InputGroup>                                        
-                            </FormGroup>
-                            {errors.visitDate !=="" ? (
-                                <span className={classes.error}>{errors.visitDate}</span>
-                            ) : "" }
-                    </div>
-                    <div className="form-group mb-3 col-md-8"></div>
-                    <div className="form-group mb-3 col-md-6">
-                        <FormGroup>
-                        <Label >Type Of Client</Label>
-                        <InputGroup> 
-                            <Input 
-                                type="select"
-                                name="typeOfClient"
-                                id="typeOfClient"
-                                onChange={handleMedicalHistory} 
-                                //value={objValues.typeOfClient} 
-                            >
-                            <option value="">Select</option>
-                            <option value="PLHIV New enrolled into HIV Care & Treatment">PLHIV New enrolled into HIV Care & Treatment</option>
-                            <option value="Registered PLHIV on follow up/subsequent visit this FY">Registered PLHIV on follow up/subsequent visit this FY</option>
-                            <option value="Registered PLHIV on first time visit this FY">Registered PLHIV on first time visit this FY</option>
-                            </Input>
-                        </InputGroup>                    
-                        </FormGroup>
-                    </div>
-                    <div className="form-group mb-3 col-md-6">
-                        <FormGroup>
-                        <Label >Pregnancy/Breastfeeding Status</Label>
-                        <InputGroup> 
-                            <Input 
-                                type="select"
-                                name="pregnantStatus"
-                                id="pregnantStatus"
-                                onChange={handleMedicalHistory} 
-                                //value={objValues.pregnantStatus} 
-                            >
-                            <option value="">Select</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                            <option value="Uncertain">Uncertain</option>
-                            </Input>
-                        </InputGroup>
-                        </FormGroup>
-                    </div>   
-                    </div>
-                    <div className="row">
-                    <h3>ART Status : Pre-ART </h3>
-                     <div className="form-group mb-3 col-md-6">
-                            <FormGroup>
-                            <Label >Current Clinical Status(WHO Statging)</Label>
+                            <Label >TB Symptoms (cough, fever, night sweats, weight loss,
+contacts)</Label>
                             <InputGroup> 
                                 <Input 
                                     type="select"
-                                    name="whoStaging"
-                                    id="whoStaging"
+                                    name="pregnantStatus"
+                                    id="pregnantStatus"
                                     onChange={handleMedicalHistory} 
-                                    //value={objValues.whoStaging}  
+                                    //value={objValues.pregnantStatus} 
                                 >
                                 <option value="">Select</option>
                                 <option value="Yes">Yes</option>
                                 <option value="No">No</option>
                                 <option value="Uncertain">Uncertain</option>
                                 </Input>
-
-                            </InputGroup>
-                        
-                            </FormGroup>
-                     </div>
-                     <div className="form-group mb-3 col-md-6"></div>
-                     <div className="form-group mb-3 col-md-4">
-                            <FormGroup>
-                            <Label >Last CD4 Result</Label>
-                            <InputGroup> 
-                                <Input 
-                                    type="text"
-                                    name="lastCd4Result"
-                                    id="lastCd4Result"
-                                     
-                                />
-                            </InputGroup>
-                        
-                            </FormGroup>
-                     </div>
-                     <div className="form-group mb-3 col-md-4">
-                            <FormGroup>
-                            <Label >Last Viral Load Result</Label>
-                            <InputGroup> 
-                                <Input 
-                                    type="text"
-                                    name="lastViralLoadResult"
-                                    id="lastViralLoadResult"
-                                     
-                                />
                             </InputGroup>
                             </FormGroup>
-                     </div>
-                     <div className="form-group mb-3 col-md-4">
+                        </div>  
+                        <div className="form-group mb-3 col-md-6">
                             <FormGroup>
-                            <Label >Eligible for Viral Load</Label>
+                            <Label >Hepatitis Symptoms (Abdominal pain, nausea, vomiting, abnormal LFTs, Children: persistent irritability, yellowish
+                            urine and eyes)
+                            </Label>
                             <InputGroup> 
                                 <Input 
-                                type="select"
-                                name="eligibleForViralLoad"
-                                id="eligibleForViralLoad"
-                                onChange={handleMedicalHistory} 
-                                //value={objValues.eligibleForViralLoad} 
+                                    type="select"
+                                    name="pregnantStatus"
+                                    id="pregnantStatus"
+                                    onChange={handleMedicalHistory} 
+                                    //value={objValues.pregnantStatus} 
                                 >
                                 <option value="">Select</option>
                                 <option value="Yes">Yes</option>
                                 <option value="No">No</option>
+                                <option value="Uncertain">Uncertain</option>
                                 </Input>
                             </InputGroup>
-                        
                             </FormGroup>
-                     </div>
-                     </div>
-                    <br/>
+                        </div> 
+                        <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                            <Label >Neurologic Symptoms (Numbness, tingling,
+                            paresthesias)
+                            </Label>
+                            <InputGroup> 
+                                <Input 
+                                    type="select"
+                                    name="pregnantStatus"
+                                    id="pregnantStatus"
+                                    onChange={handleMedicalHistory} 
+                                    //value={objValues.pregnantStatus} 
+                                >
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                                <option value="Uncertain">Uncertain</option>
+                                </Input>
+                            </InputGroup>
+                            </FormGroup>
+                        </div> 
+
+                        <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                            <Label >Rash </Label>
+                            <InputGroup> 
+                                <Input 
+                                    type="select"
+                                    name="pregnantStatus"
+                                    id="pregnantStatus"
+                                    onChange={handleMedicalHistory} 
+                                    //value={objValues.pregnantStatus} 
+                                >
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                                <option value="Uncertain">Uncertain</option>
+                                </Input>
+                            </InputGroup>
+                            </FormGroup>
+                        </div>
+                        <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                            <Label >Adherence
+                                ( {">"} 80% doses = Good
+                                {"<"} 80% doses = bad
+                                )
+                            </Label>
+                            <InputGroup> 
+                                <Input 
+                                    type="select"
+                                    name="pregnantStatus"
+                                    id="pregnantStatus"
+                                    onChange={handleMedicalHistory} 
+                                    //value={objValues.pregnantStatus} 
+                                >
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                                <option value="Uncertain">Uncertain</option>
+                                </Input>
+                            </InputGroup>
+                            </FormGroup>
+                        </div>
+                        <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                            <Label >Referred for further services</Label>
+                            <InputGroup> 
+                                <Input 
+                                    type="select"
+                                    name="pregnantStatus"
+                                    id="pregnantStatus"
+                                    onChange={handleMedicalHistory} 
+                                    //value={objValues.pregnantStatus} 
+                                >
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                                <option value="Uncertain">Uncertain</option>
+                                </Input>
+                            </InputGroup>
+                            </FormGroup>
+                        </div>
+
+                        <br/>
+                        <h2>Outcome TPT:</h2>
+                        
+                    </div>
+                    
                     
                     </form>
                     

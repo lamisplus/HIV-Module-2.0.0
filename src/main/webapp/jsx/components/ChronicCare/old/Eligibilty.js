@@ -109,8 +109,10 @@ const Eligibility = (props) => {
         
         }
     useEffect(() => { 
-       
-    }, []);
+        if(props.observation.data && props.observation.data.medicalHistory){
+            setobjValues(props.observation.data.medicalHistory)           
+        }
+    }, [props.observation.data]);
     const [visit, setVisit] = useState({visitDate:""})
     const [objValues, setobjValues] = useState({Nausea:"", 
                                                 Nausea_fever:"",
@@ -254,10 +256,11 @@ const Eligibility = (props) => {
                             <InputGroup> 
                                 <Input 
                                     type="date"
-                                    
+                                    min={props.patientObj && props.patientObj.enrollment ? props.patientObj.enrollment.dateOfRegistration :""}
+                                    max= {moment(new Date()).format("YYYY-MM-DD") }
                                     name="visitDate"
                                     id="visitDate"
-                                    
+                                    value={props.observation.dateOfObservation !=="" && props.observation.dateOfObservation!==null ? props.observation.dateOfObservation : visit.visitDate}
                                     onChange={handleInputChangeobjValues} 
                                 />
                             </InputGroup>                                        
@@ -273,10 +276,10 @@ const Eligibility = (props) => {
                         <InputGroup> 
                             <Input 
                                 type="select"
-                                name="typeOfClient"
-                                id="typeOfClient"
+                                name="current_pregnant"
+                                id="current_pregnant"
                                 onChange={handleMedicalHistory} 
-                                //value={objValues.typeOfClient} 
+                                value={objValues.current_pregnant} 
                             >
                             <option value="">Select</option>
                             <option value="PLHIV New enrolled into HIV Care & Treatment">PLHIV New enrolled into HIV Care & Treatment</option>
@@ -292,10 +295,10 @@ const Eligibility = (props) => {
                         <InputGroup> 
                             <Input 
                                 type="select"
-                                name="pregnantStatus"
-                                id="pregnantStatus"
+                                name="current_pregnant"
+                                id="current_pregnant"
                                 onChange={handleMedicalHistory} 
-                                //value={objValues.pregnantStatus} 
+                                value={objValues.current_pregnant} 
                             >
                             <option value="">Select</option>
                             <option value="Yes">Yes</option>
@@ -314,10 +317,10 @@ const Eligibility = (props) => {
                             <InputGroup> 
                                 <Input 
                                     type="select"
-                                    name="whoStaging"
-                                    id="whoStaging"
+                                    name="previous_arv_exposure"
+                                    id="previous_arv_exposure"
                                     onChange={handleMedicalHistory} 
-                                    //value={objValues.whoStaging}  
+                                    value={objValues.previous_arv_exposure}  
                                 >
                                 <option value="">Select</option>
                                 <option value="Yes">Yes</option>
@@ -336,8 +339,8 @@ const Eligibility = (props) => {
                             <InputGroup> 
                                 <Input 
                                     type="text"
-                                    name="lastCd4Result"
-                                    id="lastCd4Result"
+                                    name="previous_arv_exposure"
+                                    id="previous_arv_exposure"
                                      
                                 />
                             </InputGroup>
@@ -350,8 +353,8 @@ const Eligibility = (props) => {
                             <InputGroup> 
                                 <Input 
                                     type="text"
-                                    name="lastViralLoadResult"
-                                    id="lastViralLoadResult"
+                                    name="previous_arv_exposure"
+                                    id="previous_arv_exposure"
                                      
                                 />
                             </InputGroup>
@@ -363,10 +366,10 @@ const Eligibility = (props) => {
                             <InputGroup> 
                                 <Input 
                                 type="select"
-                                name="eligibleForViralLoad"
-                                id="eligibleForViralLoad"
+                                name="current_pregnant"
+                                id="current_pregnant"
                                 onChange={handleMedicalHistory} 
-                                //value={objValues.eligibleForViralLoad} 
+                                value={objValues.current_pregnant} 
                                 >
                                 <option value="">Select</option>
                                 <option value="Yes">Yes</option>
@@ -378,7 +381,7 @@ const Eligibility = (props) => {
                      </div>
                      </div>
                     <br/>
-                    
+                    <Button content='Next' type="submit" icon='right arrow' labelPosition='right' style={{backgroundColor:"#014d88", color:'#fff'}} onClick={handleSubmit}/>
                     </form>
                     
                 </CardBody>

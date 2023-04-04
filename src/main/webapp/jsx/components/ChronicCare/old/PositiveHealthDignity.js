@@ -73,8 +73,11 @@ const PositiveHealthDignity = (props) => {
     const [errors, setErrors] = useState({});
     let temp = { ...errors } 
     useEffect(() => { 
-        
-    }, []);  
+        if(props.observation.data ){
+            setAssesment(props.observation.data.assesment) 
+            setWho(props.observation.data.who)             
+        }
+    }, [props.observation.data]);  
     const [who, setWho] = useState({stage:"", stage1Value:"",stage2Value:"", stage3Value:"",stage4Value:""});
 
     const [assesment, setAssesment] = useState({assessment:""});
@@ -132,10 +135,10 @@ return (
                             <Label>How many doses of ARV's have you missed since the last appointment (if on ART)?</Label>
                                     <Input 
                                         type="select"
-                                        name="lastAppointment"
-                                        id="lastAppointment"
+                                        name="assessment"
+                                        id="assessment"
                                         onChange={handleAssessment} 
-                                        //value={assesment.lastAppointment} 
+                                        value={assesment.assessment} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -150,10 +153,10 @@ return (
                             <Label>Medication adherence counseling done?</Label>
                                     <Input 
                                         type="select"
-                                        name="medication"
-                                        id="medication"
+                                        name="assessment"
+                                        id="assessment"
                                         onChange={handleAssessment} 
-                                        //value={assesment.medication} 
+                                        value={assesment.assessment} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -167,10 +170,10 @@ return (
                             <Label>Have you disclosed your status to your parent(s)?</Label>
                                     <Input 
                                         type="select"
-                                        name="parentStatus"
-                                        id="parentStatus"
+                                        name="assessment"
+                                        id="assessment"
                                         onChange={handleAssessment} 
-                                        //value={assesment.parentStatus} 
+                                        value={assesment.assessment} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -179,16 +182,32 @@ return (
 
                             </FormGroup>
                         </div>
-                        
+                        <div className="form-group mb-3 col-md-6">                                    
+                            <FormGroup>
+                            <Label>Have you disclosed your status to your parent(s)?</Label>
+                                    <Input 
+                                        type="select"
+                                        name="assessment"
+                                        id="assessment"
+                                        onChange={handleAssessment} 
+                                        value={assesment.assessment} 
+                                    >
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                    </Input>
+
+                            </FormGroup>
+                        </div>
                         <div className="form-group mb-3 col-md-6">                                    
                             <FormGroup>
                             <Label>Do you use condoms during every sexual encounter?</Label>
                                     <Input 
                                         type="select"
-                                        name="condoms"
-                                        id="condoms"
+                                        name="assessment"
+                                        id="assessment"
                                         onChange={handleAssessment} 
-                                        //value={assesment.condoms} 
+                                        value={assesment.assessment} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -202,10 +221,10 @@ return (
                             <Label>Condom use counseling done?</Label>
                                     <Input 
                                         type="select"
-                                        name="condomCounseling"
-                                        id="condomCounseling"
+                                        name="assessment"
+                                        id="assessment"
                                         onChange={handleAssessment} 
-                                        value={assesment.condomCounseling} 
+                                        value={assesment.assessment} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -223,10 +242,10 @@ return (
                             <Label>Do you/partner have genital sores/rash/pain/discharge/bleeding?</Label>
                                     <Input 
                                         type="select"
-                                        name="preventDiseases"
-                                        id="preventDiseases"
+                                        name="assessment"
+                                        id="assessment"
                                         onChange={handleAssessment} 
-                                        //value={assesment.preventDiseases} 
+                                        value={assesment.assessment} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -240,10 +259,10 @@ return (
                             <Label>How many doses of Cotrimoxazole have you missed since the last appointment?</Label>
                                     <Input 
                                         type="select"
-                                        name="cotrimoxazole"
-                                        id="cotrimoxazole"
+                                        name="assessment"
+                                        id="assessment"
                                         onChange={handleAssessment} 
-                                        //value={assesment.cotrimoxazole} 
+                                        value={assesment.assessment} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -261,10 +280,10 @@ return (
                             <Label>How regularly do you take alcohol in a week?</Label>
                                     <Input 
                                         type="select"
-                                        name="alcohol"
-                                        id="alcohol"
+                                        name="assessment"
+                                        id="assessment"
                                         onChange={handleAssessment} 
-                                        //value={assesment.alcohol} 
+                                        value={assesment.assessment} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -278,10 +297,10 @@ return (
                             <Label>Nutrituional counseling done?</Label>
                                     <Input 
                                         type="select"
-                                        name="nutrituional"
-                                        id="nutrituional"
+                                        name="assessment"
+                                        id="assessment"
                                         onChange={handleAssessment} 
-                                        //value={assesment.nutrituional} 
+                                        value={assesment.assessment} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -295,10 +314,10 @@ return (
                             <Label>WASH counseling done?</Label>
                                     <Input 
                                         type="select"
-                                        name="wash"
-                                        id="wash"
+                                        name="assessment"
+                                        id="assessment"
                                         onChange={handleAssessment} 
-                                        //value={assesment.wash} 
+                                        value={assesment.assessment} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -312,10 +331,10 @@ return (
                             <Label>Additional PHDP services provided?</Label>
                                     <Input 
                                         type="select"
-                                        name="phdp"
-                                        id="phdp"
+                                        name="assessment"
+                                        id="assessment"
                                         onChange={handleAssessment} 
-                                        //value={assesment.phdp} 
+                                        value={assesment.assessment} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -327,6 +346,9 @@ return (
                         </div>
                     </div>
                     <br/>
+                    <Button content='Back' icon='left arrow' labelPosition='left' style={{backgroundColor:"#992E62", color:'#fff'}} onClick={()=>handleItemClick('appearance', 'appearance')}/>
+                    <Button content='Next' type="submit" icon='right arrow' labelPosition='right' style={{backgroundColor:"#014d88", color:'#fff'}} onClick={handleSubmit}/>
+                    
                     </form>
                     
                 </CardBody>

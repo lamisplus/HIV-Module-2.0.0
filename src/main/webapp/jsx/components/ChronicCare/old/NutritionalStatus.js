@@ -75,15 +75,17 @@ const BasicInfo = (props) => {
     const [selectedOptions2,setSelectedOptions2] = useState([]);
     let temp = { ...errors }   
     useEffect(() => { 
-       
-    }, []); 
+        if(props.observation.data ){
+            setVitalSignDto(props.observation.data.physicalExamination)           
+        }
+    }, [props.observation.data]); 
     const [vital, setVitalSignDto]= useState({
         bodyWeight: "",
         diastolic:"",
         encounterDate: "",
         facilityId: 1,
         height: "",
-        personId: "",
+        personId: props.patientObj.id,
         serviceTypeId: 1,
         systolic:"",
         pulse:"",
@@ -325,6 +327,8 @@ const BasicInfo = (props) => {
                     </div>
                     </div>
                     <br/>
+                    <Button content='Back' icon='left arrow' labelPosition='left' style={{backgroundColor:"#992E62", color:'#fff'}} onClick={()=>handleItemClick('past-arv', 'past-arv')}/>
+                    <Button content='Next' type="submit" icon='right arrow' labelPosition='right' style={{backgroundColor:"#014d88", color:'#fff'}} onClick={handleSubmit}/>
                     
                     </form>
                     

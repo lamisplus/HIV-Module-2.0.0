@@ -73,11 +73,8 @@ const ReproductiveIntentions = (props) => {
     const [errors, setErrors] = useState({});
     let temp = { ...errors } 
     useEffect(() => { 
-        if(props.observation.data ){
-            setAssesment(props.observation.data.assesment) 
-            setWho(props.observation.data.who)             
-        }
-    }, [props.observation.data]);  
+       
+    }, []);  
     const [who, setWho] = useState({stage:"", stage1Value:"",stage2Value:"", stage3Value:"",stage4Value:""});
 
     const [assesment, setAssesment] = useState({assessment:""});
@@ -134,10 +131,10 @@ return (
                             <Label>Have you been screened for cervical cancer in the last one year?</Label>
                                     <Input 
                                         type="select"
-                                        name="assessment"
-                                        id="assessment"
+                                        name="cervicalCancer"
+                                        id="cervicalCancer"
                                         onChange={handleAssessment} 
-                                        value={assesment.assessment} 
+                                        //value={assesment.cervicalCancer} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -152,10 +149,10 @@ return (
                             <Label>Do you intend to get pregnant within the next one year?</Label>
                                     <Input 
                                         type="select"
-                                        name="assessment"
-                                        id="assessment"
+                                        name="pregnantWithinNextYear"
+                                        id="pregnantWithinNextYear"
                                         onChange={handleAssessment} 
-                                        value={assesment.assessment} 
+                                        //value={assesment.pregnantWithinNextYear} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -169,10 +166,10 @@ return (
                             <Label>Are you currently using a contraceptive?</Label>
                                     <Input 
                                         type="select"
-                                        name="assessment"
-                                        id="assessment"
+                                        name="contraceptive"
+                                        id="contraceptive"
                                         onChange={handleAssessment} 
-                                        value={assesment.assessment} 
+                                        value={assesment.contraceptive} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -183,8 +180,6 @@ return (
                         </div>
                     </div>
                     <br/>
-                    <Button content='Back' icon='left arrow' labelPosition='left' style={{backgroundColor:"#992E62", color:'#fff'}} onClick={()=>handleItemClick('appearance', 'appearance')}/>
-                    <Button content='Next' type="submit" icon='right arrow' labelPosition='right' style={{backgroundColor:"#014d88", color:'#fff'}} onClick={handleSubmit}/>
                     
                     </form>
                     

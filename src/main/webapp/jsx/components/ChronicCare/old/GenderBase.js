@@ -73,8 +73,11 @@ const BasicInfo = (props) => {
     const [errors, setErrors] = useState({});
     let temp = { ...errors } 
     useEffect(() => { 
-       
-    }, []);  
+        if(props.observation.data ){
+            setAssesment(props.observation.data.assesment) 
+            setWho(props.observation.data.who)             
+        }
+    }, [props.observation.data]);  
     const [who, setWho] = useState({stage:"", stage1Value:"",stage2Value:"", stage3Value:"",stage4Value:""});
 
     const [assesment, setAssesment] = useState({assessment:""});
@@ -132,10 +135,10 @@ return (
                             <Label>Have you been beaten, sexually coerced, raped or threathened by your partner or anyone else?</Label>
                                     <Input 
                                         type="select"
-                                        name="sexuallyThreathened"
-                                        id="sexuallyThreathened"
+                                        name="assessment"
+                                        id="assessment"
                                         onChange={handleAssessment} 
-                                        //value={assesment.sexuallyThreathened} 
+                                        value={assesment.assessment} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -150,10 +153,10 @@ return (
                             <Label>Does Your partner/family deny you food, shelter, freedom of movement livelihood or finance to access health care?</Label>
                                     <Input 
                                         type="select"
-                                        name="partnerCare"
-                                        id="partnerCare"
+                                        name="assessment"
+                                        id="assessment"
                                         onChange={handleAssessment} 
-                                        //value={assesment.partnerCare} 
+                                        value={assesment.assessment} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -164,6 +167,8 @@ return (
                         </div>
                     </div>
                     <br/>
+                    <Button content='Back' icon='left arrow' labelPosition='left' style={{backgroundColor:"#992E62", color:'#fff'}} onClick={()=>handleItemClick('appearance', 'appearance')}/>
+                    <Button content='Next' type="submit" icon='right arrow' labelPosition='right' style={{backgroundColor:"#014d88", color:'#fff'}} onClick={handleSubmit}/>
                     
                     </form>
                     
