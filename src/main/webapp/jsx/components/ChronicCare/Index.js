@@ -138,7 +138,7 @@ const UserRegistration = (props) => {
         phdp:""
     })
     const [reproductive, setReproductive] = useState({cervicalCancer:"", pregnantWithinNextYear:"",contraceptive:""});
-    const [tpt, setTpt] = useState({ referredForServices:"", adherence:"", rash:"", neurologicSymptoms:"", hepatitisSymptoms:"",tbSymptoms:"",resonForStoppingIpt:"", outComeOfIpt:""});
+    const [tpt, setTpt] = useState({ date:"", referredForServices:"", adherence:"", rash:"", neurologicSymptoms:"", hepatitisSymptoms:"",tbSymptoms:"",resonForStoppingIpt:"", outComeOfIpt:"",treatementType:"",completionDate:""});
     const [tbObj, setTbObj] = useState({currentlyOnTuberculosis:"", 
             tbTreatment:"", 
             tbTreatmentStartDate:"",

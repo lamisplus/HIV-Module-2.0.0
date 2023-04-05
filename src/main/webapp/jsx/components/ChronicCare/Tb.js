@@ -87,8 +87,18 @@ const useStyles = makeStyles((theme) => ({
 
 const TbScreening = (props) => {
     const classes = useStyles();
-    
+    const [contraindicationDisplay, setcontraindicationDisplay]=useState(false)
     useEffect(() => {
+        //End of Eligible for TPT logic
+        if(props.tbObj.currentlyOnTuberculosis!=="" && props.tbObj.currentlyOnTuberculosis==="No"){
+            props.tbObj.eligibleForTPT="No"
+        }else if(props.tbObj.currentlyOnTuberculosis!=="" && props.tbObj.currentlyOnTuberculosis==="Yes"){
+            //props.tbObj.eligibleForTPT="No"
+            props.setTbObj({...props.tbObj, ['eligibleForTPT']: "No"})
+        }else{
+            props.tbObj.eligibleForTPT=""
+        }
+        //End of Eligible for TPT logic
         // Start of contraindications logic 
         if((props.tbObj.priorInh!=="" && props.tbObj.priorInh===true )
          || (props.tbObj.highAlcohol!=="" && props.tbObj.highAlcohol===true) 
@@ -98,31 +108,36 @@ const TbScreening = (props) => {
          || (props.tbObj.abnormalChest!=="" && props.tbObj.abnormalChest===true)
          || (props.tbObj.activeTb!=="" && props.tbObj.activeTb===true))
          {
-            //props.tbObj.contraindications="Yes"
-            props.setTbObj({...props.tbObj, ['contraindications']: "Yes"})
-        }else if((props.tbObj.priorInh!=="" || props.tbObj.priorInh===false )
-        && (props.tbObj.highAlcohol!=="" || props.tbObj.highAlcohol===false) 
-        && (props.tbObj.activeHepatitis!=="" || props.tbObj.activeHepatitis===false)
-        && (props.tbObj.age1year!=="" || props.tbObj.age1year===false)
-        && (props.tbObj.poorTreatmentAdherence!=="" || props.tbObj.poorTreatmentAdherence===false)
-        && (props.tbObj.abnormalChest!=="" || props.tbObj.abnormalChest===false)
-        && (props.tbObj.activeTb!=="" || props.tbObj.activeTb===false)){
-            //props.tbObj.contraindications="No"
-            props.setTbObj({...props.tbObj, ['contraindications']: "No"})
+            props.tbObj.contraindications="Yes"
+            //props.setTbObj({...props.tbObj, ['contraindications']: "Yes"})
+        }else if((props.tbObj.priorInh!=="" && props.tbObj.priorInh===false )
+        && (props.tbObj.highAlcohol!=="" && props.tbObj.highAlcohol===false) 
+        && (props.tbObj.activeHepatitis!=="" && props.tbObj.activeHepatitis===false)
+        && (props.tbObj.age1year!=="" && props.tbObj.age1year===false)
+        && (props.tbObj.poorTreatmentAdherence!=="" && props.tbObj.poorTreatmentAdherence===false)
+        && (props.tbObj.abnormalChest!=="" && props.tbObj.abnormalChest===false)
+        && (props.tbObj.activeTb!=="" && props.tbObj.activeTb===false)){
+            props.tbObj.contraindications="No"
+            //props.setTbObj({...props.tbObj, ['contraindications']: "No"})
         }
         //End of contraindications logic
 
         // Start of Outcome logic 
-        if(    (props.tbObj.coughing!=="" && props.tbObj.coughing==="Yes" )
-            || (props.tbObj.fever!=="" && props.tbObj.fever==="Yes" )
-            || (props.tbObj.losingWeight!=="" && props.tbObj.losingWeight==="Yes" )
-            || (props.tbObj.nightSweats!=="" && props.tbObj.nightSweats==="Yes")
-            || (props.tbObj.poorWeightGain!=="" && props.tbObj.poorWeightGain==="Yes")
-            || (props.tbObj.historyWithAdults!=="" && props.tbObj.historyWithAdults==="Yes")
+        if(   props.tbObj.coughing==="Yes" 
+            || props.tbObj.fever==="Yes" 
+            ||  props.tbObj.losingWeight==="Yes" 
+            ||  props.tbObj.nightSweats==="Yes"
+            ||  props.tbObj.poorWeightGain==="Yes"
+            ||  props.tbObj.historyWithAdults==="Yes"
           )
          {
             //props.tbObj.outcome="Presumptive TB case (TB suspect)"
+            //props.tbObj.eligibleForTPT="No"
+            setcontraindicationDisplay(false)
             props.setTbObj({...props.tbObj, ['outcome']: "Presumptive TB case (TB suspect)"})
+            props.tbObj.eligibleForTPT="No"
+            
+            //props.setTbObj({...props.tbObj, ['eligibleForTPT']: "No"})
             //console.log("last yes")
         }else if(  props.tbObj.coughing==="No" 
                 &&  props.tbObj.fever==="No"
@@ -132,7 +147,9 @@ const TbScreening = (props) => {
                 &&  props.tbObj.historyWithAdults==="No"){
                     //The logic 
                     //props.tbObj.outcome="No TB sign (not a suspect)"
+                    setcontraindicationDisplay(true)
                     props.setTbObj({...props.tbObj, ['outcome']: "No TB sign (not a suspect)"})
+                    //setcontraindicationDisplay(true)
                     //props.tbObj.eligibleForTPT="No"
         }
         if(
@@ -157,17 +174,13 @@ const TbScreening = (props) => {
                 ){
                 props.setTbObj({...props.tbObj, ['eligibleForTPT']: "Yes"})
                 //props.tbObj.eligibleForTPT="Yes"
+            }else if(props.tbObj.currentlyOnTuberculosis==="No" && props.tbObj.tbTreatment==="Yes"){
+                props.setTbObj({...props.tbObj, ['outcome']: "TB/HIV co-infected"})
+            }else{
+
             }
             //End of Outcome logic
-            //End of Eligible for TPT logic
-            if(props.tbObj.currentlyOnTuberculosis!=="" || props.tbObj.currentlyOnTuberculosis==="No"){
-                props.tbObj.eligibleForTPT="No"
-            }else if(props.tbObj.currentlyOnTuberculosis!=="" || props.tbObj.currentlyOnTuberculosis==="Yes"){
-                props.tbObj.eligibleForTPT="No"
-            } else{
-                props.tbObj.eligibleForTPT=""
-            }
-        //End of Eligible for TPT logic
+
         }, [props.tbObj.priorInh,props.tbObj.highAlcohol,props.tbObj.activeHepatitis,props.tbObj.age1year,props.tbObj.poorTreatmentAdherence,props.tbObj.abnormalChest,props.tbObj.activeTb,props.tbObj.contraindications,
             props.tbObj.coughing, 
             props.tbObj.fever, 
@@ -192,6 +205,7 @@ const TbScreening = (props) => {
         }
         if(e.target.name==='tbTreatment' && e.target.value==='No'){
             props.tbObj.tbTreatmentStartDate=""
+            setcontraindicationDisplay(true)
         }
         
     }
@@ -256,6 +270,7 @@ const TbScreening = (props) => {
                         </div> 
                         )}
                         {(props.tbObj.tbTreatment!=='' && props.tbObj.tbTreatment==='Yes') && (
+                        <>
                         <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label >TB treatment start date </Label>
@@ -272,6 +287,42 @@ const TbScreening = (props) => {
                             </InputGroup>
                             </FormGroup>
                         </div>
+                        <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                            <Label >Treatment Type </Label>
+                            <InputGroup> 
+                                <Input 
+                                    type="select"
+                                    name="treatementType"
+                                    id="treatementType"
+                                    onChange={handleInputChange} 
+                                    value={props.tbObj.treatementType} 
+                                >
+                                    <option value="">Select</option>
+                                    <option value="Relapsed">Relapsed</option>
+                                    <option value="New">New</option>
+                                </Input>
+                            </InputGroup>
+                            </FormGroup>
+                        </div>
+                        <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                            <Label >Completion Date </Label>
+                            <InputGroup> 
+                                <Input 
+                                    type="date"
+                                    name="completionDate"
+                                    id="completionDate"
+                                    onChange={handleInputChange} 
+                                    value={props.tbObj.completionDate} 
+                                >
+                                
+                                </Input>
+                            </InputGroup>
+                            </FormGroup>
+                        </div>
+                        
+                        </>
                          )}
                         {(props.tbObj.currentlyOnTuberculosis==='Yes' || props.tbObj.tbTreatment==='No') && (
                         <>
@@ -385,7 +436,7 @@ const TbScreening = (props) => {
                             </div> 
                         </>)}
                         <br/>
-                        {props.tbObj.tbTreatment==='No' && (<>
+                        { (contraindicationDisplay===true) && (<>
                         <hr/>
 
                         <h3>Contraindications for TPT</h3>

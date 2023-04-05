@@ -127,6 +127,7 @@ const Eligibility = (props) => {
                     <form >
      
                     <div className="row">
+                        
                         <div className="form-group mb-3 col-md-6">
                                 <FormGroup>
                                 <Label >Weight</Label>
@@ -264,7 +265,7 @@ const Eligibility = (props) => {
                             </Label>
                             <InputGroup> 
                                 <Input 
-                                    type="text"
+                                    type="select"
                                     name="outComeOfIpt"
                                     id="outComeOfIpt"
                                     onChange={handleTpt} 
@@ -280,7 +281,29 @@ const Eligibility = (props) => {
                                 </Input>
                             </InputGroup>
                             </FormGroup>
-                        </div> 
+                        </div>
+                        {props.tpt.outComeOfIpt!=="" && (
+                        <div className="form-group mb-3 col-md-4">
+                                    <FormGroup>
+                                    <Label >Outcome Date </Label>
+                                    <InputGroup> 
+                                    <Input
+                                    type="date"
+                                    name="date"
+                                    id="date"
+                                    value={props.tpt.date}
+                                    onChange={handleTpt}
+                                    style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                                    max= {moment(new Date()).format("YYYY-MM-DD") }
+                                    
+                                    > 
+                                </Input>
+                               
+                            </InputGroup>                                        
+                            </FormGroup>   
+                        </div>
+                        )} 
+                        {props.tpt.outComeOfIpt==="Stopped IPT" && (
                         <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label >Reasons for stopping IPT  
@@ -298,7 +321,8 @@ const Eligibility = (props) => {
                                 </Input>
                             </InputGroup>
                             </FormGroup>
-                        </div> 
+                        </div>
+                        )} 
                     </div>
                     
                     
