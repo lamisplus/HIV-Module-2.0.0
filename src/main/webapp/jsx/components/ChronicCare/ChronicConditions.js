@@ -74,65 +74,12 @@ const ChronicConditions = (props) => {
     useEffect(() => { 
        
     }, []); 
-    const [vital, setVitalSignDto]= useState({
-        bodyWeight: "",
-        diastolic:"",
-        encounterDate: "",
-        facilityId: 1,
-        height: "",
-        personId:"",
-        serviceTypeId: 1,
-        systolic:"",
-        pulse:"",
-        temperature:"",
-        respiratoryRate:"" 
-    })
-    //Vital signs clinical decision support 
-    const [vitalClinicalSupport, setVitalClinicalSupport] = useState({
-                                bodyWeight: "",
-                                diastolic: "",
-                                height: "",
-                                systolic: "",
-                                pulse:"",
-                                temperature:"",
-                                respiratoryRate:""
-                            })
-    const handleInputChangeVitalSignDto = e => {
-        setVitalSignDto({ ...vital, [e.target.name]: e.target.value });
+    
+
+    const handleInputChange =e =>{
+        props.setChronicConditions({...props.chronicConditions, [e.target.name]: e.target.value})   
     }
 
-    const handleInputValueCheckSystolic =(e)=>{
-        if(e.target.name==="systolic" && (e.target.value < 90 || e.target.value>240)){      
-        const message ="Blood Pressure systolic must not be greater than 240 and less than 90"
-        setVitalClinicalSupport({...vitalClinicalSupport, systolic:message})
-        }else{
-        setVitalClinicalSupport({...vitalClinicalSupport, systolic:""})
-        }
-    }
-    const handleInputValueCheckDiastolic =(e)=>{
-        if(e.target.name==="diastolic" && (e.target.value < 60 || e.target.value>140)){      
-        const message ="Blood Pressure diastolic must not be greater than 140 and less than 60"
-        setVitalClinicalSupport({...vitalClinicalSupport, diastolic:message})
-        }else{
-        setVitalClinicalSupport({...vitalClinicalSupport, diastolic:""})
-        }
-    }
-
-    const handleItemClick =(page, completedMenu)=>{
-        props.handleItemClick(page)
-        if(props.completed.includes(completedMenu)) {
-
-        }else{
-            props.setCompleted([...props.completed, completedMenu])
-        }
-    }  
-    /**** Submit Button Processing  */
-    const handleSubmit = (e) => { 
-        e.preventDefault();  
-        props.observation.data.physicalExamination=vital   
-        toast.success("Medical history save successful");
-        handleItemClick('appearance', 'physical-examination' )                  
-    }
     
 return (
         <>  
@@ -144,34 +91,18 @@ return (
                     <form >
                     {/* Medical History form inputs */}
                     <div className="row">
-                    <div className="form-group mb-3 col-md-4">
-                            <FormGroup>
-                            <Label >Visit Date *</Label>
-                            <InputGroup> 
-                                <Input 
-                                    type="date"
-                                    
-                                    name="visitDate"
-                                    id="visitDate"
-                                    
-                                />
-                            </InputGroup>                                        
-                            </FormGroup>
-                            {errors.visitDate !=="" ? (
-                                <span className={classes.error}>{errors.visitDate}</span>
-                            ) : "" }
-                    </div>
                     <div className="form-group mb-3 col-md-8"></div>   
                     </div>
                     <div className="row">
                     <div className="form-group mb-3 col-md-6">                                    
                             <FormGroup>
-                            <Label>Known Hypertensive ?</Label>
+                            <Label>Known Hypertensive </Label>
                                     <Input 
                                         type="select"
-                                        name="assessment"
-                                        id="assessment"
-                                        
+                                        name="hypertensive"
+                                        id="hypertensive"
+                                        onChange={handleInputChange} 
+                                        value={props.chronicConditions.hypertensive} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -185,9 +116,10 @@ return (
                             <Label>First time identified within the programme?</Label>
                                     <Input 
                                         type="select"
-                                        name="assessment"
-                                        id="assessment"
-                                        
+                                        name="firstTimeHypertensive"
+                                        id="firstTimeHypertensive"
+                                        onChange={handleInputChange} 
+                                        value={props.chronicConditions.firstTimeHypertensive}
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -210,9 +142,9 @@ return (
                                 id="systolic"
                                 min="90"
                                 max="2240"
-                                onChange={handleInputChangeVitalSignDto}
-                                value={vital.systolic}
-                                onKeyUp={handleInputValueCheckSystolic}
+                                onChange={handleInputChange}
+                                value={props.chronicConditions.systolic}
+                                //onKeyUp={handleInputValueCheckSystolic}
                                 style={{border: "1px solid #014D88", borderRadius:"0rem"}} 
                             />
                             <InputGroupText addonType="append" style={{ backgroundColor:"#014D88", color:"#fff", border: "1px solid #014D88", borderRadius:"0rem"}}>
@@ -224,26 +156,15 @@ return (
                                 id="diastolic"
                                 min={0}
                                 max={140}
-                                onChange={handleInputChangeVitalSignDto}
-                                value={vital.diastolic}
-                                onKeyUp={handleInputValueCheckDiastolic} 
+                                onChange={handleInputChange}
+                                value={props.chronicConditions.diastolic}
+                                //onKeyUp={handleInputValueCheckDiastolic} 
                                 style={{border: "1px solid #014D88", borderRadius:"0rem"}}
                                 />
                             
                             
                         </InputGroup>
-                        {vitalClinicalSupport.systolic !=="" ? (
-                        <span className={classes.error}>{vitalClinicalSupport.systolic}</span>
-                        ) : ""}
-                        {errors.systolic !=="" ? (
-                            <span className={classes.error}>{errors.systolic}</span>
-                        ) : "" }  
-                        {vitalClinicalSupport.diastolic !=="" ? (
-                        <span className={classes.error}>{vitalClinicalSupport.diastolic}</span>
-                        ) : ""}
-                        {errors.diastolic !=="" ? (
-                            <span className={classes.error}>{errors.diastolic}</span>
-                        ) : "" }          
+                                
                         </FormGroup>
                     </div>
                     </div>
@@ -252,9 +173,10 @@ return (
                             <Label>BP above 14080mmHg?</Label>
                                     <Input 
                                         type="select"
-                                        name="assessment"
-                                        id="assessment"
-                                        
+                                        name="bp"
+                                        id="bp"
+                                        onChange={handleInputChange} 
+                                        value={props.chronicConditions.bp}
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -270,9 +192,10 @@ return (
                                 <Label>Know diabetic?</Label>
                                         <Input 
                                             type="select"
-                                            name="assessment"
-                                            id="assessment"
-                                            
+                                            name="diabetic"
+                                            id="diabetic"
+                                            onChange={handleInputChange} 
+                                            value={props.chronicConditions.diabetic}
                                         >
                                         <option value="">Select</option>
                                         <option value="Yes">Yes</option>
@@ -286,9 +209,10 @@ return (
                                 <Label>First time identified within the programme?</Label>
                                         <Input 
                                             type="select"
-                                            name="assessment"
-                                            id="assessment"
-                                            
+                                            name="firstTimeDiabetic"
+                                            id="firstTimeDiabetic"
+                                            onChange={handleInputChange} 
+                                            value={props.chronicConditions.firstTimeDiabetic}
                                         >
                                         <option value="">Select</option>
                                         <option value="Yes">Yes</option>
@@ -302,9 +226,10 @@ return (
                                 <Label>Increased frequency of urination</Label>
                                         <Input 
                                             type="select"
-                                            name="assessment"
-                                            id="assessment"
-                                            
+                                            name="frequencyUrination"
+                                            id="frequencyUrination"
+                                            onChange={handleInputChange} 
+                                            value={props.chronicConditions.frequencyUrination}
                                         >
                                         <option value="">Select</option>
                                         <option value="Yes">Yes</option>
@@ -318,9 +243,27 @@ return (
                                 <Label>Increased water(fluid) intake?</Label>
                                         <Input 
                                             type="select"
-                                            name="assessment"
-                                            id="assessment"
-                                            
+                                            name="increaseWater"
+                                            id="increaseWater"
+                                            onChange={handleInputChange} 
+                                            value={props.chronicConditions.increaseWater}
+                                        >
+                                        <option value="">Select</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                        </Input>
+
+                                </FormGroup>
+                        </div>
+                        <div className="form-group mb-3 col-md-6">                                    
+                                <FormGroup>
+                                <Label>Increased food intake (without weight gain)</Label>
+                                        <Input 
+                                            type="select"
+                                            name="increaseFood"
+                                            id="increaseFood"
+                                            onChange={handleInputChange} 
+                                            value={props.chronicConditions.increaseFood}
                                         >
                                         <option value="">Select</option>
                                         <option value="Yes">Yes</option>
@@ -331,9 +274,6 @@ return (
                         </div>
                     </div>
                     </div>
-                    <br/>
-                    <Button content='Back' icon='left arrow' labelPosition='left' style={{backgroundColor:"#992E62", color:'#fff'}} onClick={()=>handleItemClick('past-arv', 'past-arv')}/>
-                    <Button content='Next' type="submit" icon='right arrow' labelPosition='right' style={{backgroundColor:"#014d88", color:'#fff'}} onClick={handleSubmit}/>
                     
                     </form>
                     

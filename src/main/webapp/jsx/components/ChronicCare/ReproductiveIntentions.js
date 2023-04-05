@@ -70,35 +70,18 @@ const useStyles = makeStyles((theme) => ({
 
 const ReproductiveIntentions = (props) => {
 
-    const [errors, setErrors] = useState({});
-    let temp = { ...errors } 
+    // const [errors, setErrors] = useState({});
+    // let temp = { ...errors } 
     useEffect(() => { 
        
     }, []);  
-    const [who, setWho] = useState({stage:"", stage1Value:"",stage2Value:"", stage3Value:"",stage4Value:""});
-
-    const [assesment, setAssesment] = useState({assessment:""});
-    const handleAssessment =e =>{
-        setAssesment({...assesment, [e.target.name]: e.target.value})
+    
+    const handleReproductive =e =>{
+        props.setReproductive({...props.reproductive, [e.target.name]: e.target.value})
         
     }
 
-    const handleItemClick =(page, completedMenu)=>{
-        props.handleItemClick(page)
-        if(props.completed.includes(completedMenu)) {
 
-        }else{
-            props.setCompleted([...props.completed, completedMenu])
-        }
-    }  
-    /**** Submit Button Processing  */
-    const handleSubmit = (e) => { 
-        e.preventDefault();  
-        props.observation.data.assesment = assesment
-        props.observation.data.who=who  
-        toast.success("Record save successful");
-        handleItemClick('plan', 'who' )                  
-    }
         
 return (
         <>  
@@ -109,20 +92,6 @@ return (
                 <br/>
                     <form >
                     <div className="row">
-                    <div className="form-group mb-3 col-md-4">
-                        <FormGroup>
-                        <Label >Visit Date *</Label>
-                        <InputGroup> 
-                            <Input 
-                                type="date"
-                                
-                                name="visitDate"
-                                id="visitDate"
-                                
-                            />
-                        </InputGroup>                                        
-                        </FormGroup>   
-                    </div>
                     <div className="form-group mb-3 col-md-8"></div>   
                     </div>
                     <div className="row">
@@ -133,8 +102,8 @@ return (
                                         type="select"
                                         name="cervicalCancer"
                                         id="cervicalCancer"
-                                        onChange={handleAssessment} 
-                                        //value={assesment.cervicalCancer} 
+                                        onChange={handleReproductive} 
+                                        value={props.reproductive.cervicalCancer} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -151,8 +120,8 @@ return (
                                         type="select"
                                         name="pregnantWithinNextYear"
                                         id="pregnantWithinNextYear"
-                                        onChange={handleAssessment} 
-                                        //value={assesment.pregnantWithinNextYear} 
+                                        onChange={handleReproductive} 
+                                        value={props.reproductive.pregnantWithinNextYear} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -168,8 +137,8 @@ return (
                                         type="select"
                                         name="contraceptive"
                                         id="contraceptive"
-                                        onChange={handleAssessment} 
-                                        value={assesment.contraceptive} 
+                                        onChange={handleReproductive} 
+                                        value={props.reproductive.contraceptive} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -179,8 +148,6 @@ return (
                             </FormGroup>
                         </div>
                     </div>
-                    <br/>
-                    
                     </form>
                     
                 </CardBody>

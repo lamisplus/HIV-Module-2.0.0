@@ -85,131 +85,124 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const Eligibility = (props) => {
+const TbScreening = (props) => {
     const classes = useStyles();
-    const [errors, setErrors] = useState({});
-    const [objValues, setobjValues] = useState({currentlyOnTuberculosis:"", 
-                                                tbTreatment:"", 
-                                                tbTreatmentStartDate:"",
-                                                coughing:"", 
-                                                fever:"", 
-                                                losingWeight:"", 
-                                                nightSweats:"", 
-                                                poorWeightGain:"", 
-                                                historyWithAdults:"",
-                                                outcome:"",
-                                                priorInh:"",
-                                                highAlcohol:"",
-                                                activeHepatitis:"",
-                                                age1year:"",
-                                                poorTreatmentAdherence:"",
-                                                abnormalChest: "",
-                                                activeTb:"",
-                                                contraindications :"",
-                                                eligibleForTPT:""
-                                                });
-    let temp = { ...errors }
+    
     useEffect(() => {
         // Start of contraindications logic 
-        if((objValues.priorInh!=="" && objValues.priorInh===true )
-         || (objValues.highAlcohol!=="" && objValues.highAlcohol===true) 
-         || (objValues.activeHepatitis!=="" && objValues.activeHepatitis===true)
-         || (objValues.age1year!=="" && objValues.age1year===true)
-         || (objValues.poorTreatmentAdherence!=="" && objValues.poorTreatmentAdherence===true)
-         || (objValues.abnormalChest!=="" && objValues.abnormalChest===true)
-         || (objValues.activeTb!=="" && objValues.activeTb===true))
+        if((props.tbObj.priorInh!=="" && props.tbObj.priorInh===true )
+         || (props.tbObj.highAlcohol!=="" && props.tbObj.highAlcohol===true) 
+         || (props.tbObj.activeHepatitis!=="" && props.tbObj.activeHepatitis===true)
+         || (props.tbObj.age1year!=="" && props.tbObj.age1year===true)
+         || (props.tbObj.poorTreatmentAdherence!=="" && props.tbObj.poorTreatmentAdherence===true)
+         || (props.tbObj.abnormalChest!=="" && props.tbObj.abnormalChest===true)
+         || (props.tbObj.activeTb!=="" && props.tbObj.activeTb===true))
          {
-            //objValues.contraindications="Yes"
-            setobjValues({...objValues, ['contraindications']: "Yes"})
-        }else if((objValues.priorInh==="" || objValues.priorInh===false )
-        && (objValues.highAlcohol==="" || objValues.highAlcohol===false) 
-        && (objValues.activeHepatitis==="" || objValues.activeHepatitis===false)
-        && (objValues.age1year==="" || objValues.age1year===false)
-        && (objValues.poorTreatmentAdherence==="" || objValues.poorTreatmentAdherence===false)
-        && (objValues.abnormalChest==="" || objValues.abnormalChest===false)
-        && (objValues.activeTb==="" || objValues.activeTb===false)){
-            setobjValues({...objValues, ['contraindications']: ""})
-        
+            //props.tbObj.contraindications="Yes"
+            props.setTbObj({...props.tbObj, ['contraindications']: "Yes"})
+        }else if((props.tbObj.priorInh!=="" || props.tbObj.priorInh===false )
+        && (props.tbObj.highAlcohol!=="" || props.tbObj.highAlcohol===false) 
+        && (props.tbObj.activeHepatitis!=="" || props.tbObj.activeHepatitis===false)
+        && (props.tbObj.age1year!=="" || props.tbObj.age1year===false)
+        && (props.tbObj.poorTreatmentAdherence!=="" || props.tbObj.poorTreatmentAdherence===false)
+        && (props.tbObj.abnormalChest!=="" || props.tbObj.abnormalChest===false)
+        && (props.tbObj.activeTb!=="" || props.tbObj.activeTb===false)){
+            //props.tbObj.contraindications="No"
+            props.setTbObj({...props.tbObj, ['contraindications']: "No"})
         }
         //End of contraindications logic
 
         // Start of Outcome logic 
-        if((objValues.coughing!=="" && objValues.coughing==="Yes" )
-         || (objValues.fever!=="" && objValues.fever==="Yes") 
-         || (objValues.losingWeight!=="" && objValues.losingWeight==="Yes")
-         || (objValues.nightSweats!=="" && objValues.nightSweats==="Yes")
-         || (objValues.poorWeightGain!=="" && objValues.poorWeightGain==="Yes")
-         || (objValues.historyWithAdults!=="" && objValues.historyWithAdults==="Yes")
+        if(    (props.tbObj.coughing!=="" && props.tbObj.coughing==="Yes" )
+            || (props.tbObj.fever!=="" && props.tbObj.fever==="Yes" )
+            || (props.tbObj.losingWeight!=="" && props.tbObj.losingWeight==="Yes" )
+            || (props.tbObj.nightSweats!=="" && props.tbObj.nightSweats==="Yes")
+            || (props.tbObj.poorWeightGain!=="" && props.tbObj.poorWeightGain==="Yes")
+            || (props.tbObj.historyWithAdults!=="" && props.tbObj.historyWithAdults==="Yes")
           )
          {
-            //objValues.contraindications="Yes"
-            setobjValues({...objValues, ['outcome']: "Presumptive TB case (TB suspect)"})
-        }else if((objValues.coughing==="" || objValues.coughing==="No") 
-        && (objValues.fever==="" || objValues.fever==="No")
-        && (objValues.losingWeight==="" || objValues.losingWeight==="No")
-        && (objValues.nightSweats==="" || objValues.nightSweats==="No")
-        && (objValues.poorWeightGain==="" || objValues.poorWeightGain==="No")
-        && (objValues.historyWithAdults==="" || objValues.historyWithAdults==="No")){
-            setobjValues({...objValues, ['outcome']: "No TB sign (not a suspect)"})
+            //props.tbObj.outcome="Presumptive TB case (TB suspect)"
+            props.setTbObj({...props.tbObj, ['outcome']: "Presumptive TB case (TB suspect)"})
+            //console.log("last yes")
+        }else if(  props.tbObj.coughing==="No" 
+                &&  props.tbObj.fever==="No"
+                &&  props.tbObj.losingWeight==="No"
+                &&  props.tbObj.nightSweats==="No"
+                &&  props.tbObj.poorWeightGain==="No"
+                &&  props.tbObj.historyWithAdults==="No"){
+                    //The logic 
+                    //props.tbObj.outcome="No TB sign (not a suspect)"
+                    props.setTbObj({...props.tbObj, ['outcome']: "No TB sign (not a suspect)"})
+                    //props.tbObj.eligibleForTPT="No"
         }
-        //End of Outcome logic
+        if(
+                    props.tbObj.tbTreatment==="No"
+                &&  props.tbObj.currentlyOnTuberculosis==="No"
+
+                &&  props.tbObj.coughing==="No" 
+                &&  props.tbObj.fever==="No"
+                &&  props.tbObj.losingWeight==="No"
+                &&  props.tbObj.nightSweats==="No"
+                &&  props.tbObj.poorWeightGain==="No"
+                &&  props.tbObj.historyWithAdults==="No"
+                
+                &&  props.tbObj.priorInh===false 
+                &&  props.tbObj.highAlcohol===false
+                && props.tbObj.activeHepatitis===false
+                &&  props.tbObj.age1year===false
+                &&  props.tbObj.abnormalChest===false
+                &&  props.tbObj.abnormalChest===false
+                &&  props.tbObj.poorTreatmentAdherence===false
+
+                ){
+                props.setTbObj({...props.tbObj, ['eligibleForTPT']: "Yes"})
+                //props.tbObj.eligibleForTPT="Yes"
+            }
+            //End of Outcome logic
+            //End of Eligible for TPT logic
+            if(props.tbObj.currentlyOnTuberculosis!=="" || props.tbObj.currentlyOnTuberculosis==="No"){
+                props.tbObj.eligibleForTPT="No"
+            }else if(props.tbObj.currentlyOnTuberculosis!=="" || props.tbObj.currentlyOnTuberculosis==="Yes"){
+                props.tbObj.eligibleForTPT="No"
+            } else{
+                props.tbObj.eligibleForTPT=""
+            }
         //End of Eligible for TPT logic
-        if(objValues.currentlyOnTuberculosis!=="" || objValues.currentlyOnTuberculosis==="No"){
-            setobjValues({...objValues, ['eligibleForTPT']: "Yes"})
-        }else if(objValues.currentlyOnTuberculosis!=="" || objValues.currentlyOnTuberculosis==="Yes"){
-            setobjValues({...objValues, ['eligibleForTPT']: "No"})
-        } 
-        //End of Eligible for TPT logic
-    }, [objValues.priorInh,objValues.highAlcohol,objValues.activeHepatitis,objValues.age1year,objValues.poorTreatmentAdherence,objValues.abnormalChest,objValues.activeTb,objValues.contraindications,
-        objValues.coughing, 
-        objValues.fever, 
-        objValues.losingWeight, 
-        objValues.nightSweats, 
-        objValues.poorWeightGain, 
-        objValues.historyWithAdults,
-        objValues.outcome,
-        objValues.eligibleForTPT,
-        objValues.currentlyOnTuberculosis
+        }, [props.tbObj.priorInh,props.tbObj.highAlcohol,props.tbObj.activeHepatitis,props.tbObj.age1year,props.tbObj.poorTreatmentAdherence,props.tbObj.abnormalChest,props.tbObj.activeTb,props.tbObj.contraindications,
+            props.tbObj.coughing, 
+            props.tbObj.fever, 
+            props.tbObj.losingWeight, 
+            props.tbObj.nightSweats, 
+            props.tbObj.poorWeightGain, 
+            props.tbObj.historyWithAdults,
+            props.tbObj.outcome,
+            props.tbObj.eligibleForTPT,
+            props.tbObj.currentlyOnTuberculosis
     ]);
     
     const handleInputChange =e =>{
-        setobjValues({...objValues, [e.target.name]: e.target.value})
+        props.setTbObj({...props.tbObj, [e.target.name]: e.target.value})
         
         //making some fields to be empty once base on the business logic
         if(e.target.name==='currentlyOnTuberculosis' && e.target.value==='No'){
-            objValues.tbTreatment=""
+            props.tbObj.tbTreatment=""
+            //setprops.tbObj({...props.tbObj, ['tbTreatment']: ""})
+        }else{
+            props.tbObj.tbTreatmentStartDate=""
         }
         if(e.target.name==='tbTreatment' && e.target.value==='No'){
-            objValues.tbTreatmentStartDate=""
+            props.tbObj.tbTreatmentStartDate=""
         }
         
     }
-    console.log(objValues)
+
     const handleInputChangeContrain =e =>{
        if(e.target.checked){ 
-        setobjValues({...objValues, [e.target.name]: e.target.checked})
+        props.setTbObj({...props.tbObj, [e.target.name]: e.target.checked})
         }else{
-            setobjValues({...objValues, [e.target.name]: false})
+            props.setTbObj({...props.tbObj, [e.target.name]: false})
         }
 
-    }
- //Validations of the forms
-  const validate = () => {        
-    //temp.screen_for_tb = objValues.screen_for_tb ? "" : "This field is required"
-
-    setErrors({
-        ...temp
-    })
-    return Object.values(temp).every(x => x === "")
-  } 
-     /**** Submit Button Processing  */
-     const handleSubmit = (e) => { 
-        e.preventDefault(); 
-        if(validate()){
-            // 
-        }else{
-            toast.error("All fields are required");
-        }                 
     }
 
 
@@ -232,17 +225,17 @@ const Eligibility = (props) => {
                                         name="currentlyOnTuberculosis"
                                         id="currentlyOnTuberculosis"
                                         onChange={handleInputChange} 
-                                        value={objValues.currentlyOnTuberculosis} 
+                                        value={props.tbObj.currentlyOnTuberculosis} 
                                     >
                                     <option value="">Select</option>
-                                    <option value="Yes">YES</option>
+                                    <option value="Yes">Yes</option>
                                     <option value="No">No</option>
                                     
                                     </Input>
                                 </InputGroup>                    
                                 </FormGroup>
                         </div>
-                        {objValues.currentlyOnTuberculosis==='Yes' && (
+                        {props.tbObj.currentlyOnTuberculosis==='No' && (
                         <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label >Are you currently on TB treatment?</Label>
@@ -252,7 +245,7 @@ const Eligibility = (props) => {
                                     name="tbTreatment"
                                     id="tbTreatment"
                                     onChange={handleInputChange} 
-                                    value={objValues.tbTreatment} 
+                                    value={props.tbObj.tbTreatment} 
                                 >
                                 <option value="">Select</option>
                                 <option value="Yes">Yes</option>
@@ -262,7 +255,7 @@ const Eligibility = (props) => {
                             </FormGroup>
                         </div> 
                         )}
-                        {objValues.tbTreatment==='Yes' && (
+                        {(props.tbObj.tbTreatment!=='' && props.tbObj.tbTreatment==='Yes') && (
                         <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label >TB treatment start date </Label>
@@ -272,7 +265,7 @@ const Eligibility = (props) => {
                                     name="tbTreatmentStartDate"
                                     id="tbTreatmentStartDate"
                                     onChange={handleInputChange} 
-                                    value={objValues.tbTreatmentStartDate} 
+                                    value={props.tbObj.tbTreatmentStartDate} 
                                 >
                                 
                                 </Input>
@@ -280,7 +273,7 @@ const Eligibility = (props) => {
                             </FormGroup>
                         </div>
                          )}
-                        {(objValues.currentlyOnTuberculosis!=='' && objValues.currentlyOnTuberculosis==='No') || (objValues.tbTreatment!=='' && objValues.tbTreatment==='No') && (
+                        {(props.tbObj.currentlyOnTuberculosis==='Yes' || props.tbObj.tbTreatment==='No') && (
                         <>
                             <div className="form-group mb-3 col-md-6">
                                 <FormGroup>
@@ -291,7 +284,7 @@ const Eligibility = (props) => {
                                         name="coughing"
                                         id="coughing"
                                         onChange={handleInputChange} 
-                                        value={objValues.coughing} 
+                                        value={props.tbObj.coughing} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -309,7 +302,7 @@ const Eligibility = (props) => {
                                         name="fever"
                                         id="fever"
                                         onChange={handleInputChange} 
-                                        value={objValues.fever} 
+                                        value={props.tbObj.fever} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -327,7 +320,7 @@ const Eligibility = (props) => {
                                         name="losingWeight"
                                         id="losingWeight"
                                         onChange={handleInputChange} 
-                                        value={objValues.losingWeight} 
+                                        value={props.tbObj.losingWeight} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -345,7 +338,7 @@ const Eligibility = (props) => {
                                         name="nightSweats"
                                         id="nightSweats"
                                         onChange={handleInputChange} 
-                                        value={objValues.nightSweats} 
+                                        value={props.tbObj.nightSweats} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -363,7 +356,7 @@ const Eligibility = (props) => {
                                         name="poorWeightGain"
                                         id="poorWeightGain"
                                         onChange={handleInputChange} 
-                                        value={objValues.poorWeightGain} 
+                                        value={props.tbObj.poorWeightGain} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -381,7 +374,7 @@ const Eligibility = (props) => {
                                         name="historyWithAdults"
                                         id="historyWithAdults"
                                         onChange={handleInputChange} 
-                                        value={objValues.historyWithAdults} 
+                                        value={props.tbObj.historyWithAdults} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -392,8 +385,12 @@ const Eligibility = (props) => {
                             </div> 
                         </>)}
                         <br/>
+                        {props.tbObj.tbTreatment==='No' && (<>
                         <hr/>
+
                         <h3>Contraindications for TPT</h3>
+                        {(props.tbObj.currentlyOnTuberculosis==='Yes' || props.tbObj.tbTreatment==='No') && (
+                        <>
                         <div className="form-group mb-3 col-md-12">                                    
                                 <div className="form-check custom-checkbox ml-1 ">
                                     <input
@@ -401,7 +398,7 @@ const Eligibility = (props) => {
                                     className="form-check-input"                           
                                     name="activeTb"
                                     id="activeTb"
-                                    value={objValues.activeTb}
+                                    value={props.tbObj.activeTb}
                                     onChange={handleInputChangeContrain}
                                     />
                                     <label
@@ -419,7 +416,7 @@ const Eligibility = (props) => {
                                     className="form-check-input"                           
                                     name="abnormalChest"
                                     id="abnormalChest"
-                                    value={objValues.abnormalChest}
+                                    value={props.tbObj.abnormalChest}
                                     onChange={handleInputChangeContrain}
                                     />
                                     <label
@@ -437,7 +434,7 @@ const Eligibility = (props) => {
                                     className="form-check-input"                           
                                     name="poorTreatmentAdherence"
                                     id="poorTreatmentAdherence"
-                                    value={objValues.poorTreatmentAdherence}
+                                    value={props.tbObj.poorTreatmentAdherence}
                                     onChange={handleInputChangeContrain}
                                     />
                                     <label
@@ -455,7 +452,7 @@ const Eligibility = (props) => {
                                     className="form-check-input"                           
                                     name="age1year"
                                     id="age1year"
-                                    value={objValues.age1year}
+                                    value={props.tbObj.age1year}
                                     onChange={handleInputChangeContrain}
                                     />
                                     <label
@@ -473,7 +470,7 @@ const Eligibility = (props) => {
                                     className="form-check-input"                           
                                     name="activeHepatitis"
                                     id="activeHepatitis"
-                                    value={objValues.activeHepatitis}
+                                    value={props.tbObj.activeHepatitis}
                                     onChange={handleInputChangeContrain}
                                     />
                                     <label
@@ -491,7 +488,7 @@ const Eligibility = (props) => {
                                     className="form-check-input"                           
                                     name="highAlcohol"
                                     id="highAlcohol"
-                                    value={objValues.highAlcohol}
+                                    value={props.tbObj.highAlcohol}
                                     onChange={handleInputChangeContrain}
                                     />
                                     <label
@@ -509,7 +506,7 @@ const Eligibility = (props) => {
                                     className="form-check-input"                           
                                     name="priorInh"
                                     id="priorInh"
-                                    value={objValues.priorInh}
+                                    value={props.tbObj.priorInh}
                                     onChange={handleInputChangeContrain}
                                     />
                                     <label
@@ -520,60 +517,68 @@ const Eligibility = (props) => {
                                     </label>
                                 </div>
                         </div>
-                        <h4>Contraindications for TPT : {objValues.contraindications}</h4>
+                        </>
+                        )}
+                            <h4>Result :{props.tbObj.contraindications} </h4>
+                        </>
+                         )}
                         <hr/>
                         <br/>
-                        <h2>Outcome :{objValues.outcome}</h2>
+                        <h2>Outcome :{props.tbObj.outcome}</h2>
                         <br/>
-                        <h2>Eligible for IPT :{objValues.eligibleForTPT}</h2>
-                        <div className="form-group mb-3 col-md-6">
-                            <FormGroup>
-                            <Label >Date TPT start </Label>
-                            <InputGroup> 
-                                <Input 
-                                    type="date"
-                                    name="dateTPTStart"
-                                    id="dateTPTStart"
-                                    onChange={handleInputChange} 
-                                    //value={objValues.dateTPTStart} 
-                                >
-                                
-                                </Input>
-                            </InputGroup>
-                            </FormGroup>
-                        </div>
-                        <div className="form-group mb-3 col-md-6">
-                            <FormGroup>
-                            <Label >Weight at start of TPT</Label>
-                            <InputGroup> 
-                                <Input 
-                                    type="text"
-                                    name="weightAtStartTPT"
-                                    id="weightAtStartTPT"
-                                    onChange={handleInputChange} 
-                                    //value={objValues.weightAtStartTPT} 
-                                >
-                                
-                                </Input>
-                            </InputGroup>
-                            </FormGroup>
-                        </div>
-                        <div className="form-group mb-3 col-md-6">
-                            <FormGroup>
-                            <Label >INH daily dose  </Label>
-                            <InputGroup> 
-                                <Input 
-                                    type="text"
-                                    name="inhDailyDose"
-                                    id="inhDailyDose"
-                                    onChange={handleInputChange} 
-                                    //value={objValues.inhDailyDose} 
-                                >
-                                
-                                </Input>
-                            </InputGroup>
-                            </FormGroup>
-                        </div>
+                        <h2>Eligible for IPT :{props.tbObj.eligibleForTPT}</h2>
+                        {props.tbObj.eligibleForTPT==="Yes" && (
+                        <>
+                            <div className="form-group mb-3 col-md-6">
+                                <FormGroup>
+                                <Label >Date TPT start </Label>
+                                <InputGroup> 
+                                    <Input 
+                                        type="date"
+                                        name="dateTPTStart"
+                                        id="dateTPTStart"
+                                        onChange={handleInputChange} 
+                                        //value={props.tbObj.dateTPTStart} 
+                                    >
+                                    
+                                    </Input>
+                                </InputGroup>
+                                </FormGroup>
+                            </div>
+                            <div className="form-group mb-3 col-md-6">
+                                <FormGroup>
+                                <Label >Weight at start of TPT</Label>
+                                <InputGroup> 
+                                    <Input 
+                                        type="text"
+                                        name="weightAtStartTPT"
+                                        id="weightAtStartTPT"
+                                        onChange={handleInputChange} 
+                                        //value={props.tbObj.weightAtStartTPT} 
+                                    >
+                                    
+                                    </Input>
+                                </InputGroup>
+                                </FormGroup>
+                            </div>
+                            <div className="form-group mb-3 col-md-6">
+                                <FormGroup>
+                                <Label >INH daily dose  </Label>
+                                <InputGroup> 
+                                    <Input 
+                                        type="text"
+                                        name="inhDailyDose"
+                                        id="inhDailyDose"
+                                        onChange={handleInputChange} 
+                                        //value={props.tbObj.inhDailyDose} 
+                                    >
+                                    
+                                    </Input>
+                                </InputGroup>
+                                </FormGroup>
+                            </div>
+                        </>
+                        )}
                     </div>
                     
                     
@@ -586,4 +591,4 @@ const Eligibility = (props) => {
     );
 };
 
-export default Eligibility
+export default TbScreening

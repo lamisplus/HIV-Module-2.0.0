@@ -87,156 +87,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Eligibility = (props) => {
     const classes = useStyles();
-    const history = useHistory();
-    const [errors, setErrors] = useState({});
-    const [allergies, setAllergies]= useState([])
-    useEffect(() => {
-        PrepSideEffect();
-      }, []);
-        //Get list of PrepSideEffect
-        const PrepSideEffect =()=>{
-        axios
-            .get(`${baseUrl}application-codesets/v2/PREP_SIDE_EFFECTS`,
-                { headers: {"Authorization" : `Bearer ${token}`} }
-            )
-            .then((response) => {
-                //console.log(response.data);
-                setAllergies(response.data);
-            })
-            .catch((error) => {
-            //console.log(error);
-            });
-        
-        }
-    useEffect(() => { 
-       
-    }, []);
-    const [visit, setVisit] = useState({visitDate:""})
-    const [objValues, setobjValues] = useState({Nausea:"", 
-                                                Nausea_fever:"",
-                                                as_never_receive_arvs:"",
-                                                chronic:"",
-                                                chronic_duration:"",
-                                                cough:"",
-                                                cough_duration:"",
-                                                drug_allergies:"",
-                                                duration_of_care_from:"",
-                                                early_arv_but_not_transfer_in:"",
-                                                fever:"",
-                                                fever_duration:"",
-                                                genital:"",
-                                                genital_duration :"",
-                                                genital_score:"",
-                                                genital_score_duration:"",
-                                                headache:"",
-                                                headache_duration:"",
-                                                hospitalization:"",
-                                                itching:"",
-                                                itching_duration:"",
-                                                name_of_the_facility:"",
-                                                new_visual:"",
-                                                new_visual_duration:"",
-                                                night_duration:"",
-                                                numbness:"",
-                                                numbness_duration:"",
-                                                pain:"",
-                                                pain_duration:"",
-                                                past_medical_history:"",
-                                                previous_arv_exposure:"",
-                                                rash:"",
-                                                rash_duration:"",
-                                                recent:"",
-                                                recent_duration:"",
-                                                relevant_family_history:"",
-                                                screen_for_tb:"",
-                                                shortness_of_breath:"",
-                                                shortness_of_breath_duration:"",
-                                                duration_of_care_to:"",
-                                                disclosureNoOne:"",  
-                                                familyMember:"", 
-                                                friend:"", 
-                                                spouse:"", 
-                                                spiritualLeader:"", 
-                                                disclosureOthers:"", 
-                                                HivStatusCanBeDiscussed:"",
-                                                CurrentMedicationNone :"",
-                                                currentART :"",
-                                                currentCTX:"", 
-                                                currentAntiTbDdrugs :"",
-                                                currentOthers:"",
-                                                childMotherAlive:"", 
-                                                motherName:"", 
-                                                motherAddress:"", 
-                                                childFatherAlive:"", 
-                                                immunisationComplete:"",
-                                                fatherName:"", 
-                                                fatherAddress:"", 
-                                                parentChildMarriageStatus:"",  
-                                                howManySibiling:"", 
-                                                immunisationComplete:"",
-                                                modeOfInfantFeeding:""
-                                                });
-    let temp = { ...errors }
-    const [hideOtherPatientDisclosure, setHideOtherPatientDisclosure]=useState(false)
-    const [hideOtherCurrentMedication, setHideOtherCurrentMedication]=useState(false)
-    //Handle CheckBox 
-    const handleMedicalHistory =e =>{
-        setErrors({...errors, [e.target.name]: ""}) 
-        if(e.target.name==='disclosureNoOne'){
-            if(e.target.checked){
-            setHideOtherPatientDisclosure(true)
-                }else{
-                    setHideOtherPatientDisclosure(false)
-                }
-        }
-        if(e.target.name==='CurrentMedicationNone'){
-            if(e.target.checked){
-                setHideOtherCurrentMedication(true)
-
-                }else{
-                    setHideOtherCurrentMedication(false)
-                }
-        }        
-        setobjValues({...objValues, [e.target.name]: e.target.value})
+    const handleEligibility =e =>{
+        props.setEligibility({...props.eligibility, [e.target.name]: e.target.value})        
     }
-    const handleInputChangeobjValues = e => { 
-        setErrors({...errors, [e.target.name]: ""})           
-        setVisit ({...visit,  [e.target.name]: e.target.value});
-    }
-    const handleItemClick =(page, completedMenu)=>{
-        props.handleItemClick(page)
-        if(props.completed.includes(completedMenu)) {
-
-        }else{
-            props.setCompleted([...props.completed, completedMenu])
-        }
-    } 
-    //Validations of the forms
-  const validate = () => {        
-    temp.screen_for_tb = objValues.screen_for_tb ? "" : "This field is required"
-    temp.past_medical_history = objValues.past_medical_history ? "" : "This field is required"
-    temp.relevant_family_history = objValues.relevant_family_history ? "" : "This field is required"
-    temp.drug_allergies = objValues.drug_allergies ? "" : "This field is required"
-    temp.visitDate = visit.visitDate ? "" : "This field is required"
-
-    setErrors({
-        ...temp
-    })
-    return Object.values(temp).every(x => x == "")
-  } 
-     /**** Submit Button Processing  */
-     const handleSubmit = (e) => { 
-        e.preventDefault(); 
-        if(validate()){
-            props.observation.dateOfObservation= visit.visitDate 
-            props.observation.data.medicalHistory=objValues   
-            //toast.success("Medical history save successful");
-            handleItemClick('past-arv', 'medical-history' ) 
-        }else{
-            toast.error("All fields are required");
-        }                 
-    }
-
 
     return (
         <>  
@@ -248,24 +101,6 @@ const Eligibility = (props) => {
                     <form >
      
                     <div className="row">
-                    <div className="form-group mb-3 col-md-4">
-                            <FormGroup>
-                            <Label >Visit Date *</Label>
-                            <InputGroup> 
-                                <Input 
-                                    type="date"
-                                    
-                                    name="visitDate"
-                                    id="visitDate"
-                                    
-                                    onChange={handleInputChangeobjValues} 
-                                />
-                            </InputGroup>                                        
-                            </FormGroup>
-                            {errors.visitDate !=="" ? (
-                                <span className={classes.error}>{errors.visitDate}</span>
-                            ) : "" }
-                    </div>
                     <div className="form-group mb-3 col-md-8"></div>
                     <div className="form-group mb-3 col-md-6">
                         <FormGroup>
@@ -275,8 +110,8 @@ const Eligibility = (props) => {
                                 type="select"
                                 name="typeOfClient"
                                 id="typeOfClient"
-                                onChange={handleMedicalHistory} 
-                                //value={objValues.typeOfClient} 
+                                onChange={handleEligibility} 
+                                value={props.eligibility.typeOfClient} 
                             >
                             <option value="">Select</option>
                             <option value="PLHIV New enrolled into HIV Care & Treatment">PLHIV New enrolled into HIV Care & Treatment</option>
@@ -294,8 +129,8 @@ const Eligibility = (props) => {
                                 type="select"
                                 name="pregnantStatus"
                                 id="pregnantStatus"
-                                onChange={handleMedicalHistory} 
-                                //value={objValues.pregnantStatus} 
+                                onChange={handleEligibility} 
+                                value={props.eligibility.pregnantStatus} 
                             >
                             <option value="">Select</option>
                             <option value="Yes">Yes</option>
@@ -304,7 +139,7 @@ const Eligibility = (props) => {
                             </Input>
                         </InputGroup>
                         </FormGroup>
-                    </div>   
+                    </div> 
                     </div>
                     <div className="row">
                     <h3>ART Status : Pre-ART </h3>
@@ -316,8 +151,8 @@ const Eligibility = (props) => {
                                     type="select"
                                     name="whoStaging"
                                     id="whoStaging"
-                                    onChange={handleMedicalHistory} 
-                                    //value={objValues.whoStaging}  
+                                    onChange={handleEligibility} 
+                                    value={props.eligibility.whoStaging}  
                                 >
                                 <option value="">Select</option>
                                 <option value="Yes">Yes</option>
@@ -328,7 +163,7 @@ const Eligibility = (props) => {
                             </InputGroup>
                         
                             </FormGroup>
-                     </div>
+                     </div>  
                      <div className="form-group mb-3 col-md-6"></div>
                      <div className="form-group mb-3 col-md-4">
                             <FormGroup>
@@ -338,7 +173,7 @@ const Eligibility = (props) => {
                                     type="text"
                                     name="lastCd4Result"
                                     id="lastCd4Result"
-                                     
+                                    value={props.eligibility.lastCd4Result} 
                                 />
                             </InputGroup>
                         
@@ -352,7 +187,7 @@ const Eligibility = (props) => {
                                     type="text"
                                     name="lastViralLoadResult"
                                     id="lastViralLoadResult"
-                                     
+                                    value={props.eligibility.lastViralLoadResult}  
                                 />
                             </InputGroup>
                             </FormGroup>
@@ -365,8 +200,8 @@ const Eligibility = (props) => {
                                 type="select"
                                 name="eligibleForViralLoad"
                                 id="eligibleForViralLoad"
-                                onChange={handleMedicalHistory} 
-                                //value={objValues.eligibleForViralLoad} 
+                                onChange={handleEligibility} 
+                                value={props.eligibility.eligibleForViralLoad} 
                                 >
                                 <option value="">Select</option>
                                 <option value="Yes">Yes</option>

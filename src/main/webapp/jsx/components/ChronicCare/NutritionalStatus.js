@@ -195,21 +195,6 @@ const BasicInfo = (props) => {
                 <br/>
                     <form >
                     <div className="row">
-                    <div className="form-group mb-3 col-md-4">
-                            <FormGroup>
-                            <Label >Visit Date *</Label>
-                            <InputGroup> 
-                                <Input 
-                                    type="date"
-                                    
-                                    name="visitDate"
-                                    id="visitDate"
-                                    
-                                />
-                            </InputGroup>                                        
-                            </FormGroup>
-                           
-                    </div>
                     <div className="form-group mb-3 col-md-8"></div>   
                     </div>
                     <div className="row">
@@ -280,7 +265,7 @@ const BasicInfo = (props) => {
                         </FormGroup>
                     </div>
                     <div className="form-group mb-3 mt-2 col-md-4">
-                        {vital.bodyWeight!==undefined && vital.height!==undefined &&(
+                        {vital.bodyWeight!=="" && vital.height!=='' && (
                             <FormGroup>
                             <Label > {" "}</Label>
                             <InputGroup> 

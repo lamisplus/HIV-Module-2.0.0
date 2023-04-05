@@ -87,154 +87,33 @@ const useStyles = makeStyles((theme) => ({
 
 const Eligibility = (props) => {
     const classes = useStyles();
-    const history = useHistory();
     const [errors, setErrors] = useState({});
-    const [allergies, setAllergies]= useState([])
     useEffect(() => {
-        PrepSideEffect();
+        //PrepSideEffect();
       }, []);
         //Get list of PrepSideEffect
-        const PrepSideEffect =()=>{
-        axios
-            .get(`${baseUrl}application-codesets/v2/PREP_SIDE_EFFECTS`,
-                { headers: {"Authorization" : `Bearer ${token}`} }
-            )
-            .then((response) => {
-                //console.log(response.data);
-                setAllergies(response.data);
-            })
-            .catch((error) => {
-            //console.log(error);
-            });
+        // const PrepSideEffect =()=>{
+        // axios
+        //     .get(`${baseUrl}application-codesets/v2/PREP_SIDE_EFFECTS`,
+        //         { headers: {"Authorization" : `Bearer ${token}`} }
+        //     )
+        //     .then((response) => {
+        //         //console.log(response.data);
+        //         setAllergies(response.data);
+        //     })
+        //     .catch((error) => {
+        //     //console.log(error);
+        //     });
         
-        }
-    useEffect(() => { 
-       
-    }, []);
-    const [visit, setVisit] = useState({visitDate:""})
-    const [objValues, setobjValues] = useState({Nausea:"", 
-                                                Nausea_fever:"",
-                                                as_never_receive_arvs:"",
-                                                chronic:"",
-                                                chronic_duration:"",
-                                                cough:"",
-                                                cough_duration:"",
-                                                drug_allergies:"",
-                                                duration_of_care_from:"",
-                                                early_arv_but_not_transfer_in:"",
-                                                fever:"",
-                                                fever_duration:"",
-                                                genital:"",
-                                                genital_duration :"",
-                                                genital_score:"",
-                                                genital_score_duration:"",
-                                                headache:"",
-                                                headache_duration:"",
-                                                hospitalization:"",
-                                                itching:"",
-                                                itching_duration:"",
-                                                name_of_the_facility:"",
-                                                new_visual:"",
-                                                new_visual_duration:"",
-                                                night_duration:"",
-                                                numbness:"",
-                                                numbness_duration:"",
-                                                pain:"",
-                                                pain_duration:"",
-                                                past_medical_history:"",
-                                                previous_arv_exposure:"",
-                                                rash:"",
-                                                rash_duration:"",
-                                                recent:"",
-                                                recent_duration:"",
-                                                relevant_family_history:"",
-                                                screen_for_tb:"",
-                                                shortness_of_breath:"",
-                                                shortness_of_breath_duration:"",
-                                                duration_of_care_to:"",
-                                                disclosureNoOne:"",  
-                                                familyMember:"", 
-                                                friend:"", 
-                                                spouse:"", 
-                                                spiritualLeader:"", 
-                                                disclosureOthers:"", 
-                                                HivStatusCanBeDiscussed:"",
-                                                CurrentMedicationNone :"",
-                                                currentART :"",
-                                                currentCTX:"", 
-                                                currentAntiTbDdrugs :"",
-                                                currentOthers:"",
-                                                childMotherAlive:"", 
-                                                motherName:"", 
-                                                motherAddress:"", 
-                                                childFatherAlive:"", 
-                                                immunisationComplete:"",
-                                                fatherName:"", 
-                                                fatherAddress:"", 
-                                                parentChildMarriageStatus:"",  
-                                                howManySibiling:"", 
-                                                immunisationComplete:"",
-                                                modeOfInfantFeeding:""
-                                                });
+        // }
+
+    
     let temp = { ...errors }
-    const [hideOtherPatientDisclosure, setHideOtherPatientDisclosure]=useState(false)
-    const [hideOtherCurrentMedication, setHideOtherCurrentMedication]=useState(false)
+
     //Handle CheckBox 
-    const handleMedicalHistory =e =>{
-        setErrors({...errors, [e.target.name]: ""}) 
-        if(e.target.name==='disclosureNoOne'){
-            if(e.target.checked){
-            setHideOtherPatientDisclosure(true)
-                }else{
-                    setHideOtherPatientDisclosure(false)
-                }
-        }
-        if(e.target.name==='CurrentMedicationNone'){
-            if(e.target.checked){
-                setHideOtherCurrentMedication(true)
-
-                }else{
-                    setHideOtherCurrentMedication(false)
-                }
-        }        
-        setobjValues({...objValues, [e.target.name]: e.target.value})
-    }
-    const handleInputChangeobjValues = e => { 
-        setErrors({...errors, [e.target.name]: ""})           
-        setVisit ({...visit,  [e.target.name]: e.target.value});
-    }
-    const handleItemClick =(page, completedMenu)=>{
-        props.handleItemClick(page)
-        if(props.completed.includes(completedMenu)) {
-
-        }else{
-            props.setCompleted([...props.completed, completedMenu])
-        }
-    } 
-    //Validations of the forms
-  const validate = () => {        
-    temp.screen_for_tb = objValues.screen_for_tb ? "" : "This field is required"
-    temp.past_medical_history = objValues.past_medical_history ? "" : "This field is required"
-    temp.relevant_family_history = objValues.relevant_family_history ? "" : "This field is required"
-    temp.drug_allergies = objValues.drug_allergies ? "" : "This field is required"
-    temp.visitDate = visit.visitDate ? "" : "This field is required"
-
-    setErrors({
-        ...temp
-    })
-    return Object.values(temp).every(x => x == "")
-  } 
-     /**** Submit Button Processing  */
-     const handleSubmit = (e) => { 
-        e.preventDefault(); 
-        if(validate()){
-            props.observation.dateOfObservation= visit.visitDate 
-            props.observation.data.medicalHistory=objValues   
-            //toast.success("Medical history save successful");
-            handleItemClick('past-arv', 'medical-history' ) 
-        }else{
-            toast.error("All fields are required");
-        }                 
+    const handleTpt =e =>{
+        //setErrors({...errors, [e.target.name]: ""})            
+        props.setTpt({...props.tpt, [e.target.name]: e.target.value})
     }
 
 
@@ -253,37 +132,26 @@ const Eligibility = (props) => {
                                 <Label >Weight</Label>
                                 <InputGroup> 
                                     <Input 
-                                        type="select"
-                                        name="typeOfClient"
-                                        id="typeOfClient"
-                                        onChange={handleMedicalHistory} 
-                                        //value={objValues.typeOfClient} 
-                                    >
-                                    <option value="">Select</option>
-                                    <option value="PLHIV New enrolled into HIV Care & Treatment">PLHIV New enrolled into HIV Care & Treatment</option>
-                                    <option value="Registered PLHIV on follow up/subsequent visit this FY">Registered PLHIV on follow up/subsequent visit this FY</option>
-                                    <option value="Registered PLHIV on first time visit this FY">Registered PLHIV on first time visit this FY</option>
-                                    </Input>
+                                        type="text"
+                                        name="weight"
+                                        id="weight"
+                                        onChange={handleTpt} 
+                                        value={props.tpt.weight} 
+                                    ></Input>
                                 </InputGroup>                    
                                 </FormGroup>
                         </div>
                         <div className="form-group mb-3 col-md-6">
                             <FormGroup>
-                            <Label >TB Symptoms (cough, fever, night sweats, weight loss,
-contacts)</Label>
+                            <Label >TB Symptoms (cough, fever, night sweats, weight loss,contacts)</Label>
                             <InputGroup> 
                                 <Input 
-                                    type="select"
-                                    name="pregnantStatus"
-                                    id="pregnantStatus"
-                                    onChange={handleMedicalHistory} 
-                                    //value={objValues.pregnantStatus} 
-                                >
-                                <option value="">Select</option>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                                <option value="Uncertain">Uncertain</option>
-                                </Input>
+                                    type="text"
+                                    name="tbSymptoms"
+                                    id="tbSymptoms"
+                                    onChange={handleTpt} 
+                                    value={props.tpt.pregnantStatus} 
+                                ></Input>
                             </InputGroup>
                             </FormGroup>
                         </div>  
@@ -294,11 +162,11 @@ contacts)</Label>
                             </Label>
                             <InputGroup> 
                                 <Input 
-                                    type="select"
-                                    name="pregnantStatus"
-                                    id="pregnantStatus"
-                                    onChange={handleMedicalHistory} 
-                                    //value={objValues.pregnantStatus} 
+                                    type="text"
+                                    name="hepatitisSymptoms"
+                                    id="hepatitisSymptoms"
+                                    onChange={handleTpt} 
+                                    value={props.tpt.hepatitisSymptoms} 
                                 >
                                 <option value="">Select</option>
                                 <option value="Yes">Yes</option>
@@ -310,16 +178,15 @@ contacts)</Label>
                         </div> 
                         <div className="form-group mb-3 col-md-6">
                             <FormGroup>
-                            <Label >Neurologic Symptoms (Numbness, tingling,
-                            paresthesias)
+                            <Label >Neurologic Symptoms (Numbness, tingling, paresthesias)
                             </Label>
                             <InputGroup> 
                                 <Input 
                                     type="select"
-                                    name="pregnantStatus"
-                                    id="pregnantStatus"
-                                    onChange={handleMedicalHistory} 
-                                    //value={objValues.pregnantStatus} 
+                                    name="neurologicSymptoms"
+                                    id="neurologicSymptoms"
+                                    onChange={handleTpt} 
+                                    value={props.tpt.neurologicSymptoms} 
                                 >
                                 <option value="">Select</option>
                                 <option value="Yes">Yes</option>
@@ -329,17 +196,17 @@ contacts)</Label>
                             </InputGroup>
                             </FormGroup>
                         </div> 
-
+                        
                         <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label >Rash </Label>
                             <InputGroup> 
                                 <Input 
                                     type="select"
-                                    name="pregnantStatus"
-                                    id="pregnantStatus"
-                                    onChange={handleMedicalHistory} 
-                                    //value={objValues.pregnantStatus} 
+                                    name="rash"
+                                    id="rash"
+                                    onChange={handleTpt} 
+                                    value={props.tpt.rash} 
                                 >
                                 <option value="">Select</option>
                                 <option value="Yes">Yes</option>
@@ -359,10 +226,10 @@ contacts)</Label>
                             <InputGroup> 
                                 <Input 
                                     type="select"
-                                    name="pregnantStatus"
-                                    id="pregnantStatus"
-                                    onChange={handleMedicalHistory} 
-                                    //value={objValues.pregnantStatus} 
+                                    name="adherence"
+                                    id="adherence"
+                                    onChange={handleTpt} 
+                                    value={props.tpt.adherence} 
                                 >
                                 <option value="">Select</option>
                                 <option value="Yes">Yes</option>
@@ -378,10 +245,10 @@ contacts)</Label>
                             <InputGroup> 
                                 <Input 
                                     type="select"
-                                    name="pregnantStatus"
-                                    id="pregnantStatus"
-                                    onChange={handleMedicalHistory} 
-                                    //value={objValues.pregnantStatus} 
+                                    name="referredForServices"
+                                    id="referredForServices"
+                                    onChange={handleTpt} 
+                                    value={props.tpt.referredForServices} 
                                 >
                                 <option value="">Select</option>
                                 <option value="Yes">Yes</option>
@@ -390,11 +257,48 @@ contacts)</Label>
                                 </Input>
                             </InputGroup>
                             </FormGroup>
-                        </div>
-
-                        <br/>
-                        <h2>Outcome TPT:</h2>
-                        
+                        </div> 
+                        <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                            <Label >Outcome of IPT  
+                            </Label>
+                            <InputGroup> 
+                                <Input 
+                                    type="text"
+                                    name="outComeOfIpt"
+                                    id="outComeOfIpt"
+                                    onChange={handleTpt} 
+                                    value={props.tpt.outComeOfIpt} 
+                                >
+                                <option value="">Select</option>
+                                <option value="IPT Completed">IPT Completed</option>
+                                <option value="Developed active TB">Developed active TB</option>
+                                <option value="Died">Died </option>
+                                <option value="Transferred out">Transferred out </option>
+                                <option value="Stopped IPT">Stopped IPT</option>
+                                <option value="Lost to follow up">Lost to follow up </option>
+                                </Input>
+                            </InputGroup>
+                            </FormGroup>
+                        </div> 
+                        <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                            <Label >Reasons for stopping IPT  
+                            </Label>
+                            <InputGroup> 
+                                <Input 
+                                    type="text"
+                                    name="resonForStoppingIpt"
+                                    id="resonForStoppingIpt"
+                                    onChange={handleTpt} 
+                                    value={props.tpt.resonForStoppingIpt} 
+                                >
+                                <option value="">Select</option>
+                                <option value="Developed symptoms of hepatitis">Developed symptoms of hepatitis</option>
+                                </Input>
+                            </InputGroup>
+                            </FormGroup>
+                        </div> 
                     </div>
                     
                     

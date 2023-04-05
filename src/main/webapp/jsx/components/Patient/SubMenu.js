@@ -141,15 +141,15 @@ function SubMenu(props) {
                     active={activeItem === 'initial'} title="Initial Evaluation"> Initial Evaluation</Menu.Item>)}
                     <Menu.Item onClick={() => onClickConsultation()} disabled={patientCurrentStatus} name='visit'
                     active={activeItem === 'visit'} title="Care Card">Care Card</Menu.Item>
-                     <Menu.Menu position='' name='lab' active={activeItem === 'lab'}>
-                        <Dropdown item text='Laboratory'>
-                            <Dropdown.Menu>
-                            <Dropdown.Item onClick={() => loadLaboratoryOrderResult()} disabled={patientCurrentStatus} title="Laboratory Order & Result">Laboratory Order & Result</Dropdown.Item>
-                            <Dropdown.Item onClick={() => loadLaboratoryViralLoadOrderResult()} disabled={patientCurrentStatus} title="Viral Load Order & Result">Viral Load Order & Result</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
+                    <Menu.Menu position='' name='lab' active={activeItem === 'lab'}>
+                    <Dropdown item text='Laboratory'>
+                        <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => loadLaboratoryOrderResult()} disabled={patientCurrentStatus} title="Laboratory Order & Result">Laboratory Order & Result</Dropdown.Item>
+                        <Dropdown.Item onClick={() => loadLaboratoryViralLoadOrderResult()} disabled={patientCurrentStatus} title="Viral Load Order & Result">Viral Load Order & Result</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
 
-                        </Menu.Menu>
+                    </Menu.Menu>
                     <Menu.Item onClick={() => loadPharmacyModal()} disabled={patientCurrentStatus} name='pharmacy'
                     active={activeItem === 'pharmacy'} title="Pharmacy"> Pharmacy</Menu.Item>
                     <Menu.Item onClick={() => loadEAC(patientObj)} disabled={patientCurrentStatus} name='eac'
@@ -169,16 +169,26 @@ function SubMenu(props) {
                             </>
                             )
                             :""
-                    }  
-                    <Menu.Item onClick={() => loadTrackingForm(patientObj)} name='tracking'
-                    active={activeItem === 'tracking'} title="Tracking Form">Tracking Form</Menu.Item>
-                     {/* patientObj.currentStatus && patientObj.currentStatus==='IIT' &&  (<Menu.Item onClick={() => loadChronicCare(patientObj)} >Chronic Care</Menu.Item> */}
-                     <Menu.Item onClick={() => loadIntensiveForm(patientObj)} name='intensive'
-                    active={activeItem === 'intensive'} title="Intensive Follow Up">Intensive Follow Up</Menu.Item>
-                    <Menu.Item onClick={() => loadTransferForm(patientObj)} name='transfer'
-                    active={activeItem === 'transfer'} title="Transfer">Transfer</Menu.Item>
-                    <Menu.Item onClick={() => loadChronicCare(patientObj)} name='transfer'
-                    active={activeItem === 'chronic-care'} title="Chronic Care">Chronic Care</Menu.Item>
+                    } 
+                    <Menu.Menu position='' name='lab' active={activeItem === 'lab'}>
+                    <Dropdown item text='Others'>
+                        <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => loadTrackingForm(patientObj)} name='tracking'
+                            active={activeItem === 'tracking'} title="Tracking Form">Tracking Form
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => loadIntensiveForm(patientObj)} name='intensive'
+                            active={activeItem === 'intensive'} title="Intensive Follow Up">Intensive Follow Up
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => loadChronicCare(patientObj)} name='transfer'
+                            active={activeItem === 'chronic-care'} title="Chronic Care">Chronic Care
+                        </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+
+                    </Menu.Menu> 
+                    
+                    {/* <Menu.Item onClick={() => loadTransferForm(patientObj)} name='transfer'
+                    active={activeItem === 'transfer'} title="Transfer">Transfer</Menu.Item> */}
                     <Menu.Item onClick={() => loadPatientHistory(patientObj)} name='history'
                     active={activeItem === 'history'} title="History">History</Menu.Item>
                     

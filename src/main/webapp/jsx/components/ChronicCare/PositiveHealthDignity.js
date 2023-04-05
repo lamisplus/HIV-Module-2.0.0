@@ -70,34 +70,9 @@ const useStyles = makeStyles((theme) => ({
 
 const PositiveHealthDignity = (props) => {
 
-    const [errors, setErrors] = useState({});
-    let temp = { ...errors } 
-    useEffect(() => { 
-        
-    }, []);  
-    const [who, setWho] = useState({stage:"", stage1Value:"",stage2Value:"", stage3Value:"",stage4Value:""});
 
-    const [assesment, setAssesment] = useState({assessment:""});
-    const handleAssessment =e =>{
-        setAssesment({...assesment, [e.target.name]: e.target.value})
-        
-    }
-
-    const handleItemClick =(page, completedMenu)=>{
-        props.handleItemClick(page)
-        if(props.completed.includes(completedMenu)) {
-
-        }else{
-            props.setCompleted([...props.completed, completedMenu])
-        }
-    }  
-    /**** Submit Button Processing  */
-    const handleSubmit = (e) => { 
-        e.preventDefault();  
-        props.observation.data.assesment = assesment
-        props.observation.data.who=who  
-        toast.success("Record save successful");
-        handleItemClick('plan', 'who' )                  
+    const handleInputChange =e =>{
+        props.setPreventive({...props.preventive, [e.target.name]: e.target.value})   
     }
         
 return (
@@ -105,26 +80,9 @@ return (
         
             <Card >
                 <CardBody>   
-                <h2 style={{color:'#000'}}>Reproductive Intentions</h2>
-                <br/>
+               
                     <form >
-                    <div className="row">
-                    <div className="form-group mb-3 col-md-4">
-                        <FormGroup>
-                        <Label >Visit Date *</Label>
-                        <InputGroup> 
-                            <Input 
-                                type="date"
-                                
-                                name="visitDate"
-                                id="visitDate"
-                                
-                            />
-                        </InputGroup>                                        
-                        </FormGroup>  
-                    </div>
-                    <div className="form-group mb-3 col-md-8"></div>   
-                    </div>
+
                     <div className="row">
                         <h3>Prevent HIV Transmission</h3>
                         <div className="form-group mb-3 col-md-6">                                    
@@ -134,13 +92,14 @@ return (
                                         type="select"
                                         name="lastAppointment"
                                         id="lastAppointment"
-                                        onChange={handleAssessment} 
-                                        //value={assesment.lastAppointment} 
+                                        onChange={handleInputChange} 
+                                        value={props.preventive.lastAppointment} 
                                     >
                                     <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                   
+                                    <option value="≤3">≤ 3</option>
+                                    <option value="4-8">4-8</option>
+                                    <option value="≥9">≥ 9</option>
+                                    
                                     </Input>
 
                             </FormGroup>
@@ -152,14 +111,14 @@ return (
                                         type="select"
                                         name="medication"
                                         id="medication"
-                                        onChange={handleAssessment} 
-                                        //value={assesment.medication} 
+                                        onChange={handleInputChange} 
+                                        value={props.preventive.medication} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
                                     <option value="No">No</option>
+                                   
                                     </Input>
-
                             </FormGroup>
                         </div>
                         <div className="form-group mb-3 col-md-6">                                    
@@ -169,8 +128,8 @@ return (
                                         type="select"
                                         name="parentStatus"
                                         id="parentStatus"
-                                        onChange={handleAssessment} 
-                                        //value={assesment.parentStatus} 
+                                        onChange={handleInputChange} 
+                                        value={props.preventive.parentStatus} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -187,8 +146,8 @@ return (
                                         type="select"
                                         name="condoms"
                                         id="condoms"
-                                        onChange={handleAssessment} 
-                                        //value={assesment.condoms} 
+                                        onChange={handleInputChange} 
+                                        value={props.preventive.condoms} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -204,8 +163,8 @@ return (
                                         type="select"
                                         name="condomCounseling"
                                         id="condomCounseling"
-                                        onChange={handleAssessment} 
-                                        value={assesment.condomCounseling} 
+                                        onChange={handleInputChange} 
+                                        value={props.preventive.condomCounseling} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -225,8 +184,8 @@ return (
                                         type="select"
                                         name="preventDiseases"
                                         id="preventDiseases"
-                                        onChange={handleAssessment} 
-                                        //value={assesment.preventDiseases} 
+                                        onChange={handleInputChange} 
+                                        value={props.preventive.preventDiseases} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -242,8 +201,8 @@ return (
                                         type="select"
                                         name="cotrimoxazole"
                                         id="cotrimoxazole"
-                                        onChange={handleAssessment} 
-                                        //value={assesment.cotrimoxazole} 
+                                        onChange={handleInputChange} 
+                                        value={props.preventive.cotrimoxazole} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -263,8 +222,8 @@ return (
                                         type="select"
                                         name="alcohol"
                                         id="alcohol"
-                                        onChange={handleAssessment} 
-                                        //value={assesment.alcohol} 
+                                        onChange={handleInputChange} 
+                                        value={props.preventive.alcohol} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -272,7 +231,7 @@ return (
                                     </Input>
 
                             </FormGroup>
-                        </div>
+                        </div> 
                         <div className="form-group mb-3 col-md-6">                                    
                             <FormGroup>
                             <Label>Nutrituional counseling done?</Label>
@@ -280,8 +239,8 @@ return (
                                         type="select"
                                         name="nutrituional"
                                         id="nutrituional"
-                                        onChange={handleAssessment} 
-                                        //value={assesment.nutrituional} 
+                                        onChange={handleInputChange} 
+                                        value={props.preventive.nutrituional} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -297,8 +256,8 @@ return (
                                         type="select"
                                         name="wash"
                                         id="wash"
-                                        onChange={handleAssessment} 
-                                        //value={assesment.wash} 
+                                        onChange={handleInputChange} 
+                                        value={props.preventive.wash} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -314,8 +273,8 @@ return (
                                         type="select"
                                         name="phdp"
                                         id="phdp"
-                                        onChange={handleAssessment} 
-                                        //value={assesment.phdp} 
+                                        onChange={handleInputChange} 
+                                        value={props.preventive.phdp} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
