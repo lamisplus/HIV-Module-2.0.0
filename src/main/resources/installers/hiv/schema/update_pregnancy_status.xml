@@ -18,4 +18,28 @@
         </sql>
     </changeSet>
 
+    <changeSet failOnError="true"  id="20230405-01" author="Dr. Java">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="hiv_eac_out_come" columnName="uuid" />
+            </not>
+        </preConditions>
+        <sql>
+            ALTER TABLE hiv_eac_out_come ADD uuid VARCHAR(255);
+        </sql>
+    </changeSet>
+
+
+    <changeSet failOnError="true"  id="20230405-02" author="Dr. Java">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM hiv_eac_out_come
+                WHERE last_modified_date=(SELECT MIN(last_modified_date) FROM hiv_eac_out_come)
+                AND uuid IS NULL
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            UPDATE hiv_eac_out_come SET uuid=CONCAT(id, eac_id, id);
+        </sql>
+    </changeSet>
 </databaseChangeLog>

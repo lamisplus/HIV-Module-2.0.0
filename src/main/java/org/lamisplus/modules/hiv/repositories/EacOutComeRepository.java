@@ -18,5 +18,5 @@ public interface EacOutComeRepository extends JpaRepository<EacOutCome, Long> {
     )
     List<EacOutCome> getAllDueForServerUpload(LocalDateTime dateLastSync, Long facilityId);
 
-    //Optional<EacOutCome> findByUuid(String uuid);
+    Optional<EacOutCome> findByUuid(String uuid);
 }

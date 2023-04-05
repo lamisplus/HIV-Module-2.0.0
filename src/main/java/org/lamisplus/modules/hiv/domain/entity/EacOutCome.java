@@ -39,6 +39,7 @@ public class EacOutCome extends HivAuditEntity {
 	private String currentRegimen;
 	private String switchRegimen;
 	private String substituteRegimen;
+	private String uuid;
 	private Integer archived;
 }
 	

@@ -9,7 +9,6 @@ import org.lamisplus.modules.triage.domain.entity.VitalSign;
 import org.springframework.data.domain.Persistable;
 
 import javax.persistence.*;
-import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -27,7 +26,7 @@ public class ARTClinical extends HivAuditEntity implements Serializable, Persist
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false)
 	private Long id;
-	@PastOrPresent
+
 	@Column(name = "visit_date")
 	private LocalDate visitDate;
 	
@@ -103,7 +102,6 @@ public class ARTClinical extends HivAuditEntity implements Serializable, Persist
 	@Column(name = "next_appointment")
 	private LocalDate nextAppointment;
 	
-	@PastOrPresent
 	@Column(name = "lmp_date")
 	private LocalDate lmpDate;
 	
@@ -117,7 +115,6 @@ public class ARTClinical extends HivAuditEntity implements Serializable, Persist
 	@Column(name = "viral_load_at_start_of_art")
 	private Double viralLoadAtStartOfArt;
 	
-	@PastOrPresent
 	@Column(name = "date_of_viral_load_at_start_of_art")
 	private LocalDate dateOfViralLoadAtStartOfArt;
 	private String cryptococcalScreeningStatus;
