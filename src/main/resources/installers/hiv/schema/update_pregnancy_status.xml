@@ -34,4 +34,16 @@
         </sql>
     </changeSet>
 
+    <changeSet failOnError="true"  id="20230403-03" author="amos-data-fi">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="hiv_eac_out_come" columnName="uuid" />
+            </not>
+        </preConditions>
+        <sql>
+            ALTER TABLE hiv_eac_out_come
+                ADD uuid VARCHAR(255)
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

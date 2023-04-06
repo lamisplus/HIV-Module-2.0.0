@@ -7,7 +7,6 @@ import org.lamisplus.modules.patient.domain.entity.Person;
 import org.lamisplus.modules.patient.domain.entity.Visit;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "hiv_eac_out_come")
@@ -40,6 +39,9 @@ public class EacOutCome extends HivAuditEntity {
 	private String switchRegimen;
 	private String substituteRegimen;
 	private Integer archived;
+	private String uuid;
+	
+	
 }
 	
 	

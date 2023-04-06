@@ -13,6 +13,7 @@ import org.lamisplus.modules.patient.domain.entity.Visit;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +33,7 @@ public class EACOutComeService {
 		eacOutCome.setEac(eac);
 		eacOutCome.setPerson(eac.getPerson());
 		eacOutCome.setFacilityId(eac.getPerson().getFacilityId());
+		
 		Visit visit = hivVisitEncounter.processAndCreateVisit(eac.getPerson().getId(), dto.getOutComeDate());
 		eacOutCome.setVisit(visit);
 		List<HIVEacSession> eacSessionList = hivEacSessionRepository.getHIVEacSesByEac(eac);
@@ -76,6 +78,7 @@ public class EACOutComeService {
 		eacOutCome.setSwitchRegimen(dto.getSwitchRegimen());
 		eacOutCome.setPlanAction(dto.getPlanAction());
 		eacOutCome.setArchived(0);
+		eacOutCome.setUuid(UUID.randomUUID().toString());
 		return eacOutCome;
 		
 	}
