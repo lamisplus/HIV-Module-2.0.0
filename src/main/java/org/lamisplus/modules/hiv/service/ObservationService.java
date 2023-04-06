@@ -34,8 +34,11 @@ public class ObservationService {
         Long personId = observationDto.getPersonId ();
         Person person = getPerson (personId);
         Long orgId = currentUserOrganizationService.getCurrentUserOrganization ();
-        if (getAnExistingObservationType (observationDto, person, orgId).isPresent ()) {
-            throw new RecordExistException (Observation.class, "type", observationDto.getType ());
+        Optional<Observation> anExistingObservationType = getAnExistingObservationType(observationDto, person, orgId);
+        if (anExistingObservationType.isPresent ()) {
+            Observation observation = anExistingObservationType.get();
+            if(observation.getType().equals("Clinical evaluation"))
+                throw new RecordExistException (Observation.class, "type", observationDto.getType ());
         }
         observationDto.setFacilityId (orgId);
         Visit visit = handleHIVisitEncounter.processAndCreateVisit (personId, observationDto.getDateOfObservation());
@@ -51,7 +54,6 @@ public class ObservationService {
         observation.setArchived (0);
         Observation saveObservation = observationRepository.save (observation);
         observationDto.setId (saveObservation.getId ());
-       
         return observationDto;
     }
 
