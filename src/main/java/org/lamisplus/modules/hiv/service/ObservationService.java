@@ -13,9 +13,7 @@ import org.lamisplus.modules.patient.repository.PersonRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -118,5 +116,14 @@ public class ObservationService {
         return personRepository.findById (personId)
                 .orElseThrow (() -> new EntityNotFoundException (Person.class, "id", String.valueOf (personId)));
 
+    }
+    
+    public Map<String, Boolean> isEligibleForIpt(Long personId) {
+        Person person = getPerson(personId);
+        Optional<String> iptEligiblePatientUuid =
+                observationRepository.getIPTEligiblePatientUuid(person.getFacilityId(), person.getUuid());
+        HashMap<String, Boolean> map = new HashMap<>();
+          map.put("IPT", iptEligiblePatientUuid.isPresent());
+        return map;
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -43,6 +44,11 @@ public class ObservationController {
 	@GetMapping(value = "/person/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<ObservationDto>> getObservationByPersonId(@PathVariable("id") Long id) {
 		return ResponseEntity.ok(observationService.getAllObservationByPerson(id));
+	}
+	
+	@GetMapping(value = "/check-ipt-eligible/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public  ResponseEntity<Map<String, Boolean>> checkIptEligible(@PathVariable("id") Long personId) {
+		return ResponseEntity.ok(observationService.isEligibleForIpt(personId));
 	}
 
 //    @PostMapping(value="/eac", produces = MediaType.APPLICATION_JSON_VALUE)

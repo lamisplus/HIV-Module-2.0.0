@@ -1,6 +1,5 @@
 package org.lamisplus.modules.hiv.repositories;
 
-import org.lamisplus.modules.hiv.domain.entity.HIVStatusTracker;
 import org.lamisplus.modules.hiv.domain.entity.Observation;
 import org.lamisplus.modules.patient.domain.entity.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,5 +28,16 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
     List<Observation> getAllDueForServerUpload(LocalDateTime dateLastSync, Long facilityId);
 
     Optional<Observation> findByUuid(String uuid);
+    
+    @Query(value = "SELECT tbTreatmentPersonUuid FROM (SELECT \n" +
+            "COALESCE(NULLIF(CAST(data->'tbIptScreening'->>'eligibleForTPT' AS text), ''), '') as eligibleForTPT,\n" +
+            "person_uuid as tbTreatmentPersonUuid,\n" +
+            "ROW_NUMBER() OVER ( PARTITION BY person_uuid ORDER BY date_of_observation DESC)\n" +
+            "FROM hiv_observation WHERE type = 'Chronic Care'   \n" +
+            "\t\t\t   AND facility_id = ?1 \n" +
+            ") tbTreatment WHERE row_number = 1 AND  eligibleForTPT IS NOT NULL \n" +
+            "AND eligibleForTPT = 'Yes'\n" +
+            "AND tbTreatmentPersonUuid = ?2", nativeQuery = true)
+    Optional<String>  getIPTEligiblePatientUuid(Long facilityId, String uuid);
 
 }
