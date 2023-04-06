@@ -558,7 +558,7 @@ useEffect(() => {
                             <FormGroup>
                                 <Label for="encounterDate">Reported Date</Label>
                                 <Input
-                                    type="date"
+                                    type="datetime-local"
                                     name="dateResultReported"
                                     id="dateResultReported"
                                     value={tests.dateResultReported}
