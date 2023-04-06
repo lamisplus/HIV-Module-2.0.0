@@ -123,7 +123,7 @@ public class ObservationService {
         Optional<String> iptEligiblePatientUuid =
                 observationRepository.getIPTEligiblePatientUuid(person.getFacilityId(), person.getUuid());
         HashMap<String, Boolean> map = new HashMap<>();
-          map.put("IPT", iptEligiblePatientUuid.isPresent());
+          map.put("IPTEligibility", iptEligiblePatientUuid.isPresent());
         return map;
     }
 }
