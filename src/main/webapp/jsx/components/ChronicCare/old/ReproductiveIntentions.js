@@ -70,18 +70,38 @@ const useStyles = makeStyles((theme) => ({
 
 const ReproductiveIntentions = (props) => {
 
-    // const [errors, setErrors] = useState({});
-    // let temp = { ...errors } 
+    const [errors, setErrors] = useState({});
+    let temp = { ...errors } 
     useEffect(() => { 
-       
-    }, []);  
-    
-    const handleReproductive =e =>{
-        props.setReproductive({...props.reproductive, [e.target.name]: e.target.value})
+        if(props.observation.data ){
+            setAssesment(props.observation.data.assesment) 
+            setWho(props.observation.data.who)             
+        }
+    }, [props.observation.data]);  
+    const [who, setWho] = useState({stage:"", stage1Value:"",stage2Value:"", stage3Value:"",stage4Value:""});
+
+    const [assesment, setAssesment] = useState({assessment:""});
+    const handleAssessment =e =>{
+        setAssesment({...assesment, [e.target.name]: e.target.value})
         
     }
 
+    const handleItemClick =(page, completedMenu)=>{
+        props.handleItemClick(page)
+        if(props.completed.includes(completedMenu)) {
 
+        }else{
+            props.setCompleted([...props.completed, completedMenu])
+        }
+    }  
+    /**** Submit Button Processing  */
+    const handleSubmit = (e) => { 
+        e.preventDefault();  
+        props.observation.data.assesment = assesment
+        props.observation.data.who=who  
+        toast.success("Record save successful");
+        handleItemClick('plan', 'who' )                  
+    }
         
 return (
         <>  
@@ -92,6 +112,20 @@ return (
                 <br/>
                     <form >
                     <div className="row">
+                    <div className="form-group mb-3 col-md-4">
+                        <FormGroup>
+                        <Label >Visit Date *</Label>
+                        <InputGroup> 
+                            <Input 
+                                type="date"
+                                
+                                name="visitDate"
+                                id="visitDate"
+                                
+                            />
+                        </InputGroup>                                        
+                        </FormGroup>   
+                    </div>
                     <div className="form-group mb-3 col-md-8"></div>   
                     </div>
                     <div className="row">
@@ -100,10 +134,10 @@ return (
                             <Label>Have you been screened for cervical cancer in the last one year?</Label>
                                     <Input 
                                         type="select"
-                                        name="cervicalCancer"
-                                        id="cervicalCancer"
-                                        onChange={handleReproductive} 
-                                        value={props.reproductive.cervicalCancer} 
+                                        name="assessment"
+                                        id="assessment"
+                                        onChange={handleAssessment} 
+                                        value={assesment.assessment} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -118,10 +152,10 @@ return (
                             <Label>Do you intend to get pregnant within the next one year?</Label>
                                     <Input 
                                         type="select"
-                                        name="pregnantWithinNextYear"
-                                        id="pregnantWithinNextYear"
-                                        onChange={handleReproductive} 
-                                        value={props.reproductive.pregnantWithinNextYear} 
+                                        name="assessment"
+                                        id="assessment"
+                                        onChange={handleAssessment} 
+                                        value={assesment.assessment} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -135,10 +169,10 @@ return (
                             <Label>Are you currently using a contraceptive?</Label>
                                     <Input 
                                         type="select"
-                                        name="contraceptive"
-                                        id="contraceptive"
-                                        onChange={handleReproductive} 
-                                        value={props.reproductive.contraceptive} 
+                                        name="assessment"
+                                        id="assessment"
+                                        onChange={handleAssessment} 
+                                        value={assesment.assessment} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -148,6 +182,10 @@ return (
                             </FormGroup>
                         </div>
                     </div>
+                    <br/>
+                    <Button content='Back' icon='left arrow' labelPosition='left' style={{backgroundColor:"#992E62", color:'#fff'}} onClick={()=>handleItemClick('appearance', 'appearance')}/>
+                    <Button content='Next' type="submit" icon='right arrow' labelPosition='right' style={{backgroundColor:"#014d88", color:'#fff'}} onClick={handleSubmit}/>
+                    
                     </form>
                     
                 </CardBody>

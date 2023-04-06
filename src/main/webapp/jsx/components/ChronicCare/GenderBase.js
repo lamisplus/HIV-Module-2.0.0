@@ -69,39 +69,11 @@ const useStyles = makeStyles((theme) => ({
 
 
 const BasicInfo = (props) => {
-
-    const [errors, setErrors] = useState({});
-    let temp = { ...errors } 
-    useEffect(() => { 
-        if(props.observation.data ){
-            setAssesment(props.observation.data.assesment) 
-            setWho(props.observation.data.who)             
-        }
-    }, [props.observation.data]);  
-    const [who, setWho] = useState({stage:"", stage1Value:"",stage2Value:"", stage3Value:"",stage4Value:""});
-
-    const [assesment, setAssesment] = useState({assessment:""});
-    const handleAssessment =e =>{
-        setAssesment({...assesment, [e.target.name]: e.target.value})
-        
+    
+    const handleGenderBase =e =>{
+        props.setGenderBase({...props.genderBase, [e.target.name]: e.target.value})        
     }
 
-    const handleItemClick =(page, completedMenu)=>{
-        props.handleItemClick(page)
-        if(props.completed.includes(completedMenu)) {
-
-        }else{
-            props.setCompleted([...props.completed, completedMenu])
-        }
-    }  
-    /**** Submit Button Processing  */
-    const handleSubmit = (e) => { 
-        e.preventDefault();  
-        props.observation.data.assesment = assesment
-        props.observation.data.who=who  
-        toast.success("Record save successful");
-        handleItemClick('plan', 'who' )                  
-    }
         
 return (
         <>  
@@ -112,33 +84,18 @@ return (
                 <br/>
                     <form >
                     <div className="row">
-                    <div className="form-group mb-3 col-md-4">
-                            <FormGroup>
-                            <Label >Visit Date *</Label>
-                            <InputGroup> 
-                                <Input 
-                                    type="date"
-                                    
-                                    name="visitDate"
-                                    id="visitDate"
-                                    
-                                />
-                            </InputGroup>                                        
-                            </FormGroup>
-                            
-                    </div>
                     <div className="form-group mb-3 col-md-8"></div>   
                     </div>
                     <div className="row">
-                        <div className="form-group mb-3 col-md-6">                                    
+                    <div className="form-group mb-3 col-md-6">                                    
                             <FormGroup>
-                            <Label>Have you been beaten, sexually coerced, raped or threathened by your partner or anyone else?</Label>
+                            <Label>Has your partner ever hit, kicked, slapped, or otherwise physically hurt you</Label>
                                     <Input 
                                         type="select"
-                                        name="assessment"
-                                        id="assessment"
-                                        onChange={handleAssessment} 
-                                        value={assesment.assessment} 
+                                        name="partnerEverPhysically"
+                                        id="partnerEverPhysically"
+                                        onChange={handleGenderBase} 
+                                        value={props.genderBase.partnerEverPhysically} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -150,13 +107,31 @@ return (
                         </div>
                         <div className="form-group mb-3 col-md-6">                                    
                             <FormGroup>
-                            <Label>Does Your partner/family deny you food, shelter, freedom of movement livelihood or finance to access health care?</Label>
+                            <Label>Have you been beaten, sexually coerced, raped or threathened by your partner or anyone else</Label>
                                     <Input 
                                         type="select"
-                                        name="assessment"
-                                        id="assessment"
-                                        onChange={handleAssessment} 
-                                        value={assesment.assessment} 
+                                        name="haveBeenBeaten"
+                                        id="haveBeenBeaten"
+                                        onChange={handleGenderBase} 
+                                        value={props.genderBase.haveBeenBeaten} 
+                                    >
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                   
+                                    </Input>
+
+                            </FormGroup>
+                        </div>
+                        <div className="form-group mb-3 col-md-6">                                    
+                            <FormGroup>
+                            <Label>Does Your partner/family deny you food, shelter, freedom of movement livelihood or finance to access health care</Label>
+                                    <Input 
+                                        type="select"
+                                        name="partnerLivelihood"
+                                        id="partnerLivelihood"
+                                        onChange={handleGenderBase} 
+                                        value={props.genderBase.partnerLivelihood} 
                                     >
                                     <option value="">Select</option>
                                     <option value="Yes">Yes</option>
@@ -167,8 +142,6 @@ return (
                         </div>
                     </div>
                     <br/>
-                    <Button content='Back' icon='left arrow' labelPosition='left' style={{backgroundColor:"#992E62", color:'#fff'}} onClick={()=>handleItemClick('appearance', 'appearance')}/>
-                    <Button content='Next' type="submit" icon='right arrow' labelPosition='right' style={{backgroundColor:"#014d88", color:'#fff'}} onClick={handleSubmit}/>
                     
                     </form>
                     
