@@ -124,21 +124,20 @@ const UserRegistration = (props) => {
             firstTimeHypertensive:""
     })
     const [preventive, setPreventive]= useState({
-
-        lastAppointment:"",
-        medication:"",
-        cotrimoxazole:"",
-        parentStatus:"",
-        condoms:"",
-        condomCounseling:"",
-        preventDiseases:"",
-        alcohol:"",
-        nutrituional:"",
-        wash:" ",
-        phdp:""
+            lastAppointment:"",
+            medication:"",
+            cotrimoxazole:"",
+            parentStatus:"",
+            condoms:"",
+            condomCounseling:"",
+            preventDiseases:"",
+            alcohol:"",
+            nutrituional:"",
+            wash:" ",
+            phdp:""
     })
     const [reproductive, setReproductive] = useState({cervicalCancer:"", pregnantWithinNextYear:"",contraceptive:""});
-    const [tpt, setTpt] = useState({ date:"", referredForServices:"", adherence:"", rash:"", neurologicSymptoms:"", hepatitisSymptoms:"",tbSymptoms:"",resonForStoppingIpt:"", outComeOfIpt:"",treatementType:"",completionDate:""});
+    const [tpt, setTpt] = useState({ date:"", referredForServices:"", adherence:"", rash:"", neurologicSymptoms:"", hepatitisSymptoms:"",tbSymptoms:"",resonForStoppingIpt:"", outComeOfIpt:""});
     const [tbObj, setTbObj] = useState({currentlyOnTuberculosis:"", 
             tbTreatment:"", 
             tbTreatmentStartDate:"",
@@ -157,7 +156,10 @@ const UserRegistration = (props) => {
             abnormalChest: false,
             activeTb:false,
             contraindications :"",
-            eligibleForTPT:""
+            eligibleForTPT:"",
+            treatementOutcome:"",
+            treatementType:"",
+            completionDate:""
     });
     const [observationObj, setObservationObj]=useState({
             eligibility:"",
@@ -166,8 +168,8 @@ const UserRegistration = (props) => {
             chronicCondition:"",
             positiveHealth:"",
             peproductive:"",
-            tb:"",
-            tpt:""
+            tbIptScreening:"",
+            tptMonitoring:""
     })
     const [observation, setObservation]=useState({
         data: {},
@@ -200,8 +202,8 @@ const UserRegistration = (props) => {
         observationObj.chronicCondition=chronicConditions
         observationObj.positiveHealth=preventive
         observationObj.peproductive=reproductive 
-        observationObj.tb=tbObj
-        observationObj.tpt=tpt
+        observationObj.tbIptScreening=tbObj
+        observationObj.tptMonitoring=tpt
         observation.data =observationObj
         if(validate()){
         axios.post(`${baseUrl}observation`,observation,
@@ -296,7 +298,7 @@ const UserRegistration = (props) => {
                                     </FormGroup>   
                                 </div>
                             </div>
-                            {/* Eligibility Assessment */}
+                            {/* TB & IPT  Screening  */}
                             <div className="card">
                                 
                                 <div className="card-header" style={{backgroundColor:"#014d88",color:'#fff',fontWeight:'bolder',  borderRadius:"0.2rem"}}>
@@ -307,7 +309,7 @@ const UserRegistration = (props) => {
                                     <Tb setTbObj={setTbObj} tbObj={tbObj}/>  
                                 )}
                             </div>
-                            {/* End Eligibility Assessment */}
+                            {/* End TB & IPT  Screening  */}
                              {/* TPT MONITORING */}
                              <div className="card">
                                 <div className="card-header" style={{backgroundColor:"#014d88",color:'#fff',fontWeight:'bolder',  borderRadius:"0.2rem"}}>
@@ -318,7 +320,7 @@ const UserRegistration = (props) => {
                                     <Tpt setTpt={setTpt} tpt={tpt}/>  
                                 )}
                             </div>
-                            {/* End Eligibility Assessment */}
+                            {/* End TPT MONITORING */}
                              {/* Eligibility Assessment */}
                              <div className="card">
                                 <div className="card-header" style={{backgroundColor:"#014d88",color:'#fff',fontWeight:'bolder',  borderRadius:"0.2rem"}}>
