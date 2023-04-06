@@ -197,16 +197,17 @@ const TbScreening = (props) => {
         props.setTbObj({...props.tbObj, [e.target.name]: e.target.value})
         
         //making some fields to be empty once base on the business logic
-        if(e.target.name==='currentlyOnTuberculosis' && e.target.value==='No'){
+        if(e.target.name==='currentlyOnTuberculosis' && e.target.value==='Yes'){
             props.tbObj.tbTreatment=""
-            //setprops.tbObj({...props.tbObj, ['tbTreatment']: ""})
-        }else{
             props.tbObj.tbTreatmentStartDate=""
+
+            //props.setTbObj({...props.tbObj, ['tbTreatment']: ""})
         }
         if(e.target.name==='tbTreatment' && e.target.value==='No'){
             props.tbObj.tbTreatmentStartDate=""
             setcontraindicationDisplay(true)
         }
+        
         
     }
 
@@ -249,10 +250,10 @@ const TbScreening = (props) => {
                                 </InputGroup>                    
                                 </FormGroup>
                         </div>
-                        {props.tbObj.currentlyOnTuberculosis==='No' && (
+                        {(props.tbObj.currentlyOnTuberculosis!=='' && props.tbObj.currentlyOnTuberculosis==='No' ) && (
                         <div className="form-group mb-3 col-md-6">
                             <FormGroup>
-                            <Label >Are you currently on TB treatment?</Label>
+                            <Label >Are you currently on TB treatment?{props.tbObj.tbTreatment}</Label>
                             <InputGroup> 
                                 <Input 
                                     type="select"
@@ -307,6 +308,24 @@ const TbScreening = (props) => {
                         </div>
                         <div className="form-group mb-3 col-md-6">
                             <FormGroup>
+                            <Label >Treatment Outcome </Label>
+                            <InputGroup> 
+                                <Input 
+                                    type="select"
+                                    name="treatmentOutcome"
+                                    id="treatmentOutcome"
+                                    onChange={handleInputChange} 
+                                    value={props.tbObj.treatmentOutcome} 
+                                >
+                                    <option value="">Select</option>
+                                    <option value="option 1">option 1</option>
+                                    <option value="New">New</option>
+                                </Input>
+                            </InputGroup>
+                            </FormGroup>
+                        </div>
+                        <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
                             <Label >Completion Date </Label>
                             <InputGroup> 
                                 <Input 
@@ -321,7 +340,6 @@ const TbScreening = (props) => {
                             </InputGroup>
                             </FormGroup>
                         </div>
-                        
                         </>
                          )}
                         {(props.tbObj.currentlyOnTuberculosis==='Yes' || props.tbObj.tbTreatment==='No') && (
