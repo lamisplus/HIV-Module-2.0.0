@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState, useEffect} from "react";
 import axios from "axios";
 import MatButton from "@material-ui/core/Button";
 //import Button from "@material-ui/core/Button";
@@ -94,7 +94,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const UserRegistration = (props) => {
+const ChronicCare = (props) => {
+    console.log(props)
     const patientObj = props.patientObj;
     const [saving, setSaving] = useState(false);
     const classes = useStyles();
@@ -179,19 +180,48 @@ const UserRegistration = (props) => {
         type: "Chronic Care",
         visitId: null
     })
+    useEffect(() => {
+        GetChronicCare();
+    }, [props.activeContent.id]);
+    const GetChronicCare =()=>{
+        axios
+           .get(`${baseUrl}observation/${props.activeContent.id}`,
+               { headers: {"Authorization" : `Bearer ${token}`} }
+           )
+           .then((response) => {  
+
+                //const newmedicalHistory=response.data.data.medicalHistory
+                // observation.dateOfObservation =  response.data.dateOfObservation 
+                // observation.facilityId =  response.data.facilityId
+                // observation.type =  response.data.type
+                eligibility =response.data.eligibility
+                observationObj.eligibility=eligibility
+                observationObj.nutrition=
+                observationObj.genderBase=genderBase
+                observationObj.chronicCondition=chronicConditions
+                observationObj.positiveHealth=preventive
+                observationObj.peproductive=reproductive 
+                observationObj.tbIptScreening=tbObj
+                observationObj.tptMonitoring=tpt
+           })
+           .catch((error) => {
+           //console.log(response.data.data);
+           });
+       
+    }
     const handleInputChange = e => {
         //console.log(e.target.value)
         setErrors({...temp, [e.target.name]:""})
         setObservation ({...observation,  [e.target.name]: e.target.value});
     }
-        //Validations of the forms
-        const validate = () => { 
-            temp.dateOfObservation = observation.dateOfObservation ? "" : "This field is required"
-            setErrors({
-                ...temp
-            })
-            return Object.values(temp).every(x => x === "")
-          }
+    //Validations of the forms
+    const validate = () => { 
+        temp.dateOfObservation = observation.dateOfObservation ? "" : "This field is required"
+        setErrors({
+            ...temp
+        })
+        return Object.values(temp).every(x => x === "")
+    }
     const handleSubmit = async (e) => {
         e.preventDefault(); 
         setSaving(true);
@@ -445,4 +475,4 @@ const UserRegistration = (props) => {
     );
 };
 
-export default UserRegistration
+export default ChronicCare
