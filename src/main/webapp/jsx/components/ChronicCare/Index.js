@@ -95,7 +95,6 @@ const useStyles = makeStyles((theme) => ({
 
 
 const ChronicCare = (props) => {
-    console.log(props)
     const patientObj = props.patientObj;
     const [saving, setSaving] = useState(false);
     const classes = useStyles();
@@ -109,8 +108,11 @@ const ChronicCare = (props) => {
     const [showReproductive, setShowReproductive] = useState(false);
     const [showTb, setShowTb] = useState(false);//Tpt
     const [showTpt, setShowTpt] = useState(false);
+    //GenderBase Object
     const [genderBase, setGenderBase] = useState({partnerEverPhysically:"", haveBeenBeaten:"", partnerLivelihood:""});
+    //Eligibility Object
     const [eligibility, setEligibility] = useState({typeOfClient:"", pregnantStatus:"", whoStaging:"", lastCd4Result:"", lastViralLoadResult:"",  eligibleForViralLoad:""});
+    //Chronic Care Object
     const [chronicConditions, setChronicConditions]= useState({
             diastolic:"",
             systolic:"",
@@ -124,6 +126,7 @@ const ChronicCare = (props) => {
             bp:"",
             firstTimeHypertensive:""
     })
+    //Preventive Object
     const [preventive, setPreventive]= useState({
             lastAppointment:"",
             medication:"",
@@ -137,9 +140,12 @@ const ChronicCare = (props) => {
             wash:" ",
             phdp:""
     })
+    //Reproductive Object
     const [reproductive, setReproductive] = useState({cervicalCancer:"", pregnantWithinNextYear:"",contraceptive:""});
+    //TPT object 
     const [tpt, setTpt] = useState({ date:"", referredForServices:"", adherence:"", rash:"", neurologicSymptoms:"", hepatitisSymptoms:"",tbSymptoms:"",resonForStoppingIpt:"", outComeOfIpt:""});
-    const [tbObj, setTbObj] = useState({currentlyOnTuberculosis:"", 
+    const [tbObj, setTbObj] = useState({//TB and IPT Screening Object
+            currentlyOnTuberculosis:"", 
             tbTreatment:"", 
             tbTreatmentStartDate:"",
             coughing:"", 
@@ -162,7 +168,7 @@ const ChronicCare = (props) => {
             treatementType:"",
             completionDate:""
     });
-    const [observationObj, setObservationObj]=useState({
+    const [observationObj, setObservationObj]=useState({//Predefine object for chronic care DTO 
             eligibility:"",
             nutrition:"",
             genderBase:"",
@@ -183,33 +189,28 @@ const ChronicCare = (props) => {
     useEffect(() => {
         GetChronicCare();
     }, [props.activeContent.id]);
-    const GetChronicCare =()=>{
+    const GetChronicCare =()=>{//function to get chronic care data for edit 
         axios
            .get(`${baseUrl}observation/${props.activeContent.id}`,
                { headers: {"Authorization" : `Bearer ${token}`} }
            )
            .then((response) => {  
-
-                //const newmedicalHistory=response.data.data.medicalHistory
-                // observation.dateOfObservation =  response.data.dateOfObservation 
-                // observation.facilityId =  response.data.facilityId
-                // observation.type =  response.data.type
-                eligibility =response.data.eligibility
-                observationObj.eligibility=eligibility
-                observationObj.nutrition=
-                observationObj.genderBase=genderBase
-                observationObj.chronicCondition=chronicConditions
-                observationObj.positiveHealth=preventive
-                observationObj.peproductive=reproductive 
-                observationObj.tbIptScreening=tbObj
-                observationObj.tptMonitoring=tpt
+                observationObj.eligibility=response.data.eligibility
+                observationObj.nutrition=response.data
+                observationObj.genderBase=response.data.genderBase
+                observationObj.chronicCondition=response.data.chronicConditions
+                observationObj.positiveHealth=response.data.positiveHealth
+                observationObj.peproductive=response.data.peproductive 
+                observationObj.tbIptScreening=response.data.tbIptScreening
+                observationObj.tptMonitoring=response.data.tptMonitoring
            })
            .catch((error) => {
            //console.log(response.data.data);
            });
        
     }
-    const handleInputChange = e => {
+
+    const handleInputChange = e => {//Handle input fields changes
         //console.log(e.target.value)
         setErrors({...temp, [e.target.name]:""})
         setObservation ({...observation,  [e.target.name]: e.target.value});
@@ -257,6 +258,9 @@ const ChronicCare = (props) => {
                 }
             });
         
+        }else{
+            toast.error("All fields are required")
+            setSaving(false); 
         }
     }
     
@@ -309,7 +313,7 @@ const ChronicCare = (props) => {
                                 <div className="form-group mb-3 col-md-4">
                                     <FormGroup>
                                     <Label >Visit Date *</Label>
-                                    <InputGroup> 
+                                     
                                     <Input
                                     type="date"
                                     name="dateOfObservation"
@@ -320,12 +324,11 @@ const ChronicCare = (props) => {
                                     max= {moment(new Date()).format("YYYY-MM-DD") }
                                     
                                     > 
-                                </Input>
-                                {errors.dateOfObservation !=="" ? (
+                                    </Input>                                   
+                                    </FormGroup>
+                                    {errors.dateOfObservation !=="" ? (
                                     <span className={classes.error}>{errors.dateOfObservation}</span>
-                                ) : "" }
-                                    </InputGroup>                                        
-                                    </FormGroup>   
+                                ) : "" }   
                                 </div>
                             </div>
                             {/* TB & IPT  Screening  */}
@@ -457,7 +460,7 @@ const ChronicCare = (props) => {
                                 )}
                             </MatButton>
     
-                            <MatButton
+                            {/* <MatButton
                                 variant="contained"
                                 className={classes.button}
                                 startIcon={<CancelIcon />}
@@ -465,7 +468,7 @@ const ChronicCare = (props) => {
                                 onClick={handleCancel}
                             >
                                 <span style={{ textTransform: "capitalize", color:"#fff" }}>Cancel</span>
-                            </MatButton>
+                            </MatButton> */}
                         </Form>
                     </div>
                 </CardContent>
