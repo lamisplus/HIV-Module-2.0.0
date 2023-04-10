@@ -1,7 +1,6 @@
 package org.lamisplus.modules.hiv.repositories;
 
 import org.lamisplus.modules.hiv.domain.dto.PharmacyReport;
-import org.lamisplus.modules.hiv.domain.entity.ARTClinical;
 import org.lamisplus.modules.hiv.domain.entity.ArtPharmacy;
 import org.lamisplus.modules.patient.domain.entity.Person;
 import org.lamisplus.modules.patient.domain.entity.Visit;
@@ -67,6 +66,12 @@ public interface ArtPharmacyRepository extends JpaRepository<ArtPharmacy, Long> 
 			" AND ipt ->>'type' ILIKE'%initia%'AND ipt ->>'dateCompleted' IS NULL " +
 			" ORDER BY visit_date DESC LIMIT 1 ", nativeQuery = true)
     Optional<ArtPharmacy> getInitialIPTWithoutCompletionDate(String personUuid);
+	
+	
+	@Query(value = "SELECT * FROM hiv_art_pharmacy WHERE person_uuid = ?1 " +
+			" AND ipt  IS NOT NULL " +
+			" ORDER BY visit_date DESC LIMIT 1 ", nativeQuery = true)
+	Optional<ArtPharmacy> getPharmacyIpt(String personUuid);
 
 	//For central sync
 	List<ArtPharmacy> findAllByFacilityId(Long facilityId);
