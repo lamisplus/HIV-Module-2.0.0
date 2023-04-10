@@ -60,20 +60,14 @@ const useStyles = makeStyles(theme => ({
 const Laboratory = (props) => {
     let visitId=""
     const patientObj = props.patientObj;
-    //const enrollDate = patientObj && patientObj.enrollment ? patientObj.enrollment.dateOfRegistration : null
     const [enrollDate, setEnrollDate] = useState("");
     const classes = useStyles();
-    //const [labNumberOption, setLabNumberOption] = useState("")
     const [saving, setSaving] = useState(false);
     const [errors, setErrors] = useState({});
     let fieldHidden=props.activeContent.actionType==='update' ? false : true;
-    ///const [moduleStatus, setModuleStatus]= useState("0")
     const [testGroup, setTestGroup] = useState([]);
     const [test, setTest] = useState([]);
-    //const [currentVisit, setCurrentVisit]=useState(true)
     const [vLIndication, setVLIndication] = useState([]);
-    // const [testOrderList, setTestOrderList] = useState([]);//Test Order List
-    // const [showVLIndication, setShowVLIndication] = useState(false);
     const [eacStatusObj, setEacStatusObj] = useState()
     const [labNumbers, setLabNumbers] = useState([]);//
     const [selectedOption, setSelectedOption] = useState([]);
@@ -106,15 +100,14 @@ const Laboratory = (props) => {
 useEffect(() => {
         TestGroup();
         ViraLoadIndication();
-        //PatientVisit();
-        //CheckLabModule();
         CheckEACStatus();
         GetPatientDTOObj();
         LabNumbers();
         setTests({...props.activeContent.obj})
         tests.sampleCollectionDate=moment(props.activeContent.obj.sampleCollectionDate).format("YYYY-MM-DD HH:MM:SS")
         tests.dateResultReceived=moment(props.activeContent.obj.dateResultReceived).format("YYYY-MM-DD HH:MM:SS")
-        //setTest(props.activeContent.obj.labTestId)
+        tests.dateResultReported=moment(props.activeContent.obj.dateResultReported).format("YYYY-MM-DD HH:MM:SS")
+        //dateResultReported
     }, [props.patientObj.id, props.activeContent.obj]);
      //Get list of LabNumbers
      const LabNumbers =()=>{
@@ -203,18 +196,6 @@ useEffect(() => {
             //console.log(error);
             });        
     }
-    // const handleSelectedTestGroup = e =>{
-
-    //     setTests ({...tests,  labTestGroupId: e.target.value});
-    //     const getTestList= testGroup.filter((x)=> x.id===parseInt(e.target.value))
-    //     setTest(getTestList[0].labTests)
-    //     if(e.target.value==='4'){            
-    //         setVlRequired(true)
-    //     }else{
-    //         setVlRequired(false) 
-    //     }
-    //     //setTests ({...tests,  [e.target.name]: e.target.value}); 
-    // }
     const handleInputChange = e => {
         setErrors({...temp, [e.target.name]:""})//reset the error message to empty once the field as value
         setTests ({...tests,  [e.target.name]: e.target.value});               
@@ -558,7 +539,7 @@ useEffect(() => {
                             <FormGroup>
                                 <Label for="encounterDate">Reported Date</Label>
                                 <Input
-                                    type="datetime-local"
+                                    type="date"
                                     name="dateResultReported"
                                     id="dateResultReported"
                                     value={tests.dateResultReported}

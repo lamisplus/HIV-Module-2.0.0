@@ -126,6 +126,13 @@ const ChronicCare = (props) => {
             bp:"",
             firstTimeHypertensive:""
     })
+    //Nutrition Object
+    const [nutrition, setNutrition]= useState({
+        height:"",
+        weight:"",
+        support:"",
+        education:"",
+    })
     //Preventive Object
     const [preventive, setPreventive]= useState({
             lastAppointment:"",
@@ -143,7 +150,7 @@ const ChronicCare = (props) => {
     //Reproductive Object
     const [reproductive, setReproductive] = useState({cervicalCancer:"", pregnantWithinNextYear:"",contraceptive:""});
     //TPT object 
-    const [tpt, setTpt] = useState({ date:"", referredForServices:"", adherence:"", rash:"", neurologicSymptoms:"", hepatitisSymptoms:"",tbSymptoms:"",resonForStoppingIpt:"", outComeOfIpt:""});
+    const [tpt, setTpt] = useState({ date:"",weight:"", referredForServices:"", adherence:"", rash:"", neurologicSymptoms:"", hepatitisSymptoms:"",tbSymptoms:"",resonForStoppingIpt:"", outComeOfIpt:""});
     const [tbObj, setTbObj] = useState({//TB and IPT Screening Object
             currentlyOnTuberculosis:"", 
             tbTreatment:"", 
@@ -203,13 +210,22 @@ const ChronicCare = (props) => {
                 observationObj.peproductive=response.data.peproductive 
                 observationObj.tbIptScreening=response.data.tbIptScreening
                 observationObj.tptMonitoring=response.data.tptMonitoring
+                setObservation(response.data)
+                setObservationObj(response.data.data)
+                setTpt({...tpt, ...response.data.data.tptMonitoring})
+                setTbObj({...tbObj, ...response.data.data.tbIptScreening})
+                setEligibility({...eligibility, ...response.data.data.eligibility})
+                setGenderBase({...genderBase, ...response.data.data.genderBase})
+                setChronicConditions({...chronicConditions, ...response.data.data.chronicConditions})
+                setPreventive({...preventive, ...response.data.data.preventive})
+                setReproductive({...reproductive, ...response.data.data.reproductive})
+                setTpt({...tpt, ...response.data.data.tptMonitoring})
            })
            .catch((error) => {
            //console.log(response.data.data);
            });
        
     }
-
     const handleInputChange = e => {//Handle input fields changes
         //console.log(e.target.value)
         setErrors({...temp, [e.target.name]:""})
@@ -372,7 +388,7 @@ const ChronicCare = (props) => {
                                     {showNutrition===false  ? (<><span className="float-end" style={{cursor: "pointer"}} onClick={onClickNutrition}><FaPlus /></span></>) :  (<><span className="float-end" style={{cursor: "pointer"}} onClick={onClickNutrition}><FaAngleDown /></span> </>)}
                                 </div>
                                 {showNutrition && (
-                                  <NutritionalStatus />
+                                  <NutritionalStatus nutrition={nutrition} setNutrition={setNutrition}/>
                                 )}
                             </div>
                             {/* End Nutritional Status Assessment */}
