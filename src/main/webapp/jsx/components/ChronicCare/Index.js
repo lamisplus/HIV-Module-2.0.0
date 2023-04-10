@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState, useEffect} from "react";
 import axios from "axios";
 import MatButton from "@material-ui/core/Button";
 //import Button from "@material-ui/core/Button";
@@ -94,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const UserRegistration = (props) => {
+const ChronicCare = (props) => {
     const patientObj = props.patientObj;
     const [saving, setSaving] = useState(false);
     const classes = useStyles();
@@ -108,8 +108,11 @@ const UserRegistration = (props) => {
     const [showReproductive, setShowReproductive] = useState(false);
     const [showTb, setShowTb] = useState(false);//Tpt
     const [showTpt, setShowTpt] = useState(false);
+    //GenderBase Object
     const [genderBase, setGenderBase] = useState({partnerEverPhysically:"", haveBeenBeaten:"", partnerLivelihood:""});
+    //Eligibility Object
     const [eligibility, setEligibility] = useState({typeOfClient:"", pregnantStatus:"", whoStaging:"", lastCd4Result:"", lastViralLoadResult:"",  eligibleForViralLoad:""});
+    //Chronic Care Object
     const [chronicConditions, setChronicConditions]= useState({
             diastolic:"",
             systolic:"",
@@ -123,6 +126,14 @@ const UserRegistration = (props) => {
             bp:"",
             firstTimeHypertensive:""
     })
+    //Nutrition Object
+    const [nutrition, setNutrition]= useState({
+        height:"",
+        weight:"",
+        support:"",
+        education:"",
+    })
+    //Preventive Object
     const [preventive, setPreventive]= useState({
             lastAppointment:"",
             medication:"",
@@ -136,9 +147,12 @@ const UserRegistration = (props) => {
             wash:" ",
             phdp:""
     })
+    //Reproductive Object
     const [reproductive, setReproductive] = useState({cervicalCancer:"", pregnantWithinNextYear:"",contraceptive:""});
-    const [tpt, setTpt] = useState({ date:"", referredForServices:"", adherence:"", rash:"", neurologicSymptoms:"", hepatitisSymptoms:"",tbSymptoms:"",resonForStoppingIpt:"", outComeOfIpt:""});
-    const [tbObj, setTbObj] = useState({currentlyOnTuberculosis:"", 
+    //TPT object 
+    const [tpt, setTpt] = useState({ date:"",weight:"", referredForServices:"", adherence:"", rash:"", neurologicSymptoms:"", hepatitisSymptoms:"",tbSymptoms:"",resonForStoppingIpt:"", outComeOfIpt:""});
+    const [tbObj, setTbObj] = useState({//TB and IPT Screening Object
+            currentlyOnTuberculosis:"", 
             tbTreatment:"", 
             tbTreatmentStartDate:"",
             coughing:"", 
@@ -161,7 +175,7 @@ const UserRegistration = (props) => {
             treatementType:"",
             completionDate:""
     });
-    const [observationObj, setObservationObj]=useState({
+    const [observationObj, setObservationObj]=useState({//Predefine object for chronic care DTO 
             eligibility:"",
             nutrition:"",
             genderBase:"",
@@ -179,19 +193,52 @@ const UserRegistration = (props) => {
         type: "Chronic Care",
         visitId: null
     })
-    const handleInputChange = e => {
+    useEffect(() => {
+        GetChronicCare();
+    }, [props.activeContent.id]);
+    const GetChronicCare =()=>{//function to get chronic care data for edit 
+        axios
+           .get(`${baseUrl}observation/${props.activeContent.id}`,
+               { headers: {"Authorization" : `Bearer ${token}`} }
+           )
+           .then((response) => {  
+                observationObj.eligibility=response.data.eligibility
+                observationObj.nutrition=response.data
+                observationObj.genderBase=response.data.genderBase
+                observationObj.chronicCondition=response.data.chronicConditions
+                observationObj.positiveHealth=response.data.positiveHealth
+                observationObj.peproductive=response.data.peproductive 
+                observationObj.tbIptScreening=response.data.tbIptScreening
+                observationObj.tptMonitoring=response.data.tptMonitoring
+                setObservation(response.data)
+                setObservationObj(response.data.data)
+                setTpt({...tpt, ...response.data.data.tptMonitoring})
+                setTbObj({...tbObj, ...response.data.data.tbIptScreening})
+                setEligibility({...eligibility, ...response.data.data.eligibility})
+                setGenderBase({...genderBase, ...response.data.data.genderBase})
+                setChronicConditions({...chronicConditions, ...response.data.data.chronicConditions})
+                setPreventive({...preventive, ...response.data.data.preventive})
+                setReproductive({...reproductive, ...response.data.data.reproductive})
+                setTpt({...tpt, ...response.data.data.tptMonitoring})
+           })
+           .catch((error) => {
+           //console.log(response.data.data);
+           });
+       
+    }
+    const handleInputChange = e => {//Handle input fields changes
         //console.log(e.target.value)
         setErrors({...temp, [e.target.name]:""})
         setObservation ({...observation,  [e.target.name]: e.target.value});
     }
-        //Validations of the forms
-        const validate = () => { 
-            temp.dateOfObservation = observation.dateOfObservation ? "" : "This field is required"
-            setErrors({
-                ...temp
-            })
-            return Object.values(temp).every(x => x === "")
-          }
+    //Validations of the forms
+    const validate = () => { 
+        temp.dateOfObservation = observation.dateOfObservation ? "" : "This field is required"
+        setErrors({
+            ...temp
+        })
+        return Object.values(temp).every(x => x === "")
+    }
     const handleSubmit = async (e) => {
         e.preventDefault(); 
         setSaving(true);
@@ -227,6 +274,9 @@ const UserRegistration = (props) => {
                 }
             });
         
+        }else{
+            toast.error("All fields are required")
+            setSaving(false); 
         }
     }
     
@@ -279,7 +329,7 @@ const UserRegistration = (props) => {
                                 <div className="form-group mb-3 col-md-4">
                                     <FormGroup>
                                     <Label >Visit Date *</Label>
-                                    <InputGroup> 
+                                     
                                     <Input
                                     type="date"
                                     name="dateOfObservation"
@@ -290,12 +340,11 @@ const UserRegistration = (props) => {
                                     max= {moment(new Date()).format("YYYY-MM-DD") }
                                     
                                     > 
-                                </Input>
-                                {errors.dateOfObservation !=="" ? (
+                                    </Input>                                   
+                                    </FormGroup>
+                                    {errors.dateOfObservation !=="" ? (
                                     <span className={classes.error}>{errors.dateOfObservation}</span>
-                                ) : "" }
-                                    </InputGroup>                                        
-                                    </FormGroup>   
+                                ) : "" }   
                                 </div>
                             </div>
                             {/* TB & IPT  Screening  */}
@@ -339,7 +388,7 @@ const UserRegistration = (props) => {
                                     {showNutrition===false  ? (<><span className="float-end" style={{cursor: "pointer"}} onClick={onClickNutrition}><FaPlus /></span></>) :  (<><span className="float-end" style={{cursor: "pointer"}} onClick={onClickNutrition}><FaAngleDown /></span> </>)}
                                 </div>
                                 {showNutrition && (
-                                  <NutritionalStatus />
+                                  <NutritionalStatus nutrition={nutrition} setNutrition={setNutrition}/>
                                 )}
                             </div>
                             {/* End Nutritional Status Assessment */}
@@ -427,7 +476,7 @@ const UserRegistration = (props) => {
                                 )}
                             </MatButton>
     
-                            <MatButton
+                            {/* <MatButton
                                 variant="contained"
                                 className={classes.button}
                                 startIcon={<CancelIcon />}
@@ -435,7 +484,7 @@ const UserRegistration = (props) => {
                                 onClick={handleCancel}
                             >
                                 <span style={{ textTransform: "capitalize", color:"#fff" }}>Cancel</span>
-                            </MatButton>
+                            </MatButton> */}
                         </Form>
                     </div>
                 </CardContent>
@@ -445,4 +494,4 @@ const UserRegistration = (props) => {
     );
 };
 
-export default UserRegistration
+export default ChronicCare

@@ -145,7 +145,10 @@ const PatientnHistory = (props) => {
         }else if(row.path==='Cervical-cancer'){
             props.setActiveContent({...props.activeContent, route:'cervical-cancer-update', id:row.id, activeTab:"history", actionType:action, })
       
-        }else{
+        }else if(row.path==='Chronic-Care'){
+            props.setActiveContent({...props.activeContent, route:'chronic-care', id:row.id, activeTab:"home", actionType:action, })
+      
+        }else{//Chronic Care
 
         }
         
