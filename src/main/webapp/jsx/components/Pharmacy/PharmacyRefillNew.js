@@ -104,6 +104,9 @@ const Pharmacy = (props) => {
     const [otherDrugs, setOtherDrugs] = useState([]);
     const [iptType, setIPT_TYPE] = useState([]);
     const [regimenTypeOther, setRegimenTypeOther] = useState([]);
+    const [iptEligibilty, setIptEligibilty] = useState({//Object to check for IPT ELIGIBILITY STATUS 
+        IPTEligibility: false,
+    });
     //const [currentRegimenValue, setCurrentRegimenValue] = useState("");//this is to get the current regimen value/ID the patient is on 
     //IPT_TYPE
     const [objValues, setObjValues] = useState({
@@ -163,6 +166,7 @@ const Pharmacy = (props) => {
         VitalSigns();
         ChildRegimenLine();
         GetPatientDTOObj();
+        GetIptEligibilty();
     }, [selectedOption, regimenType.length>0, objValues.refillPeriod]);
     const GetPatientDTOObj =()=>{
         axios
@@ -178,30 +182,43 @@ const Pharmacy = (props) => {
            });
        
     }
+    //
+    const GetIptEligibilty =()=>{
+        axios
+        .get(`${baseUrl}observation/check-ipt-eligible/${props.patientObj.id}`,
+            { headers: {"Authorization" : `Bearer ${token}`} }
+        )
+        .then((response) => {
+            setIptEligibilty(response.data)
+        })
+        .catch((error) => {
+        //console.log(error);
+        });
+    
+    }
     //Get the patient current regimen
-  const PatientCurrentRegimen =()=>{
-    axios
-       .get(`${baseUrl}hiv/art/pharmacy/patient/current-regimen/${props.patientObj.id}`,
-           { headers: {"Authorization" : `Bearer ${token}`} }
-       )
-       .then((response) => {
-           const currentRegimenObj= response.data
-           //setCurrentRegimenValue(currentRegimenObj.regimenType.id)
-           objValues.regimen=currentRegimenObj.regimenType.id
-           RegimenType(currentRegimenObj.regimenType.id)
-           objValues.regimenId=currentRegimenObj.id
-           //regimenName
-           RegimenDrug(currentRegimenObj.id)
-           //RegimenDrug(regimenId)
-           setShowRegimen(true)
-           //regimenDrug
-       })
-       .catch((error) => {
-       //console.log(error);
-       });
-   
-  }
-
+    const PatientCurrentRegimen =()=>{
+        axios
+        .get(`${baseUrl}hiv/art/pharmacy/patient/current-regimen/${props.patientObj.id}`,
+            { headers: {"Authorization" : `Bearer ${token}`} }
+        )
+        .then((response) => {
+            const currentRegimenObj= response.data
+            //setCurrentRegimenValue(currentRegimenObj.regimenType.id)
+            objValues.regimen=currentRegimenObj.regimenType.id
+            RegimenType(currentRegimenObj.regimenType.id)
+            objValues.regimenId=currentRegimenObj.id
+            //regimenName
+            RegimenDrug(currentRegimenObj.id)
+            //RegimenDrug(regimenId)
+            setShowRegimen(true)
+            //regimenDrug
+        })
+        .catch((error) => {
+        //console.log(error);
+        });
+    
+    }
     const calculate_age = dob => {
         var today = new Date();
         var dateParts = dob.split("-");
@@ -928,7 +945,7 @@ const Pharmacy = (props) => {
         return prev + +duration
       }, 0);
 
-      
+  
 
   return (      
       <div>
@@ -1578,7 +1595,8 @@ const Pharmacy = (props) => {
                 
                 </FormGroup>
             </div>
-            {showIptType && ( 
+            
+            { iptEligibilty.IPTEligibility===true  && ( //iptEligibilty
             <div className="form-group mb-3 col-xs-6 col-sm-6 col-md-6 col-lg-6">
                 <FormGroup>
                 <Label >Visit Type</Label>

@@ -147,12 +147,17 @@ const Eligibility = (props) => {
                             <Label >TB Symptoms (cough, fever, night sweats, weight loss,contacts)</Label>
                             <InputGroup> 
                                 <Input 
-                                    type="text"
+                                    type="select"
                                     name="tbSymptoms"
                                     id="tbSymptoms"
                                     onChange={handleTpt} 
                                     value={props.tpt.pregnantStatus} 
-                                ></Input>
+                                >
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                                <option value="Uncertain">Uncertain</option>
+                                </Input>
                             </InputGroup>
                             </FormGroup>
                         </div>  
@@ -163,7 +168,7 @@ const Eligibility = (props) => {
                             </Label>
                             <InputGroup> 
                                 <Input 
-                                    type="text"
+                                    type="select"
                                     name="hepatitisSymptoms"
                                     id="hepatitisSymptoms"
                                     onChange={handleTpt} 

@@ -349,23 +349,16 @@ const UserRegistration = (props) => {
            
     }
     const handleDateOfBirthChange = (e) => {
-        if (e.target.value == "Actual") {
+        if (e.target.value === "Actual") {
             setAgeDisabled(true);
-        } else if (e.target.value == "Estimated") {
+        } else if (e.target.value === "Estimated") {
             setAgeDisabled(false);
         }
     }
     const handleAgeChange = (e) => {
         const ageNumber = e.target.value.replace(/\D/g, '')
         if (!ageDisabled && ageNumber) {
-            if(ageNumber!=='' && ageNumber>=60){
-                toggle()
-            }
-            // if(ageNumber <=1){
-            //     setDisabledAgeBaseOnAge(true)
-            // }else{
-            //     setDisabledAgeBaseOnAge(false)
-            // }
+            
             const currentDate = new Date();
             currentDate.setDate(15);
             currentDate.setMonth(5);
@@ -373,10 +366,28 @@ const UserRegistration = (props) => {
             const dobNew = estDob.add((ageNumber * -1), 'years');
             //setBasicInfo({...basicInfo, dob: moment(dobNew).format("YYYY-MM-DD")});
             basicInfo.dob =moment(dobNew).format("YYYY-MM-DD")
+            if(ageNumber!=='' && ageNumber>=60){
+                toggle()
+            }
 
         }
         setBasicInfo({...basicInfo, age: ageNumber});
     }
+
+    // const handleAgeChange = (e) => {
+    //     if (!ageDisabled && e.target.value) {
+    //         setValue('age', e.target.value);
+    //         const currentDate = new Date();
+    //         currentDate.setDate(15);
+    //         currentDate.setMonth(5);
+    //         const estDob = moment(currentDate.toISOString());
+    //         const dob = estDob.add((e.target.value * -1), 'years');
+    //         setValue('dob', format(new Date(dob.toDate()), 'yyyy-MM-dd'));
+    //         if(calculate_age(format(new Date(dob.toDate()), 'yyyy-MM-dd'))>=60){
+    //             toggle()
+    //         }
+    //     }
+    // }
     //End of Date of Birth and Age handling 
     //Handle Input Change for Basic Infor
     const handleInputChangeBasic = e => {        
@@ -398,7 +409,7 @@ const UserRegistration = (props) => {
             setBasicInfo ({...basicInfo,  [e.target.name]: name});
         }
         if(e.target.name==='ninNumber' && e.target.value!==''){
-            const ninNumberValue = checkNINLimit(e.target.value.replace(/\D/g, ''))
+            const ninNumberValue = checkNumberLimit(e.target.value.replace(/\D/g, ''))
             setBasicInfo ({...basicInfo,  [e.target.name]: ninNumberValue});
         }
         if(e.target.name==='hospitalNumber' && e.target.value!==''){
@@ -740,15 +751,16 @@ const UserRegistration = (props) => {
         const limit = 10;
             setRelatives({...relatives,  [inputName]: e.slice(0, limit)});     
     }
-    const checkPhoneNumberBasic=(e, inputName)=>{
-        const limit = 10;
-            setBasicInfo({...basicInfo,  [inputName]: e.slice(0, limit)});     
-    } 
-
-    const checkNINLimit=(e)=>{
+    
+    const checkNumberLimit=(e)=>{
         const limit = 11;        
         const acceptedNumber= e.slice(0, limit)
         return  acceptedNumber   
+    }
+    const handleInputChangePhoneNumber=(e, inputName)=>{
+        const limit = 11;
+        const NumberValue = checkNumberLimit(e.target.value.replace(/\D/g, ''))
+        setBasicInfo({...basicInfo, [inputName]: NumberValue})
     }
     //Handle CheckBox 
     const handleCheckBox =e =>{
@@ -1107,7 +1119,7 @@ const UserRegistration = (props) => {
                                         <div className="form-group  col-md-4">
                                             <FormGroup>
                                                 <Label>Phone Number <span style={{ color:"red"}}> *</span></Label>
-                                                <PhoneInput
+                                                {/* <PhoneInput
                                                     containerStyle={{width:'100%',border: "1px solid #014D88"}}
                                                     inputStyle={{width:'100%',borderRadius:'0px'}}
                                                     country={'ng'}
@@ -1120,6 +1132,15 @@ const UserRegistration = (props) => {
                                                    onChange={(e)=>{checkPhoneNumberBasic(e,'phoneNumber')}}
                                                    
                                                    //onChange={(e)=>{handleInputChangeBasic(e,'phoneNumber')}}
+                                                /> */}
+                                                <Input
+                                                    type="text"
+                                                    name="phoneNumber"
+                                                    id="phoneNumber"
+                                                    onChange={(e)=>{handleInputChangePhoneNumber(e,'phoneNumber')}}
+                                                    value={basicInfo.phoneNumber}
+                                                    style={{border: "1px solid #014D88",borderRadius:"0.2rem"}}
+                                                    required
                                                 />
                                                 {errors.phoneNumber !=="" ? (
                                                     <span className={classes.error}>{errors.phoneNumber}</span>
@@ -1133,7 +1154,7 @@ const UserRegistration = (props) => {
                                         <div className="form-group col-md-4">
                                             <FormGroup>
                                                 <Label>Alt. Phone Number</Label>
-                                                <PhoneInput
+                                                {/* <PhoneInput
                                                     containerStyle={{width:'100%',border: "1px solid #014D88"}}
                                                     inputStyle={{width:'100%',borderRadius:'0px'}}
                                                     country={'ng'}
@@ -1142,10 +1163,16 @@ const UserRegistration = (props) => {
                                                     masks={{ng: '...-...-....', at: '(....) ...-....'}}
                                                     onChange={(e)=>{checkPhoneNumberBasic(e,'altPhonenumber')}}
                                                     
+                                                /> */}
+                                                 <Input
+                                                    type="text"
+                                                    name="altPhonenumber"
+                                                    id="altPhonenumber"
+                                                    onChange={(e)=>{handleInputChangePhoneNumber(e,'altPhonenumber')}}
+                                                    value={basicInfo.altPhonenumber}
+                                                    style={{border: "1px solid #014D88",borderRadius:"0.2rem"}}
+                                                    required
                                                 />
-                                                 {/* {basicInfo.phoneNumber.length >13 ||  basicInfo.phoneNumber.length <13? (
-                                                <span className={classes.error}>{"The maximum and minimum required number is 13 digit"}</span>
-                                                ) : "" } */}
                                             </FormGroup>
                                         </div>
 

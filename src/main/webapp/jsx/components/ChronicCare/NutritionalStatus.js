@@ -69,36 +69,19 @@ const useStyles = makeStyles((theme) => ({
 
 const BasicInfo = (props) => {
     const classes = useStyles();
-    const history = useHistory();
     const [errors, setErrors] = useState({});
     const [selectedOptions1,setSelectedOptions1] = useState([]);
     const [selectedOptions2,setSelectedOptions2] = useState([]);
-    let temp = { ...errors }   
-    useEffect(() => { 
-       
-    }, []); 
+
     const [vital, setVitalSignDto]= useState({
         bodyWeight: "",
-        diastolic:"",
-        encounterDate: "",
-        facilityId: 1,
         height: "",
-        personId: "",
-        serviceTypeId: 1,
-        systolic:"",
-        pulse:"",
-        temperature:"",
-        respiratoryRate:"" 
     })
     //Vital signs clinical decision support 
     const [vitalClinicalSupport, setVitalClinicalSupport] = useState({
                                 bodyWeight: "",
-                                diastolic: "",
                                 height: "",
-                                systolic: "",
-                                pulse:"",
-                                temperature:"",
-                                respiratoryRate:""
+
                             })
     const handleInputChangeVitalSignDto = e => {
         setVitalSignDto({ ...vital, [e.target.name]: e.target.value });
@@ -123,14 +106,7 @@ const BasicInfo = (props) => {
         }
         BmiCal()
     }
-    const handleItemClick =(page, completedMenu)=>{
-        props.handleItemClick(page)
-        if(props.completed.includes(completedMenu)) {
-
-        }else{
-            props.setCompleted([...props.completed, completedMenu])
-        }
-    } 
+ 
     const onSelectedOption = (selectedValues) => {
         //setWho({...who, stage2ValueOption: selectedValues})
         setSelectedOptions1(selectedValues);
@@ -139,13 +115,7 @@ const BasicInfo = (props) => {
         //setWho({...who, stage2ValueOption: selectedValues})
         setSelectedOptions2(selectedValues);
     }; 
-    /**** Submit Button Processing  */
-    const handleSubmit = (e) => { 
-        e.preventDefault();  
-        props.observation.data.physicalExamination=vital   
-        toast.success("Medical history save successful");
-        handleItemClick('appearance', 'physical-examination' )                  
-    }
+
     function BmiCal (){
         
         const bmi = ((vital.bodyWeight/(((vital.height/100) * (vital.height/100)))).toFixed(2))
