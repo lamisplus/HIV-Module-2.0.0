@@ -48,8 +48,6 @@ public class PatientTrackerService {
 		patientTracker.setUuid(patientTrackerExist.getUuid());
 		patientTracker.setStatusTracker(patientTrackerExist.getStatusTracker());
 		return mapEntityDto(patientTrackerRepository.save(patientTracker));
-		
-		
 	}
 	
 	
@@ -65,6 +63,13 @@ public class PatientTrackerService {
 		return patientTrackerRepository
 				.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException(PatientTracker.class, "id", String.valueOf(id)));
+	}
+	
+	public void deletePatientTrackerById (Long id) {
+		PatientTracker patientTracker = getPatientTrackerById(id);
+		HIVStatusTracker statusTracker = patientTracker.getStatusTracker();
+		hivStatusTrackerRepository.delete(statusTracker);
+		patientTrackerRepository.delete(patientTracker);
 	}
 	
 	

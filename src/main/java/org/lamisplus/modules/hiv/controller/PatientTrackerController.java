@@ -36,5 +36,11 @@ public class PatientTrackerController {
 		return ResponseEntity.ok(patientTrackerService.getPatientTrackerByPatientId(id));
 	}
 	
+	@DeleteMapping("/patient/delete/{id}")
+	public ResponseEntity<String> deletePatientTrackerByPatientId(@PathVariable("id") Long id) {
+		patientTrackerService.deletePatientTrackerById(id);
+		return ResponseEntity.ok("Deleted successfully");
+	}
+	
 }
 
