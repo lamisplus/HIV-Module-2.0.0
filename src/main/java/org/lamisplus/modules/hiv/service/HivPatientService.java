@@ -114,6 +114,20 @@ public class HivPatientService {
         return getPageDTO(persons);
     }
     
+    
+    public PageDTO getHivEnrolledPatients(String searchValue, Pageable pageable) {
+        Long facilityId = currentUserOrganizationService.getCurrentUserOrganization();
+        if(!String.valueOf(searchValue).equals("null") && !searchValue.equals("*")){
+            searchValue = searchValue.replaceAll("\\s", "");
+            String queryParam = "%"+searchValue+"%";
+            Page<PatientProjection> persons =
+                    enrollmentRepository.getEnrolledPatientsByFacilityBySearchParam(facilityId, queryParam, pageable);
+            return getPageDTO(persons);
+        }
+        Page<PatientProjection> persons = enrollmentRepository.getEnrolledPatientsByFacility(facilityId, pageable);
+        return getPageDTO(persons);
+    }
+    
     private PageDTO getPageDTO(Page<PatientProjection> persons) {
         List<PatientDTO> patientDTOList = persons.getContent()
                 .stream()

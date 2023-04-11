@@ -37,6 +37,15 @@ public class HivEnrollmentController {
     public ResponseEntity<List<HivPatientDto>> getAllHivEnrollments() {
         return ResponseEntity.ok (hivEnrollmentService.getAll ());
     }
+    
+    @GetMapping(value = "patient/enrollment/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PageDTO> getHivEnrollmentList(
+            @RequestParam (required = false ) String searchValue,
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize
+       ) {
+        return ResponseEntity.ok (patientService.getHivEnrolledPatients(searchValue, PageRequest.of(pageNo, pageSize)));
+    }
 
     @GetMapping(value = "patients", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PageDTO> getHivPatient(
