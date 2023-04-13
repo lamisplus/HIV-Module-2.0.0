@@ -31,7 +31,7 @@ public interface HivEnrollmentRepository extends JpaRepository<HivEnrollment, Lo
             "            p.hospital_number AS hospitalNumber, CAST (EXTRACT(YEAR from AGE(NOW(), date_of_birth)) AS INTEGER) AS age,\n" +
             "            INITCAP(p.sex) AS gender, p.date_of_birth AS dateOfBirth, p.is_date_of_birth_estimated AS isDobEstimated,\n" +
             "            p.facility_id as facilityId , p.uuid as personUuid,\n" +
-            "            CAST(CASE when pc.display is null then FALSE ELSE TRUE END AS Boolean) AS isEnrolled,\n" +
+            "            CAST(CASE when e.id is null then FALSE ELSE TRUE END AS Boolean) AS isEnrolled,\n" +
             "            e.target_group_id AS targetGroupId, e.id as enrollmentId, e.unique_id as uniqueId, pc.display as enrollmentStatus,\n" +
             "            ca.commenced, \n" +
             "            b.biometric_type as biometricStatus\n" +
@@ -41,6 +41,7 @@ public interface HivEnrollmentRepository extends JpaRepository<HivEnrollment, Lo
             "            GROUP BY hac.person_uuid)ca ON p.uuid = ca.person_uuid\n" +
             "            LEFT JOIN base_application_codeset pc on pc.id = e.status_at_registration_id\n" +
             "            WHERE p.archived=0 AND p.facility_id=?1\n" +
+            "            AND e.id IS NULL \n" +
             "            GROUP BY e.id, e.target_group_id,ca.commenced, p.id, p.first_name,\n" +
             "            p.first_name, b.biometric_type, pc.display,p.surname, p.other_name, p.hospital_number, p.date_of_birth ORDER BY p.id DESC",
             nativeQuery = true)
@@ -51,7 +52,7 @@ public interface HivEnrollmentRepository extends JpaRepository<HivEnrollment, Lo
             "            p.hospital_number AS hospitalNumber, CAST (EXTRACT(YEAR from AGE(NOW(), date_of_birth)) AS INTEGER) AS age,\n" +
             "            INITCAP(p.sex) AS gender, p.date_of_birth AS dateOfBirth, p.is_date_of_birth_estimated AS isDobEstimated,\n" +
             "            p.facility_id as facilityId , p.uuid as personUuid,\n" +
-            "            CAST(CASE when pc.display is null then FALSE ELSE TRUE END AS Boolean) AS isEnrolled,\n" +
+            "            CAST(CASE when e.id is null then FALSE ELSE TRUE END AS Boolean) AS isEnrolled,\n" +
             "            e.target_group_id AS targetGroupId, e.id as enrollmentId, e.unique_id as uniqueId, pc.display as enrollmentStatus,\n" +
             "            ca.commenced, \n" +
             "            b.biometric_type as biometricStatus\n" +
@@ -61,7 +62,8 @@ public interface HivEnrollmentRepository extends JpaRepository<HivEnrollment, Lo
             "            GROUP BY hac.person_uuid)ca ON p.uuid = ca.person_uuid\n" +
             "            LEFT JOIN base_application_codeset pc on pc.id = e.status_at_registration_id\n" +
             "            WHERE p.archived=0 AND p.facility_id=?1\n" +
-            "           AND (first_name ilike ?2 OR surname ilike ?2 OR other_name ilike '' OR full_name ilike ?2 OR hospital_number ilike ?2)\n" +
+            "            AND e.id IS NULL\n" +
+            "            AND (first_name ilike ?2 OR surname ilike ?2 OR other_name ilike '' OR full_name ilike ?2 OR hospital_number ilike ?2)\n" +
             "            GROUP BY e.id, e.target_group_id,ca.commenced, p.id, p.first_name,\n" +
             "            p.first_name, b.biometric_type, pc.display,p.surname, p.other_name, p.hospital_number, p.date_of_birth" +
             "            ORDER BY p.id DESC",
