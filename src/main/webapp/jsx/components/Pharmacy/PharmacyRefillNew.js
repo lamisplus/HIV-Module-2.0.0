@@ -104,9 +104,7 @@ const Pharmacy = (props) => {
     const [otherDrugs, setOtherDrugs] = useState([]);
     const [iptType, setIPT_TYPE] = useState([]);
     const [regimenTypeOther, setRegimenTypeOther] = useState([]);
-    const [iptEligibilty, setIptEligibilty] = useState({//Object to check for IPT ELIGIBILITY STATUS 
-        IPTEligibility: false,
-    });
+    const [iptEligibilty, setIptEligibilty] = useState("");
     //const [currentRegimenValue, setCurrentRegimenValue] = useState("");//this is to get the current regimen value/ID the patient is on 
     //IPT_TYPE
     const [objValues, setObjValues] = useState({
@@ -945,7 +943,7 @@ const Pharmacy = (props) => {
         return prev + +duration
       }, 0);
 
-  
+ console.log(oIRegimenLine.filter((x)=> x.id===15)) 
 
   return (      
       <div>
@@ -1537,7 +1535,7 @@ const Pharmacy = (props) => {
             <br/>
             <div className="form-group mb-3 col-xs-6 col-sm-6 col-md-6 col-lg-6">
                 <FormGroup>
-                <Label >OI's</Label>
+                <Label >OI's ffd{iptEligibilty && iptEligibilty.IPTEligibility }</Label>
                 <Input
                     type="select"
                     name="regimen"
@@ -1549,21 +1547,46 @@ const Pharmacy = (props) => {
                     >
                     <option value="">Select </option>
                     {patientAge >15 &&  (
-                        <>            
-                        {oIRegimenLine.map((value) => (
-                            <option key={value.id} value={value.id}>
+                        <>  
+                        {iptEligibilty.IPTEligibility===true ? //Logic to check for TPT eligibility to filter TPT drugs
+                        (<>
+                            {oIRegimenLine.map((value) => (
+                            <option key={value.id} value={value.value}>
                                 {value.description}
                             </option>
                         ))}
+                        </>)
+                        :
+                        (<>
+                            {oIRegimenLine.filter((x)=> x.value!==15).map((value) => (
+                            <option key={value.id} value={value.value}>
+                                {value.description}
+                            </option>
+                        ))}
+                        </>)
+                       }             
+                        
                       </>
                     )}
                     {patientAge <=15 &&  (
                     <>
-                    {childrenOI.map((value) => (
-                        <option key={value.id} value={value.id}>
-                        {value.description}
-                        </option>
-                    ))}
+                    {iptEligibilty.IPTEligibility===true ? //Logic to check for TPT eligibility to filter TPT drugs
+                        (<>
+                            {oIRegimenLine.map((value) => (
+                            <option key={value.id} value={value.value}>
+                                {value.label}
+                            </option>
+                        ))}
+                        </>)
+                        :
+                        (<>
+                            {oIRegimenLine.filter((x)=> x.value!==15).map((value) => (
+                            <option key={value.id} value={value.value}>
+                                {value.label}
+                            </option>
+                        ))}
+                        </>)
+                       }   
                     </>
                     )}
                 </Input>
@@ -1585,12 +1608,13 @@ const Pharmacy = (props) => {
                     disabled={objValues.refillPeriod!==null? false : true}                 
                     >
                     <option value="">Select </option>
-                                    
-                        {regimenTypeOI.map((value) => (
-                            <option key={value.id} value={value.value}>
-                                {value.label}
-                            </option>
-                        ))}
+                    {regimenTypeOI.map((value) => (
+                        <option key={value.id} value={value.value}>
+                            {value.label}
+                        </option>
+                    ))}
+                                
+                        
                 </Input>
                 
                 </FormGroup>
