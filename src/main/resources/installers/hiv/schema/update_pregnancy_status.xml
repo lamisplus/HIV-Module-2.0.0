@@ -26,6 +26,8 @@
             </sqlCheck>
         </preConditions>
         <sql>
+            UPDATE public.databasechangelog set md5sum ='8:c57615972f20f9e8a6cc6cf5a3c15bcb'
+            where md5sum ='8:38d6746876ce3571dbea3d604fbe1fd0';
             INSERT INTO hiv_regimen (id, description, composition, regimen_type_id, active, priority)
                  VALUES (247, 'ABC(120mg)/3TC(60mg)/DTG(50mg)', 'Abacavir/Lamivudine/Delotugavir', 3, true, 1);
 
