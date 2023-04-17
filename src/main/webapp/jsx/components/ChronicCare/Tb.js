@@ -334,6 +334,8 @@ const TbScreening = (props) => {
                                     id="completionDate"
                                     onChange={handleInputChange} 
                                     value={props.tbObj.completionDate} 
+                                    min={props.encounterDate}
+                                    max= {moment(new Date()).format("YYYY-MM-DD") }
                                 >
                                 
                                 </Input>
@@ -606,8 +608,10 @@ const TbScreening = (props) => {
                                         type="date"
                                         name="dateTPTStart"
                                         id="dateTPTStart"
-                                        onChange={handleInputChange} 
-                                        //value={props.tbObj.dateTPTStart} 
+                                        onChange={handleInputChange}
+                                        min={props.encounterDate}
+                                        max= {moment(new Date()).format("YYYY-MM-DD") } 
+                                        value={props.tbObj.dateTPTStart} 
                                     >
                                     
                                     </Input>
@@ -623,7 +627,7 @@ const TbScreening = (props) => {
                                         name="weightAtStartTPT"
                                         id="weightAtStartTPT"
                                         onChange={handleInputChange} 
-                                        //value={props.tbObj.weightAtStartTPT} 
+                                        value={props.tbObj.weightAtStartTPT} 
                                     >
                                     
                                     </Input>
@@ -639,7 +643,7 @@ const TbScreening = (props) => {
                                         name="inhDailyDose"
                                         id="inhDailyDose"
                                         onChange={handleInputChange} 
-                                        //value={props.tbObj.inhDailyDose} 
+                                        value={props.tbObj.inhDailyDose} 
                                     >
                                     
                                     </Input>

@@ -113,8 +113,8 @@ const ArtCommencement = (props) => {
                                                 viralLoad: "",
                                                 whoStagingId:"",
                                                 clinicalStageId:"",
-                                                cd4: "",
-                                                cd4Percentage: "",
+                                                cd4: null,
+                                                cd4Percentage: null,
                                                 isCommencement: true,
                                                 functionalStatusId: "",
                                                 clinicalNote: "",
@@ -126,7 +126,7 @@ const ArtCommencement = (props) => {
                                                 viralLoadAtStartOfArt:"",
                                                 isViralLoadAtStartOfArt :null,
                                                 dateOfViralLoadAtStartOfArt: null,
-                                                cd4Count:"",
+                                                cd4Count:null,
                                                 cd4SemiQuantitative:"",
                                                 cd4FlowCytometry:""                                                  
 
@@ -187,7 +187,7 @@ const ArtCommencement = (props) => {
         PatientCurrentObject()
          gender =props.patientObj.gender && props.patientObj.gender.display ? props.patientObj.gender.display : null
       }, [props.patientObj]);
-         //GET  Patients
+        //GET  Patients
         async function PatientCurrentObject() {
             axios
                 .get(`${baseUrl}hiv/patient/${props.patientObj.id}`,
@@ -835,11 +835,11 @@ const ArtCommencement = (props) => {
                     </div>
                     {objValues.isViralLoadAtStartOfArt && objValues.isViralLoadAtStartOfArt!==null && (<div className="form-group mb-3 col-md-8"></div>)}
                     {!objValues.isViralLoadAtStartOfArt && objValues.isViralLoadAtStartOfArt!==null && (<div className="form-group mb-3 col-md-4"></div>)}
-                    {(props.patientObj.sex==="Female" || props.patientObj.sex==="FEMALE" || props.patientObj.sex==="female") ? (
+                    {patientAge>=10 && (props.patientObj.sex==="Female" || props.patientObj.sex==="FEMALE" || props.patientObj.sex==="female") ? (
                         <>
                         <div className="form-group mb-3 col-md-4">
                             <FormGroup>
-                            <Label >Pregnancy Status</Label>
+                            <Label >Pregnancy Status <span style={{ color:"red"}}> *</span></Label>
                             <Input
                                 type="select"
                                 name="pregancyStatus"

@@ -108,6 +108,7 @@ const ChronicCare = (props) => {
     const [showReproductive, setShowReproductive] = useState(false);
     const [showTb, setShowTb] = useState(false);//Tpt
     const [showTpt, setShowTpt] = useState(false);
+    const [enrollDate, setEnrollDate] = useState("");
     //GenderBase Object
     const [genderBase, setGenderBase] = useState({partnerEverPhysically:"", haveBeenBeaten:"", partnerLivelihood:""});
     //Eligibility Object
@@ -195,7 +196,21 @@ const ChronicCare = (props) => {
     })
     useEffect(() => {
         GetChronicCare();
+        PatientCurrentObject();
     }, [props.activeContent.id]);
+    //GET  Patients
+    async function PatientCurrentObject() {
+        axios
+            .get(`${baseUrl}hiv/patient/${props.patientObj.id}`,
+            { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+                setEnrollDate(response.data.enrollment.dateOfRegistration)
+                //setPatientObject(response.data);
+            })
+            .catch((error) => {  
+            });        
+    }
     const GetChronicCare =()=>{//function to get chronic care data for edit 
         axios
            .get(`${baseUrl}observation/${props.activeContent.id}`,
@@ -260,7 +275,7 @@ const ChronicCare = (props) => {
             .then(response => {
                 setSaving(false);
                 toast.success("Chronic Care Save successful", {position: toast.POSITION.BOTTOM_CENTER});
-                
+                props.setActiveContent({...props.activeContent, route:'recent-history'})
             })
             .catch(error => {
                 setSaving(false);
@@ -337,6 +352,7 @@ const ChronicCare = (props) => {
                                     value={observation.dateOfObservation}
                                     onChange={handleInputChange}
                                     style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                                    min={enrollDate}
                                     max= {moment(new Date()).format("YYYY-MM-DD") }
                                     
                                     > 
@@ -355,7 +371,7 @@ const ChronicCare = (props) => {
                                     {showTb===false  ? (<><span className="float-end" style={{cursor: "pointer"}} onClick={onClickTb}><FaPlus /></span></>) :  (<><span className="float-end" style={{cursor: "pointer"}} onClick={onClickTb}><FaAngleDown /></span> </>)}
                                 </div>
                                 {showTb && (
-                                    <Tb setTbObj={setTbObj} tbObj={tbObj}/>  
+                                    <Tb setTbObj={setTbObj} tbObj={tbObj} encounterDate={observation.dateOfObservation}/>  
                                 )}
                             </div>
                             {/* End TB & IPT  Screening  */}

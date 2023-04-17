@@ -490,7 +490,7 @@ const UserRegistration = (props) => {
             temp.firstName = basicInfo.firstName ? "" : "First Name is required"
             temp.hospitalNumber = basicInfo.hospitalNumber ? "" : "Hospital Number  is required."
             //temp.middleName = basicInfo.middleName ? "" : "Middle is required."
-            //temp.landmark = basicInfo.landmark ? "" : "This field is required."
+            
             temp.lastName = basicInfo.lastName ? "" : "Last Name  is required."
             temp.sexId = basicInfo.sexId ? "" : "Gender is required."
             temp.dateOfRegistration = basicInfo.dateOfRegistration ? "" : "Date of Registration is required."
@@ -510,9 +510,10 @@ const UserRegistration = (props) => {
             temp.entryPointId = objValues.entryPointId ? "" : "Care Entry Point is required." 
             temp.dateOfRegistration = objValues.dateOfRegistration ? "" : "Date of Registration is required."  
             temp.uniqueId = objValues.uniqueId ? "" : "Unique ID is required."
+            {(basicInfo.age>9 && basicInfo.sex==='Female') && (temp.pregnancyStatusId = objValues.pregnancyStatusId ? "" : "This field is required.")}
             
                 setErrors({ ...temp })
-        return Object.values(temp).every(x => x == "")
+        return Object.values(temp).every(x => x === "")
     }
 
     const handleSubmit = async (e) => {
@@ -1017,8 +1018,8 @@ const UserRegistration = (props) => {
                                                     />
                                                 </FormGroup>
                                                 {basicInfo.age!=='' && basicInfo.age >=80 ? (
-                                                        <span className={classes.error}>Are you sure of the age</span>
-                                                        ) : "" }
+                                                    <span className={classes.error}>Are you sure of the age</span>
+                                                ) : "" }
                                             </div>
                                         </div>
 
@@ -1833,7 +1834,7 @@ const UserRegistration = (props) => {
                                    
                                     <div className = "form-group mb-3 col-md-6" >
                                         <FormGroup>
-                                        <Label> Pregnancy </Label>
+                                        <Label> Pregnancy <span style={{ color:"red"}}> *</span></Label>
                                         <Input
                                             type = "select"
                                             name = "pregnancyStatusId"
@@ -1842,13 +1843,16 @@ const UserRegistration = (props) => {
                                             style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
                                             onChange = {handleInputChange}                                        
                                         >
-                                        < option value = "" >Select </option>
-                                        {pregnancyStatus.map((value) => (
+                                            < option value = "" >Select </option>
+                                            {pregnancyStatus.map((value) => (
                                                     <option key={value.id} value={value.id}>
                                                         {value.display}
                                                     </option>
-                                                ))}
-                                        </Input>                                                                        
+                                            ))}
+                                        </Input>
+                                        {errors.pregnancyStatusId !=="" ? (
+                                        <span className={classes.error}>{errors.pregnancyStatusId}</span>
+                                        ) : "" }                                                                        
                                     </FormGroup>  
                                     </div>
                                     {objValues.pregnancyStatusId==='73' && (
