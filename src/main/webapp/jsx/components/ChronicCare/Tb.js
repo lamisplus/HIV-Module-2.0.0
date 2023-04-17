@@ -88,6 +88,7 @@ const useStyles = makeStyles((theme) => ({
 const TbScreening = (props) => {
     const classes = useStyles();
     const [contraindicationDisplay, setcontraindicationDisplay]=useState(false)
+    const [tbTreatmentType, setTbTreatmentType]= useState([])
     useEffect(() => {
         //End of Eligible for TPT logic
         if(props.tbObj.currentlyOnTuberculosis!=="" && props.tbObj.currentlyOnTuberculosis==="No"){
@@ -192,7 +193,23 @@ const TbScreening = (props) => {
             props.tbObj.eligibleForTPT,
             props.tbObj.currentlyOnTuberculosis
     ]);
-    
+    useEffect(() => {
+        TB_TREATMENT_TYPE();
+    }, []);
+    const TB_TREATMENT_TYPE =()=>{
+        axios
+            .get(`${baseUrl}application-codesets/v2/IPT_TYPE`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+                //console.log(response.data);
+                setTbTreatmentType(response.data);
+            })
+            .catch((error) => {
+            //console.log(error);
+            });
+        
+    }
     const handleInputChange =e =>{
         props.setTbObj({...props.tbObj, [e.target.name]: e.target.value})
         
@@ -300,8 +317,11 @@ const TbScreening = (props) => {
                                     value={props.tbObj.treatementType} 
                                 >
                                     <option value="">Select</option>
-                                    <option value="Relapsed">Relapsed</option>
-                                    <option value="New">New</option>
+                                    {tbTreatmentType.map((value) => (
+                                        <option key={value.id} value={value.display}>
+                                            {value.display}
+                                        </option>
+                                    ))}
                                 </Input>
                             </InputGroup>
                             </FormGroup>

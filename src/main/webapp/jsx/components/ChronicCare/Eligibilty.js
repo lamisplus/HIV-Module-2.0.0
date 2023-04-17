@@ -16,7 +16,6 @@ import 'semantic-ui-css/semantic.min.css';
 import "react-toastify/dist/ReactToastify.css";
 import "react-widgets/dist/css/react-widgets.css";
 import 'react-phone-input-2/lib/style.css'
-import { Button} from 'semantic-ui-react'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -87,10 +86,29 @@ const useStyles = makeStyles((theme) => ({
 
 const Eligibility = (props) => {
     const classes = useStyles();
+    const [clientType, setClientType]= useState([])
     const handleEligibility =e =>{
         props.setEligibility({...props.eligibility, [e.target.name]: e.target.value})        
     }
+    useEffect(() => {
+        CHRONIC_CARE_CLIENT_TYPE();
+    }, []);
+    const CHRONIC_CARE_CLIENT_TYPE =()=>{
+        axios
+            .get(`${baseUrl}application-codesets/v2/IPT_TYPE`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+                //console.log(response.data);
+                setClientType(response.data);
+            })
+            .catch((error) => {
+            //console.log(error);
+            });
+        
+    }
 
+    
     return (
         <>  
         
@@ -114,9 +132,12 @@ const Eligibility = (props) => {
                                 value={props.eligibility.typeOfClient} 
                             >
                             <option value="">Select</option>
-                            <option value="PLHIV New enrolled into HIV Care & Treatment">PLHIV New enrolled into HIV Care & Treatment</option>
-                            <option value="Registered PLHIV on follow up/subsequent visit this FY">Registered PLHIV on follow up/subsequent visit this FY</option>
-                            <option value="Registered PLHIV on first time visit this FY">Registered PLHIV on first time visit this FY</option>
+                            {clientType.map((value) => (
+                                <option key={value.id} value={value.display}>
+                                    {value.display}
+                                </option>
+                            ))}
+                            
                             </Input>
                         </InputGroup>                    
                         </FormGroup>

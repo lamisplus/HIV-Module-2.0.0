@@ -99,6 +99,7 @@ const ChronicCare = (props) => {
     const [saving, setSaving] = useState(false);
     const classes = useStyles();
     const [errors, setErrors] = useState({});
+    const [disabledField, setSisabledField] = useState(false);
     let temp = { ...errors }
     const [showEligibility, setShowEligibility] = useState(false);
     const [showNutrition, setShowNutrition] = useState(false);
@@ -197,6 +198,9 @@ const ChronicCare = (props) => {
     useEffect(() => {
         GetChronicCare();
         PatientCurrentObject();
+        if(props.activeContent.id && props.activeContent.id!=="" && props.activeContent.id!==null){
+            setSisabledField(props.activeContent.actionType==='view'?true : false)
+        }
     }, [props.activeContent.id]);
     //GET  Patients
     async function PatientCurrentObject() {
@@ -268,27 +272,49 @@ const ChronicCare = (props) => {
         observationObj.tptMonitoring=tpt
         observation.data =observationObj
         if(validate()){
-        axios.post(`${baseUrl}observation`,observation,
-        { headers: {"Authorization" : `Bearer ${token}`}},
-        
-        )
-            .then(response => {
-                setSaving(false);
-                toast.success("Chronic Care Save successful", {position: toast.POSITION.BOTTOM_CENTER});
-                props.setActiveContent({...props.activeContent, route:'recent-history'})
-            })
-            .catch(error => {
-                setSaving(false);
-                if(error.response && error.response.data){
-                    
-                    if(error.response.data.apierror && error.response.data.apierror.message!=="" ){
-                        toast.error(error.response.data.apierror.message, {position: toast.POSITION.BOTTOM_CENTER});
-                    }else{
-                        toast.error("Something went wrong. Please try again...", {position: toast.POSITION.BOTTOM_CENTER});
+            if(props.activeContent && props.activeContent.actionType==="update"){//Perform operation for updation action)
+                axios.put(`${baseUrl}observation`,observation,
+                { headers: {"Authorization" : `Bearer ${token}`}},
+                
+                )
+                .then(response => {
+                    setSaving(false);
+                    toast.success("Chronic Care Save successful", {position: toast.POSITION.BOTTOM_CENTER});
+                    props.setActiveContent({...props.activeContent, route:'recent-history'})
+                })
+                .catch(error => {
+                    setSaving(false);
+                    if(error.response && error.response.data){
+                        
+                        if(error.response.data.apierror && error.response.data.apierror.message!=="" ){
+                            toast.error(error.response.data.apierror.message, {position: toast.POSITION.BOTTOM_CENTER});
+                        }else{
+                            toast.error("Something went wrong. Please try again...", {position: toast.POSITION.BOTTOM_CENTER});
+                        }
                     }
-                }
-            });
-        
+                });
+            }else{
+                axios.post(`${baseUrl}observation`,observation,
+                { headers: {"Authorization" : `Bearer ${token}`}},
+                
+                )
+                .then(response => {
+                    setSaving(false);
+                    toast.success("Chronic Care Save successful", {position: toast.POSITION.BOTTOM_CENTER});
+                    props.setActiveContent({...props.activeContent, route:'recent-history'})
+                })
+                .catch(error => {
+                    setSaving(false);
+                    if(error.response && error.response.data){
+                        
+                        if(error.response.data.apierror && error.response.data.apierror.message!=="" ){
+                            toast.error(error.response.data.apierror.message, {position: toast.POSITION.BOTTOM_CENTER});
+                        }else{
+                            toast.error("Something went wrong. Please try again...", {position: toast.POSITION.BOTTOM_CENTER});
+                        }
+                    }
+                });
+            }
         }else{
             toast.error("All fields are required")
             setSaving(false); 
@@ -363,6 +389,17 @@ const ChronicCare = (props) => {
                                 ) : "" }   
                                 </div>
                             </div>
+                            {/* Eligibility Assessment */}
+                            <div className="card">
+                                <div className="card-header" style={{backgroundColor:"#014d88",color:'#fff',fontWeight:'bolder',  borderRadius:"0.2rem"}}>
+                                    <h5 className="card-title" style={{color:'#fff'}}>Eligibility Assessment</h5>
+                                    {showEligibility===false  ? (<><span className="float-end" style={{cursor: "pointer"}} onClick={onClickEligibility}><FaPlus /></span></>) :  (<><span className="float-end" style={{cursor: "pointer"}} onClick={onClickEligibility}><FaAngleDown /></span> </>)}
+                                </div>
+                                {showEligibility && (
+                                    <Eligibilty setEligibility={setEligibility} eligibility={eligibility}/> 
+                                )}
+                            </div>
+                            {/* End Eligibility Assessment */}
                             {/* TB & IPT  Screening  */}
                             <div className="card">
                                 
@@ -386,17 +423,6 @@ const ChronicCare = (props) => {
                                 )}
                             </div>
                             {/* End TPT MONITORING */}
-                             {/* Eligibility Assessment */}
-                             <div className="card">
-                                <div className="card-header" style={{backgroundColor:"#014d88",color:'#fff',fontWeight:'bolder',  borderRadius:"0.2rem"}}>
-                                    <h5 className="card-title" style={{color:'#fff'}}>Eligibility Assessment</h5>
-                                    {showEligibility===false  ? (<><span className="float-end" style={{cursor: "pointer"}} onClick={onClickEligibility}><FaPlus /></span></>) :  (<><span className="float-end" style={{cursor: "pointer"}} onClick={onClickEligibility}><FaAngleDown /></span> </>)}
-                                </div>
-                                {showEligibility && (
-                                    <Eligibilty setEligibility={setEligibility} eligibility={eligibility}/> 
-                                )}
-                            </div>
-                            {/* End Eligibility Assessment */}
                             {/* End Nutritional Status Assessment */}
                             <div className="card">
                                 <div className="card-header" style={{backgroundColor:"#014d88",color:'#fff',fontWeight:'bolder',  borderRadius:"0.2rem"}}>
@@ -475,32 +501,43 @@ const ChronicCare = (props) => {
                             {saving ? <Spinner /> : ""}
 
                             <br />
-                            <MatButton
+                            {props.activeContent && props.activeContent.actionType? (<>
+                                <MatButton
                                 type="submit"
                                 variant="contained"
                                 color="primary"
+                                hidden={disabledField}
                                 className={classes.button}
                                 startIcon={<SaveIcon />}
+                                style={{backgroundColor:"#014d88"}}
                                 onClick={handleSubmit}
-                               
-                                style={{backgroundColor:'#014d88',fontWeight:"bolder"}}
-                            >
-                                {!saving ? (
-                                    <span style={{ textTransform: "capitalize" }}>Save</span>
-                                ) : (
-                                    <span style={{ textTransform: "capitalize" }}>Saving...</span>
-                                )}
+                                disabled={saving}
+                                >
+                                    {!saving ? (
+                                    <span style={{ textTransform: "capitalize" }}>Update</span>
+                                    ) : (
+                                    <span style={{ textTransform: "capitalize" }}>Updating...</span>
+                                    )}
+                                </MatButton>
+                            </>):(<>
+                                <MatButton
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    className={classes.button}
+                                    startIcon={<SaveIcon />}
+                                    style={{backgroundColor:"#014d88"}}
+                                    onClick={handleSubmit}
+                                    disabled={saving}
+                                    >
+                                        {!saving ? (
+                                        <span style={{ textTransform: "capitalize" }}>Save</span>
+                                        ) : (
+                                        <span style={{ textTransform: "capitalize" }}>Saving...</span>
+                                        )}
                             </MatButton>
-    
-                            {/* <MatButton
-                                variant="contained"
-                                className={classes.button}
-                                startIcon={<CancelIcon />}
-                                style={{backgroundColor:'#992E62'}}
-                                onClick={handleCancel}
-                            >
-                                <span style={{ textTransform: "capitalize", color:"#fff" }}>Cancel</span>
-                            </MatButton> */}
+                            </>)}
+                            
                         </Form>
                     </div>
                 </CardContent>

@@ -173,7 +173,7 @@ const Tracking = (props) => {
             //console.log(error);
             });
         
-        }     
+    }     
     const handleInputChangeAttempt = e => {
         //console.log(e.target.value)
         setErrors({...temp, [e.target.name]:""})
@@ -201,7 +201,7 @@ const Tracking = (props) => {
     setErrors({
         ...temp
     })
-    return Object.values(temp).every(x => x == "")
+    return Object.values(temp).every(x => x === "")
   }
     const addAttempt = e => {
         attempt.anyOfTheFollowing=selected

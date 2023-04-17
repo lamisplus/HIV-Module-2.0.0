@@ -141,7 +141,6 @@ const UserRegistration = (props) => {
     patientId = locationState ? locationState.patientId : null;
     patientObj = locationState ? locationState.patientObj : {}; 
     const [basicInfo, setBasicInfo]= useState(patientObj)
-    console.log(patientObj)
     //objValues.uniqueId=basicInfo.hospitalNumber
     useEffect(() => {        
         CareEntryPoint();
@@ -367,7 +366,6 @@ const UserRegistration = (props) => {
          if(validate()){
             setSaving(true) 
             try {
-
                 objValues.personId = patientId;
                 const response = await axios.post(`${baseUrl}hiv/enrollment`, objValues, { headers: {"Authorization" : `Bearer ${token}`} });
                 toast.success("Patient Register successful", {position: toast.POSITION.BOTTOM_CENTER});
