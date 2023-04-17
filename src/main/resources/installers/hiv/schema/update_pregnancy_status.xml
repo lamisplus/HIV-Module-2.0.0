@@ -26,11 +26,59 @@
             </sqlCheck>
         </preConditions>
         <sql>
+            UPDATE public.databasechangelog set md5sum ='8:c57615972f20f9e8a6cc6cf5a3c15bcb'
+            where md5sum ='8:38d6746876ce3571dbea3d604fbe1fd0';
             INSERT INTO hiv_regimen (id, description, composition, regimen_type_id, active, priority)
-                 VALUES ((SELECT MAX(id) FROM hiv_regimen), 'ABC(120mg)/3TC(60mg)/DTG(50mg)', 'Abacavir/Lamivudine/Delotugavir', 3, true, 1);
+                 VALUES (247, 'ABC(120mg)/3TC(60mg)/DTG(50mg)', 'Abacavir/Lamivudine/Delotugavir', 3, true, 1);
 
             INSERT INTO hiv_regimen_resolver (regimensys, regimen)
             VALUES ('ABC(120mg)/3TC(60mg)/DTG(50mg)','ABC-3TC-DTG');
+
+        </sql>
+    </changeSet>
+
+    <changeSet failOnError="true"  id="20230413-29" author="amos-data-fi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*)
+                FROM hiv_drug WHERE name = 'Abacavir(120mg)';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO hiv_drug (id, abbrev, name, strength, pack_size, doseform, morning, afternoon, evening, item_id)
+            VALUES (131, 'ABC', 'Abacavir(120mg)', '120mg', 60, 'Tablets', 1, 0, 0, 120);
+            INSERT INTO hiv_regimen_drug(id, regimen_id, drug_id) VALUES (573, 247, 131);
+        </sql>
+    </changeSet>
+
+    <changeSet failOnError="true"  id="20230413-30" author="amos-data-fi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*)
+                FROM hiv_drug WHERE name = 'Dolutegravir(50mg)';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO hiv_drug (id, abbrev, name, strength, pack_size, doseform, morning, afternoon, evening, item_id)
+            VALUES (132, 'DTG', 'Dolutegravir(50mg)', '50mg', 60, 'Tablets', 1, 0, 0, 122);
+            INSERT INTO hiv_regimen_drug(id, regimen_id, drug_id) VALUES (574, 247, 132);
+        </sql>
+    </changeSet>
+
+
+
+
+    <changeSet failOnError="true"  id="20230413-31" author="amos-data-fi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*)
+                FROM hiv_drug WHERE name = 'Lamivudine(60mg)';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO hiv_drug (id, abbrev, name, strength, pack_size, doseform, morning, afternoon, evening, item_id)
+            VALUES (133, '3TC', 'Lamivudine(60mg)', '60mg', 60, 'Tablets', 0, 0, 1, 37);
+            INSERT INTO hiv_regimen_drug(id, regimen_id, drug_id) VALUES (575, 247, 133);
         </sql>
     </changeSet>
 
