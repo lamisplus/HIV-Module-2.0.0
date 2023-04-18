@@ -87,15 +87,20 @@ const useStyles = makeStyles((theme) => ({
 const Eligibility = (props) => {
     const classes = useStyles();
     const [clientType, setClientType]= useState([])
+    const [pregnancyStatus, setPregnancyStatus]= useState([])
+    const [who, setWho]= useState([])
     const handleEligibility =e =>{
         props.setEligibility({...props.eligibility, [e.target.name]: e.target.value})        
     }
     useEffect(() => {
         CHRONIC_CARE_CLIENT_TYPE();
+        PREGNANCY_STATUS();
+        WHO_STAGING_CRITERIA();
     }, []);
+    //PREGNANCY_STATUS
     const CHRONIC_CARE_CLIENT_TYPE =()=>{
         axios
-            .get(`${baseUrl}application-codesets/v2/IPT_TYPE`,
+            .get(`${baseUrl}application-codesets/v2/CLIENT_TYPE`,
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
@@ -107,7 +112,34 @@ const Eligibility = (props) => {
             });
         
     }
-
+    const PREGNANCY_STATUS =()=>{
+        axios
+            .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+                //console.log(response.data);
+                setPregnancyStatus(response.data);
+            })
+            .catch((error) => {
+            //console.log(error);
+            });
+        
+    }
+    const WHO_STAGING_CRITERIA =()=>{
+        axios
+            .get(`${baseUrl}application-codesets/v2/WHO_STAGING_CRITERIA`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+                //console.log(response.data);
+                setWho(response.data);
+            })
+            .catch((error) => {
+            //console.log(error);
+            });
+        
+    }
     
     return (
         <>  
@@ -154,9 +186,11 @@ const Eligibility = (props) => {
                                 value={props.eligibility.pregnantStatus} 
                             >
                             <option value="">Select</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                            <option value="Uncertain">Uncertain</option>
+                            {pregnancyStatus.map((value) => (
+                                <option key={value.id} value={value.display}>
+                                    {value.display}
+                                </option>
+                            ))}
                             </Input>
                         </InputGroup>
                         </FormGroup>
@@ -176,9 +210,11 @@ const Eligibility = (props) => {
                                     value={props.eligibility.whoStaging}  
                                 >
                                 <option value="">Select</option>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                                <option value="Uncertain">Uncertain</option>
+                                {who.map((value) => (
+                                    <option key={value.id} value={value.display}>
+                                        {value.display}
+                                    </option>
+                                ))}
                                 </Input>
 
                             </InputGroup>
@@ -202,6 +238,22 @@ const Eligibility = (props) => {
                      </div>
                      <div className="form-group mb-3 col-md-4">
                             <FormGroup>
+                            <Label >Last CD4 Result Date</Label>
+                            <InputGroup> 
+                                <Input 
+                                    type="date"
+                                    name="lastCd4ResultDate"
+                                    id="lastCd4ResultDate"
+                                    value={props.eligibility.lastCd4ResultDate} 
+                                    max= {moment(new Date()).format("YYYY-MM-DD") }
+                                />
+                            </InputGroup>
+                        
+                            </FormGroup>
+                     </div>
+                     
+                     <div className="form-group mb-3 col-md-4">
+                            <FormGroup>
                             <Label >Last Viral Load Result</Label>
                             <InputGroup> 
                                 <Input 
@@ -211,6 +263,21 @@ const Eligibility = (props) => {
                                     value={props.eligibility.lastViralLoadResult}  
                                 />
                             </InputGroup>
+                            </FormGroup>
+                     </div>
+                     <div className="form-group mb-3 col-md-4">
+                            <FormGroup>
+                            <Label >Last Viral Load Result Date</Label>
+                            <InputGroup> 
+                                <Input 
+                                    type="date"
+                                    name="lastViralLoadResultDate"
+                                    id="lastViralLoadResultDate"
+                                    value={props.eligibility.lastViralLoadResultDate} 
+                                    max= {moment(new Date()).format("YYYY-MM-DD") }
+                                />
+                            </InputGroup>
+                        
                             </FormGroup>
                      </div>
                      <div className="form-group mb-3 col-md-4">

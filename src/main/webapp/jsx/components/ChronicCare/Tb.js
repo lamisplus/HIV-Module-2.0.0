@@ -89,6 +89,7 @@ const TbScreening = (props) => {
     const classes = useStyles();
     const [contraindicationDisplay, setcontraindicationDisplay]=useState(false)
     const [tbTreatmentType, setTbTreatmentType]= useState([])
+    const [tbTreatmentOutCome, setTbTreatmentOutCome]= useState([])
     useEffect(() => {
         //End of Eligible for TPT logic
         if(props.tbObj.currentlyOnTuberculosis!=="" && props.tbObj.currentlyOnTuberculosis==="No"){
@@ -194,16 +195,31 @@ const TbScreening = (props) => {
             props.tbObj.currentlyOnTuberculosis
     ]);
     useEffect(() => {
+        TB_TREATMENT_OUTCOME();
         TB_TREATMENT_TYPE();
     }, []);
     const TB_TREATMENT_TYPE =()=>{
         axios
-            .get(`${baseUrl}application-codesets/v2/IPT_TYPE`,
+            .get(`${baseUrl}application-codesets/v2/TB_TREATMENT_TYPE`,
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
                 //console.log(response.data);
                 setTbTreatmentType(response.data);
+            })
+            .catch((error) => {
+            //console.log(error);
+            });
+        
+    }
+    const TB_TREATMENT_OUTCOME =()=>{
+        axios
+            .get(`${baseUrl}application-codesets/v2/TB_TREATMENT_OUTCOME`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+                //console.log(response.data);
+                setTbTreatmentOutCome(response.data);
             })
             .catch((error) => {
             //console.log(error);
@@ -338,8 +354,11 @@ const TbScreening = (props) => {
                                     value={props.tbObj.treatmentOutcome} 
                                 >
                                     <option value="">Select</option>
-                                    <option value="option 1">option 1</option>
-                                    <option value="New">New</option>
+                                    {tbTreatmentOutCome.map((value) => (
+                                        <option key={value.id} value={value.display}>
+                                            {value.display}
+                                        </option>
+                                    ))}
                                 </Input>
                             </InputGroup>
                             </FormGroup>

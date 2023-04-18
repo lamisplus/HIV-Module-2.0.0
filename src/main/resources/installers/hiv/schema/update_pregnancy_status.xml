@@ -18,7 +18,7 @@
         </sql>
     </changeSet>
 
-    <changeSet failOnError="true"  id="20230328-28" author="amos-data-fi">
+    <changeSet failOnError="true"  id="20230328-028" author="amos-data-fi">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 SELECT COUNT(*)

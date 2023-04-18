@@ -1550,7 +1550,7 @@ const Pharmacy = (props) => {
                         {iptEligibilty.IPTEligibility===true ? //Logic to check for TPT eligibility to filter TPT drugs
                         (<>
                             {oIRegimenLine.map((value) => (
-                            <option key={value.id} value={value.value}>
+                            <option key={value.id} value={value.id}>
                                 {value.description}
                             </option>
                         ))}
@@ -1558,7 +1558,7 @@ const Pharmacy = (props) => {
                         :
                         (<>
                             {oIRegimenLine.filter((x)=> x.id!==15).map((value) => (
-                            <option key={value.id} value={value.value}>
+                            <option key={value.id} value={value.id}>
                                 {value.description}
                             </option>
                         ))}
@@ -1572,7 +1572,7 @@ const Pharmacy = (props) => {
                     {iptEligibilty.IPTEligibility===true ? //Logic to check for TPT eligibility to filter TPT drugs
                         (<>
                             {oIRegimenLine.map((value) => (
-                            <option key={value.id} value={value.value}>
+                            <option key={value.id} value={value.id}>
                                 {value.label}
                             </option>
                         ))}
@@ -1580,7 +1580,7 @@ const Pharmacy = (props) => {
                         :
                         (<>
                             {oIRegimenLine.filter((x)=> x.value!==15).map((value) => (
-                            <option key={value.id} value={value.value}>
+                            <option key={value.id} value={value.id}>
                                 {value.label}
                             </option>
                         ))}

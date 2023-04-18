@@ -113,7 +113,7 @@ const ChronicCare = (props) => {
     //GenderBase Object
     const [genderBase, setGenderBase] = useState({partnerEverPhysically:"", haveBeenBeaten:"", partnerLivelihood:""});
     //Eligibility Object
-    const [eligibility, setEligibility] = useState({typeOfClient:"", pregnantStatus:"", whoStaging:"", lastCd4Result:"", lastViralLoadResult:"",  eligibleForViralLoad:""});
+    const [eligibility, setEligibility] = useState({typeOfClient:"", pregnantStatus:"", whoStaging:"", lastCd4Result:"",lastCd4ResultDate:"", lastViralLoadResult:"", lastViralLoadResultDate:"", eligibleForViralLoad:""});
     //Chronic Care Object
     const [chronicConditions, setChronicConditions]= useState({
             diastolic:"",
