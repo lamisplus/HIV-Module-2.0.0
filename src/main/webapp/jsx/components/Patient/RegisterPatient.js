@@ -511,7 +511,7 @@ const UserRegistration = (props) => {
             temp.dateOfRegistration = objValues.dateOfRegistration ? "" : "Date of Registration is required."  
             temp.uniqueId = objValues.uniqueId ? "" : "Unique ID is required."
             {(basicInfo.age>9 && basicInfo.sex==='Female') && (temp.pregnancyStatusId = objValues.pregnancyStatusId ? "" : "This field is required.")}
-            
+            //basicInfo.sexId==='377'
                 setErrors({ ...temp })
         return Object.values(temp).every(x => x === "")
     }

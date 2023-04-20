@@ -780,7 +780,7 @@ const ClinicVisit = (props) => {
     temp.nextAppointment = objValues.nextAppointment ? "" : "This field is required"
     temp.whoStagingId = objValues.whoStagingId ? "" : "This field is required"
     temp.functionalStatusId = objValues.functionalStatusId ? "" : "This field is required"
-    patientAge>=10  && (temp.pregnancyStatus = objValues.pregnancyStatus ? "" : "This field is required")
+    {(patientAge>=10 && patientObj.sex==='Female')  && (temp.pregnancyStatus = objValues.pregnancyStatus ? "" : "This field is required")}
     //temp.adherenceLevel = objValues.adherenceLevel ? "" : "This field is required"
     //temp.diastolic = vital.diastolic ? "" : "This field is required"
     //temp.systolic = vital.systolic ? "" : "This field is required"
