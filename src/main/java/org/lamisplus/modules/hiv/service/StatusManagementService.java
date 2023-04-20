@@ -2,6 +2,7 @@ package org.lamisplus.modules.hiv.service;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
 import org.lamisplus.modules.hiv.domain.dto.EnrollmentStatus;
@@ -22,6 +23,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StatusManagementService {
 	
 	private final ArtPharmacyRepository pharmacyRepository;
@@ -105,12 +107,13 @@ public class StatusManagementService {
 							"Stopped Treatment",
 							"Interruption in Treatment",
 							"Interruption in Treatment",
-							"Invalid - Nonexistent",
-							"Invalid – Long-term IIT",
-							"Invalid - Duplicates",
-							"Invalid - Biometrical Naive"
+							"Invalid-Nonexistent",
+							"Invalid–Long-term IIT",
+							"Invalid-Duplicates",
+							"Invalid-Biometrical Naive"
 					);
 			String hivStatus = statusPreviousQuarter.get().getHivStatus();
+			log.info("HivStatus: {}", hivStatus);
 			if (staticStatus.contains(hivStatus)) {
 				String finalStatus = hivStatus.replaceAll("_", " ").toUpperCase();
 				if(finalStatus.contains("DEATH") || finalStatus.contains("Died")) finalStatus = "DIED";
