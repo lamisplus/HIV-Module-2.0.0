@@ -43,6 +43,7 @@ public class HandleHIVVisitEncounter {
 		if (personDto.getVisitId() != null) {
 			Optional<Visit> visitOptional = visitRepository.findById(personDto.getVisitId());
 			if (visitOptional.isPresent()) {
+				log.debug("visit already exist, updating encounter only!!");
 				List<Encounter> visitEncounters = encounterRepository.getEncounterByVisit(visitOptional.get());
 				List<String> serviceCodes = visitEncounters.stream()
 						.map(Encounter::getServiceCode)
@@ -53,7 +54,6 @@ public class HandleHIVVisitEncounter {
 				return visitOptional.get();
 			}
 		} else {
-			//Log.info(" final creating visit {}", personOptional.isPresent());
 			Visit visit = new Visit();
 			personOptional.ifPresent(visit::setPerson);
 			personOptional.ifPresent(person -> visit.setFacilityId(person.getFacilityId()));

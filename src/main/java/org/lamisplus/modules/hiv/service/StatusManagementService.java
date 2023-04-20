@@ -98,10 +98,18 @@ public class StatusManagementService {
 		if (statusPreviousQuarter.isPresent()) {
 			List<String> staticStatus =
 					Arrays.asList("ART_TRANSFER_OUT",
-							"KNOWN_DEATH","Died (Confirmed)",
+							"ART Transfer Out",
+							"KNOWN_DEATH",
+							"Died (Confirmed)",
 							"STOPPED_TREATMENT",
 							"Stopped Treatment",
-					"Interruption in Treatment", "Interruption in Treatment");
+							"Interruption in Treatment",
+							"Interruption in Treatment",
+							"Invalid - Nonexistent",
+							"Invalid – Long-term IIT",
+							"Invalid - Duplicates",
+							"Invalid - Biometrical Naive"
+					);
 			String hivStatus = statusPreviousQuarter.get().getHivStatus();
 			if (staticStatus.contains(hivStatus)) {
 				String finalStatus = hivStatus.replaceAll("_", " ").toUpperCase();
