@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Segment, Label, Icon, List, Button, Card, Message } from 'semantic-ui-react'
+import { Grid, Segment, Label, Icon, List, Card, Message } from 'semantic-ui-react'
 import { Table  } from "react-bootstrap";
 // Page titie
 import { FormGroup, Label as FormLabelName, InputGroup,
@@ -100,11 +100,7 @@ const useStyles = makeStyles(theme => ({
 const ClinicVisit = (props) => {
   let visitId=""
   let patientObj = props.patientObj ? props.patientObj : {}
-  const [dropdownOpen, setDropdownOpen] = React.useState(false);
-  const [splitButtonOpen, setSplitButtonOpen] = React.useState(false);
-  const toggleDropDown = () => setDropdownOpen(!dropdownOpen);
-  const toggleSplit = () => setSplitButtonOpen(!splitButtonOpen);
-  const [heightValue, setHeightValue]= useState("cm")
+
   const [errors, setErrors] = useState({});
   const [clinicVisitList, setClinicVisitList] = useState([])
   const [vLIndication, setVLIndication] = useState([]);
@@ -286,6 +282,7 @@ const ClinicVisit = (props) => {
        });
    
   }
+  
   //Get the patient current regimen
   const PatientCurrentRegimen =()=>{
     axios
@@ -375,7 +372,7 @@ const ClinicVisit = (props) => {
       });
 
     }
-    // HEPATITIS_SCREENING_RESULT	
+    // FAMILY_PLANNING_METHOD	
     const FAMILY_PLANNING_METHOD = () => {
     axios
       .get(`${baseUrl}application-codesets/v2/FAMILY_PLANNING_METHOD	`,
@@ -389,7 +386,7 @@ const ClinicVisit = (props) => {
       });
 
     }
-    // HEPATITIS_SCREENING_RESULT	
+    // PREGANACY_STATUS	
     const PREGANACY_STATUS = () => {
     axios
       .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS	`,
@@ -404,7 +401,7 @@ const ClinicVisit = (props) => {
 
     }
     //GET VIRAL LOAD INDICATION 
-      const ViraLoadIndication =()=>{
+    const ViraLoadIndication =()=>{
         axios
             .get(`${baseUrl}application-codesets/v2/VIRAL_LOAD_INDICATION`,
                 { headers: {"Authorization" : `Bearer ${token}`} }
@@ -783,6 +780,7 @@ const ClinicVisit = (props) => {
     temp.nextAppointment = objValues.nextAppointment ? "" : "This field is required"
     temp.whoStagingId = objValues.whoStagingId ? "" : "This field is required"
     temp.functionalStatusId = objValues.functionalStatusId ? "" : "This field is required"
+    patientAge>=10  && (temp.pregnancyStatus = objValues.pregnancyStatus ? "" : "This field is required")
     //temp.adherenceLevel = objValues.adherenceLevel ? "" : "This field is required"
     //temp.diastolic = vital.diastolic ? "" : "This field is required"
     //temp.systolic = vital.systolic ? "" : "This field is required"
@@ -1227,8 +1225,6 @@ const ClinicVisit = (props) => {
                         <InputGroup> 
                         <InputGroupText
                                 addonType="append"
-                                isOpen={dropdownOpen}
-                                toggle={toggleDropDown}
                                 style={{ backgroundColor:"#014D88", color:"#fff", border: "1px solid #014D88", borderRadius:"0rem"}}
                                 >
                                 cm
@@ -1246,8 +1242,6 @@ const ClinicVisit = (props) => {
                             />
                                 <InputGroupText
                                 addonType="append"
-                                isOpen={dropdownOpen}
-                                toggle={toggleDropDown}
                                 style={{ backgroundColor:"#992E62", color:"#fff", border: "1px solid #992E62", borderRadius:"0rem"}}
                                 >
                                 {vital.height!=='' ? (vital.height/100).toFixed(2) + "m" : "m"}
@@ -1573,11 +1567,11 @@ const ClinicVisit = (props) => {
                 </FormGroup>
               </div>
               {/* This section is if the patient is Female */}
-              {(patientObj.sex==='Female' || patientObj.sex==='FEMALE' || patientObj.sex==='female') && (
+              { patientAge>=10 && (patientObj.sex==='Female' || patientObj.sex==='FEMALE' || patientObj.sex==='female') && (
                 <>
                   <div className=" mb-3 col-md-6">
                     <FormGroup>
-                      <FormLabelName >Pregnancy Status</FormLabelName>
+                      <FormLabelName >Pregnancy Status <span style={{ color:"red"}}> *</span></FormLabelName>
                       <Input
                         type="select"
                         name="pregnancyStatus"
@@ -1595,7 +1589,9 @@ const ClinicVisit = (props) => {
                                 </option>
                             ))}
                       </Input>
-                    
+                      {errors.pregnancyStatus !=="" ? (
+                        <span className={classes.error}>{errors.pregnancyStatus}</span>
+                       ) : "" }
                     </FormGroup>
                   </div>
                   <div className=" mb-3 col-md-6">

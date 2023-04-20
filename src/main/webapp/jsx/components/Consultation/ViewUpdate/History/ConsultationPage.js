@@ -661,7 +661,7 @@ const ClinicVisit = (props) => {
       objValues.visitDate === "" && (temp.encounterDate = vital.encounterDate ? "" : "This field is required" )//objValues.visitDate
       temp.nextAppointment = objValues.nextAppointment ? "" : "This field is required"
       temp.whoStagingId = objValues.whoStagingId ? "" : "This field is required"
-      //temp.tbStatus = objValues.tbStatus ? "" : "This field is required"
+      patientAge>=10  && (temp.pregnancyStatus = objValues.pregnancyStatus ? "" : "This field is required")
       temp.functionalStatusId = objValues.functionalStatusId ? "" : "This field is required"
       temp.levelOfAdherence = objValues.levelOfAdherence ? "" : "This field is required"
       //temp.labTestGroupId = vital.diastolic ? "" : "This field is required"
@@ -924,7 +924,7 @@ const ClinicVisit = (props) => {
                             
                       </div>
                     </div>
-						))}
+						        ))}
                     </PerfectScrollbar>
                     </div>
                 </div>
@@ -1418,7 +1418,7 @@ const ClinicVisit = (props) => {
                         ) : "" }
                     </FormGroup>
                 </div>
-                {(patientObj.sex==='Female' || patientObj.sex==='FEMALE' || patientObj.sex==='female') && (
+                {patientAge>= 10 && (patientObj.sex==='Female' || patientObj.sex==='FEMALE' || patientObj.sex==='female') && (
                 <>
                   <div className=" mb-3 col-md-6">
                     <FormGroup>
@@ -1467,29 +1467,31 @@ const ClinicVisit = (props) => {
                     </FormGroup>
                   </div>
                   <div className=" mb-3 col-md-6">
-                <FormGroup>
-                  <FormLabelName >Pregnancy Status</FormLabelName>
-                  <Input
-                    type="select"
-                    name="pregnancyStatus"
-                    id="pregnancyStatus"
-                    value={objValues.pregnancyStatus}
-                    onChange={handleInputChange}
-                    style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                    disabled={!enableUpdate}
-                  >
-                    <option value="select">Select </option>
+                  <FormGroup>
+                    <FormLabelName >Pregnancy Status <span style={{ color:"red"}}> *</span></FormLabelName>
+                    <Input
+                      type="select"
+                      name="pregnancyStatus"
+                      id="pregnancyStatus"
+                      value={objValues.pregnancyStatus}
+                      onChange={handleInputChange}
+                      style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                      disabled={!enableUpdate}
+                    >
+                      <option value="select">Select </option>
 
-                    {pregnancyStatus.map((value) => (
-                            <option key={value.code} value={value.display}>
-                                {value.display}
-                            </option>
-                        ))}
-                  </Input>
-                
-                </FormGroup>
-              </div>
-                </>
+                      {pregnancyStatus.map((value) => (
+                              <option key={value.code} value={value.display}>
+                                  {value.display}
+                              </option>
+                          ))}
+                    </Input>
+                    {errors.pregnancyStatus !=="" ? (
+                                <span className={classes.error}>{errors.pregnancyStatus}</span>
+                            ) : "" }
+                  </FormGroup>
+                </div>
+                  </>
               )}
               <div className=" mb-3 col-md-6">
                 <FormGroup>

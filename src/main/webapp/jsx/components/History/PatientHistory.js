@@ -153,8 +153,7 @@ const PatientnHistory = (props) => {
         }
         
     }
-    const LoadDeletePage =(row)=>{
-        
+    const LoadDeletePage =(row)=>{        
         if(row.path==='Mental-health'){ 
             setSaving(true)        
             //props.setActiveContent({...props.activeContent, route:'mental-health-view', id:row.id})
@@ -359,6 +358,52 @@ const PatientnHistory = (props) => {
                     toast.error("Something went wrong. Please try again...");
                   }
             }); 
+        }else if(row.path==='Chronic-Care'){
+            setSaving(true) 
+            //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
+            axios
+            .delete(`${baseUrl}observation/${row.id}`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+                toast.success("Record Deleted Successfully");
+                PatientHistory()
+                toggle()
+                setSaving(false) 
+            })
+            .catch((error) => {
+                if(error.response && error.response.data){
+                    let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
+                    toast.error(errorMessage);
+                  }
+                  else{
+                    toast.error("Something went wrong. Please try again...");
+                  }
+            }); 
+        }else if(row.path==='client-tracker'){
+            setSaving(true) 
+            //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
+            axios
+            .delete(`${baseUrl}patient-tracker/patient/delete/${row.id}`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+                toast.success("Record Deleted Successfully");
+                PatientHistory()
+                toggle()
+                setSaving(false) 
+            })
+            .catch((error) => {
+                setSaving(false) 
+                toggle()
+                if(error.response && error.response.data){
+                    let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
+                    toast.error(errorMessage);
+                  }
+                  else{
+                    toast.error("Something went wrong. Please try again...");
+                  }
+            }); 
         }else{
 
         }
@@ -368,6 +413,7 @@ const PatientnHistory = (props) => {
         toggle()
         setRecord(row)
     }  
+
 
   return (
     <div>

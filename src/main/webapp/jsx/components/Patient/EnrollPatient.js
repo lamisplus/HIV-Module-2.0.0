@@ -192,6 +192,7 @@ const UserRegistration = (props) => {
             temp.entryPointId = objValues.entryPointId ? "" : "Care Entry Point is required." 
             temp.dateOfRegistration = objValues.dateOfRegistration ? "" : "Date of Registration is required."  
             temp.uniqueId = objValues.uniqueId ? "" : "Unique ID is required."
+            {(basicInfo.age>9 && basicInfo.sex==='Female') && (temp.pregnancyStatusId = objValues.pregnancyStatusId ? "" : "This field is required.")}
             
                 setErrors({ ...temp })
         return Object.values(temp).every(x => x == "")
@@ -223,7 +224,6 @@ const UserRegistration = (props) => {
         }
                    
     } 
-    
     const checkNINLimit=(e)=>{
         const limit = 11;        
         const acceptedNumber= e.slice(0, limit)
@@ -349,8 +349,6 @@ const UserRegistration = (props) => {
         //     }
         // }                
     }    
-    
-
     //Handle CheckBox 
     const handleCheckBox =e =>{
         if(e.target.checked){
@@ -368,7 +366,6 @@ const UserRegistration = (props) => {
          if(validate()){
             setSaving(true) 
             try {
-
                 objValues.personId = patientId;
                 const response = await axios.post(`${baseUrl}hiv/enrollment`, objValues, { headers: {"Authorization" : `Bearer ${token}`} });
                 toast.success("Patient Register successful", {position: toast.POSITION.BOTTOM_CENTER});
@@ -468,19 +465,19 @@ const UserRegistration = (props) => {
                                                 <FormGroup>
                                                     <Label>Sex </Label>
                                                     <Input
-                                                            className="form-control"
-                                                            name="sexId"
-                                                            id="sexId"
-                                                            onChange={handleInputChangeBasic}
-                                                            value={basicInfo.sex}
-                                                            style={{border: 'none', backgroundColor: 'transparent', outline:'none'}}
+                                                        className="form-control"
+                                                        name="sexId"
+                                                        id="sexId"
+                                                        onChange={handleInputChangeBasic}
+                                                        value={basicInfo.sex}
+                                                        style={{border: 'none', backgroundColor: 'transparent', outline:'none'}}
                                                             
-                                                        />
+                                                    />
                                                 </FormGroup>
                                             </div>
                                             <div className="form-group mb-3 col-md-2">
                                                 <FormGroup>
-                                                    <Label>Age</Label>
+                                                    <Label>Age </Label>
                                                     <input
                                                         className="form-control"
                                                         type="text"
@@ -714,12 +711,11 @@ const UserRegistration = (props) => {
                                         ) : "" }
                                     </FormGroup>
                                 </div>
-                                {((basicInfo.sexId==='377' || basicInfo.gender==='Female' || basicInfo.gender==='FEMALE' || basicInfo.gender==='female') && basicInfo.age > 9) && (
+                                {basicInfo.sex==='Female' && basicInfo.age > 9 && (
                                     <>
-                                   
                                     <div className = "form-group mb-3 col-md-6" >
                                         <FormGroup>
-                                        <Label> Pregnancy </Label>
+                                        <Label> Pregnancy <span style={{ color:"red"}}> *</span></Label>
                                         <Input
                                             type = "select"
                                             name = "pregnancyStatusId"
@@ -728,13 +724,16 @@ const UserRegistration = (props) => {
                                             style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
                                             onChange = {handleInputChange}                                        
                                         >
-                                        < option value = "" >Select </option>
-                                        {pregnancyStatus.map((value) => (
-                                                    <option key={value.id} value={value.id}>
-                                                        {value.display}
-                                                    </option>
-                                                ))}
-                                        </Input>                                                                        
+                                            <option value = "" >Select </option>
+                                            {pregnancyStatus.map((value) => (
+                                                <option key={value.id} value={value.id}>
+                                                    {value.display}
+                                                </option>
+                                            ))}
+                                        </Input> 
+                                        {errors.pregnancyStatusId !=="" ? (
+                                        <span className={classes.error}>{errors.pregnancyStatusId}</span>
+                                        ) : "" }                                                                       
                                     </FormGroup>  
                                     </div>
                                     {objValues.pregnancyStatusId==='73' && (
@@ -798,14 +797,14 @@ const UserRegistration = (props) => {
                                         >
                                         <option value=""> Select</option>                    
                                         {(basicInfo.sex==='Female' || basicInfo.sex==='female')    && ( <>      
-                                                {kP.filter((x)=>x.display!=='FSW').map((value) => (
+                                                {kP.filter((x)=>x.display!=='MSM').map((value) => (
                                                     <option key={value.id} value={value.id}>
                                                         {value.display}
                                                     </option>
                                                 ))}
                                             </> )}
                                             {(basicInfo.sex==='Male' || basicInfo.sex==='male')   && ( <>      
-                                                {kP.filter((x)=>x.display!=='MSM').map((value) => (
+                                                {kP.filter((x)=>x.display!=='FSW').map((value) => (
                                                     <option key={value.id} value={value.id}>
                                                         {value.display}
                                                     </option>

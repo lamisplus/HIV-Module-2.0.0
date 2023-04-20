@@ -113,8 +113,8 @@ const ArtCommencement = (props) => {
                                                 viralLoad: "",
                                                 whoStagingId:"",
                                                 clinicalStageId:"",
-                                                cd4: "",
-                                                cd4Percentage: "",
+                                                cd4: null,
+                                                cd4Percentage: null,
                                                 isCommencement: true,
                                                 functionalStatusId: "",
                                                 clinicalNote: "",
@@ -126,7 +126,7 @@ const ArtCommencement = (props) => {
                                                 viralLoadAtStartOfArt:"",
                                                 isViralLoadAtStartOfArt :null,
                                                 dateOfViralLoadAtStartOfArt: null,
-                                                cd4Count:"",
+                                                cd4Count:null,
                                                 cd4SemiQuantitative:"",
                                                 cd4FlowCytometry:""                                                  
 
@@ -187,7 +187,7 @@ const ArtCommencement = (props) => {
         PatientCurrentObject()
          gender =props.patientObj.gender && props.patientObj.gender.display ? props.patientObj.gender.display : null
       }, [props.patientObj]);
-         //GET  Patients
+        //GET  Patients
         async function PatientCurrentObject() {
             axios
                 .get(`${baseUrl}hiv/patient/${props.patientObj.id}`,
@@ -354,14 +354,31 @@ const ArtCommencement = (props) => {
                         setViraLoadStart(false)
                     }
                 }
-                if(e.target.name==='cd4Percentage' && e.target.value!==""){
+                else if(e.target.name==='cd4Percentage' && e.target.value!==""){
                     setObjValues ({...objValues,  [e.target.name]: e.target.value.replace(/\D/g, '')});
                 }
-                if(e.target.name==='cd4' && e.target.value!==""){
+                else if(e.target.name==='cd4' && e.target.value!==""){
                     setObjValues ({...objValues,  [e.target.name]: e.target.value.replace(/\D/g, '')});
+                }
+                //This logic is to clear the value of field that is hidden
+                if(e.target.name==='cd4Count' && e.target.value==="Semi-Quantitative"){
+                    setObjValues ({...objValues,  ["cd4FlowCytometry"]: " " });
+                    setObjValues ({...objValues,  [e.target.name]: e.target.value});
+
+                }else if(e.target.name==='cd4Count' && e.target.value==="Flow Cyteometry"){
+                    objValues.cd4SemiQuantitative=""
+                    setObjValues ({...objValues,  ["cd4SemiQuantitative"]: " " });
+                    setObjValues ({...objValues,  [e.target.name]: e.target.value});
+                }
+                if(e.target.name==='isViralLoadAtStartOfArt' && e.target.value==="false"){
+                    setObjValues ({...objValues,  ["viralLoadAtStartOfArt"]: " " });
+                    setObjValues ({...objValues,  ["dateOfViralLoadAtStartOfArt"]: " " });
+                    setObjValues ({...objValues,  [e.target.name]: e.target.value});
+
                 }
                 
         }
+        console.log(objValues)
         const handleInputChangeVitalSignDto = e => { 
             setErrors({...temp, [e.target.name]:""})  
             setVitalSignDto({ ...vital, [e.target.name]: e.target.value });
@@ -747,7 +764,7 @@ const ArtCommencement = (props) => {
                         </FormGroup>
                     </div>
                     {viraLoadStart && (
-                    <>
+                    <> 
                     <div className="form-group mb-3 col-md-4">
                         <FormGroup>
                         <Label >Viral Load at Start of ART Result</Label>
@@ -835,11 +852,11 @@ const ArtCommencement = (props) => {
                     </div>
                     {objValues.isViralLoadAtStartOfArt && objValues.isViralLoadAtStartOfArt!==null && (<div className="form-group mb-3 col-md-8"></div>)}
                     {!objValues.isViralLoadAtStartOfArt && objValues.isViralLoadAtStartOfArt!==null && (<div className="form-group mb-3 col-md-4"></div>)}
-                    {(props.patientObj.sex==="Female" || props.patientObj.sex==="FEMALE" || props.patientObj.sex==="female") ? (
+                    {patientAge>=10 && (props.patientObj.sex==="Female" || props.patientObj.sex==="FEMALE" || props.patientObj.sex==="female") ? (
                         <>
                         <div className="form-group mb-3 col-md-4">
                             <FormGroup>
-                            <Label >Pregnancy Status</Label>
+                            <Label >Pregnancy Status <span style={{ color:"red"}}> *</span></Label>
                             <Input
                                 type="select"
                                 name="pregancyStatus"

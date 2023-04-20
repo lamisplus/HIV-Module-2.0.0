@@ -88,24 +88,25 @@ const useStyles = makeStyles((theme) => ({
 const Eligibility = (props) => {
     const classes = useStyles();
     const [errors, setErrors] = useState({});
+    const [adherence, setAdherence] = useState([]);
     useEffect(() => {
-        //PrepSideEffect();
+        CLINIC_VISIT_LEVEL_OF_ADHERENCE();
       }, []);
-        //Get list of PrepSideEffect
-        // const PrepSideEffect =()=>{
-        // axios
-        //     .get(`${baseUrl}application-codesets/v2/PREP_SIDE_EFFECTS`,
-        //         { headers: {"Authorization" : `Bearer ${token}`} }
-        //     )
-        //     .then((response) => {
-        //         //console.log(response.data);
-        //         setAllergies(response.data);
-        //     })
-        //     .catch((error) => {
-        //     //console.log(error);
-        //     });
+        //Get list of CLINIC_VISIT_LEVEL_OF_ADHERENCE
+        const CLINIC_VISIT_LEVEL_OF_ADHERENCE =()=>{
+        axios
+            .get(`${baseUrl}application-codesets/v2/CLINIC_VISIT_LEVEL_OF_ADHERENCE`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+                //console.log(response.data);
+                setAdherence(response.data);
+            })
+            .catch((error) => {
+            //console.log(error);
+            });
         
-        // }
+        }
 
     
     let temp = { ...errors }
@@ -238,9 +239,11 @@ const Eligibility = (props) => {
                                     value={props.tpt.adherence} 
                                 >
                                 <option value="">Select</option>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                                <option value="Uncertain">Uncertain</option>
+                                {adherence.map((value) => (
+                                        <option key={value.id} value={value.display}>
+                                            {value.display}
+                                        </option>
+                                    ))}
                                 </Input>
                             </InputGroup>
                             </FormGroup>
