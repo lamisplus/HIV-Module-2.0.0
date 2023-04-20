@@ -68,8 +68,8 @@ public class PatientTrackerService {
 	public void deletePatientTrackerById (Long id) {
 		PatientTracker patientTracker = getPatientTrackerById(id);
 		HIVStatusTracker statusTracker = patientTracker.getStatusTracker();
-		hivStatusTrackerRepository.delete(statusTracker);
 		patientTrackerRepository.delete(patientTracker);
+		hivStatusTrackerRepository.delete(statusTracker);
 	}
 	
 	
