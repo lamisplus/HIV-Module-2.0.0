@@ -1,6 +1,6 @@
 basePackage: org.lamisplus.modules.hiv
 name: HivModule
-dependencies: {PatientModule: 2.0.2.2023.4, TriageModule: 2.0.0.2023.4, LaboratoryModule: 2.0.2.2023.4 }
+dependencies: {PatientModule: 2.0.2, TriageModule: 2.0.1, LaboratoryModule: 2.0.2 }
 store: true
 menus:
   - icon: fa-solid fa-shield-virus

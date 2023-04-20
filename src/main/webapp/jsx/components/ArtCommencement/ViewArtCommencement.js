@@ -353,6 +353,16 @@ const ArtCommencement = (props) => {
             if(e.target.name==='cd4' && e.target.value!==""){
                 setObjValues ({...objValues,  [e.target.name]: e.target.value.replace(/\D/g, '')});
             }
+            //This logic is to clear the value of field that is hidden
+            if(e.target.name==='cd4Count' && e.target.value==="Semi-Quantitative"){
+                setObjValues ({...objValues,  ["cd4FlowCytometry"]: " " });
+                setObjValues ({...objValues,  [e.target.name]: e.target.value});
+
+            }else if(e.target.name==='cd4Count' && e.target.value==="Flow Cyteometry"){
+                objValues.cd4SemiQuantitative=""
+                setObjValues ({...objValues,  ["cd4SemiQuantitative"]: " " });
+                setObjValues ({...objValues,  [e.target.name]: e.target.value});
+            }
         }
         const handleInputChangeVitalSignDto = e => { 
             setErrors({...errors, [e.target.name]: ""})
@@ -618,8 +628,8 @@ const ArtCommencement = (props) => {
                                     disabled={disabledField}
                                 >
                                     <option value={""}></option>
-                                    <option value="Semi-Quantitative">{"<200"}</option>
-                                    <option value="Flow Cyteometry">{">=200"}</option>
+                                    <option value="<200">{"<200"}</option>
+                                    <option value=">=200">{">=200"}</option>
                                     
                                 </select>
                                 

@@ -277,8 +277,19 @@ return (
                                         value={props.preventive.phdp} 
                                     >
                                     <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
+                                    <option value="Insecticide treated nets">Insecticide treated nets</option>
+                                    <option value="Intermittent prophylactic treatment">Intermittent prophylactic treatment </option>
+                                    <option value="Cervical Cancer Screening">Cervical Cancer Screening </option>
+                                    <option value="Active member of SG">Active member of SG</option>
+                                    <option value="Family Planning">Family Planning </option>
+                                    <option value="Basic care kits">Basic care kits</option>
+                                    <option value="Disclosure counseling">Disclosure counseling</option>
+                                    <option value="Social Services">Social Services</option>
+                                    <option value="Linkage to IGAs">Linkage to IGAs</option>
+
+                                    <option value="Leg ">Leg </option>
+                                    <option value="Mental Health">Mental Health</option>
+                                    <option value="Others">Others</option>
                                     </Input>
 
                             </FormGroup>

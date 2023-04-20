@@ -69,7 +69,7 @@ const TrackingHistory = (props) => {
 
      const LoadDeletePage = (row) =>{  
         setSaving(true) 
-      axios.delete(`${baseUrl}patient-tracker/${row.id}`,
+      axios.delete(`${baseUrl}patient-tracker/patient/delete/${row.id}`,
               { headers: {"Authorization" : `Bearer ${token}`} }
           )
           .then((response) => {
@@ -79,6 +79,8 @@ const TrackingHistory = (props) => {
               setSaving(false)
           })
           .catch((error) => {
+            toggle()
+              setSaving(false)
               if(error.response && error.response.data){
                   let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
                   toast.error(errorMessage);

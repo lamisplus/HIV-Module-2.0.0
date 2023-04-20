@@ -171,7 +171,7 @@ function SubMenu(props) {
                             :""
                     } 
                     <Menu.Menu position='' name='lab' active={activeItem === 'lab'}>
-                    <Dropdown item text='Others'>
+                    <Dropdown item text='Other Forms'>
                         <Dropdown.Menu>
                         <Dropdown.Item onClick={() => loadTrackingForm(patientObj)} name='tracking'
                             active={activeItem === 'tracking'} title="Tracking Form">Tracking Form
