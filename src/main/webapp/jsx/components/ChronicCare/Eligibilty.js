@@ -89,15 +89,16 @@ const Eligibility = (props) => {
     const [clientType, setClientType]= useState([])
     const [pregnancyStatus, setPregnancyStatus]= useState([])
     const [who, setWho]= useState([])
+    const [artStatus, setArtStatus]= useState([])
     const handleEligibility =e =>{
         props.setEligibility({...props.eligibility, [e.target.name]: e.target.value})        
     }
     useEffect(() => {
         CHRONIC_CARE_CLIENT_TYPE();
         PREGNANCY_STATUS();
+        ART_STATUS();
         WHO_STAGING_CRITERIA();
     }, []);
-    //PREGNANCY_STATUS
     const CHRONIC_CARE_CLIENT_TYPE =()=>{
         axios
             .get(`${baseUrl}application-codesets/v2/CHRONIC_CARE_CLIENT_TYPE`,
@@ -106,6 +107,20 @@ const Eligibility = (props) => {
             .then((response) => {
                 //console.log(response.data);
                 setClientType(response.data);
+            })
+            .catch((error) => {
+            //console.log(error);
+            });
+        
+    }
+    const ART_STATUS =()=>{
+        axios
+            .get(`${baseUrl}application-codesets/v2/ART_STATUS`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+                //console.log(response.data);
+                setArtStatus(response.data);
             })
             .catch((error) => {
             //console.log(error);
@@ -197,7 +212,29 @@ const Eligibility = (props) => {
                     </div> 
                     </div>
                     <div className="row">
-                    <h3>ART Status : Pre-ART </h3>
+                    <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                            <Label >ART Status</Label>
+                            <InputGroup> 
+                                <Input 
+                                    type="select"
+                                    name="artStatus"
+                                    id="artStatus"
+                                    onChange={handleEligibility} 
+                                    value={props.eligibility.artStatus}  
+                                >
+                                <option value="">Select</option>
+                                {artStatus.map((value) => (
+                                    <option key={value.id} value={value.display}>
+                                        {value.display}
+                                    </option>
+                                ))}
+                                </Input>
+
+                            </InputGroup>
+                        
+                            </FormGroup>
+                     </div>
                      <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label >Current Clinical Status(WHO Statging)</Label>

@@ -661,7 +661,8 @@ const ClinicVisit = (props) => {
       objValues.visitDate === "" && (temp.encounterDate = vital.encounterDate ? "" : "This field is required" )//objValues.visitDate
       temp.nextAppointment = objValues.nextAppointment ? "" : "This field is required"
       temp.whoStagingId = objValues.whoStagingId ? "" : "This field is required"
-      patientAge>=10  && (temp.pregnancyStatus = objValues.pregnancyStatus ? "" : "This field is required")
+      //patientAge>=10  && (temp.pregnancyStatus = objValues.pregnancyStatus ? "" : "This field is required")
+      {(patientAge>=10 && patientObj.sex==='Female')  && (temp.pregnancyStatus = objValues.pregnancyStatus ? "" : "This field is required")}
       temp.functionalStatusId = objValues.functionalStatusId ? "" : "This field is required"
       temp.levelOfAdherence = objValues.levelOfAdherence ? "" : "This field is required"
       //temp.labTestGroupId = vital.diastolic ? "" : "This field is required"
