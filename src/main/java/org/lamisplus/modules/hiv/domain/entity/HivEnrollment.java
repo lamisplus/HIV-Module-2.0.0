@@ -54,7 +54,7 @@ public class HivEnrollment extends HivAuditEntity implements Persistable<Long>, 
     @Convert(converter = LocalDateConverter.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateOfRegistration;
-    @NonNull
+
     @Column(name = "status_at_registration_id")
     private Long statusAtRegistrationId;
     @Column(name = "enrollment_setting_id")
