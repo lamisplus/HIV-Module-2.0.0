@@ -465,14 +465,14 @@ const UserRegistration = (props) => {
                                                 <FormGroup>
                                                     <Label>Sex </Label>
                                                     <Input
-                                                            className="form-control"
-                                                            name="sexId"
-                                                            id="sexId"
-                                                            onChange={handleInputChangeBasic}
-                                                            value={basicInfo.sex}
-                                                            style={{border: 'none', backgroundColor: 'transparent', outline:'none'}}
+                                                        className="form-control"
+                                                        name="sexId"
+                                                        id="sexId"
+                                                        onChange={handleInputChangeBasic}
+                                                        value={basicInfo.sex}
+                                                        style={{border: 'none', backgroundColor: 'transparent', outline:'none'}}
                                                             
-                                                        />
+                                                    />
                                                 </FormGroup>
                                             </div>
                                             <div className="form-group mb-3 col-md-2">
@@ -797,14 +797,14 @@ const UserRegistration = (props) => {
                                         >
                                         <option value=""> Select</option>                    
                                         {(basicInfo.sex==='Female' || basicInfo.sex==='female')    && ( <>      
-                                                {kP.filter((x)=>x.display!=='FSW').map((value) => (
+                                                {kP.filter((x)=>x.display!=='MSM').map((value) => (
                                                     <option key={value.id} value={value.id}>
                                                         {value.display}
                                                     </option>
                                                 ))}
                                             </> )}
                                             {(basicInfo.sex==='Male' || basicInfo.sex==='male')   && ( <>      
-                                                {kP.filter((x)=>x.display!=='MSM').map((value) => (
+                                                {kP.filter((x)=>x.display!=='FSW').map((value) => (
                                                     <option key={value.id} value={value.id}>
                                                         {value.display}
                                                     </option>

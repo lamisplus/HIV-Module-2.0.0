@@ -100,7 +100,7 @@ const Eligibility = (props) => {
     //PREGNANCY_STATUS
     const CHRONIC_CARE_CLIENT_TYPE =()=>{
         axios
-            .get(`${baseUrl}application-codesets/v2/CLIENT_TYPE`,
+            .get(`${baseUrl}application-codesets/v2/CHRONIC_CARE_CLIENT_TYPE`,
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {

@@ -294,6 +294,7 @@ const TbScreening = (props) => {
                                     id="tbTreatment"
                                     onChange={handleInputChange} 
                                     value={props.tbObj.tbTreatment} 
+
                                 >
                                 <option value="">Select</option>
                                 <option value="Yes">Yes</option>
@@ -315,6 +316,7 @@ const TbScreening = (props) => {
                                     id="tbTreatmentStartDate"
                                     onChange={handleInputChange} 
                                     value={props.tbObj.tbTreatmentStartDate} 
+                                    max= {moment(new Date()).format("YYYY-MM-DD") }
                                 >
                                 
                                 </Input>
