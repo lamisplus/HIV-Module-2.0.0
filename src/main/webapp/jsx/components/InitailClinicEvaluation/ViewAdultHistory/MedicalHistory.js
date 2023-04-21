@@ -222,7 +222,13 @@ const MedicalHistory = (props) => {
                 }else{
                     setHideOtherCurrentMedication(false)
                 }
-        }        
+        } 
+        if(e.target.name==='previous_arv_exposure' && e.target.value==='No'){
+            objValues.name_of_the_facility=""
+            objValues.duration_of_care_from=""
+            objValues.duration_of_care_to=""  
+            setobjValues({...objValues, [e.target.name]: e.target.value})
+        }         
         setobjValues({...objValues, [e.target.name]: e.target.value})
     }
     const handleInputChangeobjValues = e => {            

@@ -353,8 +353,9 @@ const ArtCommencement = (props) => {
             if(e.target.name==='cd4' && e.target.value!==""){
                 setObjValues ({...objValues,  [e.target.name]: e.target.value.replace(/\D/g, '')});
             }
-            //This logic is to clear the value of field that is hidden
-            if(e.target.name==='cd4Count' && e.target.value==="Semi-Quantitative"){
+             //This logic is to clear the value of field that is hidden
+             if(e.target.name==='cd4Count' && e.target.value==="Semi-Quantitative"){
+                objValues.cd4FlowCytometry=""
                 setObjValues ({...objValues,  ["cd4FlowCytometry"]: " " });
                 setObjValues ({...objValues,  [e.target.name]: e.target.value});
 
@@ -362,6 +363,14 @@ const ArtCommencement = (props) => {
                 objValues.cd4SemiQuantitative=""
                 setObjValues ({...objValues,  ["cd4SemiQuantitative"]: " " });
                 setObjValues ({...objValues,  [e.target.name]: e.target.value});
+            }
+            if(e.target.name==='isViralLoadAtStartOfArt' && e.target.value==="false"){
+                objValues.viralLoadAtStartOfArt=""
+                objValues.dateOfViralLoadAtStartOfArt=""
+                setObjValues ({...objValues,  ["viralLoadAtStartOfArt"]: " " });
+                setObjValues ({...objValues,  ["dateOfViralLoadAtStartOfArt"]: " " });
+                setObjValues ({...objValues,  [e.target.name]: e.target.value});
+
             }
         }
         const handleInputChangeVitalSignDto = e => { 
