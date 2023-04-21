@@ -362,6 +362,7 @@ const ArtCommencement = (props) => {
                 }
                 //This logic is to clear the value of field that is hidden
                 if(e.target.name==='cd4Count' && e.target.value==="Semi-Quantitative"){
+                    objValues.cd4FlowCytometry=""
                     setObjValues ({...objValues,  ["cd4FlowCytometry"]: " " });
                     setObjValues ({...objValues,  [e.target.name]: e.target.value});
 
@@ -371,6 +372,8 @@ const ArtCommencement = (props) => {
                     setObjValues ({...objValues,  [e.target.name]: e.target.value});
                 }
                 if(e.target.name==='isViralLoadAtStartOfArt' && e.target.value==="false"){
+                    objValues.viralLoadAtStartOfArt=""
+                    objValues.dateOfViralLoadAtStartOfArt=""
                     setObjValues ({...objValues,  ["viralLoadAtStartOfArt"]: " " });
                     setObjValues ({...objValues,  ["dateOfViralLoadAtStartOfArt"]: " " });
                     setObjValues ({...objValues,  [e.target.name]: e.target.value});
@@ -378,7 +381,7 @@ const ArtCommencement = (props) => {
                 }
                 
         }
-        console.log(objValues)
+
         const handleInputChangeVitalSignDto = e => { 
             setErrors({...temp, [e.target.name]:""})  
             setVitalSignDto({ ...vital, [e.target.name]: e.target.value });

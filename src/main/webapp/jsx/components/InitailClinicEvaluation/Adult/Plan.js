@@ -94,8 +94,6 @@ const useStyles = makeStyles((theme) => ({
 
 const BasicInfo = (props) => {
     const classes = useStyles();
-    const history = useHistory();
-    const [errors, setErrors] = useState({});
     useEffect(() => { 
         if(props.observation.data ){
             setPlan(props.observation.data.plan) 
@@ -122,19 +120,13 @@ const BasicInfo = (props) => {
                                         admission:"",
                                         symptomatic :"",
                                         other_referrals:"",
-    });
-    let temp = { ...errors }   
+    });   
     const handlePlanArt =e =>{
         setPlanArt({...planArt, [e.target.name]: e.target.value})
         
     }
     const handlePlan =e =>{
-        if(e.target.name==='cd4FlowCytometry' && plan.cd4SemiQuantitative!==""){ 
-            plan.cd4SemiQuantitative=""
-        }
-        if(e.target.name==='cd4SemiQuantitative' && plan.cd4FlowCytometry!==""){          
-            plan.cd4FlowCytometry=""
-        }
+        setPlan({...plan, [e.target.name]: e.target.value})
         setPlan({...plan, [e.target.name]: e.target.value})
         //console.log(plan)
     }
@@ -153,10 +145,16 @@ const BasicInfo = (props) => {
     }  
     /**** Submit Button Processing  */
     const handleSubmit = (e) => { 
-        e.preventDefault();  
+        e.preventDefault();
+
+        if(plan.cd4FlowCytometry!=="" && plan.cd4Count==='Flow Cyteometry'){//cleaning input field value against the correct selection
+            plan.cd4SemiQuantitative=""
+        }else if(plan.cd4SemiQuantitative!=="" && plan.cd4Count==='Semi-Quantitative'){
+            plan.cd4FlowCytometry=""
+        }  
         props.observation.data.planArt = planArt
         props.observation.data.plan = plan
-        props.observation.data.enroll=enroll  
+        props.observation.data.enroll=enroll 
         //toast.success("Record save successful");
         handleItemClick('regimen', 'plan' )                  
     }
@@ -273,7 +271,7 @@ return (
                                     </select>
                                     
                                 </FormGroup>
-                            </div>
+                            </div> 
                             {plan.cd4Count ==='Semi-Quantitative' && (
                             <div className="form-group  col-md-5">
                                 <FormGroup>

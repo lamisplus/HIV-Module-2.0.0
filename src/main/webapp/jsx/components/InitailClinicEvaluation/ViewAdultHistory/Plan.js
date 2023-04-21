@@ -153,7 +153,12 @@ const BasicInfo = (props) => {
     }  
     /**** Submit Button Processing  */
     const handleSubmit = (e) => { 
-        e.preventDefault();  
+        e.preventDefault(); 
+        if(plan.cd4FlowCytometry!=="" && plan.cd4Count==='Flow Cyteometry'){//cleaning input field value against the correct selection
+            plan.cd4SemiQuantitative=""
+        }else if(plan.cd4SemiQuantitative!=="" && plan.cd4Count==='Semi-Quantitative'){
+            plan.cd4FlowCytometry=""
+        } 
         props.observation.data.planArt = planArt
         props.observation.data.plan = plan
         props.observation.data.enroll=enroll  
