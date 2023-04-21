@@ -229,16 +229,59 @@ const TbScreening = (props) => {
     const handleInputChange =e =>{
         props.setTbObj({...props.tbObj, [e.target.name]: e.target.value})
         
-        //making some fields to be empty once base on the business logic
+        //making some fields to be empty once the selection logic is apply(skip logic) 
         if(e.target.name==='currentlyOnTuberculosis' && e.target.value==='Yes'){
             props.tbObj.tbTreatment=""
             props.tbObj.tbTreatmentStartDate=""
-
-            //props.setTbObj({...props.tbObj, ['tbTreatment']: ""})
+            props.setTbObj({...props.tbObj, ['tbTreatment']: ''})
+            props.setTbObj({...props.tbObj, ['tbTreatmentStartDate']: ''})
+            props.setTbObj({...props.tbObj, [e.target.name]: e.target.value})
         }
-        if(e.target.name==='tbTreatment' && e.target.value==='No'){
+        if(e.target.name==='currentlyOnTuberculosis' && e.target.value==='No'){
+            props.tbObj.coughing="" 
+            props.tbObj.fever=""
+            props.tbObj.losingWeight=""
+            props.tbObj.nightSweats=""
+            props.tbObj.poorWeightGain=""
+            props.tbObj.historyWithAdults=""
+            props.setTbObj({...props.tbObj, ['coughing']: ""})
+            props.setTbObj({...props.tbObj, ['fever']: ''})
+            props.setTbObj({...props.tbObj, ['losingWeight']: ''})
+            props.setTbObj({...props.tbObj, ['nightSweats']: ''})
+            props.setTbObj({...props.tbObj, ['poorWeightGain']: ''})
+            props.setTbObj({...props.tbObj, ['historyWithAdults']: ''})
+            props.setTbObj({...props.tbObj, [e.target.name]: e.target.value})
+        }
+        if(e.target.name==='tbTreatment' && e.target.value==='Yes'){
             props.tbObj.tbTreatmentStartDate=""
             setcontraindicationDisplay(true)
+            props.tbObj.coughing="" 
+            props.tbObj.fever=""
+            props.tbObj.losingWeight=""
+            props.tbObj.nightSweats=""
+            props.tbObj.poorWeightGain=""
+            props.tbObj.historyWithAdults=""
+            props.setTbObj({...props.tbObj, ['coughing']: ""})
+            props.setTbObj({...props.tbObj, ['fever']: ''})
+            props.setTbObj({...props.tbObj, ['losingWeight']: ''})
+            props.setTbObj({...props.tbObj, ['nightSweats']: ''})
+            props.setTbObj({...props.tbObj, ['poorWeightGain']: ''})
+            props.setTbObj({...props.tbObj, ['historyWithAdults']: ''})
+            props.setTbObj({...props.tbObj, [e.target.name]: e.target.value})
+           
+        }
+        if(e.target.name==='tbTreatment' && e.target.value==='No'){
+
+            props.tbObj.tbTreatmentStartDate=""
+            props.tbObj.treatementType="" 
+            props.tbObj.treatmentOutcome=""
+            props.tbObj.completionDate=""
+            props.setTbObj({...props.tbObj, ['tbTreatmentStartDate']: ""})
+            props.setTbObj({...props.tbObj, ['treatementType']: ''})
+            props.setTbObj({...props.tbObj, ['treatmentOutcome']: ''})
+            props.setTbObj({...props.tbObj, ['completionDate']: ''})
+            props.setTbObj({...props.tbObj, [e.target.name]: e.target.value})
+           
         }
         
         
@@ -286,7 +329,7 @@ const TbScreening = (props) => {
                         {(props.tbObj.currentlyOnTuberculosis!=='' && props.tbObj.currentlyOnTuberculosis==='No' ) && (
                         <div className="form-group mb-3 col-md-6">
                             <FormGroup>
-                            <Label >Are you currently on TB treatment?{props.tbObj.tbTreatment}</Label>
+                            <Label >Are you currently on TB treatment?</Label>
                             <InputGroup> 
                                 <Input 
                                     type="select"
@@ -343,7 +386,7 @@ const TbScreening = (props) => {
                                 </Input>
                             </InputGroup>
                             </FormGroup>
-                        </div>
+                        </div> 
                         <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label >Treatment Outcome </Label>

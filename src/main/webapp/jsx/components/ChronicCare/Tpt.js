@@ -87,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Eligibility = (props) => {
     const classes = useStyles();
-    const [errors, setErrors] = useState({});
+    //const [errors, setErrors] = useState({});
     const [adherence, setAdherence] = useState([]);
     useEffect(() => {
         CLINIC_VISIT_LEVEL_OF_ADHERENCE();
@@ -107,14 +107,18 @@ const Eligibility = (props) => {
             });
         
         }
-
-    
-    let temp = { ...errors }
+    //let temp = { ...errors }
 
     //Handle CheckBox 
     const handleTpt =e =>{
         //setErrors({...errors, [e.target.name]: ""})            
         props.setTpt({...props.tpt, [e.target.name]: e.target.value})
+        //making the field to be empty once the selection logic is apply(skip logic) 
+        if(e.target.name==='outComeOfIpt' && e.target.value===''){
+            props.tpt.date=" "
+            props.setTpt({...props.tpt, ['date']: ''})
+            props.setTpt({...props.tpt, [e.target.name]: e.target.value})
+        }
     }
 
 
