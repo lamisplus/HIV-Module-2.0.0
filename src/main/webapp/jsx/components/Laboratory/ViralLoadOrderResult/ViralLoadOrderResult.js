@@ -413,6 +413,22 @@ const Laboratory = (props) => {
         if(e.target.checked){
             setShowResult(true)
         }else{
+            tests.assayedBy=""
+            tests.dateAssayedBy="" 
+            tests.dateResultReceived=""
+            tests.result="" 
+            tests.comments=""
+            //Apply to PCR lab fields
+            tests.pcrLabName="" 
+            tests.pcrLabSampleNumber=""
+            tests.sampleLoggedRemotely=""
+            tests.dateSampleLoggedRemotely=""
+            tests.dateSampleLoggedRemotely=""
+            tests.dateReceivedAtPcrLab="" 
+            tests.checkedBy="" 
+            tests.dateCheckedBy="" 
+            tests.approvedBy=""
+            tests.dateApproved=""
             setShowResult(false)
             setShowPcrLabDetail(false)
         }
@@ -421,6 +437,16 @@ const Laboratory = (props) => {
         if(e.target.checked){
             setShowPcrLabDetail(true)
         }else{
+            tests.pcrLabName="" 
+            tests.pcrLabSampleNumber=""
+            tests.sampleLoggedRemotely=""
+            tests.dateSampleLoggedRemotely=""
+            tests.dateSampleLoggedRemotely=""
+            tests.dateReceivedAtPcrLab="" 
+            tests.checkedBy="" 
+            tests.dateCheckedBy="" 
+            tests.approvedBy=""
+            tests.dateApproved=""
             setShowPcrLabDetail(false)
         }
     }
@@ -670,7 +696,7 @@ const Laboratory = (props) => {
                                         <span className={classes.error}>{errors.dateAssayedBy}</span>
                                     ) : "" }
                                 </FormGroup>
-                            </Col>
+                            </Col> 
                             <Col md={6} className="form-group mb-3">
                                 <FormGroup>
                                     <Label for="encounterDate">Date Result Received <span style={{ color:"red"}}> *</span></Label>
@@ -690,7 +716,7 @@ const Laboratory = (props) => {
                                         <span className={classes.error}>{errors.dateResultReceived}</span>
                                     ) : "" }
                                 </FormGroup>
-                            </Col>
+                            </Col> 
                             <Col md={6} className="form-group mb-3">
                                 <FormGroup>
                                     <Label for="priority">Result <span style={{ color:"red"}}> *</span></Label>
@@ -805,7 +831,7 @@ const Laboratory = (props) => {
                    
                    
                     <Col md={6} className="form-group mb-3">
-                        <FormGroup>
+                        <FormGroup>  
                             <Label for="encounterDate">Sample logged remotely </Label>
                             <Input
                                 type="select"
@@ -822,7 +848,7 @@ const Laboratory = (props) => {
                                 <option value="0">No </option>
                             </Input>
                         </FormGroup>
-                    </Col>
+                    </Col> 
                     {tests.sampleLoggedRemotely ==='1' && (
                     <Col md={6} className="form-group mb-3">
                         <FormGroup>
@@ -864,7 +890,7 @@ const Laboratory = (props) => {
                             ) : "" }
                         </FormGroup>
                     </Col>
-
+                    
                     <Col md={6} className="form-group mb-3">
                         <FormGroup>
                             <Label for="encounterDate">Checked by <span style={{ color:"red"}}> *</span></Label>

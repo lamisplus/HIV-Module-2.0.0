@@ -263,6 +263,15 @@ const CervicalCancer = (props) => {
 
     const handleInputChange = e => {
         setObjValues ({...objValues,  [e.target.name]: e.target.value});
+        if(e.target.name==='screeningResult' && e.target.value!=='CERVICAL_CANCER_RESULT_POSITIVE'){
+            objValues.screeningArea=""
+            objValues.screeningVisible=""
+            setObjValues ({...objValues,  ["screeningArea"]: " " });
+            setObjValues ({...objValues,  ["screeningVisible"]: " " });
+            setObjValues ({...objValues,  [e.target.name]: e.target.value});
+        }
+        //objValues.screeningResult ==='CERVICAL_CANCER_RESULT_POSITIVE'
+        //screeningArea screeningVisible
     }
 
     //FORM VALIDATION
@@ -459,7 +468,7 @@ const CervicalCancer = (props) => {
                             </div>
                             <div className="form-group mb-3 col-md-6">
                             <FormGroup>
-                            <Label >New Squamocolumnar junction visible <span style={{ color:"red"}}> *</span></Label>
+                            <Label >New Squamocolumnar junction visible </Label>
                             <Input
                                 type="select"
                                 name="screeningVisible"
@@ -482,7 +491,7 @@ const CervicalCancer = (props) => {
                             </FormGroup>
                             </div>
                             </>
-                            )}
+                            )} 
                             <div className="form-group mb-3 col-md-6">
                                 <FormGroup>
                                 <Label >Gross Cervical Lesions seen </Label>

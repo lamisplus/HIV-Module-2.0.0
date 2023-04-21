@@ -280,18 +280,25 @@ const CervicalCancer = (props) => {
     }
     const handleInputChange = e => {
         setObjValues ({...objValues,  [e.target.name]: e.target.value});
+        if(e.target.name==='screeningResult' && e.target.value!=='CERVICAL_CANCER_RESULT_POSITIVE'){
+            objValues.screeningArea=""
+            objValues.screeningVisible=""
+            setObjValues ({...objValues,  ["screeningArea"]: " " });
+            setObjValues ({...objValues,  ["screeningVisible"]: " " });
+            setObjValues ({...objValues,  [e.target.name]: e.target.value});
+        }
     }
 
     //FORM VALIDATION
-    const validate = () => {
-        let temp = { ...errors }
-        //temp.name = details.name ? "" : "This field is required"
-        //temp.description = details.description ? "" : "This field is required"
-        setErrors({
-            ...temp
-            })    
-        return Object.values(temp).every(x => x == "")
-    }
+    // const validate = () => {
+    //     let temp = { ...errors }
+    //     //temp.name = details.name ? "" : "This field is required"
+    //     //temp.description = details.description ? "" : "This field is required"
+    //     setErrors({
+    //         ...temp
+    //         })    
+    //     return Object.values(temp).every(x => x == "")
+    // }
         
     /**** Submit Button Processing  */
     const handleSubmit = (e) => {                  
