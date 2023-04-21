@@ -210,8 +210,7 @@ const Eligibility = (props) => {
                         </InputGroup>
                         </FormGroup>
                     </div> 
-                    </div>
-                    <div className="row">
+
                     <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label >ART Status</Label>
@@ -258,8 +257,7 @@ const Eligibility = (props) => {
                         
                             </FormGroup>
                      </div>  
-                     <div className="form-group mb-3 col-md-6"></div>
-                     <div className="form-group mb-3 col-md-4">
+                     <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label >Last CD4 Result</Label>
                             <InputGroup> 
@@ -273,7 +271,7 @@ const Eligibility = (props) => {
                         
                             </FormGroup>
                      </div>
-                     <div className="form-group mb-3 col-md-4">
+                     <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label >Last CD4 Result Date</Label>
                             <InputGroup> 
@@ -289,7 +287,7 @@ const Eligibility = (props) => {
                             </FormGroup>
                      </div>
                      
-                     <div className="form-group mb-3 col-md-4">
+                     <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label >Last Viral Load Result</Label>
                             <InputGroup> 
@@ -302,7 +300,7 @@ const Eligibility = (props) => {
                             </InputGroup>
                             </FormGroup>
                      </div>
-                     <div className="form-group mb-3 col-md-4">
+                     <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label >Last Viral Load Result Date</Label>
                             <InputGroup> 
@@ -317,7 +315,7 @@ const Eligibility = (props) => {
                         
                             </FormGroup>
                      </div>
-                     <div className="form-group mb-3 col-md-4">
+                     <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label >Eligible for Viral Load</Label>
                             <InputGroup> 
