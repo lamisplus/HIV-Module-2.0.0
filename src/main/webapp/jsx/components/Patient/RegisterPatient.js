@@ -395,6 +395,10 @@ const UserRegistration = (props) => {
         //manupulate inpute fields base on gender/sex 
         if(e.target.name==='sexId' && e.target.value==='377') {
             setfemaleStatus(true)
+
+        }else{
+            objValues.pregnancyStatusId=""
+            objValues.dateOfLpm=""
         } 
         if(e.target.name==='firstName' && e.target.value!==''){
             const name = alphabetOnly(e.target.value)
@@ -434,6 +438,7 @@ const UserRegistration = (props) => {
         } 
                 
     } 
+
     //Function to show relatives 
     const handleAddRelative = () => {
         setShowRelative(true);
@@ -734,18 +739,23 @@ const UserRegistration = (props) => {
         if(e.target.name ==="entryPointId" ){
             if(e.target.value==="21"){
                 setTransferIn(true)
+                setObjValues ({...objValues,  [e.target.name]: e.target.value});
             }else{
                 setTransferIn(false)
+                objValues.facilityName=""// make the value empty
+                //setObjValues ({...objValues,  ['facilityName']: ""});
+                setObjValues ({...objValues,  [e.target.name]: e.target.value});
             }
-        }
-        // if(e.target.name ==="pregnancyStatusId" ){
-        //     console.log(e.target.value)
-        //     if(e.target.value==="72"){
-        //         setTransferIn(true)
-        //     }else{
-        //         setTransferIn(false)
-        //     }
-        // }                
+            if(e.target.value==="24"){
+                setTransferIn(true)
+                setObjValues ({...objValues,  [e.target.name]: e.target.value});
+            }else{
+                setTransferIn(false)
+                objValues.careEntryPointOther=""// make the value empty
+                //setObjValues ({...objValues,  ['facilityName']: ""});
+                setObjValues ({...objValues,  [e.target.name]: e.target.value});
+            }
+        }               
     }    
     
     const checkPhoneNumber=(e, inputName)=>{
@@ -767,13 +777,22 @@ const UserRegistration = (props) => {
     const handleCheckBox =e =>{
         if(e.target.checked){
             setOvcEnrolled(true)
-        }else{
+        }else{//Clear value
+            objValues.ovc_enrolled=""
+            objValues.ovcNumber=""
+            objValues.householdNumber=""
+            objValues.referredToOVCPartner=""
+            objValues.dateReferredToOVCPartner=""
+            objValues.referredFromOVCPartner=""
+            objValues.dateReferredFromOVCPartner=""
+            objValues.ovcUniqueId=""
             setOvcEnrolled(false)
         }
     }
     const handleCancel =()=>{
         history.push({ pathname: '/' });
     }
+
 
     return (
         <>
@@ -1627,7 +1646,7 @@ const UserRegistration = (props) => {
                                 </FormGroup>
                                 
                                 </div>
-
+                               
                                 <div className="form-group mb-3 col-md-6">
                                 {objValues.entryPointId==='21' ? 
                                     (
@@ -1643,6 +1662,7 @@ const UserRegistration = (props) => {
                                         />
                                         </FormGroup>
                                     ):""}
+                                    
                                     {objValues.entryPointId==="24" ? 
                                     (
                                         <FormGroup>
