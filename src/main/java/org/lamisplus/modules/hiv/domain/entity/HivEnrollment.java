@@ -58,7 +58,7 @@ public class HivEnrollment extends HivAuditEntity implements Persistable<Long>, 
     @Column(name = "status_at_registration_id")
     private Long statusAtRegistrationId;
     @Column(name = "enrollment_setting_id")
-    @NonNull
+
     private Long enrollmentSettingId;
     @Column(name = "date_started")
     @Convert(converter = LocalDateConverter.class)
