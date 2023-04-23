@@ -94,4 +94,17 @@
         </sql>
     </changeSet>
 
+    <changeSet failOnError="true"  id="20230421-011" author="amos-data-fi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM information_schema.columns
+                WHERE table_name = 'hiv_eac_out_come' AND column_name = 'uuid';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+        -- update uuid column on hiv_eac_out_come table with unique values
+            UPDATE hiv_eac_out_come SET uuid=CONCAT(id, eac_id, id);
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

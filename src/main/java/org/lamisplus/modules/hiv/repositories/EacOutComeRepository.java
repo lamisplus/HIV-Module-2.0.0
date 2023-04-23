@@ -1,6 +1,5 @@
 package org.lamisplus.modules.hiv.repositories;
 
-import org.lamisplus.modules.hiv.domain.entity.ArtPharmacy;
 import org.lamisplus.modules.hiv.domain.entity.EacOutCome;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,5 +17,5 @@ public interface EacOutComeRepository extends JpaRepository<EacOutCome, Long> {
     )
     List<EacOutCome> getAllDueForServerUpload(LocalDateTime dateLastSync, Long facilityId);
 
-    //Optional<EacOutCome> findByUuid(String uuid);
+    Optional<EacOutCome> findByUuid(String uuid);
 }

@@ -1,6 +1,7 @@
 package org.lamisplus.modules.hiv.service;
 
 
+import com.mysema.commons.lang.Assert;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
@@ -95,9 +96,9 @@ public class StatusManagementService {
 	
 	@Nullable
 	private HIVInterQuarterStatus getClientInternalStatusInQuarter(String personUuid, LocalDate quarterEnd) {
-		Optional<HIVStatusTracker> statusPreviousQuarter = hivStatusTrackerRepository
+		Optional<HIVStatusTracker> patientNegativeStatus = hivStatusTrackerRepository
 				.getStatusByPersonUuidAndDateRange(personUuid, quarterEnd);
-		if (statusPreviousQuarter.isPresent()) {
+		if (patientNegativeStatus.isPresent()) {
 			List<String> staticStatus =
 					Arrays.asList("ART_TRANSFER_OUT",
 							"ART Transfer Out",
@@ -112,13 +113,18 @@ public class StatusManagementService {
 							"Invalid-Duplicates",
 							"Invalid-Biometrical Naive"
 					);
-			String hivStatus = statusPreviousQuarter.get().getHivStatus();
+			String hivStatus = patientNegativeStatus.get().getHivStatus();
 			log.info("HivStatus: {}", hivStatus);
 			if (staticStatus.contains(hivStatus)) {
 				String finalStatus = hivStatus.replaceAll("_", " ").toUpperCase();
+				log.info("HivStatus1: {}", finalStatus);
 				if(finalStatus.contains("DEATH") || finalStatus.contains("Died")) finalStatus = "DIED";
-				return new HIVInterQuarterStatus(statusPreviousQuarter.get().getStatusDate(), finalStatus);
+				log.info("HivStatus2: {}", finalStatus);
+				return new HIVInterQuarterStatus(patientNegativeStatus.get().getStatusDate(), finalStatus);
 			}
+			String message = Assert.notNull(hivStatus, "HivStatus cannot null");
+			log.info("Negative HivStatus: {}", message);
+			return new HIVInterQuarterStatus(patientNegativeStatus.get().getStatusDate(),hivStatus.replaceAll("_", " ").toUpperCase());
 		}
 		Optional<ArtPharmacy> currentRefillInQuarter = pharmacyRepository
 				.getCurrentPharmacyRefillWithDateRange(personUuid, quarterEnd);
@@ -177,7 +183,9 @@ public class StatusManagementService {
 //		if (isActiveTransferIn(clientPreviousInternalQuarterStatus, clientCurrentInternalQuarterStatus, enrollmentStatus)) {
 //			return new HIVStatusDisplay(clientCurrentInternalQuarterStatus.getDate(), "ACTIVE TRANSFER IN", currentQuarter.getEnd());
 //		}
-		return new HIVStatusDisplay(clientCurrentInternalQuarterStatus.getDate(), clientCurrentInternalQuarterStatus.getDescription(), currentQuarter.getEnd());
+		return new HIVStatusDisplay(clientCurrentInternalQuarterStatus.getDate(),
+				clientCurrentInternalQuarterStatus.getDescription(),
+				currentQuarter.getEnd());
 		
 	}
 	
