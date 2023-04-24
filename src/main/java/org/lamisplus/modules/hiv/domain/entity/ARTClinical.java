@@ -150,6 +150,10 @@ public class ARTClinical extends HivAuditEntity implements Serializable, Persist
 	
 	@Column(name = "pregnancy_status")
 	private String  pregnancyStatus;
+	@Column(name = "cd4_type")
+	private String  cd4Type;
+	
+	
 	
 	@Override
 	public boolean isNew() {

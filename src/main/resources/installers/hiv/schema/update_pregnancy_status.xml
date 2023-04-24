@@ -107,4 +107,18 @@
         </sql>
     </changeSet>
 
+    <changeSet failOnError="true"  id="20230424-012" author="amos-data-fi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM information_schema.columns
+                WHERE table_name = 'hiv_art_clinical' AND column_name = 'cd4_type';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            ALTER TABLE hiv_art_clinical
+                ADD COLUMN cd4_type varchar(100);
+
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
