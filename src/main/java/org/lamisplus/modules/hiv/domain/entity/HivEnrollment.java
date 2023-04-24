@@ -27,7 +27,6 @@ public class HivEnrollment extends HivAuditEntity implements Persistable<Long>, 
     @Column(name = "id", nullable = false)
     private Long id;
     @Column(name = "unique_id")
-    @NonNull
     private String uniqueId;
     @Column(name = "entry_point_id")
     private Long entryPointId;
