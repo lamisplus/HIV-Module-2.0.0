@@ -152,7 +152,7 @@ const ChronicCare = (props) => {
     //Reproductive Object
     const [reproductive, setReproductive] = useState({cervicalCancer:"", pregnantWithinNextYear:"",contraceptive:""});
     //TPT object 
-    const [tpt, setTpt] = useState({ date:"",weight:"", referredForServices:"", adherence:"", rash:"", neurologicSymptoms:"", hepatitisSymptoms:"",tbSymptoms:"",resonForStoppingIpt:"", outComeOfIpt:""});
+    const [tpt, setTpt] = useState({ date:null,weight:"", referredForServices:"", adherence:"", rash:"", neurologicSymptoms:"", hepatitisSymptoms:"",tbSymptoms:"",resonForStoppingIpt:"", outComeOfIpt:""});
     const [tbObj, setTbObj] = useState({//TB and IPT Screening Object
             currentlyOnTuberculosis:"", 
             tbTreatment:"", 
@@ -271,9 +271,14 @@ const ChronicCare = (props) => {
         observationObj.tbIptScreening=tbObj
         observationObj.tptMonitoring=tpt
         observation.data =observationObj
+        if(tpt.outComeOfIpt!=="" && tpt.date===""){
+            toast.error("IPT OutCome Date is required", {position: toast.POSITION.BOTTOM_CENTER});
+            setSaving(false);
+            return;
+        }
         if(validate()){
             if(props.activeContent && props.activeContent.actionType==="update"){//Perform operation for updation action)
-                axios.put(`${baseUrl}observation`,observation,
+                axios.put(`${baseUrl}observation/${props.activeContent.id}`,observation,
                 { headers: {"Authorization" : `Bearer ${token}`}},
                 
                 )
