@@ -104,10 +104,10 @@ public class StatusManagementService {
 						"Stopped Treatment",
 						"Interruption in Treatment",
 						"Interruption in Treatment",
-						"Invalid-NonExistent",
-						"Invalid–Long-term IIT",
-						"Invalid-Duplicates",
-						"Invalid-Biometrical Naive"
+						"Invalid - Nonexistent",
+						"Invalid – Long-term IIT",
+						"Invalid - Duplicates",
+						"Invalid - Biometrical Naive"
 				);
 		Optional<HIVStatusTracker> patientNegativeStatus = hivStatusTrackerRepository
 				.getStatusByPersonUuidAndDateRange(personUuid, quarterEnd);

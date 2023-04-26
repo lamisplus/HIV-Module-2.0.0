@@ -68,7 +68,7 @@ public class ObservationService {
             JsonNode tptMonitoring = observationDto.getData().get("tptMonitoring");
             JsonNode iptCompletionDate = tptMonitoring.get("date");
             JsonNode outComeOfIpt = tptMonitoring.get("outComeOfIpt");
-            if( outComeOfIpt != null || iptCompletionDate != null){
+            if( (outComeOfIpt != null && !outComeOfIpt.isEmpty() ) || (iptCompletionDate != null && !iptCompletionDate.asText().isEmpty()) ){
                 StringBuilder dateIptCompleted = new StringBuilder();
                 StringBuilder iptCompletionStatus = new StringBuilder();
                 
@@ -107,6 +107,7 @@ public class ObservationService {
         existingObservation.setType (observationDto.getType ());
         existingObservation.setDateOfObservation (observationDto.getDateOfObservation ());
         existingObservation.setData (observationDto.getData ());
+        processAndUpdateIptFromPharmacy(observationDto, existingObservation.getPerson());
         Observation saveObservation = observationRepository.save (existingObservation);
         observationDto.setId (saveObservation.getId ());
         observationDto.setFacilityId (saveObservation.getFacilityId ());
