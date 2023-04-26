@@ -97,7 +97,7 @@ const BasicInfo = (props) => {
     const history = useHistory();
     const [errors, setErrors] = useState({});
     useEffect(() => { 
-        console.log(props.observation.data)
+        
         if(props.observation.data ){
             setPlan(props.observation.data.plan) 
             setPlanArt(props.observation.data.planArt)            
