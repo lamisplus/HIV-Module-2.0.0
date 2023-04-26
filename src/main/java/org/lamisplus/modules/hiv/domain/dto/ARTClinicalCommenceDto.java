@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import org.lamisplus.modules.hiv.utility.LocalDateConverter;
 import org.lamisplus.modules.triage.domain.dto.VitalSignRequestDto;
 
-import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
@@ -60,6 +59,7 @@ public class ARTClinicalCommenceDto implements Serializable {
     private String  cd4SemiQuantitative;
     private Integer  cd4FlowCytometry;
     private String  pregnancyStatus;
+    private String  cd4Type;
 
 
 }

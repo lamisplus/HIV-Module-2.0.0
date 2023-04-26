@@ -1,7 +1,6 @@
 package org.lamisplus.modules.hiv.service;
 
 
-import com.mysema.commons.lang.Assert;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
@@ -96,35 +95,31 @@ public class StatusManagementService {
 	
 	@Nullable
 	private HIVInterQuarterStatus getClientInternalStatusInQuarter(String personUuid, LocalDate quarterEnd) {
+		List<String> staticStatus =
+				Arrays.asList("ART_TRANSFER_OUT",
+						"ART Transfer Out",
+						"KNOWN_DEATH",
+						"Died (Confirmed)",
+						"STOPPED_TREATMENT",
+						"Stopped Treatment",
+						"Interruption in Treatment",
+						"Interruption in Treatment",
+						"Invalid - Nonexistent",
+						"Invalid – Long-term IIT",
+						"Invalid - Duplicates",
+						"Invalid - Biometrical Naive"
+				);
 		Optional<HIVStatusTracker> patientNegativeStatus = hivStatusTrackerRepository
 				.getStatusByPersonUuidAndDateRange(personUuid, quarterEnd);
-		if (patientNegativeStatus.isPresent()) {
-			List<String> staticStatus =
-					Arrays.asList("ART_TRANSFER_OUT",
-							"ART Transfer Out",
-							"KNOWN_DEATH",
-							"Died (Confirmed)",
-							"STOPPED_TREATMENT",
-							"Stopped Treatment",
-							"Interruption in Treatment",
-							"Interruption in Treatment",
-							"Invalid-Nonexistent",
-							"Invalid–Long-term IIT",
-							"Invalid-Duplicates",
-							"Invalid-Biometrical Naive"
-					);
+		patientNegativeStatus.ifPresent(statusTracker -> log.info("HivStatus: {}", statusTracker.getHivStatus()));
+		if (patientNegativeStatus.isPresent() && staticStatus.contains(patientNegativeStatus.get().getHivStatus())) {
 			String hivStatus = patientNegativeStatus.get().getHivStatus();
-			log.info("HivStatus: {}", hivStatus);
-			if (staticStatus.contains(hivStatus)) {
+			log.info("Negative HivStatus: {}", hivStatus);
 				String finalStatus = hivStatus.replaceAll("_", " ").toUpperCase();
 				log.info("HivStatus1: {}", finalStatus);
 				if(finalStatus.contains("DEATH") || finalStatus.contains("Died")) finalStatus = "DIED";
 				log.info("HivStatus2: {}", finalStatus);
 				return new HIVInterQuarterStatus(patientNegativeStatus.get().getStatusDate(), finalStatus);
-			}
-			String message = Assert.notNull(hivStatus, "HivStatus cannot null");
-			log.info("Negative HivStatus: {}", message);
-			return new HIVInterQuarterStatus(patientNegativeStatus.get().getStatusDate(),hivStatus.replaceAll("_", " ").toUpperCase());
 		}
 		Optional<ArtPharmacy> currentRefillInQuarter = pharmacyRepository
 				.getCurrentPharmacyRefillWithDateRange(personUuid, quarterEnd);
