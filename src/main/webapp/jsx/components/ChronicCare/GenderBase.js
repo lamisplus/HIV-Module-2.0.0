@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const BasicInfo = (props) => {
+const GenderBase = (props) => {
     
     const handleGenderBase =e =>{
         props.setGenderBase({...props.genderBase, [e.target.name]: e.target.value})        
@@ -152,4 +152,4 @@ return (
     );
 };
 
-export default BasicInfo
+export default GenderBase

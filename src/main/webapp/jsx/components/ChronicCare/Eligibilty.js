@@ -155,7 +155,23 @@ const Eligibility = (props) => {
             });
         
     }
-    
+    const calculate_age = dob => {
+        var today = new Date();
+        var dateParts = dob.split("-");
+        var dateObject = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+        var birthDate = new Date(dateObject); // create a date object directlyfrom`dob1`argument
+        var age_now = today.getFullYear() - birthDate.getFullYear();
+        var m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                    age_now--;
+                }
+            if (age_now === 0) {
+                    return m;
+                }
+                return age_now;
+      };
+      const patientAge=calculate_age(moment(props.patientObj.dateOfBirth).format("DD-MM-YYYY"));
+
     return (
         <>  
         
@@ -189,6 +205,7 @@ const Eligibility = (props) => {
                         </InputGroup>                    
                         </FormGroup>
                     </div>
+                    { patientAge>=10 && (props.patientObj.sex==='Female') && (
                     <div className="form-group mb-3 col-md-6">
                         <FormGroup>
                         <Label >Pregnancy/Breastfeeding Status</Label>
@@ -210,7 +227,7 @@ const Eligibility = (props) => {
                         </InputGroup>
                         </FormGroup>
                     </div> 
-
+                    )}
                     <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label >ART Status</Label>
@@ -280,6 +297,7 @@ const Eligibility = (props) => {
                                     name="lastCd4ResultDate"
                                     id="lastCd4ResultDate"
                                     value={props.eligibility.lastCd4ResultDate} 
+                                    min={props.encounterDate}
                                     max= {moment(new Date()).format("YYYY-MM-DD") }
                                 />
                             </InputGroup>
@@ -309,6 +327,7 @@ const Eligibility = (props) => {
                                     name="lastViralLoadResultDate"
                                     id="lastViralLoadResultDate"
                                     value={props.eligibility.lastViralLoadResultDate} 
+                                    min={props.encounterDate}
                                     max= {moment(new Date()).format("YYYY-MM-DD") }
                                 />
                             </InputGroup>
