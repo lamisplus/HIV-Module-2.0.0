@@ -64,34 +64,40 @@ public class ObservationService {
     
    
     private void processAndUpdateIptFromPharmacy(ObservationDto observationDto, Person person) {
+        log.info ("Processing and updating IPT from pharmacy....");
         if(observationDto.getType().equals("Chronic Care")){
             JsonNode tptMonitoring = observationDto.getData().get("tptMonitoring");
             JsonNode iptCompletionDate = tptMonitoring.get("date");
             JsonNode outComeOfIpt = tptMonitoring.get("outComeOfIpt");
+            log.info ("checking for IPT out come");
             if( (outComeOfIpt != null && !outComeOfIpt.isEmpty() ) || (iptCompletionDate != null && !iptCompletionDate.asText().isEmpty()) ){
+                log.info ("found for IPT out come");
                 StringBuilder dateIptCompleted = new StringBuilder();
                 StringBuilder iptCompletionStatus = new StringBuilder();
-                
+                log.info ("checking if IPT out come has a date");
                 if(iptCompletionDate != null ){
+                    log.info ("found for IPT out come date");
                     dateIptCompleted.append(iptCompletionDate.asText());
                 }
                 if(outComeOfIpt != null){
                     iptCompletionStatus.append(outComeOfIpt.asText());
                 }
+                log.info ("fetching current IPT from pharmacy");
                 Optional<ArtPharmacy> recentIPtPharmacy =
                         pharmacyRepository.getPharmacyIpt(person.getUuid());
                 if(recentIPtPharmacy.isPresent()){
+                    log.info ("found current IPT from pharmacy");
                     ArtPharmacy artPharmacy = recentIPtPharmacy.get();
                     JsonNode ipt = artPharmacy.getIpt();
                     ((ObjectNode) ipt).put("dateCompleted", dateIptCompleted.toString());
                     ((ObjectNode) ipt).put("completionStatus", iptCompletionStatus.toString());
                     artPharmacy.setIpt(ipt);
+                    log.info ("updating  current IPT from pharmacy");
                     pharmacyRepository.save(artPharmacy);
+                    log.info ("update was successful  current pharmacy affected uuid {}", artPharmacy.getUuid());
                 }
                 
             }
-            
-            System.out.println(""+ tptMonitoring);
         }
     }
     
