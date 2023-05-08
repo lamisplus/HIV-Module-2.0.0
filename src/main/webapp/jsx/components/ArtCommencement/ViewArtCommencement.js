@@ -239,6 +239,10 @@ const ArtCommencement = (props) => {
                 }
                 RegimenType(response.data.regimenTypeId)
                 setVitalSignDto(response.data.vitalSignDto)
+                if(response.data.clinicalStageId!==""){
+                    objValues.whoStagingId=response.data.clinicalStageId
+                    setObjValues({...objValues, whoStagingId:response.data.clinicalStageId})
+                }
            })
            .catch((error) => {
            //console.log(error);
@@ -252,7 +256,7 @@ const ArtCommencement = (props) => {
                { headers: {"Authorization" : `Bearer ${token}`} }
            )
            .then((response) => {
-               console.log(response.data);
+               //console.log(response.data);
                setClinicalStage(response.data);
            })
            .catch((error) => {
@@ -681,7 +685,7 @@ const ArtCommencement = (props) => {
                                 disabled={disabledField}
                                 >
                                     <option value=""> Select</option>
-                                    {patientAge && patientAge >5 &&  (
+                                    {patientAge && patientAge >15 &&  (
                                     <>
                                         {adultRegimenLine.map((value) => (
                                         <option key={value.id} value={value.id}>
@@ -690,7 +694,7 @@ const ArtCommencement = (props) => {
                                         ))}
                                     </>
                                     )}
-                                    {patientAge && patientAge <=5 &&  (
+                                    {patientAge && patientAge <=15 &&  (
                                     <>
                                         {childRegimenLine.map((value) => (
                                         <option key={value.id} value={value.id}>
@@ -795,7 +799,7 @@ const ArtCommencement = (props) => {
                                 type="select"
                                 name="whoStagingId"
                                 id="whoStagingId"
-                                value={objValues.clinicalStageId!==null ? objValues.clinicalStageId :  objValues.whoStagingId}
+                                value={objValues.whoStagingId}
                                 onChange={handleInputChange}
                                 max= {moment(new Date()).format("YYYY-MM-DD") }
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
