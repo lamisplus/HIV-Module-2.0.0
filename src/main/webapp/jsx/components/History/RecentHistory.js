@@ -391,7 +391,7 @@ const LoadDeletePage =(row)=>{
       //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
       //props.setActiveContent({...props.activeContent, route:'pharmacy', id:row.id, activeTab:"home", actionType:"update", obj:row})
       axios
-      .delete(`${baseUrl}art/pharmacy/${row.id}`,
+      .delete(`${baseUrl}hiv/art/pharmacy/${row.id}`,
           { headers: {"Authorization" : `Bearer ${token}`} }
       )
       .then((response) => {
@@ -401,6 +401,8 @@ const LoadDeletePage =(row)=>{
           setSaving(false)
       })
       .catch((error) => {
+          toggle()
+          setSaving(false)
           if(error.response && error.response.data){
               let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
               toast.error(errorMessage);
@@ -424,6 +426,7 @@ const LoadDeletePage =(row)=>{
           setSaving(false)
       })
       .catch((error) => {
+          setSaving(false)
           if(error.response && error.response.data){
               let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
               toast.error(errorMessage);
@@ -446,6 +449,7 @@ const LoadDeletePage =(row)=>{
         setSaving(false) 
     })
     .catch((error) => {
+      setSaving(false)
         if(error.response && error.response.data){
             let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
             toast.error(errorMessage);

@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const Eligibility = (props) => {
+const TPT = (props) => {
     const classes = useStyles();
     //const [errors, setErrors] = useState({});
     const [adherence, setAdherence] = useState([]);
@@ -111,7 +111,7 @@ const Eligibility = (props) => {
 
     //Handle CheckBox 
     const handleTpt =e =>{
-        //setErrors({...errors, [e.target.name]: ""})            
+        props.setErrors({...props.errors, [e.target.name]: ""})            
         props.setTpt({...props.tpt, [e.target.name]: e.target.value})
         //making the field to be empty once the selection logic is apply(skip logic) 
         if(e.target.name==='outComeOfIpt' && e.target.value===''){
@@ -121,230 +121,232 @@ const Eligibility = (props) => {
         }
     }
 
-
     return (
-        <>  
-        
+        <>         
             <Card className={classes.root}>
-                <CardBody>   
-                <h2 style={{color:'#000'}}>TPT Monitoring</h2>
-                <br/>
-                    <form >
-     
-                    <div className="row">
-                        
-                        <div className="form-group mb-3 col-md-6">
-                                <FormGroup>
-                                <Label >Weight</Label>
-                                <InputGroup> 
-                                    <Input 
-                                        type="text"
-                                        name="weight"
-                                        id="weight"
-                                        onChange={handleTpt} 
-                                        value={props.tpt.weight} 
-                                    ></Input>
-                                </InputGroup>                    
-                                </FormGroup>
-                        </div>
-                        <div className="form-group mb-3 col-md-6">
+            <CardBody>   
+            <h2 style={{color:'#000'}}>TPT Monitoring</h2>
+            <br/>
+                <form >
+    
+                <div className="row">
+                    
+                    <div className="form-group mb-3 col-md-6">
                             <FormGroup>
-                            <Label >TB Symptoms (cough, fever, night sweats, weight loss,contacts)</Label>
-                            <InputGroup> 
-                                <Input 
-                                    type="select"
-                                    name="tbSymptoms"
-                                    id="tbSymptoms"
-                                    onChange={handleTpt} 
-                                    value={props.tpt.pregnantStatus} 
-                                >
-                                <option value="">Select</option>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                                <option value="Uncertain">Uncertain</option>
-                                </Input>
-                            </InputGroup>
-                            </FormGroup>
-                        </div>  
-                        <div className="form-group mb-3 col-md-6">
-                            <FormGroup>
-                            <Label >Hepatitis Symptoms (Abdominal pain, nausea, vomiting, abnormal LFTs, Children: persistent irritability, yellowish
-                            urine and eyes)
-                            </Label>
-                            <InputGroup> 
-                                <Input 
-                                    type="select"
-                                    name="hepatitisSymptoms"
-                                    id="hepatitisSymptoms"
-                                    onChange={handleTpt} 
-                                    value={props.tpt.hepatitisSymptoms} 
-                                >
-                                <option value="">Select</option>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                                <option value="Uncertain">Uncertain</option>
-                                </Input>
-                            </InputGroup>
-                            </FormGroup>
-                        </div> 
-                        <div className="form-group mb-3 col-md-6">
-                            <FormGroup>
-                            <Label >Neurologic Symptoms (Numbness, tingling, paresthesias)
-                            </Label>
-                            <InputGroup> 
-                                <Input 
-                                    type="select"
-                                    name="neurologicSymptoms"
-                                    id="neurologicSymptoms"
-                                    onChange={handleTpt} 
-                                    value={props.tpt.neurologicSymptoms} 
-                                >
-                                <option value="">Select</option>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                                <option value="Uncertain">Uncertain</option>
-                                </Input>
-                            </InputGroup>
-                            </FormGroup>
-                        </div> 
-                        
-                        <div className="form-group mb-3 col-md-6">
-                            <FormGroup>
-                            <Label >Rash </Label>
-                            <InputGroup> 
-                                <Input 
-                                    type="select"
-                                    name="rash"
-                                    id="rash"
-                                    onChange={handleTpt} 
-                                    value={props.tpt.rash} 
-                                >
-                                <option value="">Select</option>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                                <option value="Uncertain">Uncertain</option>
-                                </Input>
-                            </InputGroup>
-                            </FormGroup>
-                        </div>
-                        <div className="form-group mb-3 col-md-6">
-                            <FormGroup>
-                            <Label >Adherence
-                                ( {">"} 80% doses = Good
-                                {"<"} 80% doses = bad
-                                )
-                            </Label>
-                            <InputGroup> 
-                                <Input 
-                                    type="select"
-                                    name="adherence"
-                                    id="adherence"
-                                    onChange={handleTpt} 
-                                    value={props.tpt.adherence} 
-                                >
-                                <option value="">Select</option>
-                                {adherence.map((value) => (
-                                        <option key={value.id} value={value.display}>
-                                            {value.display}
-                                        </option>
-                                    ))}
-                                </Input>
-                            </InputGroup>
-                            </FormGroup>
-                        </div>
-                        <div className="form-group mb-3 col-md-6">
-                            <FormGroup>
-                            <Label >Referred for further services</Label>
-                            <InputGroup> 
-                                <Input 
-                                    type="select"
-                                    name="referredForServices"
-                                    id="referredForServices"
-                                    onChange={handleTpt} 
-                                    value={props.tpt.referredForServices} 
-                                >
-                                <option value="">Select</option>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                                <option value="Uncertain">Uncertain</option>
-                                </Input>
-                            </InputGroup>
-                            </FormGroup>
-                        </div> 
-                        <div className="form-group mb-3 col-md-6">
-                            <FormGroup>
-                            <Label >Outcome of IPT  
-                            </Label>
-                            <InputGroup> 
-                                <Input 
-                                    type="select"
-                                    name="outComeOfIpt"
-                                    id="outComeOfIpt"
-                                    onChange={handleTpt} 
-                                    value={props.tpt.outComeOfIpt} 
-                                >
-                                <option value="">Select</option>
-                                <option value="IPT Completed">IPT Completed</option>
-                                <option value="Developed active TB">Developed active TB</option>
-                                <option value="Died">Died </option>
-                                <option value="Transferred out">Transferred out </option>
-                                <option value="Stopped IPT">Stopped IPT</option>
-                                <option value="Lost to follow up">Lost to follow up </option>
-                                </Input>
-                            </InputGroup>
-                            </FormGroup>
-                        </div>
-                        {props.tpt.outComeOfIpt!=="" && (
-                        <div className="form-group mb-3 col-md-4">
-                                    <FormGroup>
-                                    <Label >Outcome Date </Label>
-                                    <InputGroup> 
-                                    <Input
-                                    type="date"
-                                    name="date"
-                                    id="date"
-                                    value={props.tpt.date}
-                                    onChange={handleTpt}
-                                    style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                                    max= {moment(new Date()).format("YYYY-MM-DD") }
-                                    
-                                    > 
-                                </Input>
-                               
-                            </InputGroup>                                        
-                            </FormGroup>   
-                        </div>
-                        )} 
-                        {props.tpt.outComeOfIpt==="Stopped IPT" && (
-                        <div className="form-group mb-3 col-md-6">
-                            <FormGroup>
-                            <Label >Reasons for stopping IPT  
-                            </Label>
+                            <Label >Weight</Label>
                             <InputGroup> 
                                 <Input 
                                     type="text"
-                                    name="resonForStoppingIpt"
-                                    id="resonForStoppingIpt"
+                                    name="weight"
+                                    id="weight"
                                     onChange={handleTpt} 
-                                    value={props.tpt.resonForStoppingIpt} 
-                                >
-                                <option value="">Select</option>
-                                <option value="Developed symptoms of hepatitis">Developed symptoms of hepatitis</option>
-                                </Input>
-                            </InputGroup>
+                                    value={props.tpt.weight} 
+                                ></Input>
+                            </InputGroup>                    
                             </FormGroup>
-                        </div>
-                        )} 
                     </div>
+                    <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                        <Label >TB Symptoms (cough, fever, night sweats, weight loss,contacts)</Label>
+                        <InputGroup> 
+                            <Input 
+                                type="select"
+                                name="tbSymptoms"
+                                id="tbSymptoms"
+                                onChange={handleTpt} 
+                                value={props.tpt.pregnantStatus} 
+                            >
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="Uncertain">Uncertain</option>
+                            </Input>
+                        </InputGroup>
+                        </FormGroup>
+                    </div>  
+                    <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                        <Label >Hepatitis Symptoms (Abdominal pain, nausea, vomiting, abnormal LFTs, Children: persistent irritability, yellowish
+                        urine and eyes)
+                        </Label>
+                        <InputGroup> 
+                            <Input 
+                                type="select"
+                                name="hepatitisSymptoms"
+                                id="hepatitisSymptoms"
+                                onChange={handleTpt} 
+                                value={props.tpt.hepatitisSymptoms} 
+                            >
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="Uncertain">Uncertain</option>
+                            </Input>
+                        </InputGroup>
+                        </FormGroup>
+                    </div> 
+                    <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                        <Label >Neurologic Symptoms (Numbness, tingling, paresthesias)
+                        </Label>
+                        <InputGroup> 
+                            <Input 
+                                type="select"
+                                name="neurologicSymptoms"
+                                id="neurologicSymptoms"
+                                onChange={handleTpt} 
+                                value={props.tpt.neurologicSymptoms} 
+                            >
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="Uncertain">Uncertain</option>
+                            </Input>
+                        </InputGroup>
+                        </FormGroup>
+                    </div> 
                     
-                    
-                    </form>
-                    
-                </CardBody>
-            </Card> 
-                                     
+                    <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                        <Label >Rash </Label>
+                        <InputGroup> 
+                            <Input 
+                                type="select"
+                                name="rash"
+                                id="rash"
+                                onChange={handleTpt} 
+                                value={props.tpt.rash} 
+                            >
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="Uncertain">Uncertain</option>
+                            </Input>
+                        </InputGroup>
+                        </FormGroup>
+                    </div>
+                    <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                        <Label >Adherence
+                            ( {">"} 80% doses = Good
+                            {"<"} 80% doses = bad
+                            )
+                        </Label>
+                        <InputGroup> 
+                            <Input 
+                                type="select"
+                                name="adherence"
+                                id="adherence"
+                                onChange={handleTpt} 
+                                value={props.tpt.adherence} 
+                            >
+                            <option value="">Select</option>
+                            {adherence.map((value) => (
+                                    <option key={value.id} value={value.display}>
+                                        {value.display}
+                                    </option>
+                                ))}
+                            </Input>
+                        </InputGroup>
+                        </FormGroup>
+                    </div>
+                    <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                        <Label >Referred for further services</Label>
+                        <InputGroup> 
+                            <Input 
+                                type="select"
+                                name="referredForServices"
+                                id="referredForServices"
+                                onChange={handleTpt} 
+                                value={props.tpt.referredForServices} 
+                            >
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                            <option value="Uncertain">Uncertain</option>
+                            </Input>
+                        </InputGroup>
+                        </FormGroup>
+                    </div> 
+                    <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                        <Label >Outcome of IPT  
+                        </Label>
+                        <InputGroup> 
+                            <Input 
+                                type="select"
+                                name="outComeOfIpt"
+                                id="outComeOfIpt"
+                                onChange={handleTpt} 
+                                value={props.tpt.outComeOfIpt} 
+                            >
+                            <option value="">Select</option>
+                            <option value="IPT Completed">IPT Completed</option>
+                            <option value="Developed active TB">Developed active TB</option>
+                            <option value="Died">Died </option>
+                            <option value="Transferred out">Transferred out </option>
+                            <option value="Stopped IPT">Stopped IPT</option>
+                            <option value="Lost to follow up">Lost to follow up </option>
+                            </Input>
+                        </InputGroup>
+                        </FormGroup>
+                    </div>
+                    {props.tpt.outComeOfIpt!=="" && (
+                    <div className="form-group mb-3 col-md-4">
+                                <FormGroup>
+                                <Label >Outcome Date </Label>
+                                <InputGroup> 
+                                <Input
+                                type="date"
+                                name="date"
+                                id="date"
+                                value={props.tpt.date}
+                                onChange={handleTpt}
+                                style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                                min={props.encounterDate}
+                                max= {moment(new Date()).format("YYYY-MM-DD") }
+                                
+                                > 
+                                
+                            </Input>
+                            
+                        </InputGroup>                                        
+                        </FormGroup> 
+                        {props.errors.outcomeDate !=="" ? (
+                            <span className={classes.error}>{props.errors.outcomeDate}</span>
+                            ) : "" }   
+                    </div>
+                    )} 
+                    {props.tpt.outComeOfIpt==="Stopped IPT" && (
+                    <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                        <Label >Reasons for stopping IPT  
+                        </Label>
+                        <InputGroup> 
+                            <Input 
+                                type="text"
+                                name="resonForStoppingIpt"
+                                id="resonForStoppingIpt"
+                                onChange={handleTpt} 
+                                value={props.tpt.resonForStoppingIpt} 
+                            >
+                            <option value="">Select</option>
+                            <option value="Developed symptoms of hepatitis">Developed symptoms of hepatitis</option>
+                            </Input>
+                        </InputGroup>
+                        </FormGroup>
+                    </div>
+                    )} 
+                </div>
+                
+                
+                </form>
+                
+            </CardBody>
+            </Card>                             
         </>
     );
 };
 
-export default Eligibility
+export default TPT
