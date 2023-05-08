@@ -130,7 +130,7 @@ const Patients = (props) => {
                     field: "name",
                     hidden:showPPI
                     },
-                    { title: "Hospital Number", field: "hospital_number", filtering: false },
+                    { title: "Unique ID", field: "uniqueId", filtering: false },
                     { title: "Sex", field: "sex", filtering: false },
                     { title: "Age", field: "age", filtering: false },
                     //{ title: "Enrollment Status", field: "v_status", filtering: false },
@@ -174,7 +174,7 @@ const Patients = (props) => {
                                             </Link>
                                             </>
                                         ),
-                                    hospital_number: row.hospitalNumber,
+                                    uniqueId: row.uniqueId,
                                     sex: row.sex,
                                     age: row.age,
                                     

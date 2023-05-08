@@ -123,8 +123,8 @@ const MedicalHistory = (props) => {
            )
            .then((response) => {
                const patientDTO= response.data.enrollment
-               setEnrollDate (patientDTO.dateOfRegistration)
-               //
+               setEnrollDate(patientDTO.entryPointId===21 ? patientDTO.dateConfirmedHiv : patientDTO.dateOfRegistration)
+               //setEnrollDate (patientDTO.dateOfRegistration)
            })
            .catch((error) => {
            //console.log(error);
