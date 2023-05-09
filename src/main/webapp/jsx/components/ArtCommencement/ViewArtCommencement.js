@@ -92,9 +92,7 @@ const ArtCommencement = (props) => {
     //let history = useHistory();
     //console.log(props.activeContent.id)
     let gender=""
-    const enrollementObj = patientObj && patientObj.enrollment ? patientObj.enrollment : null
-    const enrollDate = enrollementObj && enrollementObj.entryPointId===21 ? enrollementObj.dateConfirmedHiv : enrollementObj.dateOfRegistration
-    console.log(enrollDate)
+    const [enrollDate, setEnrollDate] = useState("");
     const [dropdownOpen, setDropdownOpen] = React.useState(false);
     const [splitButtonOpen, setSplitButtonOpen] = React.useState(false);
     const toggleDropDown = () => setDropdownOpen(!dropdownOpen);
@@ -192,24 +190,37 @@ const ArtCommencement = (props) => {
         GetARTCommencement();
         AdultRegimenLine();
         ChildRegimenLineObj();
+        PatientCurrentObject();
         if(props.activeContent && props.activeContent.actionType==='view'){
             setDisabledField(true)
         }
         gender =props.patientObj.gender && props.patientObj.gender.display ? props.patientObj.gender.display : null
-        }, [props.activeContent.id]);
-        //GET AdultRegimenLine 
-        const AdultRegimenLine =()=>{
+    }, [props.activeContent.id]);
+    //GET  Patients
+    async function PatientCurrentObject() {
         axios
-            .get(`${baseUrl}hiv/regimen/arv/adult`,
-                { headers: {"Authorization" : `Bearer ${token}`} }
+            .get(`${baseUrl}hiv/patient/${props.patientObj.id}`,
+            { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                const artRegimen=response.data.filter((x)=> (x.id===1 || x.id===2 || x.id===14))
-                setAdultRegimenLine(artRegimen);
+                setEnrollDate(response.data.enrollment.entryPointId===21 ? response.data.enrollment.dateConfirmedHiv : response.data.enrollment.dateOfRegistration)
             })
-            .catch((error) => {
-            //console.log(error);
+            .catch((error) => {  
             });        
+    }
+    //GET AdultRegimenLine 
+    const AdultRegimenLine =()=>{
+    axios
+    .get(`${baseUrl}hiv/regimen/arv/adult`,
+        { headers: {"Authorization" : `Bearer ${token}`} }
+    )
+    .then((response) => {
+        const artRegimen=response.data.filter((x)=> (x.id===1 || x.id===2 || x.id===14))
+        setAdultRegimenLine(artRegimen);
+    })
+    .catch((error) => {
+    //console.log(error);
+    });        
     }
     //GET ChildRegimenLine 
     const ChildRegimenLineObj =()=>{
