@@ -2,6 +2,7 @@ package org.lamisplus.modules.hiv.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.audit4j.core.util.Log;
 import org.lamisplus.modules.patient.domain.dto.PersonResponseDto;
 import org.lamisplus.modules.patient.domain.entity.Encounter;
 import org.lamisplus.modules.patient.domain.entity.Person;
@@ -14,6 +15,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -74,13 +76,16 @@ public class HandleHIVVisitEncounter {
 	}
 	
 	private void createHivVisitEncounter(Optional<Person> personOptional, Visit visit) {
-		//Log.info("creating Encounter visit Id {}", visit.getId());
+		Log.info("creating Encounter visit Id {}", visit.getId());
 		Encounter encounter = new Encounter();
 		encounter.setVisit(visit);
 		encounter.setArchived(0);
 		encounter.setPerson(visit.getPerson());
 		encounter.setUuid(UUID.randomUUID().toString());
-		encounter.setEncounterDate(visit.getVisitStartDate().plusMinutes(2));
+		LocalDateTime visitStartDate = visit.getVisitStartDate();
+		log.info("visitStartDate1 {}", visitStartDate);
+		log.info("visitStartDate2 {}", visitStartDate.plusMinutes(2));
+		encounter.setEncounterDate(visitStartDate.plusMinutes(2));
 		encounter.setServiceCode("hiv-code");
 		personOptional.ifPresent(encounter::setPerson);
 		encounter.setStatus("PENDING");

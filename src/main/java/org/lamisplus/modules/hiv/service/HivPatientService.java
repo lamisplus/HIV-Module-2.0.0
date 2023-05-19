@@ -1,6 +1,7 @@
 package org.lamisplus.modules.hiv.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.audit4j.core.util.Log;
 import org.jetbrains.annotations.NotNull;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class HivPatientService {
     private final ARTClinicalRepository artClinicalRepository;
 
@@ -126,6 +128,34 @@ public class HivPatientService {
         }
         Page<PatientProjection> persons = enrollmentRepository.getEnrolledPatientsByFacility(facilityId, pageable);
         return getPageDTO(persons);
+    }
+    
+    public  List<PatientDTO> getHivEnrolledNonBiometricPatients(Long facilityId) {
+        List<PatientDTO> nonBiometricPatients  = new ArrayList<PatientDTO>();
+        log.info("start fetching non biometric patients records ...");
+        try {
+            HashSet<String> negativeStatusTable = getNegativeStatusTable();
+             nonBiometricPatients = enrollmentRepository.getEnrolledPatientsByFacilityMobile(facilityId)
+                    .stream()
+                    .map(this::getPatientDTOBuild)
+                    .filter(p -> !(negativeStatusTable.contains(p.getCurrentStatus())))
+                    .collect(Collectors.toList());
+            log.info("finished fetching non-biometric Patients  total size {}", nonBiometricPatients.size());
+        }catch(Exception e){
+            log.error("An error occurred when fetching non-biometric patients error:=> {}", e.getMessage());
+        }
+        return nonBiometricPatients;
+    }
+    
+    private static HashSet<String> getNegativeStatusTable() {
+        HashSet<String> negativeStatus = new HashSet<String>();
+        negativeStatus.add("DIED");
+        negativeStatus.add("ART TRANSFER OUT");
+        negativeStatus.add("ART Transfer Out");
+        negativeStatus.add("STOPPED TREATMENT");
+        negativeStatus.add("Stopped Treatment");
+        negativeStatus.add("IIT");
+        return negativeStatus;
     }
     
     private PageDTO getPageDTO(Page<PatientProjection> persons) {
