@@ -357,8 +357,7 @@ const UserRegistration = (props) => {
     }
     const handleAgeChange = (e) => {
         const ageNumber = e.target.value.replace(/\D/g, '')
-        if (!ageDisabled && ageNumber) {
-            
+        if (!ageDisabled && ageNumber) {  
             const currentDate = new Date();
             currentDate.setDate(15);
             currentDate.setMonth(5);
