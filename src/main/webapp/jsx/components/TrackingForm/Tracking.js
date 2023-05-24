@@ -93,6 +93,7 @@ const Tracking = (props) => {
     const [reasonDefaulting, setreasonDefaulting] = useState([]);
     const [personContact, setpersonContact] = useState([]);
     const [modeCommunication, setmodeCommunication] = useState([]);
+    const [vaCauseOfDeath, setVaCauseOfDeath] = useState([]);
     const [dsdStatus, setdsdStatus] = useState([]);
     const [enrollDate, setEnrollDate] = useState("");
     let history = useHistory();
@@ -124,6 +125,7 @@ const Tracking = (props) => {
             reasonForLossToFollowUpOthers:"",
             attempts:"",
             patientId:props.patientObj.id,
+            vaCauseOfDeath:"",
             statusTracker: {
                 agreedDate: "",
                 causeOfDeath: "",
@@ -150,6 +152,7 @@ const Tracking = (props) => {
         ModeOfCommunication();
         PersonContact();
         GetPatientDTOObj();
+        VA_CAUSE_OF_DEATH()
     }, []);
     const GetPatientDTOObj =()=>{
         axios
@@ -218,6 +221,18 @@ const Tracking = (props) => {
             });        
     }
     //
+    const VA_CAUSE_OF_DEATH =()=>{
+        axios
+            .get(`${baseUrl}application-codesets/v2/VA_CAUSE_OF_DEATH`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+                setVaCauseOfDeath(response.data);
+            })
+            .catch((error) => {
+            //console.log(error);
+            });        
+    }
     const ReasonForDefaulting =()=>{
         axios
             .get(`${baseUrl}application-codesets/v2/REASON_DEFAULTING`,
@@ -925,6 +940,7 @@ const Tracking = (props) => {
                         
                         </>)} 
                         {objValues.reasonForDiscountinuation==='Death' && (
+                        <>
                         <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label for="">Cause of Death{objValues.causeOfDeath}</Label>
@@ -949,6 +965,31 @@ const Tracking = (props) => {
                                 ) : "" }
                             </FormGroup>
                         </div>
+                        <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                        <Label for="">VA Cause of Death{objValues.causeOfDeath}</Label>
+                        <Input
+                            type="select"
+                            name="vaCauseOfDeath"
+                            id="vaCauseOfDeath"
+                            onChange={handleInputChange}
+                            value={objValues.vaCauseOfDeath} 
+                            style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                            
+                        >
+                            <option value="">Select</option>
+                             {vaCauseOfDeath.map((value) => (
+                                    <option key={value.code} value={value.display}>
+                                        {value.display}
+                                    </option>
+                                ))}
+                        </Input>
+                        {errors.vaCauseOfDeath !=="" ? (
+                            <span className={classes.error}>{errors.vaCauseOfDeath}</span>
+                            ) : "" }
+                        </FormGroup>
+                        </div>
+                        </>
                         )} 
                         {(objValues.causeOfDeath==='Natural Cause' || objValues.causeOfDeath==='Unknown cause' ) && (
                         <div className="form-group mb-3 col-md-6">
