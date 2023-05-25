@@ -82,5 +82,7 @@ public interface ArtPharmacyRepository extends JpaRepository<ArtPharmacy, Long> 
 	List<ArtPharmacy> getAllDueForServerUpload(LocalDateTime dateLastSync, Long facilityId);
 
 	Optional<ArtPharmacy> findByUuid(String uuid);
+
+	Optional<ArtPharmacy> findByUuidAndFacilityId(String uuid, Long facilityId);
 }
 
