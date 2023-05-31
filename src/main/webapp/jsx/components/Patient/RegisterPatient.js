@@ -759,8 +759,8 @@ const UserRegistration = (props) => {
     }    
     
     const checkPhoneNumber=(e, inputName)=>{
-        const limit = 10;
-            setRelatives({...relatives,  [inputName]: e.slice(0, limit)});     
+        const NumberValue = checkNumberLimit(e.target.value.replace(/\D/g, ''))
+        setRelatives({...relatives, [inputName]: NumberValue})    
     }
     
     const checkNumberLimit=(e)=>{
@@ -1320,6 +1320,7 @@ const UserRegistration = (props) => {
                                                     type="text"
                                                     name="landmark"
                                                     id="landmark"
+                                                    value={basicInfo.landmark}
                                                     onChange={handleInputChangeBasic}
                                                     style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
                                                     
@@ -1473,19 +1474,16 @@ const UserRegistration = (props) => {
                                                                 <div className="form-group mb-3 col-md-3">
                                                                     <FormGroup>
                                                                         <Label for="contactPhoneNumber">Phone Number</Label>
-                                                                        <PhoneInput
-                                                                            containerStyle={{width:'100%',border: "1px solid #014D88"}}
-                                                                            inputStyle={{width:'100%',borderRadius:'0px'}}
-                                                                            country={'ng'}
-                                                                            placeholder="(234)7099999999"
+                                                                        <Input
+                                                                            type="text"
                                                                             name="phone"
-                                                                            value={relatives.phone}
-                                                                            masks={{ng: '...-...-....', at: '(....) ...-....'}}
                                                                             id="phone"
-                                                                           
                                                                             onChange={(e)=>{checkPhoneNumber(e,'phone')}}
+                                                                            value={relatives.phone}
+                                                                            style={{border: "1px solid #014D88",borderRadius:"0.2rem"}}
+                                                                            required
                                                                         />
-                                                                    {errors.phone !=="" ? (
+                                                                        {errors.phone !=="" ? (
                                                                         <span className={classes.error}>{errors.phone}</span>
                                                                         ) : "" }
                                                                     </FormGroup>

@@ -253,11 +253,13 @@ const ChronicCare = (props) => {
     //Validations of the forms
     const validate = () => { 
         temp.dateOfObservation = observation.dateOfObservation ? "" : "This field is required"
+        tpt.outComeOfIpt!=="" && (temp.outcomeDate = tpt.date ? "" : "This field is required")
         setErrors({
             ...temp
         })
         return Object.values(temp).every(x => x === "")
     }
+
     const handleSubmit = async (e) => {
         e.preventDefault(); 
         setSaving(true);
@@ -270,12 +272,7 @@ const ChronicCare = (props) => {
         observationObj.peproductive=reproductive 
         observationObj.tbIptScreening=tbObj
         observationObj.tptMonitoring=tpt
-        observation.data =observationObj
-        if(tpt.outComeOfIpt!=="" && tpt.date===""){
-            toast.error("IPT OutCome Date is required", {position: toast.POSITION.BOTTOM_CENTER});
-            setSaving(false);
-            return;
-        }
+        observation.data =observationObj        
         if(validate()){
             if(props.activeContent && props.activeContent.actionType==="update"){//Perform operation for updation action)
                 axios.put(`${baseUrl}observation/${props.activeContent.id}`,observation,
@@ -321,7 +318,7 @@ const ChronicCare = (props) => {
                 });
             }
         }else{
-            toast.error("All fields are required")
+            toast.error("All fields are required", {position: toast.POSITION.BOTTOM_CENTER})
             setSaving(false); 
         }
     }
@@ -391,7 +388,7 @@ const ChronicCare = (props) => {
                                     </FormGroup>
                                     {errors.dateOfObservation !=="" ? (
                                     <span className={classes.error}>{errors.dateOfObservation}</span>
-                                ) : "" }   
+                                    ) : "" }   
                                 </div>
                             </div>
                             {/* Eligibility Assessment */}
@@ -401,7 +398,7 @@ const ChronicCare = (props) => {
                                     {showEligibility===false  ? (<><span className="float-end" style={{cursor: "pointer"}} onClick={onClickEligibility}><FaPlus /></span></>) :  (<><span className="float-end" style={{cursor: "pointer"}} onClick={onClickEligibility}><FaAngleDown /></span> </>)}
                                 </div>
                                 {showEligibility && (
-                                    <Eligibilty setEligibility={setEligibility} eligibility={eligibility}/> 
+                                    <Eligibilty setEligibility={setEligibility} eligibility={eligibility} setErrors={setErrors} errors={errors} encounterDate={observation.dateOfObservation} patientObj={patientObj}/> 
                                 )}
                             </div>
                             {/* End Eligibility Assessment */}
@@ -413,7 +410,7 @@ const ChronicCare = (props) => {
                                     {showTb===false  ? (<><span className="float-end" style={{cursor: "pointer"}} onClick={onClickTb}><FaPlus /></span></>) :  (<><span className="float-end" style={{cursor: "pointer"}} onClick={onClickTb}><FaAngleDown /></span> </>)}
                                 </div>
                                 {showTb && (
-                                    <Tb setTbObj={setTbObj} tbObj={tbObj} encounterDate={observation.dateOfObservation}/>  
+                                    <Tb setTbObj={setTbObj} tbObj={tbObj} setErrors={setErrors} errors={errors} encounterDate={observation.dateOfObservation} patientObj={patientObj}/>  
                                 )}
                             </div>
                             {/* End TB & IPT  Screening  */}
@@ -424,7 +421,7 @@ const ChronicCare = (props) => {
                                     {showTpt===false  ? (<><span className="float-end" style={{cursor: "pointer"}} onClick={onClickTpt}><FaPlus /></span></>) :  (<><span className="float-end" style={{cursor: "pointer"}} onClick={onClickTpt}><FaAngleDown /></span> </>)}
                                 </div>
                                 {showTpt && (
-                                    <Tpt setTpt={setTpt} tpt={tpt}/>  
+                                    <Tpt setTpt={setTpt} tpt={tpt} setErrors={setErrors} errors={errors} encounterDate={observation.dateOfObservation} patientObj={patientObj}/>  
                                 )}
                             </div>
                             {/* End TPT MONITORING */}
@@ -435,7 +432,7 @@ const ChronicCare = (props) => {
                                     {showNutrition===false  ? (<><span className="float-end" style={{cursor: "pointer"}} onClick={onClickNutrition}><FaPlus /></span></>) :  (<><span className="float-end" style={{cursor: "pointer"}} onClick={onClickNutrition}><FaAngleDown /></span> </>)}
                                 </div>
                                 {showNutrition && (
-                                  <NutritionalStatus nutrition={nutrition} setNutrition={setNutrition}/>
+                                  <NutritionalStatus nutrition={nutrition} setNutrition={setNutrition} setErrors={setErrors} errors={errors} encounterDate={observation.dateOfObservation} patientObj={patientObj}/>
                                 )}
                             </div>
                             {/* End Nutritional Status Assessment */}
@@ -448,7 +445,7 @@ const ChronicCare = (props) => {
                                 {showGenderBase && (
                                 <div className="card-body">
                                     <div className="row">
-                                       <GenderBase setGenderBase={setGenderBase} genderBase={genderBase}/>
+                                       <GenderBase setGenderBase={setGenderBase} genderBase={genderBase} setErrors={setErrors} errors={errors} encounterDate={observation.dateOfObservation} patientObj={patientObj}/>
                                     </div>
 
                                 </div>
@@ -464,7 +461,7 @@ const ChronicCare = (props) => {
                                 {showChronicCondition && (
                                 <div className="card-body">
                                     <div className="row">
-                                       <ChronicConditions chronicConditions={chronicConditions} setChronicConditions={setChronicConditions}/>
+                                       <ChronicConditions chronicConditions={chronicConditions} setChronicConditions={setChronicConditions} setErrors={setErrors} errors={errors} encounterDate={observation.dateOfObservation} patientObj={patientObj}/>
                                     </div>
 
                                 </div>
@@ -480,7 +477,7 @@ const ChronicCare = (props) => {
                                 {showPositiveHealth && (
                                 <div className="card-body">
                                     <div className="row">
-                                       <PositiveHealthDignity preventive={preventive} setPreventive={setPreventive}/>
+                                       <PositiveHealthDignity preventive={preventive} setPreventive={setPreventive} setErrors={setErrors} errors={errors} encounterDate={observation.dateOfObservation} patientObj={patientObj}/>
                                     </div>
 
                                 </div>
@@ -496,7 +493,7 @@ const ChronicCare = (props) => {
                                 {showReproductive && (
                                 <div className="card-body">
                                     <div className="row">
-                                        <ReproductiveIntentions setReproductive={setReproductive} reproductive={reproductive}/>
+                                        <ReproductiveIntentions setReproductive={setReproductive} reproductive={reproductive} setErrors={setErrors} errors={errors} encounterDate={observation.dateOfObservation} patientObj={patientObj}/>
                                     </div>
 
                                 </div>

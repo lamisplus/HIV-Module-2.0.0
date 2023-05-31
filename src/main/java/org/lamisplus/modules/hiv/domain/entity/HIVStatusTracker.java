@@ -30,7 +30,6 @@ public class HIVStatusTracker extends HivAuditEntity implements Persistable<Long
     @NonNull
     private String hivStatus;
 
-    @PastOrPresent
     @Column(name = "status_date", nullable = false)
     @NotNull
     private LocalDate statusDate;
@@ -44,7 +43,7 @@ public class HIVStatusTracker extends HivAuditEntity implements Persistable<Long
     @Column(name = "tracking_outcome")
     private String trackOutcome;
 
-    @PastOrPresent
+
     @Column(name = "track_date")
     private LocalDate trackDate;
 
