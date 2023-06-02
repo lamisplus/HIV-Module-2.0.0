@@ -357,8 +357,7 @@ const UserRegistration = (props) => {
     }
     const handleAgeChange = (e) => {
         const ageNumber = e.target.value.replace(/\D/g, '')
-        if (!ageDisabled && ageNumber) {
-            
+        if (!ageDisabled && ageNumber) {  
             const currentDate = new Date();
             currentDate.setDate(15);
             currentDate.setMonth(5);
@@ -1067,7 +1066,7 @@ const UserRegistration = (props) => {
 
                                                 <div className="form-group  col-md-4">
                                                     <FormGroup>
-                                                        <Label>Employment Status *</Label>
+                                                        <Label>Employment Status  <span style={{ color:"red"}}> *</span></Label>
                                                         <select
                                                             className="form-control"
                                                             name="employmentStatusId"
