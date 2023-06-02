@@ -1066,7 +1066,7 @@ const UserRegistration = (props) => {
 
                                                 <div className="form-group  col-md-4">
                                                     <FormGroup>
-                                                        <Label>Employment Status *</Label>
+                                                        <Label>Employment Status  <span style={{ color:"red"}}> *</span></Label>
                                                         <select
                                                             className="form-control"
                                                             name="employmentStatusId"

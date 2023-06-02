@@ -7,11 +7,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import MatButton from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
 import SaveIcon from '@material-ui/icons/Save'
-import CancelIcon from '@material-ui/icons/Cancel'
+//import CancelIcon from '@material-ui/icons/Cancel'
 import "react-widgets/dist/css/react-widgets.css";
 import moment from "moment";
 import { Spinner } from "reactstrap";
-import Select from "react-select";
+//import Select from "react-select";
 import { url as baseUrl, token } from "../../../api";
 import { toast} from "react-toastify";
 import {Icon, List, Label as LabelSui} from 'semantic-ui-react'
@@ -73,8 +73,8 @@ const Pharmacy = (props) => {
     const [mmdType, setmmdType]=useState();
     const [dsdModelType, setDsdModelType] = useState([]);
     const [showmmdType, setShowmmdType]=useState(false);
-    const [showDsdModel, setShowDsdModel] = useState(false);
-    const [showAdr, setShowAdr] = useState(false);
+    // const [showDsdModel, setShowDsdModel] = useState(false);
+    // const [showAdr, setShowAdr] = useState(false);
     const [showRegimen, setShowRegimen] = useState(false);
     const [regimen, setRegimen] = useState([]);
     const [eacStatusObj, setEacStatusObj] = useState()
@@ -84,12 +84,12 @@ const Pharmacy = (props) => {
     const [regimenDrug, setRegimenDrug] = useState([]);
     const [regimenDrugList, setRegimenDrugList] = useState([]);
     const [showCurrentVitalSigns, setShowCurrentVitalSigns] = useState(false)
-    const [currentVitalSigns, setcurrentVitalSigns] = useState({})
-    const [adultRegimenLine, setAdultRegimenLine] = useState([]);
+    // const [currentVitalSigns, setcurrentVitalSigns] = useState({})
+    // const [adultRegimenLine, setAdultRegimenLine] = useState([]);
     const [adultArtRegimenLine, setAdultArtRegimenLine] = useState([]);
     const [oIRegimenLine, setOIRegimenLine] = useState([]);
     const [tbRegimenLine, setTbRegimenLine] = useState([]);
-    const [othersRegimenLine, setOthersRegimenLine] = useState([]);
+    //const [othersRegimenLine, setOthersRegimenLine] = useState([]);
     const [childRegimenLine, setChildRegimenLine] = useState([]);
     const [iptType, setIPT_TYPE] = useState([]);
     const [showIptType, setIptType] = useState(false);
@@ -97,6 +97,7 @@ const Pharmacy = (props) => {
     const [childrenTB, setChildrenTB] = useState([]);
     const [otherDrugs, setOtherDrugs] = useState([]);
     const [regimenTypeOther, setRegimenTypeOther] = useState([]);
+    const [iptEligibilty, setIptEligibilty] = useState("");
     const [objValues, setObjValues] = useState({
             adherence: "",
             adrScreened: "",
@@ -147,6 +148,7 @@ const Pharmacy = (props) => {
         VitalSigns();
         ChildRegimenLine();
         OtherDrugs();
+        GetIptEligibilty();
         if(props.activeContent && props.activeContent.actionType==='view'){
             setDisabledField(true)
         } 
@@ -164,6 +166,19 @@ const Pharmacy = (props) => {
             //console.log(error);
             });
         
+    }
+    const GetIptEligibilty =()=>{//GET IPT ELIGIBILITY
+        axios
+        .get(`${baseUrl}observation/check-ipt-eligible/${props.patientObj.id}`,
+            { headers: {"Authorization" : `Bearer ${token}`} }
+        )
+        .then((response) => {
+            setIptEligibilty(response.data)
+        })
+        .catch((error) => {
+        //console.log(error);
+        });
+    
     }
     //GET Other Drugd 
     const OtherDrugs =()=>{
@@ -1270,22 +1285,47 @@ const Pharmacy = (props) => {
                     >
                     <option value="">Select </option>
 
-                        {patientAge >15 &&  (
-                        <>            
-                        {oIRegimenLine.map((value) => (
+                    {patientAge >15 &&  (
+                        <>  
+                        {iptEligibilty.IPTEligibility===true ? //Logic to check for TPT eligibility to filter TPT drugs
+                        (<>
+                            {oIRegimenLine.map((value) => (
                             <option key={value.id} value={value.id}>
                                 {value.description}
                             </option>
                         ))}
+                        </>)
+                        :
+                        (<>
+                            {oIRegimenLine.filter((x)=> x.id!==15).map((value) => (
+                            <option key={value.id} value={value.id}>
+                                {value.description}
+                            </option>
+                        ))}
+                        </>)
+                       }             
+                        
                       </>
                     )}
                     {patientAge <=15 &&  (
                     <>
-                    {childrenOI.map((value) => (
-                        <option key={value.id} value={value.id}>
-                        {value.description}
-                        </option>
-                    ))}
+                    {iptEligibilty.IPTEligibility===true ? //Logic to check for TPT eligibility to filter TPT drugs for children
+                        (<>
+                            {oIRegimenLine.map((value) => (
+                            <option key={value.id} value={value.id}>
+                                {value.description}
+                            </option>
+                        ))}
+                        </>)
+                        :
+                        (<>
+                            {oIRegimenLine.filter((x)=> x.id!==15).map((value) => (
+                            <option key={value.id} value={value.id}>
+                                {value.description}
+                            </option>
+                        ))}
+                        </>)
+                       }   
                     </>
                     )}
                 </Input>
@@ -1317,28 +1357,35 @@ const Pharmacy = (props) => {
                 </FormGroup>
             </div>
             {showIptType || objValues.iptType!=='' && ( 
-            <div className="form-group mb-3 col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                <FormGroup>
-                <Label >Visit Type</Label>
-                
-                <Input
-                    type="select"
-                    name="iptType"
-                    id="iptType"
-                    value={objValues.iptType}
-                    onChange={handleInputChange} 
-                    style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                    disabled={disabledField}              
-                    >
-                    <option value="">Select </option>
-                    {iptType.map((value) => (
-                        <option key={value.id} value={value.code}>
-                            {value.display}
-                        </option>
-                    ))}
-                </Input>                
-                </FormGroup>
-            </div>
+                <>
+                { iptEligibilty.IPTEligibility===true  && ( //iptEligibilty check to display Visit type
+                <div className="form-group mb-3 col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <FormGroup>
+                    <Label >Visit Type</Label>
+                    
+                    <Input
+                        type="select"
+                        name="iptType"
+                        id="iptType"
+                        value={objValues.iptType}
+                        onChange={handleInputChange} 
+                        style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                                        
+                        >
+                        <option value="">Select </option>
+                        
+                        {iptType.map((value) => (
+                            <option key={value.id} value={value.code}>
+                                {value.display}
+                            </option>
+                        ))}
+                            
+                    </Input>
+                    
+                    </FormGroup>
+                </div>
+                )}
+                </>
             )}
             <LabelSui as='a' color='blue' style={{width:'106%', height:'35px'}} ribbon>
               <h4 style={{color:'#fff'}}>TB DRUG</h4>

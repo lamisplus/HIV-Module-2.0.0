@@ -943,7 +943,7 @@ const Tracking = (props) => {
                         <>
                         <div className="form-group mb-3 col-md-6">
                             <FormGroup>
-                            <Label for="">Cause of Death{objValues.causeOfDeath}</Label>
+                            <Label for="">Cause of Death</Label>
                             <Input
                                 type="select"
                                 name="causeOfDeath"
@@ -967,7 +967,7 @@ const Tracking = (props) => {
                         </div>
                         <div className="form-group mb-3 col-md-6">
                         <FormGroup>
-                        <Label for="">VA Cause of Death{objValues.causeOfDeath}</Label>
+                        <Label for="">VA Cause of Death</Label>
                         <Input
                             type="select"
                             name="vaCauseOfDeath"
