@@ -851,7 +851,7 @@ const ArtCommencement = (props) => {
                                 id="pregancyStatus"
                                 disabled
                                 onChange={handleInputChange}
-                                value="72"
+                                //value="72"
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 //disabled
 
