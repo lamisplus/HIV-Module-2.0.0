@@ -887,11 +887,11 @@ const ArtCommencement = (props) => {
                             <Label >Pregnancy Status</Label>
                             <Input
                                 type="select"
-                                name="address"
-                                id="address"
+                                name="pregancyStatus"
+                                id="pregancyStatus"
                                 disabled
                                 onChange={handleInputChange}
-                                value="72"
+                                //value="72"
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 
 
