@@ -2,6 +2,7 @@ package org.lamisplus.modules.hiv.service;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
 import org.lamisplus.modules.hiv.domain.dto.EnrollmentStatus;
@@ -22,6 +23,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StatusManagementService {
 	
 	private final ArtPharmacyRepository pharmacyRepository;
@@ -93,21 +95,31 @@ public class StatusManagementService {
 	
 	@Nullable
 	private HIVInterQuarterStatus getClientInternalStatusInQuarter(String personUuid, LocalDate quarterEnd) {
-		Optional<HIVStatusTracker> statusPreviousQuarter = hivStatusTrackerRepository
+		List<String> staticStatus =
+				Arrays.asList("ART_TRANSFER_OUT",
+						"ART Transfer Out",
+						"KNOWN_DEATH",
+						"Died (Confirmed)",
+						"STOPPED_TREATMENT",
+						"Stopped Treatment",
+						"Interruption in Treatment",
+						"Interruption in Treatment",
+						"Invalid - Nonexistent",
+						"Invalid – Long-term IIT",
+						"Invalid - Duplicates",
+						"Invalid - Biometrical Naive"
+				);
+		Optional<HIVStatusTracker> patientNegativeStatus = hivStatusTrackerRepository
 				.getStatusByPersonUuidAndDateRange(personUuid, quarterEnd);
-		if (statusPreviousQuarter.isPresent()) {
-			List<String> staticStatus =
-					Arrays.asList("ART_TRANSFER_OUT",
-							"KNOWN_DEATH","Died (Confirmed)",
-							"STOPPED_TREATMENT",
-							"Stopped Treatment",
-					"Interruption in Treatment", "Interruption in Treatment");
-			String hivStatus = statusPreviousQuarter.get().getHivStatus();
-			if (staticStatus.contains(hivStatus)) {
+		patientNegativeStatus.ifPresent(statusTracker -> log.info("HivStatus: {}", statusTracker.getHivStatus()));
+		if (patientNegativeStatus.isPresent() && staticStatus.contains(patientNegativeStatus.get().getHivStatus())) {
+			String hivStatus = patientNegativeStatus.get().getHivStatus();
+			log.info("Negative HivStatus: {}", hivStatus);
 				String finalStatus = hivStatus.replaceAll("_", " ").toUpperCase();
+				log.info("HivStatus1: {}", finalStatus);
 				if(finalStatus.contains("DEATH") || finalStatus.contains("Died")) finalStatus = "DIED";
-				return new HIVInterQuarterStatus(statusPreviousQuarter.get().getStatusDate(), finalStatus);
-			}
+				log.info("HivStatus2: {}", finalStatus);
+				return new HIVInterQuarterStatus(patientNegativeStatus.get().getStatusDate(), finalStatus);
 		}
 		Optional<ArtPharmacy> currentRefillInQuarter = pharmacyRepository
 				.getCurrentPharmacyRefillWithDateRange(personUuid, quarterEnd);
@@ -166,7 +178,9 @@ public class StatusManagementService {
 //		if (isActiveTransferIn(clientPreviousInternalQuarterStatus, clientCurrentInternalQuarterStatus, enrollmentStatus)) {
 //			return new HIVStatusDisplay(clientCurrentInternalQuarterStatus.getDate(), "ACTIVE TRANSFER IN", currentQuarter.getEnd());
 //		}
-		return new HIVStatusDisplay(clientCurrentInternalQuarterStatus.getDate(), clientCurrentInternalQuarterStatus.getDescription(), currentQuarter.getEnd());
+		return new HIVStatusDisplay(clientCurrentInternalQuarterStatus.getDate(),
+				clientCurrentInternalQuarterStatus.getDescription(),
+				currentQuarter.getEnd());
 		
 	}
 	

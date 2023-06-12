@@ -113,8 +113,8 @@ const ArtCommencement = (props) => {
                                                 viralLoad: "",
                                                 whoStagingId:"",
                                                 clinicalStageId:"",
-                                                cd4: "",
-                                                cd4Percentage: "",
+                                                cd4: null,
+                                                cd4Percentage: null,
                                                 isCommencement: true,
                                                 functionalStatusId: "",
                                                 clinicalNote: "",
@@ -126,9 +126,10 @@ const ArtCommencement = (props) => {
                                                 viralLoadAtStartOfArt:"",
                                                 isViralLoadAtStartOfArt :null,
                                                 dateOfViralLoadAtStartOfArt: null,
-                                                cd4Count:"",
+                                                cd4Count:null,
                                                 cd4SemiQuantitative:"",
-                                                cd4FlowCytometry:""                                                  
+                                                cd4FlowCytometry:"",
+                                                cd4Type:""                                                  
 
                                                 });
 
@@ -187,7 +188,7 @@ const ArtCommencement = (props) => {
         PatientCurrentObject()
          gender =props.patientObj.gender && props.patientObj.gender.display ? props.patientObj.gender.display : null
       }, [props.patientObj]);
-         //GET  Patients
+        //GET  Patients
         async function PatientCurrentObject() {
             axios
                 .get(`${baseUrl}hiv/patient/${props.patientObj.id}`,
@@ -253,10 +254,9 @@ const ArtCommencement = (props) => {
                     const obj1 =response.data.find(x=> x.type==='Clinical evaluation')
                     
                     //const cd4CountObj=obj1.data.plan
-                    objValues.cd4Count=obj1.data.plan.cd4Count
                     //console.log(obj1.data.plan)
-                    objValues.cd4SemiQuantitative=obj1.data.plan.cd4SemiQuantitative
-                    objValues.cd4FlowCytometry=obj1.data.plan.cd4FlowCytometry
+                    objValues.cd4Type=obj1.data.plan.cd4Type
+                    objValues.cd4Count=obj1.data.plan.cd4Count
                     objValues.whoStagingId = obj1.data.who.stage
                     objValues.regimenTypeId=obj1.data.regimen.regimenLine
                     RegimenType(obj1.data.regimen.regimenLine)
@@ -354,14 +354,24 @@ const ArtCommencement = (props) => {
                         setViraLoadStart(false)
                     }
                 }
-                if(e.target.name==='cd4Percentage' && e.target.value!==""){
+                else if(e.target.name==='cd4Percentage' && e.target.value!==""){
                     setObjValues ({...objValues,  [e.target.name]: e.target.value.replace(/\D/g, '')});
                 }
-                if(e.target.name==='cd4' && e.target.value!==""){
+                else if(e.target.name==='cd4' && e.target.value!==""){
                     setObjValues ({...objValues,  [e.target.name]: e.target.value.replace(/\D/g, '')});
+                }
+
+                if(e.target.name==='isViralLoadAtStartOfArt' && e.target.value==="false"){
+                    objValues.viralLoadAtStartOfArt=""
+                    objValues.dateOfViralLoadAtStartOfArt=""
+                    setObjValues ({...objValues,  ["viralLoadAtStartOfArt"]: " " });
+                    setObjValues ({...objValues,  ["dateOfViralLoadAtStartOfArt"]: " " });
+                    setObjValues ({...objValues,  [e.target.name]: e.target.value});
+
                 }
                 
         }
+
         const handleInputChangeVitalSignDto = e => { 
             setErrors({...temp, [e.target.name]:""})  
             setVitalSignDto({ ...vital, [e.target.name]: e.target.value });
@@ -474,13 +484,8 @@ const ArtCommencement = (props) => {
         objValues.hivEnrollmentId= patientObject && patientObject.enrollment.id
         objValues.clinicalStageId = objValues.whoStagingId 
         //Logic for cd4 value 
-        //cd4SemiQuantitative:"",
-       // cd4FlowCytometry:"" 
-        // if(objValues.cd4SemiQuantitative!==""){
-        //     objValues.cd4 = objValues.cd4SemiQuantitative
-        // }
-        if(objValues.cd4FlowCytometry!==""){
-            objValues.cd4 = objValues.cd4FlowCytometry
+        if(objValues.cd4Type==="Flow Cyteometry"){
+            objValues.cd4 = objValues.cd4Count
         }
         setSaving(true);
         axios.post(`${baseUrl}hiv/art/commencement/`,objValues,
@@ -604,12 +609,12 @@ const ArtCommencement = (props) => {
                     <div className="row">
                         <div className="form-group  col-md-6">
                                 <FormGroup>
-                                    <Label>CD4 Count </Label>
+                                    <Label>CD4 Count (Type)</Label>
                                     <select
                                         className="form-control"
-                                        name="cd4Count"
-                                        id="cd4Count"
-                                        value={objValues.cd4Count}
+                                        name="cd4Type"
+                                        id="cd4Type"
+                                        value={objValues.cd4Type}
                                         onChange={handleInputChange}
                                         style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
                                         
@@ -622,15 +627,15 @@ const ArtCommencement = (props) => {
                                     
                                 </FormGroup>
                         </div>
-                        {objValues.cd4Count ==='Semi-Quantitative' && (
+                        {objValues.cd4Type ==='Semi-Quantitative' && (
                         <div className="form-group  col-md-6">
                             <FormGroup>
                                 <Label>CD4 Count Value(Semi-Quantitative)</Label>
                                 <select
                                     className="form-control"
-                                    name="cd4SemiQuantitative"
-                                    id="cd4SemiQuantitative"
-                                    value={objValues.cd4SemiQuantitative}
+                                    name="cd4Count"
+                                    id="cd4Count"
+                                    value={objValues.cd4Count}
                                     onChange={handleInputChange}
                                     style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
                                     
@@ -644,16 +649,16 @@ const ArtCommencement = (props) => {
                             </FormGroup>
                         </div>
                         )}
-                        {objValues.cd4Count ==='Flow Cyteometry' && (
-                        <div className="form-group mb-3 col-md-4">
+                        {objValues.cd4Type ==='Flow Cyteometry' && (
+                        <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label for="">CD4 Count Value (Flow Cyteometry)</Label>
                             <Input
                                 type="number"
                                 min={1}
-                                name="cd4FlowCytometry"
-                                id="cd4FlowCytometry"
-                                value={objValues.cd4FlowCytometry}
+                                name="cd4Count"
+                                id="cd4Count"
+                                value={objValues.cd4Count}
                                 onChange={handleInputChange}
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 
@@ -747,7 +752,7 @@ const ArtCommencement = (props) => {
                         </FormGroup>
                     </div>
                     {viraLoadStart && (
-                    <>
+                    <> 
                     <div className="form-group mb-3 col-md-4">
                         <FormGroup>
                         <Label >Viral Load at Start of ART Result</Label>
@@ -835,11 +840,11 @@ const ArtCommencement = (props) => {
                     </div>
                     {objValues.isViralLoadAtStartOfArt && objValues.isViralLoadAtStartOfArt!==null && (<div className="form-group mb-3 col-md-8"></div>)}
                     {!objValues.isViralLoadAtStartOfArt && objValues.isViralLoadAtStartOfArt!==null && (<div className="form-group mb-3 col-md-4"></div>)}
-                    {(props.patientObj.sex==="Female" || props.patientObj.sex==="FEMALE" || props.patientObj.sex==="female") ? (
+                    {patientAge>=10 && (props.patientObj.sex==="Female" || props.patientObj.sex==="FEMALE" || props.patientObj.sex==="female") ? (
                         <>
                         <div className="form-group mb-3 col-md-4">
                             <FormGroup>
-                            <Label >Pregnancy Status</Label>
+                            <Label >Pregnancy Status <span style={{ color:"red"}}> *</span></Label>
                             <Input
                                 type="select"
                                 name="pregancyStatus"

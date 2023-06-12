@@ -141,7 +141,7 @@ public class ARTClinical extends HivAuditEntity implements Serializable, Persist
 	private JsonNode extra;
 	
 	@Column(name = "cd4_count")
-	private Long  cd4Count;
+	private String  cd4Count;
 	@Column(name = "cd4_semi_quantitative")
 	private String  cd4SemiQuantitative;
 	@Column(name = "cd4_flow_cytometry")
@@ -150,6 +150,10 @@ public class ARTClinical extends HivAuditEntity implements Serializable, Persist
 	
 	@Column(name = "pregnancy_status")
 	private String  pregnancyStatus;
+	@Column(name = "cd4_type")
+	private String  cd4Type;
+	
+	
 	
 	@Override
 	public boolean isNew() {

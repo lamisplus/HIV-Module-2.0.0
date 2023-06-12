@@ -292,6 +292,58 @@ const Tracking = (props) => {
     const handleInputChange = e => {
         setErrors({...temp, [e.target.name]:""})
         setObjValues ({...objValues,  [e.target.name]: e.target.value});
+        //The logics below is to make sure that no value is save if the options are not selected
+        if(e.target.name==='dsdStatus' && e.target.value!=='TRACKING_DSD_STATUS_DEVOLVED'){
+            objValues.dsdModel=""
+            setObjValues ({...objValues,  ["dsdModel"]: " " });
+            setObjValues ({...objValues,  [e.target.name]: e.target.value});
+        }
+        if(e.target.name==='careInFacilityDiscountinued' && e.target.value===''){
+            objValues.dateOfDiscontinuation=""
+            objValues.dateReturnToCare=""
+            objValues.referredFor=""
+            objValues.reasonForDiscountinuation=""
+            setObjValues ({...objValues,  ["dateOfDiscontinuation"]: " " });
+            setObjValues ({...objValues,  ["dateReturnToCare"]: " " });
+            setObjValues ({...objValues,  ["referredFor"]: " " });
+            setObjValues ({...objValues,  ["reasonForDiscountinuation"]: " " });
+            setObjValues ({...objValues,  [e.target.name]: e.target.value});
+        }
+        if(e.target.name==='reasonForDiscountinuation' && e.target.value!=='Death'){
+            objValues.causeOfDeath=""
+            objValues.causeOfDeathOthers=""
+            setObjValues ({...objValues,  ["causeOfDeath"]: " " });
+            setObjValues ({...objValues,  ["causeOfDeathOthers"]: " " });
+            setObjValues ({...objValues,  [e.target.name]: e.target.value});
+        }
+        if(e.target.name==='reasonForDiscountinuation' && e.target.value!=='Interruption in Treatment'){
+            objValues.reasonForLossToFollowUp=""
+            objValues.reasonForLossToFollowUpOthers=""
+            setObjValues ({...objValues,  ["reasonForLossToFollowUpOthers"]: " " });
+            setObjValues ({...objValues,  [e.target.name]: e.target.value});
+        }
+        
+        if(e.target.name==='careInFacilityDiscountinued' && e.target.value==='No'){
+            objValues.reasonForDiscountinuation=""
+            objValues.causeOfDeathOthers=""
+            objValues.causeOfDeath=""
+            objValues.dateOfDiscontinuation=""
+            setObjValues ({...objValues,  ["reasonForLossToFollowUp"]: " " });
+            setObjValues ({...objValues,  ["causeOfDeathOthers"]: " " });
+            setObjValues ({...objValues,  ["causeOfDeath"]: " " });
+            setObjValues ({...objValues,  ["dateOfDiscontinuation"]: " " });
+            setObjValues ({...objValues,  ["causeOfDeathOthers"]: " " });
+            setObjValues ({...objValues,  [e.target.name]: e.target.value});
+        }
+        if(e.target.name==='careInFacilityDiscountinued' && e.target.value==='Yes'){
+            objValues.dateReturnToCare=""
+            objValues.referredFor=""
+            objValues.referredForOthers=""
+            setObjValues ({...objValues,  ["dateReturnToCare"]: " " });
+            setObjValues ({...objValues,  ["referredFor"]: " " });
+            setObjValues ({...objValues,  ["referredForOthers"]: " " });
+            setObjValues ({...objValues,  [e.target.name]: e.target.value});
+        }
     } 
     const handleInputChangeObservation = e => {
         setErrors({...temp, [e.target.name]:""})
@@ -925,7 +977,7 @@ const Tracking = (props) => {
                                 disabled={disabledField}
                             >
                                  {causeDeath.map((value) => (
-                                        <option key={value.code} value={value.code}>
+                                        <option key={value.code} value={value.display}>
                                             {value.display}
                                         </option>
                                     ))}
@@ -936,7 +988,7 @@ const Tracking = (props) => {
                             </FormGroup>
                         </div>
                         )}
-                        {(objValues.causeOfDeath==='CAUSE_DEATH_OTHER_NATURAL_CAUSES' || objValues.causeOfDeath==='CAUSE_DEATH_UNKNOWN_CAUSE' ) && (
+                        {(objValues.causeOfDeath==='Natural Cause' || objValues.causeOfDeath==='Unknown cause' ) && (
                         <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label for="">Cause of Death - {objValues.causeOfDeath} (specify)</Label>

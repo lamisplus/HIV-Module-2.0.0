@@ -88,6 +88,8 @@ const useStyles = makeStyles((theme) => ({
 const TbScreening = (props) => {
     const classes = useStyles();
     const [contraindicationDisplay, setcontraindicationDisplay]=useState(false)
+    const [tbTreatmentType, setTbTreatmentType]= useState([])
+    const [tbTreatmentOutCome, setTbTreatmentOutCome]= useState([])
     useEffect(() => {
         //End of Eligible for TPT logic
         if(props.tbObj.currentlyOnTuberculosis!=="" && props.tbObj.currentlyOnTuberculosis==="No"){
@@ -192,20 +194,94 @@ const TbScreening = (props) => {
             props.tbObj.eligibleForTPT,
             props.tbObj.currentlyOnTuberculosis
     ]);
-    
+    useEffect(() => {
+        TB_TREATMENT_OUTCOME();
+        TB_TREATMENT_TYPE();
+    }, []);
+    const TB_TREATMENT_TYPE =()=>{
+        axios
+            .get(`${baseUrl}application-codesets/v2/TB_TREATMENT_TYPE`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+                //console.log(response.data);
+                setTbTreatmentType(response.data);
+            })
+            .catch((error) => {
+            //console.log(error);
+            });
+        
+    }
+    const TB_TREATMENT_OUTCOME =()=>{
+        axios
+            .get(`${baseUrl}application-codesets/v2/TB_TREATMENT_OUTCOME`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+                //console.log(response.data);
+                setTbTreatmentOutCome(response.data);
+            })
+            .catch((error) => {
+            //console.log(error);
+            });
+        
+    }
     const handleInputChange =e =>{
         props.setTbObj({...props.tbObj, [e.target.name]: e.target.value})
         
-        //making some fields to be empty once base on the business logic
+        //making some fields to be empty once the selection logic is apply(skip logic) 
         if(e.target.name==='currentlyOnTuberculosis' && e.target.value==='Yes'){
             props.tbObj.tbTreatment=""
             props.tbObj.tbTreatmentStartDate=""
-
-            //props.setTbObj({...props.tbObj, ['tbTreatment']: ""})
+            props.setTbObj({...props.tbObj, ['tbTreatment']: ''})
+            props.setTbObj({...props.tbObj, ['tbTreatmentStartDate']: ''})
+            props.setTbObj({...props.tbObj, [e.target.name]: e.target.value})
         }
-        if(e.target.name==='tbTreatment' && e.target.value==='No'){
+        if(e.target.name==='currentlyOnTuberculosis' && e.target.value==='No'){
+            props.tbObj.coughing="" 
+            props.tbObj.fever=""
+            props.tbObj.losingWeight=""
+            props.tbObj.nightSweats=""
+            props.tbObj.poorWeightGain=""
+            props.tbObj.historyWithAdults=""
+            props.setTbObj({...props.tbObj, ['coughing']: ""})
+            props.setTbObj({...props.tbObj, ['fever']: ''})
+            props.setTbObj({...props.tbObj, ['losingWeight']: ''})
+            props.setTbObj({...props.tbObj, ['nightSweats']: ''})
+            props.setTbObj({...props.tbObj, ['poorWeightGain']: ''})
+            props.setTbObj({...props.tbObj, ['historyWithAdults']: ''})
+            props.setTbObj({...props.tbObj, [e.target.name]: e.target.value})
+        }
+        if(e.target.name==='tbTreatment' && e.target.value==='Yes'){
             props.tbObj.tbTreatmentStartDate=""
             setcontraindicationDisplay(true)
+            props.tbObj.coughing="" 
+            props.tbObj.fever=""
+            props.tbObj.losingWeight=""
+            props.tbObj.nightSweats=""
+            props.tbObj.poorWeightGain=""
+            props.tbObj.historyWithAdults=""
+            props.setTbObj({...props.tbObj, ['coughing']: ""})
+            props.setTbObj({...props.tbObj, ['fever']: ''})
+            props.setTbObj({...props.tbObj, ['losingWeight']: ''})
+            props.setTbObj({...props.tbObj, ['nightSweats']: ''})
+            props.setTbObj({...props.tbObj, ['poorWeightGain']: ''})
+            props.setTbObj({...props.tbObj, ['historyWithAdults']: ''})
+            props.setTbObj({...props.tbObj, [e.target.name]: e.target.value})
+           
+        }
+        if(e.target.name==='tbTreatment' && e.target.value==='No'){
+
+            props.tbObj.tbTreatmentStartDate=""
+            props.tbObj.treatementType="" 
+            props.tbObj.treatmentOutcome=""
+            props.tbObj.completionDate=""
+            props.setTbObj({...props.tbObj, ['tbTreatmentStartDate']: ""})
+            props.setTbObj({...props.tbObj, ['treatementType']: ''})
+            props.setTbObj({...props.tbObj, ['treatmentOutcome']: ''})
+            props.setTbObj({...props.tbObj, ['completionDate']: ''})
+            props.setTbObj({...props.tbObj, [e.target.name]: e.target.value})
+           
         }
         
         
@@ -253,7 +329,7 @@ const TbScreening = (props) => {
                         {(props.tbObj.currentlyOnTuberculosis!=='' && props.tbObj.currentlyOnTuberculosis==='No' ) && (
                         <div className="form-group mb-3 col-md-6">
                             <FormGroup>
-                            <Label >Are you currently on TB treatment?{props.tbObj.tbTreatment}</Label>
+                            <Label >Are you currently on TB treatment?</Label>
                             <InputGroup> 
                                 <Input 
                                     type="select"
@@ -261,6 +337,7 @@ const TbScreening = (props) => {
                                     id="tbTreatment"
                                     onChange={handleInputChange} 
                                     value={props.tbObj.tbTreatment} 
+
                                 >
                                 <option value="">Select</option>
                                 <option value="Yes">Yes</option>
@@ -282,6 +359,7 @@ const TbScreening = (props) => {
                                     id="tbTreatmentStartDate"
                                     onChange={handleInputChange} 
                                     value={props.tbObj.tbTreatmentStartDate} 
+                                    max= {moment(new Date()).format("YYYY-MM-DD") }
                                 >
                                 
                                 </Input>
@@ -300,12 +378,15 @@ const TbScreening = (props) => {
                                     value={props.tbObj.treatementType} 
                                 >
                                     <option value="">Select</option>
-                                    <option value="Relapsed">Relapsed</option>
-                                    <option value="New">New</option>
+                                    {tbTreatmentType.map((value) => (
+                                        <option key={value.id} value={value.display}>
+                                            {value.display}
+                                        </option>
+                                    ))}
                                 </Input>
                             </InputGroup>
                             </FormGroup>
-                        </div>
+                        </div> 
                         <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label >Treatment Outcome </Label>
@@ -318,8 +399,11 @@ const TbScreening = (props) => {
                                     value={props.tbObj.treatmentOutcome} 
                                 >
                                     <option value="">Select</option>
-                                    <option value="option 1">option 1</option>
-                                    <option value="New">New</option>
+                                    {tbTreatmentOutCome.map((value) => (
+                                        <option key={value.id} value={value.display}>
+                                            {value.display}
+                                        </option>
+                                    ))}
                                 </Input>
                             </InputGroup>
                             </FormGroup>
@@ -334,6 +418,8 @@ const TbScreening = (props) => {
                                     id="completionDate"
                                     onChange={handleInputChange} 
                                     value={props.tbObj.completionDate} 
+                                    min={props.encounterDate}
+                                    max= {moment(new Date()).format("YYYY-MM-DD") }
                                 >
                                 
                                 </Input>
@@ -606,8 +692,10 @@ const TbScreening = (props) => {
                                         type="date"
                                         name="dateTPTStart"
                                         id="dateTPTStart"
-                                        onChange={handleInputChange} 
-                                        //value={props.tbObj.dateTPTStart} 
+                                        onChange={handleInputChange}
+                                        min={props.encounterDate}
+                                        max= {moment(new Date()).format("YYYY-MM-DD") } 
+                                        value={props.tbObj.dateTPTStart} 
                                     >
                                     
                                     </Input>
@@ -623,7 +711,7 @@ const TbScreening = (props) => {
                                         name="weightAtStartTPT"
                                         id="weightAtStartTPT"
                                         onChange={handleInputChange} 
-                                        //value={props.tbObj.weightAtStartTPT} 
+                                        value={props.tbObj.weightAtStartTPT} 
                                     >
                                     
                                     </Input>
@@ -639,7 +727,7 @@ const TbScreening = (props) => {
                                         name="inhDailyDose"
                                         id="inhDailyDose"
                                         onChange={handleInputChange} 
-                                        //value={props.tbObj.inhDailyDose} 
+                                        value={props.tbObj.inhDailyDose} 
                                     >
                                     
                                     </Input>

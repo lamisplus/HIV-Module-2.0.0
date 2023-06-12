@@ -72,7 +72,48 @@ const BasicInfo = (props) => {
     const [errors, setErrors] = useState({});
     const [selectedOptions1,setSelectedOptions1] = useState([]);
     const [selectedOptions2,setSelectedOptions2] = useState([]);
+    const [nutrition,setNutrition] = useState([]);
+    const [nutritionSupport,setNutritionSupport] = useState([]);
+    useEffect(() => {
+        NUTRITION_EDUCATION_COUNSELLED();
+        NUTRITION_SUPPORT()
+    }, []);
+    //Get list of NUTRITION_EDUCATION_COUNSELLED
+    const NUTRITION_EDUCATION_COUNSELLED =()=>{
+        axios
+            .get(`${baseUrl}application-codesets/v2/NUTRITION_EDUCATION_COUNSELLED`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
 
+                setNutrition(Object.entries(response.data).map(([key, value]) => ({
+                    label: value.display,
+                    value: value.display,
+                })));
+            })
+            .catch((error) => {
+            //console.log(error);
+            });
+        
+    }
+    //Get list of NUTRITION_SUPPORT
+    const NUTRITION_SUPPORT =()=>{
+        axios
+            .get(`${baseUrl}application-codesets/v2/NUTRITION_SUPPORT`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+
+                setNutritionSupport(Object.entries(response.data).map(([key, value]) => ({
+                    label: value.display,
+                    value: value.display,
+                })));
+            })
+            .catch((error) => {
+            //console.log(error);
+            });
+        
+    }
     const [vital, setVitalSignDto]= useState({
         bodyWeight: "",
         height: "",
@@ -261,7 +302,7 @@ const BasicInfo = (props) => {
                         <Label >Nutrition Education and Counselled</Label>
                         <DualListBox
                             //canFilter
-                            options={options1}
+                            options={nutrition}
                             onChange={onSelectedOption}
                             selected={selectedOptions1}
                         />
@@ -272,7 +313,7 @@ const BasicInfo = (props) => {
                         <Label >Nutrition Support</Label>
                         <DualListBox
                             //canFilter
-                            options={options2}
+                            options={nutritionSupport}
                             onChange={onSelectedOption2}
                             selected={selectedOptions2}
                         />

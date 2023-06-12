@@ -218,8 +218,8 @@ useEffect(() => {
         temp.sampleNumber = tests.sampleNumber ? "" : "This field is required"
         temp.sampleCollectionDate =  tests.sampleCollectionDate ? "" : "This field is required"
         //tests.labTestId==='16' && (temp.viralLoadIndication = tests.viralLoadIndication ? "" : "This field is required")
-        temp.result = tests.result ? "" : "This field is required"
-        temp.dateResultReceived = tests.dateResultReceived ? "" : "This field is required"
+        {tests.dateResultReceived!=="" && (temp.result = tests.result ? "" : "This field is required")}
+        {tests.result!=="" && (temp.dateResultReceived = tests.dateResultReceived ? "" : "This field is required")}
         setErrors({
             ...temp
         })
@@ -428,7 +428,7 @@ useEffect(() => {
                         </Col>
                         <Col md={4} className="form-group mb-3">
                             <FormGroup>
-                                <Label for="encounterDate">Date Result Received <span style={{ color:"red"}}> *</span></Label>
+                                <Label for="encounterDate">Date Result Received {tests.result!==""? (<span style={{ color:"red"}}> *</span> ) : "" }</Label>
                                 <Input
                                     type="datetime-local"
                                     name="dateResultReceived"
@@ -449,7 +449,7 @@ useEffect(() => {
                         (<>
                             <div className="form-group  col-md-3">
                                 <FormGroup>
-                                    <Label>Result <span style={{ color:"red"}}> *</span></Label>
+                                    <Label>Result {tests.dateResultReceived!==""? (<span style={{ color:"red"}}> *</span> ) : "" }</Label>
                                     <select
                                         className="form-control"
                                         name="result"
@@ -473,7 +473,7 @@ useEffect(() => {
                         (<>
                             <Col md={4} className="form-group mb-3">
                                 <FormGroup>
-                                    <Label for="priority">Result <span style={{ color:"red"}}> *</span></Label>
+                                    <Label for="priority">Result {tests.dateResultReceived!==""? (<span style={{ color:"red"}}> *</span> ) : "" }</Label>
                                     
                                     <Input
                                         type="text"

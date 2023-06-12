@@ -207,7 +207,7 @@ const UserRegistration = (props) => {
             temp.entryPointId = objValues.entryPointId ? "" : "Care Entry Point is required." 
             temp.dateOfRegistration = objValues.dateOfRegistration ? "" : "Date of Registration is required."  
             temp.uniqueId = objValues.uniqueId ? "" : "Unique ID is required."
-            
+            {(basicInfo.age>9 && basicInfo.sex==='Female') && (temp.pregnancyStatusId = objValues.pregnancyStatusId ? "" : "This field is required.")}
                 setErrors({ ...temp })
         return Object.values(temp).every(x => x == "")
     }
@@ -352,17 +352,23 @@ const UserRegistration = (props) => {
         if(e.target.name ==="entryPointId" ){
             if(e.target.value==="21"){
                 setTransferIn(true)
+                setObjValues ({...objValues,  [e.target.name]: e.target.value});
             }else{
                 setTransferIn(false)
+                objValues.facilityName=""// make the value empty
+                //setObjValues ({...objValues,  ['facilityName']: ""});
+                setObjValues ({...objValues,  [e.target.name]: e.target.value});
             }
-        }  
-        // if(e.target.name ==="pregnancyStatusId" ){
-        //     if(e.target.value==="72"){
-        //         setTransferIn(true)
-        //     }else{
-        //         setTransferIn(false)
-        //     }
-        // }                
+            if(e.target.value==="24"){
+                setTransferIn(true)
+                setObjValues ({...objValues,  [e.target.name]: e.target.value});
+            }else{
+                setTransferIn(false)
+                objValues.careEntryPointOther=""// make the value empty
+                //setObjValues ({...objValues,  ['facilityName']: ""});
+                setObjValues ({...objValues,  [e.target.name]: e.target.value});
+            }
+        }              
     }    
     
 
@@ -371,6 +377,14 @@ const UserRegistration = (props) => {
         if(e.target.checked){
             setOvcEnrolled(true)
         }else{
+            objValues.ovc_enrolled=""
+            objValues.ovcNumber=""
+            objValues.householdNumber=""
+            objValues.referredToOVCPartner=""
+            objValues.dateReferredToOVCPartner=""
+            objValues.referredFromOVCPartner=""
+            objValues.dateReferredFromOVCPartner=""
+            objValues.ovcUniqueId=""
             setOvcEnrolled(false)
         }
     }
@@ -745,7 +759,7 @@ const UserRegistration = (props) => {
                                    
                                     <div className = "form-group mb-3 col-md-6" >
                                         <FormGroup>
-                                        <Label> Pregnancy </Label>
+                                        <Label> Pregnancy <span style={{ color:"red"}}> *</span></Label>
                                         <Input
                                             type = "select"
                                             name = "pregnancyStatusId"
@@ -755,13 +769,16 @@ const UserRegistration = (props) => {
                                             onChange = {handleInputChange}  
                                             disabled={disabledField}                                      
                                         >
-                                        < option value = "" >Select </option>
-                                        {pregnancyStatus.map((value) => (
+                                            < option value = "" >Select </option>
+                                            {pregnancyStatus.map((value) => (
                                                     <option key={value.id} value={value.id}>
                                                         {value.display}
                                                     </option>
                                                 ))}
-                                        </Input>                                                                        
+                                        </Input>
+                                        {errors.pregnancyStatusId !=="" ? (
+                                        <span className={classes.error}>{errors.pregnancyStatusId}</span>
+                                        ) : "" }                                                                        
                                     </FormGroup>  
                                     </div>
                                     {objValues.pregnancyStatusId===73 && (

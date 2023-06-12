@@ -141,12 +141,12 @@ const Patients = (props) => {
 
                 data={query =>
                     new Promise((resolve, reject) =>
-                        axios.get(`${baseUrl}hiv/patients?pageSize=${query.pageSize}&pageNo=${query.page}&searchValue=${query.search}`, { headers: {"Authorization" : `Bearer ${token}`} })
+                        axios.get(`${baseUrl}hiv/patient/enrollment/list?pageSize=${query.pageSize}&pageNo=${query.page}&searchValue=${query.search}`, { headers: {"Authorization" : `Bearer ${token}`} })
                             .then(response => response)
                             .then(result => {
                                 //console.log(result.data.records.filter(x=> x.currentStatus=== "Not Enrolled" ))
                                 resolve({
-                                    data: result.data.records.filter(x=> x.currentStatus!== "Not Enrolled" ).map((row) =>   ({
+                                    data: result.data.records.map((row) =>   ({
                                     name:row.currentStatus!== "Not Enrolled" ?
                                         (
                                         <>

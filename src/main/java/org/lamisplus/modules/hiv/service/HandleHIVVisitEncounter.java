@@ -1,6 +1,7 @@
 package org.lamisplus.modules.hiv.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.lamisplus.modules.patient.domain.dto.PersonResponseDto;
 import org.lamisplus.modules.patient.domain.entity.Encounter;
 import org.lamisplus.modules.patient.domain.entity.Person;
@@ -9,6 +10,7 @@ import org.lamisplus.modules.patient.repository.EncounterRepository;
 import org.lamisplus.modules.patient.repository.PersonRepository;
 import org.lamisplus.modules.patient.repository.VisitRepository;
 import org.lamisplus.modules.patient.service.PersonService;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class HandleHIVVisitEncounter {
 	
 	private final EncounterRepository encounterRepository;
@@ -26,6 +29,7 @@ public class HandleHIVVisitEncounter {
 	private final VisitRepository visitRepository;
 	
 	private final PersonService personService;
+	
 	
 	private final PersonRepository personRepository;
 	
@@ -39,6 +43,7 @@ public class HandleHIVVisitEncounter {
 		if (personDto.getVisitId() != null) {
 			Optional<Visit> visitOptional = visitRepository.findById(personDto.getVisitId());
 			if (visitOptional.isPresent()) {
+				log.debug("visit already exist, updating encounter only!!");
 				List<Encounter> visitEncounters = encounterRepository.getEncounterByVisit(visitOptional.get());
 				List<String> serviceCodes = visitEncounters.stream()
 						.map(Encounter::getServiceCode)
@@ -49,22 +54,20 @@ public class HandleHIVVisitEncounter {
 				return visitOptional.get();
 			}
 		} else {
-			//Log.info(" final creating visit {}", personOptional.isPresent());
 			Visit visit = new Visit();
 			personOptional.ifPresent(visit::setPerson);
 			personOptional.ifPresent(person -> visit.setFacilityId(person.getFacilityId()));
 			visit.setVisitStartDate(visitDate.atTime(0,0));
 			visit.setArchived(0);
 			visit.setUuid(UUID.randomUUID().toString());
-			//Log.info("about saving visit {}", personOptional.isPresent());
+			log.debug("about saving visit, person is available? {}", personOptional.isPresent());
 			try {
 				Visit currentVisit = visitRepository.save(visit);
-				//Log.info("finished saving visit => id {}", currentVisit.getId() ) ;
 				createHivVisitEncounter(personOptional, visit);
-				//Log.info("finished saving encounter", personOptional.isPresent());
 				return currentVisit;
-			}catch (Exception e) {
-			    e.printStackTrace();
+			} catch (DataAccessException e) {
+				log.error("Failed to save visit and encounter", e);
+				throw new RuntimeException("Failed to save visit and encounter", e);
 			}
 		}
 		return null;

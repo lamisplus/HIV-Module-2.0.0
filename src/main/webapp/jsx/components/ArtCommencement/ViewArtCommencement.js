@@ -134,8 +134,8 @@ const ArtCommencement = (props) => {
                                                 dateOfViralLoadAtStartOfArt: null,
                                                 cd4Count:"",
                                                 cd4SemiQuantitative:"",
-                                                cd4FlowCyteometry:""
-
+                                                cd4FlowCyteometry:"",
+                                                cd4Type:""
 
                                                 });
 
@@ -353,6 +353,25 @@ const ArtCommencement = (props) => {
             if(e.target.name==='cd4' && e.target.value!==""){
                 setObjValues ({...objValues,  [e.target.name]: e.target.value.replace(/\D/g, '')});
             }
+             //This logic is to clear the value of field that is hidden
+            //  if(e.target.name==='cd4Count' && e.target.value==="Semi-Quantitative"){
+            //     objValues.cd4FlowCytometry=""
+            //     setObjValues ({...objValues,  ["cd4FlowCytometry"]: " " });
+            //     setObjValues ({...objValues,  [e.target.name]: e.target.value});
+
+            // }else if(e.target.name==='cd4Count' && e.target.value==="Flow Cyteometry"){
+            //     objValues.cd4SemiQuantitative=""
+            //     setObjValues ({...objValues,  ["cd4SemiQuantitative"]: " " });
+            //     setObjValues ({...objValues,  [e.target.name]: e.target.value});
+            // }
+            if(e.target.name==='isViralLoadAtStartOfArt' && e.target.value==="false"){
+                objValues.viralLoadAtStartOfArt=""
+                objValues.dateOfViralLoadAtStartOfArt=""
+                setObjValues ({...objValues,  ["viralLoadAtStartOfArt"]: " " });
+                setObjValues ({...objValues,  ["dateOfViralLoadAtStartOfArt"]: " " });
+                setObjValues ({...objValues,  [e.target.name]: e.target.value});
+
+            }
         }
         const handleInputChangeVitalSignDto = e => { 
             setErrors({...errors, [e.target.name]: ""})
@@ -453,7 +472,7 @@ const ArtCommencement = (props) => {
             setErrors({
                 ...temp
                 })    
-            return Object.values(temp).every(x => x == "")
+            return Object.values(temp).every(x => x === "")
         }
 
 
@@ -467,9 +486,11 @@ const ArtCommencement = (props) => {
             objValues.vitalSignDto= vital
             objValues.hivEnrollmentId= props.patientObj.enrollmentId
             objValues.clinicalStageId = objValues.whoStagingId 
-            if(heightValue==='m'){//If height is meter convert to centi meter
-                vital.height= (vital.height/100).toFixed(2)
-            } 
+            //Logic for cd4 value
+            if(objValues.cd4Type==="Flow Cyteometry"){
+                objValues.cd4 = objValues.cd4Count
+            }
+
             setSaving(true);
             axios.put(`${baseUrl}hiv/art/commencement/${props.activeContent.id}`,objValues,
             { headers: {"Authorization" : `Bearer ${token}`}},
@@ -584,17 +605,17 @@ const ArtCommencement = (props) => {
                         </FormGroup>
                         </div>
                         <div className="row">
-                        <div className="form-group  col-md-4">
+                        <div className="form-group  col-md-6">
                                 <FormGroup>
-                                    <Label>CD4 Count </Label>
+                                    <Label>CD4 Count (Type)</Label>
                                     <select
                                         className="form-control"
-                                        name="cd4Count"
-                                        id="cd4Count"
-                                        value={objValues.cd4Count}
+                                        name="cd4Type"
+                                        id="cd4Type"
+                                        value={objValues.cd4Type}
                                         onChange={handleInputChange}
                                         style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
-                                        disabled={disabledField}
+                                        
                                     >
                                         <option value={""}></option>
                                         <option value="Semi-Quantitative">Semi-Quantitative</option>
@@ -604,41 +625,41 @@ const ArtCommencement = (props) => {
                                     
                                 </FormGroup>
                         </div>
-                        {objValues.cd4Count ==='Semi-Quantitative' && (
-                        <div className="form-group  col-md-4">
+                        {objValues.cd4Type ==='Semi-Quantitative' && (
+                        <div className="form-group  col-md-6">
                             <FormGroup>
-                                <Label>CD4 Count Value (Semi-Quantitative)</Label>
+                                <Label>CD4 Count Value(Semi-Quantitative)</Label>
                                 <select
                                     className="form-control"
-                                    name="cd4SemiQuantitative"
-                                    id="cd4SemiQuantitative"
-                                    value={objValues.cd4SemiQuantitative}
+                                    name="cd4Count"
+                                    id="cd4Count"
+                                    value={objValues.cd4Count}
                                     onChange={handleInputChange}
                                     style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
-                                    disabled={disabledField}
+                                    
                                 >
                                     <option value={""}></option>
-                                    <option value="Semi-Quantitative">{"<200"}</option>
-                                    <option value="Flow Cyteometry">{">=200"}</option>
+                                    <option value="<200">{"<200"}</option>
+                                    <option value=">=200">{">=200"}</option>
                                     
                                 </select>
                                 
                             </FormGroup>
                         </div>
                         )}
-                        {objValues.cd4Count ==='Flow Cyteometry' && (
-                        <div className="form-group mb-3 col-md-4">
+                        {objValues.cd4Type ==='Flow Cyteometry' && (
+                        <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                             <Label for="">CD4 Count Value (Flow Cyteometry)</Label>
                             <Input
                                 type="number"
                                 min={1}
-                                name="cd4FlowCyteometry"
-                                id="cd4FlowCyteometry"
-                                value={objValues.cd4FlowCyteometry}
+                                name="cd4Count"
+                                id="cd4Count"
+                                value={objValues.cd4Count}
                                 onChange={handleInputChange}
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                                disabled={disabledField}
+                                
                             />
                                 
                             </FormGroup>
