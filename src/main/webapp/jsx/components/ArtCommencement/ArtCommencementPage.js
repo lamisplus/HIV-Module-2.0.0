@@ -91,6 +91,9 @@ const useStyles = makeStyles(theme => ({
 const ArtCommencement = (props) => {
     const patientObj = props.patientObj;
     const [enrollDate, setEnrollDate] = useState("");
+    const [dateOfRegistration, setDateOfRegistration] = useState(null);
+    const [statusAtRegistrationId, setStatusAtRegistrationId] = useState("");
+    const [minDate, setMinDate] = useState("");
     //let history = useHistory();
     let gender=""
     const classes = useStyles()
@@ -195,7 +198,15 @@ const ArtCommencement = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
                 )
                 .then((response) => {
-                    setEnrollDate(response.data.enrollment.dateOfRegistration)
+                    console.log("Current Patient is {}", response.data);
+                    setMinDate(response.data.enrollment.dateOfRegistration)
+                    setStatusAtRegistrationId(response.data.enrollment.statusAtRegistrationId)
+                    setDateOfRegistration(response.data.dateOfRegistration)
+
+                    if(response.data.enrollment.statusAtRegistrationId === 55){
+                        let min = moment(new Date("2007-01-01")).format("YYYY-MM-DD")
+                        setMinDate(min)
+                    }
                     setPatientObject(response.data);
                 })
                 .catch((error) => {  
@@ -562,7 +573,7 @@ const ArtCommencement = (props) => {
                             id="visitDate"
                             onChange={handleInputChange}
                             value={objValues.visitDate}
-                            min={enrollDate}
+                            min={minDate}
                             max= {moment(new Date()).format("YYYY-MM-DD") }
                             
                             style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
