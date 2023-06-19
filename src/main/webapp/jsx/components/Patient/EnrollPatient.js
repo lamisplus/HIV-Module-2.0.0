@@ -831,7 +831,7 @@ const UserRegistration = (props) => {
                                     </FormGroup>
                                 </div>
                                 ) : ""}
-                                {basicInfo.age <=14 && (
+                                {basicInfo.age <=17 && (
                                 <div className="form-group mb-3 col-md-3">
                                     
                                     <div className="form-check custom-checkbox ml-1 ">
@@ -931,7 +931,7 @@ const UserRegistration = (props) => {
                                             name="dateReferredToOVCPartner"
                                             id="dateReferredToOVCPartner"
                                             min={basicInfo.dob}
-                                            max={objValues.dateOfRegistration }
+                                            //max={objValues.dateOfRegistration }
                                             onChange={handleInputChange}
                                             value={objValues.dateReferredToOVCPartner}
                                             style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
