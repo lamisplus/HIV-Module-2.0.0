@@ -849,7 +849,6 @@ const ArtCommencement = (props) => {
                                 type="select"
                                 name="pregancyStatus"
                                 id="pregancyStatus"
-                                disabled
                                 onChange={handleInputChange}
                                 value="72"
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
