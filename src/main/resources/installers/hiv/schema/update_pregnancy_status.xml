@@ -43,15 +43,6 @@
         </sql>
     </changeSet>
 
-    <changeSet failOnError="true"  id="20230620-03" author="Amos">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="hiv_status_tracker" columnName="VA_CAUSE_OF_DEATH" />
-            </not>
-        </preConditions>
-        <sql>
-            ALTER TABLE hiv_status_tracker ADD VA_CAUSE_OF_DEATH VARCHAR(255);
-        </sql>
-    </changeSet>
+
 
 </databaseChangeLog>
