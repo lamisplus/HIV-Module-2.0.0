@@ -335,7 +335,7 @@ const PatientnHistory = (props) => {
                   else{
                     toast.error("Something went wrong. Please try again...");
                   }
-            }); 
+        }); 
 
         }else if(row.path==='clinic-visit'){
             setSaving(true) 

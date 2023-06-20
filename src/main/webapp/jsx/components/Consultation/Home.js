@@ -1724,7 +1724,7 @@ const ClinicVisit = (props) => {
                         required
                       >
                         <option value="select">Select </option>
-                        {patientAge >5 &&  (
+                        {patientAge >14 &&  (
                           <>
                             {adultRegimenLine.map((value) => (
                               <option key={value.id} value={value.id}>
@@ -1733,7 +1733,7 @@ const ClinicVisit = (props) => {
                             ))}
                           </>
                         )}
-                        {patientAge <=5 &&  (
+                        {patientAge <=14 &&  (
                           <>
                             {childRegimenLine.map((value) => (
                               <option key={value.id} value={value.id}>
