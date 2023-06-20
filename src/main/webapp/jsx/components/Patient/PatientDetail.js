@@ -1,5 +1,7 @@
 import React,{useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
+import axios from "axios";
+import { url as baseUrl, token } from "./../../../api";
 import { withStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom'
 import 'semantic-ui-css/semantic.min.css';
@@ -52,8 +54,9 @@ import IntensiveFollowUp from './../IntensiveFollowUp/Index'
 import TransferForm from './../TransferForm/Index'
 import ViewUpdateLabOrderResult from './../Laboratory/LabOrderResult/UpdateLabOrderResult'
 import UpdateViewViralLoadOrderResult from './../Laboratory/ViralLoadOrderResult/UpdateViewViralLoadOrderResult'
-import axios from "axios";
-import { url as baseUrl, token } from "./../../../api";
+import OtzServiceForm from './../Otz/ServiceForm'
+import OtzPeadiatricDisclosureChecklist from './../Otz/PeadiatricDisclosureChecklist'
+import OtzRegister from './../Otz/Register'
 
 const styles = theme => ({
   root: {
@@ -173,6 +176,11 @@ function PatientCard(props) {
           
           {activeContent.route==='lab-view-viral-load-order-result' &&( <UpdateViewViralLoadOrderResult patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
           {activeContent.route==='lab-view-order-result' &&( <ViewUpdateLabOrderResult patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
+
+          {activeContent.route==='otz-service-form' &&( <OtzServiceForm patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
+          {activeContent.route==='otz-register' &&( <OtzRegister patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
+          {activeContent.route==='otz-peadiatric-disclosure-checklist' &&( <OtzPeadiatricDisclosureChecklist patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
+
          </CardContent>
       </Card>
     </div>

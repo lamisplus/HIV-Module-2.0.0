@@ -107,6 +107,18 @@ function SubMenu(props) {
         setActiveItem('chronic-care')
         props.setActiveContent({...props.activeContent, route:'chronic-care'})
     }
+    const loadOtzServiceForm = ()=>{
+        setActiveItem('otz-service-form')
+        props.setActiveContent({...props.activeContent, route:'otz-service-form'})
+    }
+    const loadOtzCheckList = ()=>{
+        setActiveItem('otz-peadiatric-disclosure-checklist')
+        props.setActiveContent({...props.activeContent, route:'otz-peadiatric-disclosure-checklist'})
+    }
+    const loadOtzRegister = ()=>{
+        setActiveItem('otz-register')
+        props.setActiveContent({...props.activeContent, route:'otz-register'})
+    }
     //
 
     return (
@@ -154,8 +166,8 @@ function SubMenu(props) {
                     active={activeItem === 'pharmacy'} title="Pharmacy"> Pharmacy</Menu.Item>
                     <Menu.Item onClick={() => loadEAC(patientObj)} disabled={patientCurrentStatus} name='eac'
                     active={activeItem === 'eac'} title="EAC"> EAC</Menu.Item>
-                    {/* <Menu.Item onClick={() => loadStatusUpdate(patientObj)} name='status'
-                    active={activeItem === 'status'}>Client Status Update</Menu.Item> */}
+                    <Menu.Item onClick={() => loadChronicCare(patientObj)} name='chronic care'
+                    active={activeItem === 'chronic-care'}>Chronic Care</Menu.Item>
                     {/* {patientObj.currentStatus && patientObj.currentStatus==='IIT' && (<Menu.Item onClick={() => loadTrackingForm(patientObj)} >Tracking Form</Menu.Item>)} */}
                     {(!patientObj.mentalHealth  && (patientObj.targetGroupId!==null && patientObj.targetGroupId!==473)) && patientObj.createBy==="Lamis data migration system" && (<Menu.Item onClick={() => loadMentalHealth(patientObj)} name='health'
                     active={activeItem === 'health'} title="Mental Health Screening">Mental Health Screening</Menu.Item>)}
@@ -179,12 +191,21 @@ function SubMenu(props) {
                         <Dropdown.Item onClick={() => loadIntensiveForm(patientObj)} name='intensive'
                             active={activeItem === 'intensive'} title="Intensive Follow Up">Intensive Follow Up
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => loadChronicCare(patientObj)} name='transfer'
-                            active={activeItem === 'chronic-care'} title="Chronic Care">Chronic Care
+                        </Dropdown.Menu>
+                    </Dropdown>
+                    <Dropdown item text='OTZ'>
+                        <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => loadOtzServiceForm(patientObj)} name='OTZ Service Form'
+                            active={activeItem === 'otz-service-form'} title="Tracking Form">OTZ Service Form
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => loadOtzRegister(patientObj)} name='OTZ Register'
+                            active={activeItem === 'otz-register'} title="OTZ Register">OTZ Register
+                        </Dropdown.Item>
+                        <Dropdown.Item onClick={() => loadOtzCheckList(patientObj)} name='Peadiatric Disclosure Checklist'
+                            active={activeItem === 'otz-peadiatric-disclosure-checklist'} title="Peadiatric Disclosure Checklist">Peadiatric Disclosure Checklist
                         </Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
-
                     </Menu.Menu> 
                     
                     {/* <Menu.Item onClick={() => loadTransferForm(patientObj)} name='transfer'

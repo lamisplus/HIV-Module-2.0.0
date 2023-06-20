@@ -1569,19 +1569,19 @@ const Pharmacy = (props) => {
                     )}
                     {patientAge <=15 &&  (
                     <>
-                    {iptEligibilty.IPTEligibility===true ? //Logic to check for TPT eligibility to filter TPT drugs
+                    {iptEligibilty.IPTEligibility===true ? //Logic to check for TPT eligibility to filter TPT drugs for children
                         (<>
                             {oIRegimenLine.map((value) => (
                             <option key={value.id} value={value.id}>
-                                {value.label}
+                                {value.description}
                             </option>
                         ))}
                         </>)
                         :
                         (<>
-                            {oIRegimenLine.filter((x)=> x.value!==15).map((value) => (
+                            {oIRegimenLine.filter((x)=> x.id!==15).map((value) => (
                             <option key={value.id} value={value.id}>
-                                {value.label}
+                                {value.description}
                             </option>
                         ))}
                         </>)
@@ -1619,7 +1619,7 @@ const Pharmacy = (props) => {
                 </FormGroup>
             </div>
             
-            { iptEligibilty.IPTEligibility===true  && ( //iptEligibilty
+            { iptEligibilty.IPTEligibility===true  && ( //iptEligibilty check to display Visit type
             <div className="form-group mb-3 col-xs-6 col-sm-6 col-md-6 col-lg-6">
                 <FormGroup>
                 <Label >Visit Type</Label>
