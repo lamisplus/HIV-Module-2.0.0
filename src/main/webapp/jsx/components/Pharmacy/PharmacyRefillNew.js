@@ -62,7 +62,6 @@ const useStyles = makeStyles(theme => ({
 let refillPeriodValue=null
 
 const Pharmacy = (props) => {
-    
     const patientObj = props.patientObj;
     const [selectedCombinedRegimen, setSelectedCombinedRegimen] = useState([]);
     const [enrollDate, setEnrollDate] = useState("");
@@ -105,6 +104,7 @@ const Pharmacy = (props) => {
     const [iptType, setIPT_TYPE] = useState([]);
     const [regimenTypeOther, setRegimenTypeOther] = useState([]);
     const [iptEligibilty, setIptEligibilty] = useState("");
+    const [lastChronicCare, setLastChronicCare] = useState(null);
     //const [currentRegimenValue, setCurrentRegimenValue] = useState("");//this is to get the current regimen value/ID the patient is on 
     //IPT_TYPE
     const [objValues, setObjValues] = useState({
@@ -163,6 +163,7 @@ const Pharmacy = (props) => {
         CheckEACStatus();
         VitalSigns();
         ChildRegimenLine();
+        ChronicCare();
         GetPatientDTOObj();
         GetIptEligibilty();
     }, [selectedOption, regimenType.length>0, objValues.refillPeriod]);
@@ -181,6 +182,22 @@ const Pharmacy = (props) => {
        
     }
     //
+    const ChronicCare =()=>{
+        axios
+        .get(`${baseUrl}observation/person/${props.patientObj.id}`,
+            { headers: {"Authorization" : `Bearer ${token}`} }
+        )
+        .then((response) => {
+
+                const obj1 =response.data.filter(x=> x.type==='Chronic Care')
+                //const lastArryObj=obj1.slice(-1)
+                setLastChronicCare(obj1)
+                //const lastobj;
+        })
+        .catch((error) => {
+        //console.log(error);
+        });       
+    }
     const GetIptEligibilty =()=>{
         axios
         .get(`${baseUrl}observation/check-ipt-eligible/${props.patientObj.id}`,
@@ -880,6 +897,9 @@ const Pharmacy = (props) => {
     const handleSubmit = (e) => {        
         e.preventDefault();
         setSaving(true);
+        const observeDate =lastChronicCare.find(x=> x.dateOfObservation===objValues.visitDate)
+        console.log(observeDate)
+        if(observeDate){
         objValues.adverseDrugReactions=selectedOptionAdr
         objValues.personId=props.patientObj.id
         objValues.extra['regimens']=regimenDrugList 
@@ -932,7 +952,11 @@ const Pharmacy = (props) => {
                 toast.error("Something went wrong, please try again...", {position: toast.POSITION.BOTTOM_CENTER});
             }
                        
-        }); 
+        });
+        }else{
+            toast.error("No Chronic Care filled for this Encounter Date, please try again...", {position: toast.POSITION.BOTTOM_CENTER});  
+            setSaving(false); 
+        } 
     }
 
     let TotalDispensed = regimenDrug.reduce(function(prev, current) {
@@ -943,6 +967,7 @@ const Pharmacy = (props) => {
         return prev + +duration
       }, 0);
 
+console.log(lastChronicCare)
 
   return (      
       <div>
