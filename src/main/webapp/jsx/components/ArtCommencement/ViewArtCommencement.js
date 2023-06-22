@@ -107,7 +107,7 @@ const ArtCommencement = (props) => {
     const [tbStatus, setTbStatus] = useState([]);
     const [regimenLine, setRegimenLine] = useState([]);
     const [regimenType, setRegimenType] = useState([]);
-    const [pregancyStatus, setPregancyStatus] = useState([]);
+    const [pregnancyStatus, setpregnancyStatus] = useState([]);
     const [functionalStatus, setFunctionalStatus] = useState([]);
     const [adultRegimenLine, setAdultRegimenLine] = useState([]);
     const [childRegimenLine, setChildRegimenLine] = useState([]);
@@ -313,7 +313,7 @@ const ArtCommencement = (props) => {
     )
     .then((response) => {
     //console.log(response.data);
-    setPregancyStatus(response.data);
+    setpregnancyStatus(response.data);
     })
     .catch((error) => {
     //console.log(error);
@@ -887,19 +887,19 @@ const ArtCommencement = (props) => {
                             <Label >Pregnancy Status</Label>
                             <Input
                                 type="select"
-                                name="pregancyStatus"
-                                id="pregancyStatus"
-                                disabled
+                                name="pregnancyStatus"
+                                id="pregnancyStatus"
+                                
                                 onChange={handleInputChange}
-                                //value="72"
+                                value={objValues.pregnancyStatus}
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 
 
                             >
                                 <option value=""> Select</option>
         
-                                {pregancyStatus.map((value) => (
-                                    <option key={value.id} value={value.id}>
+                                {pregnancyStatus.map((value) => (
+                                    <option key={value.id} value={value.display}>
                                         {value.display}
                                     </option>
                                 ))}
@@ -1248,7 +1248,7 @@ const ArtCommencement = (props) => {
                             >
                                 <option value=""> Select</option>
         
-                                {pregancyStatus.map((value) => (
+                                {pregnancyStatus.map((value) => (
                                     <option key={value.id} value={value.id}>
                                         {value.display}
                                     </option>

@@ -103,7 +103,7 @@ const ArtCommencement = (props) => {
     //const [tbStatus, setTbStatus] = useState([]);
     //const [regimenLine, setRegimenLine] = useState([]);
     const [regimenType, setRegimenType] = useState([]);
-    const [pregancyStatus, setPregancyStatus] = useState([]);
+    const [pregnancyStatus, setpregnancyStatus] = useState([]);
     const [functionalStatus, setFunctionalStatus] = useState([]);
     const [adultRegimenLine, setAdultRegimenLine] = useState([]);
     const [childRegimenLine, setChildRegimenLine] = useState([]);
@@ -129,8 +129,8 @@ const ArtCommencement = (props) => {
                                                 cd4Count:null,
                                                 cd4SemiQuantitative:"",
                                                 cd4FlowCytometry:"",
-                                                cd4Type:""                                                  
-
+                                                cd4Type:"",                                                  
+                                                pregnancyStatus:""
                                                 });
 
     const [vital, setVitalSignDto]= useState({
@@ -305,7 +305,7 @@ const ArtCommencement = (props) => {
         )
         .then((response) => {
             //console.log(response.data);
-            setPregancyStatus(response.data);
+            setpregnancyStatus(response.data);
         })
         .catch((error) => {
         //console.log(error);
@@ -847,19 +847,16 @@ const ArtCommencement = (props) => {
                             <Label >Pregnancy Status <span style={{ color:"red"}}> *</span></Label>
                             <Input
                                 type="select"
-                                name="pregancyStatus"
-                                id="pregancyStatus"
-                                disabled
+                                name="pregnancyStatus"
+                                id="pregnancyStatus"
                                 onChange={handleInputChange}
-                                //value="72"
+                                value={objValues.pregnancyStatus}
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 //disabled
-
                             >
                                 <option value=""> Select</option>
-        
-                                {pregancyStatus.map((value) => (
-                                    <option key={value.id} value={value.id}>
+                                {pregnancyStatus.map((value) => (
+                                    <option key={value.id} value={value.display}>
                                         {value.display}
                                     </option>
                                 ))}

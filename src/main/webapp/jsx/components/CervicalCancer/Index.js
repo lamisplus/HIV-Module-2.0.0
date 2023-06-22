@@ -108,8 +108,8 @@ const CervicalCancer = (props) => {
                                                     screeningVisible:"",
                                                     screenTreatment:"",
                                                     papPendingingResult:"",
-                                                    papGettingResult:""                                                 
-
+                                                    papGettingResult:"",                                                 
+                                                    screenTreatmentMethodDate:""
                                                 });
     const [observation, setObservation]=useState({
             data: {},
@@ -270,6 +270,13 @@ const CervicalCancer = (props) => {
             setObjValues ({...objValues,  ["screeningVisible"]: " " });
             setObjValues ({...objValues,  [e.target.name]: e.target.value});
         }
+        if(e.target.name==='screenTreatment' && e.target.value===''){
+            objValues.screenTreatmentMethodDate=""
+            objValues.screenTreatmentMethodDate=""
+            setObjValues ({...objValues,  ["screenTreatmentMethodDate"]: " " });
+            setObjValues ({...objValues,  ["screescreenTreatmentMethodDateningVisible"]: " " });
+            setObjValues ({...objValues,  [e.target.name]: e.target.value});
+        }
         //objValues.screeningResult ==='CERVICAL_CANCER_RESULT_POSITIVE'
         //screeningArea screeningVisible
     }
@@ -345,7 +352,7 @@ const CervicalCancer = (props) => {
                                     onChange={handleInputChange}
                                     required
                                     >
-                                        <option value="Select"> Select</option>
+                                        <option value=""> Select</option>
                 
                                         {method.map((value) => (
                                             <option key={value.id} value={value.code}>
@@ -403,7 +410,7 @@ const CervicalCancer = (props) => {
                                     onChange={handleInputChange}
                                     required
                                     >
-                                        <option value="Select"> Select</option>
+                                        <option value=""> Select</option>
                 
                                         {screeningType.map((value) => (
                                             <option key={value.id} value={value.code}>
@@ -427,7 +434,7 @@ const CervicalCancer = (props) => {
                                     onChange={handleInputChange}
                                     required
                                     >
-                                        <option value="Select"> </option>
+                                        <option value=""> </option>
                 
                                         {result.map((value) => (
                                             <option key={value.id} value={value.code}>
@@ -453,7 +460,7 @@ const CervicalCancer = (props) => {
                                     onChange={handleInputChange}
                                     required
                                     >
-                                        <option value="Select"> </option>
+                                        <option value=""> </option>
                 
                                         {areas.map((value) => (
                                             <option key={value.id} value={value.code}>
@@ -477,7 +484,7 @@ const CervicalCancer = (props) => {
                                 onChange={handleInputChange}
                                 required
                                 >
-                                    <option value="Select"> </option>
+                                    <option value=""> </option>
             
                                     {visible.map((value) => (
                                         <option key={value.id} value={value.code}>
@@ -503,7 +510,7 @@ const CervicalCancer = (props) => {
                                     onChange={handleInputChange}
                                     required
                                     >
-                                        <option value="Select"> </option>
+                                        <option value=""> </option>
                 
                                         {gross.map((value) => (
                                             <option key={value.id} value={value.code}>
@@ -527,7 +534,7 @@ const CervicalCancer = (props) => {
                                     onChange={handleInputChange}
                                     required
                                     >
-                                        <option value="Select"> Select</option>
+                                        <option value=""> Select</option>
                 
                                         {type.map((value) => (
                                             <option key={value.id} value={value.code}>
@@ -539,7 +546,28 @@ const CervicalCancer = (props) => {
                                     <span className={classes.error}>{errors.screenTreatment}</span>
                                 ) : "" }
                             </FormGroup>
-                            </div>                        
+                            </div>
+                            {objValues.screenTreatment!=="" && (
+                            <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                            <Label >Screening Treatment Method Date</Label>
+                            <Input
+                                    type="date"
+                                    name="screenTreatmentMethodDate"
+                                    id="screenTreatmentMethodDate"
+                                    value={objValues.screenTreatmentMethodDate}
+                                    onChange={handleInputChange}
+                                    min={enrollDate}
+                                    max= {moment(new Date()).format("YYYY-MM-DD") }
+                                    required
+                                    >
+                                </Input>
+                                {errors.screenTreatmentMethodDate !=="" ? (
+                                    <span className={classes.error}>{errors.screenTreatmentMethodDate}</span>
+                                ) : "" }
+                            </FormGroup>
+                            </div>
+                            )}                         
                             <div className="form-group mb-3 col-md-6">
                                 <FormGroup>
                                 <Label >Referral </Label>
@@ -551,7 +579,7 @@ const CervicalCancer = (props) => {
                                     onChange={handleInputChange}
                                     required
                                     >
-                                        <option value="Select"> </option>
+                                        <option value=""> </option>
                 
                                         {referrals.map((value) => (
                                             <option key={value.id} value={value.code}>
