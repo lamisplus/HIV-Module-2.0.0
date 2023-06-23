@@ -7,7 +7,7 @@ import org.springframework.core.annotation.Order;
 @Order(2)
 @Installer(name = "update-hiv_art_clinical",
 		description = "add new columns",
-		version = 1)
+		version = 3)
 public class UpdateHIVClinicalTablelColumn extends AcrossLiquibaseInstaller {
 	public UpdateHIVClinicalTablelColumn() {
 		super ("classpath:installers/hiv/schema/add-new-columns.xml");

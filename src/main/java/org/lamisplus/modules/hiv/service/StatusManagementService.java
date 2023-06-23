@@ -75,10 +75,8 @@ public class StatusManagementService {
 	
 	private Quarter getQuarter(int startMonth, int year, String quarterName) {
 		LocalDate start = LocalDate.of(year, startMonth, 1);
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.MONTH, startMonth + 1);
-		int lastDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-		LocalDate end = LocalDate.of(year, startMonth + 2, lastDay);
+		LocalDate end = start.plusMonths(3).minusDays(1);
+		log.info("endDate:{}", end);
 		return new Quarter(start, end, quarterName);
 		
 	}
@@ -111,14 +109,10 @@ public class StatusManagementService {
 				);
 		Optional<HIVStatusTracker> patientNegativeStatus = hivStatusTrackerRepository
 				.getStatusByPersonUuidAndDateRange(personUuid, quarterEnd);
-		patientNegativeStatus.ifPresent(statusTracker -> log.info("HivStatus: {}", statusTracker.getHivStatus()));
 		if (patientNegativeStatus.isPresent() && staticStatus.contains(patientNegativeStatus.get().getHivStatus())) {
 			String hivStatus = patientNegativeStatus.get().getHivStatus();
-			log.info("Negative HivStatus: {}", hivStatus);
 				String finalStatus = hivStatus.replaceAll("_", " ").toUpperCase();
-				log.info("HivStatus1: {}", finalStatus);
 				if(finalStatus.contains("DEATH") || finalStatus.contains("Died")) finalStatus = "DIED";
-				log.info("HivStatus2: {}", finalStatus);
 				return new HIVInterQuarterStatus(patientNegativeStatus.get().getStatusDate(), finalStatus);
 		}
 		Optional<ArtPharmacy> currentRefillInQuarter = pharmacyRepository

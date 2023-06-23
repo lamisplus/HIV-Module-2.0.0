@@ -7,7 +7,6 @@ import org.springframework.data.domain.Persistable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -54,9 +53,18 @@ public class HIVStatusTracker extends HivAuditEntity implements Persistable<Long
     @Column(name = "reason_for_interruption")
     private String reasonForInterruption;
 
-    @Size(max = 100)
+    @Size(max = 150)
     @Column(name = "CAUSE_OF_DEATH")
     private String causeOfDeath;
+    
+    
+    @Size(max = 200)
+    @Column(name = "VA_CAUSE_OF_DEATH")
+    private String vaCauseOfDeath;
+    
+    @Size(max = 200)
+    @Column(name = "VA_CAUSE_OF_DEATH_TYPE")
+    private String vaCauseOfDeathType;
 
     private Boolean auto = false;
     

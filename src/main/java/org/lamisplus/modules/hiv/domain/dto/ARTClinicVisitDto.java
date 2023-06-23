@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.Type;
 import org.lamisplus.modules.hiv.utility.LocalDateConverter;
 import org.lamisplus.modules.triage.domain.dto.VitalSignRequestDto;
@@ -19,6 +20,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ARTClinicVisitDto implements Serializable {
 	@Type(type = "jsonb")
 	JsonNode adverseDrugReactions;

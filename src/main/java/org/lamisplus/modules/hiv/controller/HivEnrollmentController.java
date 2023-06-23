@@ -38,15 +38,21 @@ public class HivEnrollmentController {
         return ResponseEntity.ok (hivEnrollmentService.getAll ());
     }
     
+    @GetMapping(value = "non-biometric-patient/enrollment/{facilityId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<PatientDTO>> getNonBiometricHivEnrollmentPatients(@PathVariable("facilityId") Long facilityId) {
+        return ResponseEntity.ok (patientService.getHivEnrolledNonBiometricPatients(facilityId));
+    }
+    
     @GetMapping(value = "patient/enrollment/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PageDTO> getHivEnrollmentList(
             @RequestParam (required = false ) String searchValue,
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize
-       ) {
+    ) {
         return ResponseEntity.ok (patientService.getHivEnrolledPatients(searchValue, PageRequest.of(pageNo, pageSize)));
     }
-
+    
+    
     @GetMapping(value = "patients", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PageDTO> getHivPatient(
             @RequestParam (required = false ) String searchValue,

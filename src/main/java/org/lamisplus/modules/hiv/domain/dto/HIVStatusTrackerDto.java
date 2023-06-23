@@ -34,5 +34,9 @@ public class HIVStatusTrackerDto implements Serializable {
     private String reasonForInterruption;
     @Size(max = 100)
     private String causeOfDeath;
+    @Size(max = 200)
+    private String vaCauseOfDeath;
+    @Size(max = 200)
+    private String vaCauseOfDeathType;
 
 }
