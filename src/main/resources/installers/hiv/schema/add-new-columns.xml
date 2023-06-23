@@ -141,4 +141,15 @@
             ALTER TABLE hiv_status_tracker ADD VA_CAUSE_OF_DEATH VARCHAR(255);
         </sql>
     </changeSet>
+
+    <changeSet failOnError="true"  id="20230622-012" author="amos-data-fi">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="hiv_status_tracker" columnName="VA_CAUSE_OF_DEATH_TYPE" />
+            </not>
+        </preConditions>
+        <sql>
+            ALTER TABLE hiv_status_tracker ADD VA_CAUSE_OF_DEATH_TYPE VARCHAR(255);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
