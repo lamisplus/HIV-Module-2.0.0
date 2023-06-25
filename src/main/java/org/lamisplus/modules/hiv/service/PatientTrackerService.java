@@ -46,7 +46,11 @@ public class PatientTrackerService {
 		PatientTracker patientTracker = mapDtoEntity(dto);
 		patientTracker.setId(patientTrackerExist.getId());
 		patientTracker.setUuid(patientTrackerExist.getUuid());
-		patientTracker.setStatusTracker(patientTrackerExist.getStatusTracker());
+		HIVStatusTracker statusTracker = patientTrackerExist.getStatusTracker();
+		if (statusTracker != null){
+			statusTrackerService.updateHIVStatusTracker(statusTracker.getId(), dto.getStatusTracker());
+		}
+		patientTracker.setStatusTracker(statusTracker);
 		return mapEntityDto(patientTrackerRepository.save(patientTracker));
 	}
 	
@@ -103,6 +107,10 @@ public class PatientTrackerService {
 		patentTrackingDto.setDateMissedAppointment(entity.getDateMissedAppointment());
 		patentTrackingDto.setFacilityId(entity.getFacilityId());
 		patentTrackingDto.setPatientId(entity.getPerson().getId());
+		HIVStatusTrackerDto statusTracker =
+				statusTrackerService.convertEntityToDto(entity.getStatusTracker());
+		patentTrackingDto.setStatusTracker(statusTracker);
+		entity.getPerson().getId();
 		patentTrackingDto.setId(entity.getId());
 		return patentTrackingDto;
 		

@@ -2,7 +2,6 @@ package org.lamisplus.modules.hiv.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.audit4j.core.util.Log;
 import org.jetbrains.annotations.NotNull;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
 import org.lamisplus.modules.base.service.ApplicationCodesetService;
@@ -54,6 +53,8 @@ public class ArtClinicVisitService {
 	
 	
 	public ARTClinicVisitDto createArtClinicVisit(ARTClinicVisitDto artClinicVisitDto) {
+		log.info("payload to create card visit: " + artClinicVisitDto);
+		log.info("visit date: " + artClinicVisitDto.getVisitDate());
 		Long hivEnrollmentId = artClinicVisitDto.getHivEnrollmentId();
 		HivEnrollment hivEnrollment = hivEnrollmentRepository
 				.findById(hivEnrollmentId)
@@ -69,11 +70,11 @@ public class ArtClinicVisitService {
 		if (visit != null) {
 			vitalSignDto.setVisitId(visit.getId());
 		}
-		Optional<VitalSign> vitalSignOptional = vitalSignRepository.getVitalSignByVisitAndArchived(visit, 0);
+		Optional<VitalSign> vitalSignOptional =
+				vitalSignRepository.getVitalSignByVisitAndArchived(visit, 0);
 		Long vitalSignId = null;
 		if (vitalSignOptional.isPresent()) {
 			vitalSignId = vitalSignOptional.get().getId();
-			
 			vitalSignService.updateVitalSign(vitalSignId, vitalSignDto);
 		} else {
 			vitalSignId = vitalSignService.registerVitalSign(vitalSignDto).getId();
