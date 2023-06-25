@@ -754,7 +754,7 @@ const UserRegistration = (props) => {
                                         ) : "" }
                                     </FormGroup>
                                 </div>
-                                {((basicInfo.sexId===377 || basicInfo.gender==='Female' || basicInfo.gender==='FEMALE' || basicInfo.gender==='female') && basicInfo.age > 9) && (
+                                {((basicInfo.sexId===377 || basicInfo.sex==='Female' || basicInfo.sex==='FEMALE' || basicInfo.sex==='female') && basicInfo.age > 9) && (
                                     <>
                                    
                                     <div className = "form-group mb-3 col-md-6" >
@@ -771,7 +771,7 @@ const UserRegistration = (props) => {
                                         >
                                             < option value = "" >Select </option>
                                             {pregnancyStatus.map((value) => (
-                                                    <option key={value.id} value={value.id}>
+                                                    <option key={value.id} value={value.display}>
                                                         {value.display}
                                                     </option>
                                                 ))}
@@ -781,7 +781,7 @@ const UserRegistration = (props) => {
                                         ) : "" }                                                                        
                                     </FormGroup>  
                                     </div>
-                                    {objValues.pregnancyStatusId===73 && (
+                                    {objValues.pregnancyStatusId==='Pregnant' && (
                                     <>
                                     <div className="form-group mb-3 col-md-6">
                                         <FormGroup>

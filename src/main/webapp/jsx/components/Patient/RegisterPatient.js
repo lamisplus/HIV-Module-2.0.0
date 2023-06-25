@@ -1862,7 +1862,7 @@ const UserRegistration = (props) => {
                                         >
                                             < option value = "" >Select </option>
                                             {pregnancyStatus.map((value) => (
-                                                    <option key={value.id} value={value.id}>
+                                                    <option key={value.id} value={value.display}>
                                                         {value.display}
                                                     </option>
                                             ))}
@@ -1872,7 +1872,7 @@ const UserRegistration = (props) => {
                                         ) : "" }                                                                        
                                     </FormGroup>  
                                     </div>
-                                    {objValues.pregnancyStatusId==='73' && (
+                                    {objValues.pregnancyStatusId==='Pregnant' && (
                                     <>
                                         <div className="form-group mb-3 col-md-6">
                                             <FormGroup>

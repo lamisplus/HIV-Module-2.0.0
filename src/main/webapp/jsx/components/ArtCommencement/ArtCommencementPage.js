@@ -863,7 +863,7 @@ const ArtCommencement = (props) => {
                             </Input>
                             </FormGroup>
                         </div>
-                        {props.patientObj.enrollment && props.patientObj.enrollment.pregnancyStatusId==='72' && (
+                        {props.patientObj.enrollment && props.patientObj.enrollment.pregnancyStatusId==='"Pregnant"' && (
                         <div className="form-group mb-3 col-md-4">
                             <FormGroup>
                             <Label >LMP</Label>
