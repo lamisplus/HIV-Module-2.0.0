@@ -141,4 +141,109 @@
             ALTER TABLE hiv_status_tracker ADD VA_CAUSE_OF_DEATH VARCHAR(255);
         </sql>
     </changeSet>
+
+    <changeSet failOnError="true"  id="20230622-012" author="amos-data-fi">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="hiv_status_tracker" columnName="VA_CAUSE_OF_DEATH_TYPE" />
+            </not>
+        </preConditions>
+        <sql>
+            ALTER TABLE hiv_status_tracker ADD VA_CAUSE_OF_DEATH_TYPE VARCHAR(255);
+        </sql>
+    </changeSet>
+
+    <changeSet id="20230627-013" author="amos-data-fi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                 select count(*) from hiv_regimen
+                 where regimen_type_id = 15
+                 and description = 'Isoniazid 300mg';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+             update hiv_regimen set description = 'Isoniazid-(INH) 300mg'
+             where regimen_type_id = 15
+             and description = 'Isoniazid 300mg'
+        </sql>
+    </changeSet>
+
+    <changeSet id="20230627-014" author="amos-data-fi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from hiv_regimen
+                where regimen_type_id = 15
+                and description = 'Isoniazid 100mg'
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            update hiv_regimen set description =
+             'Isoniazid-(INH) 100mg' where regimen_type_id = 15
+             and description = 'Isoniazid 100mg'
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="20230627-015" author="amos-data-fi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from hiv_regimen
+                 where regimen_type_id = 15
+                and description = 'Isoniazid/Rifampentine(3HP)'
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            update hiv_regimen set description = 'Isoniazid and Rifapentine-(3HP)'
+            where regimen_type_id = 15
+            and description = 'Isoniazid/Rifampentine(3HP)'
+        </sql>
+    </changeSet>
+
+    <changeSet  id="20230627-016"  author="amos-data-fi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from hiv_regimen
+                where regimen_type_id = 15
+                and description = 'Isoniazid/Rifampicin(3HR)'
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            update hiv_regimen set description = 'Isoniazid and Rifampicin-(3HR)'
+            where regimen_type_id = 15
+            and description = 'Isoniazid/Rifampicin(3HR)'
+        </sql>
+    </changeSet>
+
+    <changeSet  id="20230627-017"  author="amos-data-fi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from  hiv_regimen where regimen_type_id = 15
+                and description = 'Cotrimoxazole/Isoniazid/Pyridoxine (960/300/25mg)'
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            update hiv_regimen set description ='Cotrimoxazole/Isoniazid/Pyridoxine Fixed Dose (CTX/INH/B6 FDC)-(QTIP)'
+            where regimen_type_id = 15
+            and description = 'Cotrimoxazole/Isoniazid/Pyridoxine (960/300/25mg)'
+        </sql>
+    </changeSet>
+
+    <changeSet  id="20230627-018"  author="amos-data-fi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from  hiv_regimen_type where description='ART First Line Adult';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            UPDATE hiv_regimen_type SET description='Adult 1st Line' WHERE description='ART First Line Adult' ;
+            UPDATE hiv_regimen_type SET description='Adult 2nd Line' WHERE description='ART Second Line Adult' ;
+            UPDATE hiv_regimen_type SET description='Paediatric 1st Line' WHERE description='ART First Line Children' ;
+            UPDATE hiv_regimen_type SET description='Paediatric 2nd Line' WHERE description='ART Second Line Children' ;
+            UPDATE hiv_regimen_type SET description='Adult 3rd Line' WHERE description='Third Line';
+        </sql>
+    </changeSet>
+
+
+
+
 </databaseChangeLog>

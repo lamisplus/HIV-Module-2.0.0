@@ -61,6 +61,10 @@ public class HIVStatusTracker extends HivAuditEntity implements Persistable<Long
     @Size(max = 200)
     @Column(name = "VA_CAUSE_OF_DEATH")
     private String vaCauseOfDeath;
+    
+    @Size(max = 200)
+    @Column(name = "VA_CAUSE_OF_DEATH_TYPE")
+    private String vaCauseOfDeathType;
 
     private Boolean auto = false;
     
