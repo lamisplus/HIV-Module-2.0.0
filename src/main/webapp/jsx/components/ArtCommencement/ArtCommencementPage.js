@@ -564,7 +564,31 @@ const ArtCommencement = (props) => {
             <CardBody>
             <form >
                 <div className="row">
-                
+                  {/* statusAtRegistrationId  entryPointId */}
+                  {patientObject && (patientObject.enrollment.entryPointId==="21" || patientObject.enrollment.statusAtRegistrationId==="55") ? (<>
+                    <div className="form-group mb-3 col-md-4">
+                        <FormGroup>
+                        <Label for="artDate">ART Start Date <span style={{ color:"red"}}> *</span> </Label>
+                        <Input
+                            type="date"
+                            name="visitDate"
+                            id="visitDate"
+                            onChange={handleInputChange}
+                            value={objValues.visitDate}
+                            min="01-01-1980"
+                            max= {moment(new Date()).format("YYYY-MM-DD") }
+                            
+                            style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                            required
+                        />
+                            {errors.visitDate !=="" ? (
+                            <span className={classes.error}>{errors.visitDate}</span>
+                            ) : "" }
+                        </FormGroup>
+                    </div>
+                    </>)
+                    :
+                    (<>
                     <div className="form-group mb-3 col-md-4">
                         <FormGroup>
                         <Label for="artDate">ART Start Date <span style={{ color:"red"}}> *</span> </Label>
@@ -585,6 +609,9 @@ const ArtCommencement = (props) => {
                             ) : "" }
                         </FormGroup>
                     </div>
+                    </>)
+                    }
+
                     {/* <div className="form-group mb-3 col-md-4">
                         <FormGroup>
                         <Label for="cd4">CD4 at start of ART </Label>

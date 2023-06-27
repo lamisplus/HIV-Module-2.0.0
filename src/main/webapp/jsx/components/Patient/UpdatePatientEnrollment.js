@@ -561,6 +561,7 @@ const UserRegistration = (props) => {
                                     ) : "" }
                                     </FormGroup>
                                 </div>
+                                {(objValues.entryPointId==="21" || objValues.statusAtRegistrationId==="55") ? (<>
                                 <div className="form-group mb-3 col-md-6">
                                     <FormGroup>
                                     <Label for="dateOfRegistration">Date of Enrollment <span style={{ color:"red"}}> *</span></Label>
@@ -568,12 +569,11 @@ const UserRegistration = (props) => {
                                         type="date"
                                         name="dateOfRegistration"
                                         id="dateOfRegistration"
-                                        min={patientObj.dateOfRegistration}
+                                        min="01-01-1980"
                                         max= {moment(new Date()).format("YYYY-MM-DD") }
                                         onChange={handleInputChange}
                                         value={objValues.dateOfRegistration}
                                         style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
-                                        disabled={disabledField}
                                         
                                     />
                                     {errors.dateOfRegistration !=="" ? (
@@ -581,6 +581,30 @@ const UserRegistration = (props) => {
                                     ) : "" }
                                     </FormGroup>
                                 </div>
+                                </>)
+                                :
+                                (<>
+                                    <div className="form-group mb-3 col-md-6">
+                                        <FormGroup>
+                                        <Label for="dateOfRegistration">Date of Enrollment <span style={{ color:"red"}}> *</span></Label>
+                                        <Input
+                                            type="date"
+                                            name="dateOfRegistration"
+                                            id="dateOfRegistration"
+                                            min={basicInfo.dateOfRegistration}
+                                            max= {moment(new Date()).format("YYYY-MM-DD") }
+                                            onChange={handleInputChange}
+                                            value={objValues.dateOfRegistration}
+                                            style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
+                                            
+                                        />
+                                        {errors.dateOfRegistration !=="" ? (
+                                        <span className={classes.error}>{errors.dateOfRegistration}</span>
+                                        ) : "" }
+                                        </FormGroup>
+                                    </div>
+                                </>)
+                                }
                             </div>
                             <div className="row">
                                 <div className="form-group mb-3 col-md-6">

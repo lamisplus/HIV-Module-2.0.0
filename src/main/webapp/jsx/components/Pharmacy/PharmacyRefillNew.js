@@ -970,7 +970,7 @@ const Pharmacy = (props) => {
         return prev + +duration
       }, 0);
 
-
+console.log(childRegimenLine)
 
   return (      
       <div>
@@ -1343,7 +1343,7 @@ const Pharmacy = (props) => {
             <br/>
             <div className="form-group mb-3 col-xs-5 col-sm-5 col-md-5 col-lg-5">
                 <FormGroup>
-                <Label >Select Regimen Line </Label>
+                <Label >Select Regimen Line {patientAge}</Label>
                 <Input
                     type="select"
                     name="regimen"
@@ -1364,7 +1364,7 @@ const Pharmacy = (props) => {
                             ))}
                           </>
                     )}
-                    {patientAge <=15 &&  (
+                    {patientAge <=17 &&  (
                         <>
                         {childRegimenLine.map((value) => (
                             <option key={value.id} value={value.id}>

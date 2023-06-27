@@ -111,7 +111,7 @@ function PatientCard(props) {
   const getPhoneNumber = (identifier) => {
     const identifiers = identifier;
     const phoneNumber = identifiers.contactPoint.find(
-      (obj) => obj.type == "phone"
+      (obj) => obj.type === "phone"
     );
     return phoneNumber ? phoneNumber.value : "";
   };
