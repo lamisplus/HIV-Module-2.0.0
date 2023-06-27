@@ -503,6 +503,7 @@ const TbScreening = (props) => {
                                 </InputGroup>
                                 </FormGroup>
                             </div>
+                            {(props.patientObj && props.patientObj<=5) &&(<>
                             <div className="form-group mb-3 col-md-6">
                                 <FormGroup>
                                 <Label >Poor weight gain (Paediatrics clients {"<"}12 months) </Label>
@@ -539,6 +540,7 @@ const TbScreening = (props) => {
                                 </InputGroup>
                                 </FormGroup>
                             </div> 
+                            </>)}
                         </>)}
                         <br/>
                         { (contraindicationDisplay===true) && (<>

@@ -489,8 +489,6 @@ const ArtCommencement = (props) => {
             })    
         return Object.values(temp).every(x => x === "")
     }
-
-
     /**** Submit Button Processing  */
     const handleSubmit = (e) => {                  
         e.preventDefault(); 
@@ -505,7 +503,14 @@ const ArtCommencement = (props) => {
         if(objValues.cd4Type==="Flow Cyteometry"){
             objValues.cd4 = objValues.cd4Count
         }
+        //Getting pragnancy value from the ID 
+        if(objValues.pregnancyStatus!==""){
+            const pregnancyDisplay=pregnancyStatus.find((x)=> x.id===objValues.pregnancyStatus)
+            objValues.pregnancyStatus = pregnancyDisplay.display
+        }else{
+            objValues.pregnancyStatus = objValues.pregnancyStatus
 
+        } 
         setSaving(true);
         axios.put(`${baseUrl}hiv/art/commencement/${props.activeContent.id}`,objValues,
         { headers: {"Authorization" : `Bearer ${token}`}},
@@ -899,7 +904,7 @@ const ArtCommencement = (props) => {
                                 <option value=""> Select</option>
         
                                 {pregnancyStatus.map((value) => (
-                                    <option key={value.id} value={value.display}>
+                                    <option key={value.id} value={value.id}>
                                         {value.display}
                                     </option>
                                 ))}

@@ -1872,7 +1872,7 @@ const UserRegistration = (props) => {
                                         ) : "" }                                                                        
                                     </FormGroup>  
                                     </div>
-                                    {objValues.pregnancyStatusId==='Pregnant' && (
+                                    {objValues.pregnancyStatusId==='73' && (
                                     <>
                                         <div className="form-group mb-3 col-md-6">
                                             <FormGroup>
