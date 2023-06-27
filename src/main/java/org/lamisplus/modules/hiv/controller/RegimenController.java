@@ -45,7 +45,7 @@ public class RegimenController {
 	
 	@GetMapping(value = "/arv/children", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<RegimenType>> getChildrenRegimenTypes() {
-		return ResponseEntity.ok(repository.findAll().stream().filter(e -> e.getDescription().contains("Children")
+		return ResponseEntity.ok(repository.findAll().stream().filter(e -> e.getDescription().contains("Paediatric")
 				|| e.getDescription().contains("OI")
 				||e.getDescription().contains("IPT")
 				|| e.getDescription().contains("CTX"))

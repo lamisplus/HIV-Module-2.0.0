@@ -174,12 +174,14 @@
                 select count(*) from hiv_regimen
                 where regimen_type_id = 15
                 and description = 'Isoniazid 100mg'
+                and active = true;
             </sqlCheck>
         </preConditions>
         <sql>
-            update hiv_regimen set description =
+             update hiv_regimen set description =
              'Isoniazid-(INH) 100mg' where regimen_type_id = 15
-             and description = 'Isoniazid 100mg'
+              and description = 'Isoniazid 100mg'
+              and active = true;
         </sql>
     </changeSet>
 
