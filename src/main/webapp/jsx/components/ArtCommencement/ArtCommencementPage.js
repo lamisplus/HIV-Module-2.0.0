@@ -837,7 +837,7 @@ const ArtCommencement = (props) => {
                             onChange={handleInputChange}
                             max= {moment(new Date()).format("YYYY-MM-DD") }
                             style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                            disabled
+                            
                             >
                                 <option value=""> Select</option>
                                 {clinicalStage.map((value) => (

@@ -420,7 +420,7 @@ const ClinicVisit = (props) => {
               { headers: {"Authorization" : `Bearer ${token}`} }
           )
           .then((response) => {
-            setAdultRegimenLine(response.data);
+            setAdultRegimenLine(response.data.filter((x)=> (x.id===1 || x.id===2 || x.id===14)));
           })
           .catch((error) => {
           //console.log(error);
@@ -433,7 +433,8 @@ const ClinicVisit = (props) => {
               { headers: {"Authorization" : `Bearer ${token}`} }
           )
           .then((response) => {
-            setChildRegimenLine(response.data);
+            setChildRegimenLine(response.data.filter((x)=> (x.id===3 || x.id===4 )));
+    
           })
           .catch((error) => {
           //console.log(error);

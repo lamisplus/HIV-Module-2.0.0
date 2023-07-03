@@ -328,13 +328,6 @@ const UserRegistration = (props) => {
             const birthDate = new Date(e.target.value);
             let age_now = today.getFullYear() - birthDate.getFullYear();
             const m = today.getMonth() - birthDate.getMonth();
-                // if(m<18){
-                //     //alert()
-                //     //toast.error("The child is less than 18months",  {position: toast.POSITION.TOP_RIGHT})
-                //     setDisabledAgeBaseOnAge(true)
-                // }else{
-                //     setDisabledAgeBaseOnAge(false)
-                // }
                 if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
                     age_now--;
                 }

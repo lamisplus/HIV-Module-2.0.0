@@ -319,6 +319,7 @@ const Pharmacy = (props) => {
         //console.log(error);
         });        
     }
+    
     //Check for the last Vital Signs
     const VitalSigns = () => {
         axios
@@ -1343,7 +1344,7 @@ console.log(childRegimenLine)
             <br/>
             <div className="form-group mb-3 col-xs-5 col-sm-5 col-md-5 col-lg-5">
                 <FormGroup>
-                <Label >Select Regimen Line {patientAge}</Label>
+                <Label >Select Regimen Line </Label>
                 <Input
                     type="select"
                     name="regimen"

@@ -563,6 +563,8 @@ const Tracking = (props) => {
             }  
     }
 
+  //console.log(props.patientObj.age)
+
   return (      
         <div>                   
             <Card className={classes.root}>
