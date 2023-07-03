@@ -92,12 +92,11 @@ const ArtCommencement = (props) => {
     //let history = useHistory();
     //console.log(props.activeContent.id)
     let gender=""
-    const enrollDate = patientObj && patientObj.enrollment ? patientObj.enrollment.dateOfRegistration : null
+    const [enrollDate, setEnrollDate] = useState("");
     const [dropdownOpen, setDropdownOpen] = React.useState(false);
     const [splitButtonOpen, setSplitButtonOpen] = React.useState(false);
     const toggleDropDown = () => setDropdownOpen(!dropdownOpen);
     const toggleSplit = () => setSplitButtonOpen(!splitButtonOpen);
-    const [heightValue, setHeightValue]= useState("cm")
     const classes = useStyles()
     const [clinicalStage, setClinicalStage] = useState([])
     const [values, setValues] = useState([]);
@@ -108,7 +107,7 @@ const ArtCommencement = (props) => {
     const [tbStatus, setTbStatus] = useState([]);
     const [regimenLine, setRegimenLine] = useState([]);
     const [regimenType, setRegimenType] = useState([]);
-    const [pregancyStatus, setPregancyStatus] = useState([]);
+    const [pregnancyStatus, setpregnancyStatus] = useState([]);
     const [functionalStatus, setFunctionalStatus] = useState([]);
     const [adultRegimenLine, setAdultRegimenLine] = useState([]);
     const [childRegimenLine, setChildRegimenLine] = useState([]);
@@ -191,355 +190,376 @@ const ArtCommencement = (props) => {
         GetARTCommencement();
         AdultRegimenLine();
         ChildRegimenLineObj();
+        PatientCurrentObject();
         if(props.activeContent && props.activeContent.actionType==='view'){
             setDisabledField(true)
         }
         gender =props.patientObj.gender && props.patientObj.gender.display ? props.patientObj.gender.display : null
-      }, [props.activeContent.id]);
-      console.log(props.patientObj)
-      //GET AdultRegimenLine 
-      const AdultRegimenLine =()=>{
+    }, [props.activeContent.id]);
+    //GET  Patients
+    async function PatientCurrentObject() {
         axios
-            .get(`${baseUrl}hiv/regimen/arv/adult`,
-                { headers: {"Authorization" : `Bearer ${token}`} }
+            .get(`${baseUrl}hiv/patient/${props.patientObj.id}`,
+            { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                const artRegimen=response.data.filter((x)=> (x.id===1 || x.id===2 || x.id===14))
-                setAdultRegimenLine(artRegimen);
+                setEnrollDate(response.data.enrollment.entryPointId===21 ? response.data.enrollment.dateConfirmedHiv : response.data.enrollment.dateOfRegistration)
             })
-            .catch((error) => {
-            //console.log(error);
+            .catch((error) => {  
             });        
+    }
+    //GET AdultRegimenLine 
+    const AdultRegimenLine =()=>{
+    axios
+    .get(`${baseUrl}hiv/regimen/arv/adult`,
+        { headers: {"Authorization" : `Bearer ${token}`} }
+    )
+    .then((response) => {
+        const artRegimen=response.data.filter((x)=> (x.id===1 || x.id===2 || x.id===14))
+        setAdultRegimenLine(artRegimen);
+    })
+    .catch((error) => {
+    //console.log(error);
+    });        
     }
     //GET ChildRegimenLine 
     const ChildRegimenLineObj =()=>{
-        axios
-            .get(`${baseUrl}hiv/regimen/arv/children`,
-                { headers: {"Authorization" : `Bearer ${token}`} }
-            )
-            .then((response) => {
-                const artRegimenChildren=response.data.filter((x)=> (x.id===3 || x.id===4 ))
-                setChildRegimenLine(artRegimenChildren);
-            })
-            .catch((error) => {
-            //console.log(error);
-            });        
+    axios
+    .get(`${baseUrl}hiv/regimen/arv/children`,
+    { headers: {"Authorization" : `Bearer ${token}`} }
+    )
+    .then((response) => {
+    const artRegimenChildren=response.data.filter((x)=> (x.id===3 || x.id===4 ))
+    setChildRegimenLine(artRegimenChildren);
+    })
+    .catch((error) => {
+    //console.log(error);
+    });        
     }
     //Get ART Object
     const GetARTCommencement =()=>{
-        axios
-           .get(`${baseUrl}hiv/art/commencement/${props.activeContent.id}`,
-               { headers: {"Authorization" : `Bearer ${token}`} }
-           )
-           .then((response) => { 
-              //console.log(response.data);     
-                setObjValues(response.data)
-                if(response.data.isViralLoadAtStartOfArt===true){
-                    setViraLoadStart(true)
-                }
-                RegimenType(response.data.regimenTypeId)
-                setVitalSignDto(response.data.vitalSignDto)
-           })
-           .catch((error) => {
-           //console.log(error);
-           });
-       
-        }
-      //Get list of WhoStaging
-      const WhoStaging =()=>{
-        axios
-           .get(`${baseUrl}application-codesets/v2/CLINICAL_STAGE`,
-               { headers: {"Authorization" : `Bearer ${token}`} }
-           )
-           .then((response) => {
-               console.log(response.data);
-               setClinicalStage(response.data);
-           })
-           .catch((error) => {
-           //console.log(error);
-           });
-       
-        }
-        //Get list of RegimenLine
-        const RegimenLine =()=>{
-        axios
-           .get(`${baseUrl}hiv/regimen/types`,
-               { headers: {"Authorization" : `Bearer ${token}`} }
-           )
-           .then((response) => {
-               //console.log(response.data);
-               setRegimenLine(response.data);
-           })
-           .catch((error) => {
-           //console.log(error);
-           });
-       
-        }
-         //Get list of RegimenLine
-         const RegimenType =(id)=>{
-            axios
-               .get(`${baseUrl}hiv/regimen/types/${id}`,
-                   { headers: {"Authorization" : `Bearer ${token}`} }
-               )
-               .then((response) => {
-                   //console.log(response.data);
-                   setRegimenType(response.data);
-               })
-               .catch((error) => {
-               //console.log(error);
-               });
-           
-            }
-        //Get list of PREGANACY_STATUS
-      const PreganacyStatus =()=>{
-        axios
-           .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS`,
-               { headers: {"Authorization" : `Bearer ${token}`} }
-           )
-           .then((response) => {
-               //console.log(response.data);
-               setPregancyStatus(response.data);
-           })
-           .catch((error) => {
-           //console.log(error);
-           });
-       
-        }
-        ///GET LIST OF FUNCTIONAL%20_STATUS
-        async function FunctionalStatus() {
-            axios
-                .get(`${baseUrl}application-codesets/v2/FUNCTIONAL%20_STATUS`,
-                { headers: {"Authorization" : `Bearer ${token}`} }
-                )
-                .then((response) => {
-                    
-                    setFunctionalStatus(response.data);
-                    //setValues(response.data)
-                })
-                .catch((error) => {    
-                });        
-        }
-        // TB STATUS
-        const TBStatus =()=>{
-            axios
-               .get(`${baseUrl}application-codesets/v2/TB_STATUS`,
-                   { headers: {"Authorization" : `Bearer ${token}`} }
-               )
-               .then((response) => {
-                   //console.log(response.data);
-                   setTbStatus(response.data);
-               })
-               .catch((error) => {
-               //console.log(error);
-               });
-           
-         }
+    axios
+    .get(`${baseUrl}hiv/art/commencement/${props.activeContent.id}`,
+    { headers: {"Authorization" : `Bearer ${token}`} }
+    )
+    .then((response) => { 
+    //console.log(response.data);     
+    setObjValues(response.data)
+    if(response.data.isViralLoadAtStartOfArt===true){
+    setViraLoadStart(true)
+    }
+    RegimenType(response.data.regimenTypeId)
+    setVitalSignDto(response.data.vitalSignDto)
+    if(response.data.clinicalStageId!==""){
+    objValues.whoStagingId=response.data.clinicalStageId
+    setObjValues({...objValues, whoStagingId:response.data.clinicalStageId})
+    }
+    })
+    .catch((error) => {
+    //console.log(error);
+    });
 
-        const handleInputChange = e => {
-            setErrors({...temp, [e.target.name]:""})
-            setObjValues ({...objValues,  [e.target.name]: e.target.value});
-            if(e.target.name==='isViralLoadAtStartOfArt' && e.target.value!==""){
-                if(e.target.value==='true'){
-                    setViraLoadStart(true)
-                    setObjValues ({...objValues,  [e.target.name]: true});
-                }else{
-                    setObjValues({...objValues, [e.target.name]:false})
-                    setViraLoadStart(false)
-                }
-            }
-            if(e.target.name==='cd4Percentage' && e.target.value!==""){
-                setObjValues ({...objValues,  [e.target.name]: e.target.value.replace(/\D/g, '')});
-            }
-            if(e.target.name==='cd4' && e.target.value!==""){
-                setObjValues ({...objValues,  [e.target.name]: e.target.value.replace(/\D/g, '')});
-            }
-             //This logic is to clear the value of field that is hidden
-            //  if(e.target.name==='cd4Count' && e.target.value==="Semi-Quantitative"){
-            //     objValues.cd4FlowCytometry=""
-            //     setObjValues ({...objValues,  ["cd4FlowCytometry"]: " " });
-            //     setObjValues ({...objValues,  [e.target.name]: e.target.value});
+    }
+    //Get list of WhoStaging
+    const WhoStaging =()=>{
+    axios
+    .get(`${baseUrl}application-codesets/v2/CLINICAL_STAGE`,
+    { headers: {"Authorization" : `Bearer ${token}`} }
+    )
+    .then((response) => {
+    //console.log(response.data);
+    setClinicalStage(response.data);
+    })
+    .catch((error) => {
+    //console.log(error);
+    });
 
-            // }else if(e.target.name==='cd4Count' && e.target.value==="Flow Cyteometry"){
-            //     objValues.cd4SemiQuantitative=""
-            //     setObjValues ({...objValues,  ["cd4SemiQuantitative"]: " " });
-            //     setObjValues ({...objValues,  [e.target.name]: e.target.value});
-            // }
-            if(e.target.name==='isViralLoadAtStartOfArt' && e.target.value==="false"){
-                objValues.viralLoadAtStartOfArt=""
-                objValues.dateOfViralLoadAtStartOfArt=""
-                setObjValues ({...objValues,  ["viralLoadAtStartOfArt"]: " " });
-                setObjValues ({...objValues,  ["dateOfViralLoadAtStartOfArt"]: " " });
-                setObjValues ({...objValues,  [e.target.name]: e.target.value});
+    }
+    //Get list of RegimenLine
+    const RegimenLine =()=>{
+    axios
+    .get(`${baseUrl}hiv/regimen/types`,
+    { headers: {"Authorization" : `Bearer ${token}`} }
+    )
+    .then((response) => {
+    //console.log(response.data);
+    setRegimenLine(response.data);
+    })
+    .catch((error) => {
+    //console.log(error);
+    });
 
-            }
-        }
-        const handleInputChangeVitalSignDto = e => { 
-            setErrors({...errors, [e.target.name]: ""})
-            setVitalSignDto({ ...vital, [e.target.name]: e.target.value });
-            // if(e.target.name==='muac'){
-            //     setVitalSignDto ({...vital,  [e.target.name]: e.target.value});
-            // } else{
-            //     setVitalSignDto ({...vital,  [e.target.name]: e.target.value.replace(/\D/g, '')});
-            // }
-        }
-        const handleSelecteRegimen = e => { 
+    }
+    //Get list of RegimenLine
+    const RegimenType =(id)=>{
+    axios
+    .get(`${baseUrl}hiv/regimen/types/${id}`,
+    { headers: {"Authorization" : `Bearer ${token}`} }
+    )
+    .then((response) => {
+    //console.log(response.data);
+    setRegimenType(response.data);
+    })
+    .catch((error) => {
+    //console.log(error);
+    });
 
-            let regimenID=  e.target.value
-             //regimenTypeId regimenId
-            setObjValues ({...objValues, regimenTypeId:regimenID});
-            RegimenType(regimenID)           
-            setErrors({...temp, [e.target.name]:""})
-        }
-        //to check the input value for clinical decision 
-        const handleInputValueCheckHeight =(e)=>{
-            if(e.target.name==="height" && (e.target.value < 48.26 || e.target.value>216.408)){
-            const message ="Height cannot be greater than 216.408 and less than 48.26"
-            setVitalClinicalSupport({...vitalClinicalSupport, height:message})
-            }else{
-            setVitalClinicalSupport({...vitalClinicalSupport, height:""})
-            }
-        }
-        const handleInputValueCheckBodyWeight =(e)=>{
-            if(e.target.name==="bodyWeight" && (e.target.value < 3 || e.target.value>150)){      
-            const message ="Body weight must not be greater than 150 and less than 3"
-            setVitalClinicalSupport({...vitalClinicalSupport, bodyWeight:message})
-            }else{
-            setVitalClinicalSupport({...vitalClinicalSupport, bodyWeight:""})
-            }
-        }
-        const handleInputValueCheckSystolic =(e)=>{
-            if(e.target.name==="systolic" && (e.target.value < 90 || e.target.value>240)){      
-            const message ="Blood Pressure systolic must not be greater than 240 and less than 90"
-            setVitalClinicalSupport({...vitalClinicalSupport, systolic:message})
-            }else{
-            setVitalClinicalSupport({...vitalClinicalSupport, systolic:""})
-            }
-        }
-        const handleInputValueCheckDiastolic =(e)=>{
-            if(e.target.name==="diastolic" && (e.target.value < 60 || e.target.value>140)){      
-            const message ="Blood Pressure diastolic must not be greater than 140 and less than 60"
-            setVitalClinicalSupport({...vitalClinicalSupport, diastolic:message})
-            }else{
-            setVitalClinicalSupport({...vitalClinicalSupport, diastolic:""})
-            }
-        }
-        const handleInputValueCheckPulse =(e)=>{
-            if(e.target.name==="pulse" && (e.target.value < 40 || e.target.value>120)){      
-            const message ="Pulse must not be greater than 120 and less than 40"
-            setVitalClinicalSupport({...vitalClinicalSupport, pulse:message})
-            }else{
-            setVitalClinicalSupport({...vitalClinicalSupport, pulse:""})
-            }
-        }
-        const handleInputValueCheckRespiratoryRate =(e)=>{
-            if(e.target.name==="respiratoryRate" && (e.target.value < 10 || e.target.value>70)){      
-            const message ="Respiratory Rate must not be greater than 70 and less than 10"
-            setVitalClinicalSupport({...vitalClinicalSupport, respiratoryRate:message})
-            }else{
-            setVitalClinicalSupport({...vitalClinicalSupport, respiratoryRate:""})
-            }
-        }
-        const handleInputValueCheckTemperature =(e)=>{
-            if(e.target.name==="temperature" && (e.target.value < 35 || e.target.value>47)){      
-            const message ="Temperature must not be greater than 47 and less than 35"
-            setVitalClinicalSupport({...vitalClinicalSupport, temperature:message})
-            }else{
-            setVitalClinicalSupport({...vitalClinicalSupport, temperature:""})
-            }
-        }
-        const handleInputChangeVitalStart =(e)=>{
-            if(e.target.value==="YES" ){
+    }
+    //Get list of PREGANACY_STATUS
+    const PreganacyStatus =()=>{
+    axios
+    .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS`,
+    { headers: {"Authorization" : `Bearer ${token}`} }
+    )
+    .then((response) => {
+    //console.log(response.data);
+    setpregnancyStatus(response.data);
+    })
+    .catch((error) => {
+    //console.log(error);
+    });
+
+    }
+    ///GET LIST OF FUNCTIONAL%20_STATUS
+    async function FunctionalStatus() {
+    axios
+    .get(`${baseUrl}application-codesets/v2/FUNCTIONAL%20_STATUS`,
+    { headers: {"Authorization" : `Bearer ${token}`} }
+    )
+    .then((response) => {
+
+    setFunctionalStatus(response.data);
+    //setValues(response.data)
+    })
+    .catch((error) => {    
+    });        
+    }
+    // TB STATUS
+    const TBStatus =()=>{
+    axios
+    .get(`${baseUrl}application-codesets/v2/TB_STATUS`,
+    { headers: {"Authorization" : `Bearer ${token}`} }
+    )
+    .then((response) => {
+    //console.log(response.data);
+    setTbStatus(response.data);
+    })
+    .catch((error) => {
+    //console.log(error);
+    });
+
+    }
+
+    const handleInputChange = e => {
+        setErrors({...temp, [e.target.name]:""})
+        setObjValues ({...objValues,  [e.target.name]: e.target.value});
+        if(e.target.name==='isViralLoadAtStartOfArt' && e.target.value!==""){
+            if(e.target.value==='true'){
                 setViraLoadStart(true)
-                setObjValues({...objValues, viralLoad:e.target.value})
+                setObjValues ({...objValues,  [e.target.name]: true});
             }else{
-                setObjValues({...objValues, viralLoad:e.target.value})
+                setObjValues({...objValues, [e.target.name]:false})
                 setViraLoadStart(false)
             }
         }
-
-        //FORM VALIDATION
-        const validate = () => {
-            temp.visitDate = objValues.visitDate ? "" : "This field is required"
-            temp.regimenId = objValues.regimenId ? "" : "This field is required"
-            temp.regimenTypeId = objValues.regimenTypeId ? "" : "This field is required"
-            temp.whoStagingId = objValues.whoStagingId ? "" : "This field is required"
-            temp.functionalStatusId = objValues.functionalStatusId ? "" : "This field is required"
-            //temp.tbStatusId = objValues.tbStatusId ? "" : "This field is required"
-            temp.bodyWeight = vital.bodyWeight ? "" : "This field is required"
-            temp.height = vital.height ? "" : "This field is required"
-            //temp.systolic = vital.systolic ? "" : "This field is required"
-            //temp.diastolic = vital.diastolic ? "" : "This field is required"
-            setErrors({
-                ...temp
-                })    
-            return Object.values(temp).every(x => x === "")
+        if(e.target.name==='cd4Percentage' && e.target.value!==""){
+            setObjValues ({...objValues,  [e.target.name]: e.target.value.replace(/\D/g, '')});
         }
-
-
-        /**** Submit Button Processing  */
-        const handleSubmit = (e) => {                  
-            e.preventDefault(); 
-            if(validate()){                    
-            objValues.personId = props.patientObj.id
-            vital.encounterDate = objValues.visitDate
-            vital.personId=props.patientObj.id
-            objValues.vitalSignDto= vital
-            objValues.hivEnrollmentId= props.patientObj.enrollmentId
-            objValues.clinicalStageId = objValues.whoStagingId 
-            //Logic for cd4 value
-            if(objValues.cd4Type==="Flow Cyteometry"){
-                objValues.cd4 = objValues.cd4Count
-            }
-
-            setSaving(true);
-            axios.put(`${baseUrl}hiv/art/commencement/${props.activeContent.id}`,objValues,
-            { headers: {"Authorization" : `Bearer ${token}`}},
-            
-            )
-              .then(response => {
-                  setSaving(false);
-                  toast.success("Record updated successful");
-                  props.setActiveContent({...props.activeContent, route:'recent-history'})
-
-              })
-              .catch(error => {
-                  setSaving(false);
-                  if(error.response && error.response.data){
-                    let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
-                    toast.error(errorMessage);
-                  }
-                  else{
-                    toast.error("Something went wrong. Please try again...");
-                  }
-              });
-            }
-          
+        if(e.target.name==='cd4' && e.target.value!==""){
+            setObjValues ({...objValues,  [e.target.name]: e.target.value.replace(/\D/g, '')});
         }
-        function BmiCal (bmi){
-            if(bmi<18.5){
-                return (
-                <Message        
-                    size='mini'
-                    color='brown'
-                    content='Underweight'
-                />
-                )      
-            }else if(bmi >=18.5 && bmi<=24.9){
-                <Message        
-                    size='mini'
-                    color='olive'
-                    content='Well nourished'
-                />
-            }
-            else if( bmi>25){
-                <Message        
-                    size='mini'
-                    color='blue'
-                    content='Overweight/Obese'
-                />
-            }
-            
+            //This logic is to clear the value of field that is hidden
+        //  if(e.target.name==='cd4Count' && e.target.value==="Semi-Quantitative"){
+        //     objValues.cd4FlowCytometry=""
+        //     setObjValues ({...objValues,  ["cd4FlowCytometry"]: " " });
+        //     setObjValues ({...objValues,  [e.target.name]: e.target.value});
+
+        // }else if(e.target.name==='cd4Count' && e.target.value==="Flow Cyteometry"){
+        //     objValues.cd4SemiQuantitative=""
+        //     setObjValues ({...objValues,  ["cd4SemiQuantitative"]: " " });
+        //     setObjValues ({...objValues,  [e.target.name]: e.target.value});
+        // }
+        if(e.target.name==='isViralLoadAtStartOfArt' && e.target.value==="false"){
+            objValues.viralLoadAtStartOfArt=""
+            objValues.dateOfViralLoadAtStartOfArt=""
+            setObjValues ({...objValues,  ["viralLoadAtStartOfArt"]: " " });
+            setObjValues ({...objValues,  ["dateOfViralLoadAtStartOfArt"]: " " });
+            setObjValues ({...objValues,  [e.target.name]: e.target.value});
+
         }
+    }
+    const handleInputChangeVitalSignDto = e => { 
+        setErrors({...errors, [e.target.name]: ""})
+        setVitalSignDto({ ...vital, [e.target.name]: e.target.value });
+        // if(e.target.name==='muac'){
+        //     setVitalSignDto ({...vital,  [e.target.name]: e.target.value});
+        // } else{
+        //     setVitalSignDto ({...vital,  [e.target.name]: e.target.value.replace(/\D/g, '')});
+        // }
+    }
+    const handleSelecteRegimen = e => { 
+
+        let regimenID=  e.target.value
+            //regimenTypeId regimenId
+        setObjValues ({...objValues, regimenTypeId:regimenID});
+        RegimenType(regimenID)           
+        setErrors({...temp, [e.target.name]:""})
+    }
+    //to check the input value for clinical decision 
+    const handleInputValueCheckHeight =(e)=>{
+        if(e.target.name==="height" && (e.target.value < 48.26 || e.target.value>216.408)){
+        const message ="Height cannot be greater than 216.408 and less than 48.26"
+        setVitalClinicalSupport({...vitalClinicalSupport, height:message})
+        }else{
+        setVitalClinicalSupport({...vitalClinicalSupport, height:""})
+        }
+    }
+    const handleInputValueCheckBodyWeight =(e)=>{
+        if(e.target.name==="bodyWeight" && (e.target.value < 3 || e.target.value>150)){      
+        const message ="Body weight must not be greater than 150 and less than 3"
+        setVitalClinicalSupport({...vitalClinicalSupport, bodyWeight:message})
+        }else{
+        setVitalClinicalSupport({...vitalClinicalSupport, bodyWeight:""})
+        }
+    }
+    const handleInputValueCheckSystolic =(e)=>{
+        if(e.target.name==="systolic" && (e.target.value < 90 || e.target.value>240)){      
+        const message ="Blood Pressure systolic must not be greater than 240 and less than 90"
+        setVitalClinicalSupport({...vitalClinicalSupport, systolic:message})
+        }else{
+        setVitalClinicalSupport({...vitalClinicalSupport, systolic:""})
+        }
+    }
+    const handleInputValueCheckDiastolic =(e)=>{
+        if(e.target.name==="diastolic" && (e.target.value < 60 || e.target.value>140)){      
+        const message ="Blood Pressure diastolic must not be greater than 140 and less than 60"
+        setVitalClinicalSupport({...vitalClinicalSupport, diastolic:message})
+        }else{
+        setVitalClinicalSupport({...vitalClinicalSupport, diastolic:""})
+        }
+    }
+    const handleInputValueCheckPulse =(e)=>{
+        if(e.target.name==="pulse" && (e.target.value < 40 || e.target.value>120)){      
+        const message ="Pulse must not be greater than 120 and less than 40"
+        setVitalClinicalSupport({...vitalClinicalSupport, pulse:message})
+        }else{
+        setVitalClinicalSupport({...vitalClinicalSupport, pulse:""})
+        }
+    }
+    const handleInputValueCheckRespiratoryRate =(e)=>{
+        if(e.target.name==="respiratoryRate" && (e.target.value < 10 || e.target.value>70)){      
+        const message ="Respiratory Rate must not be greater than 70 and less than 10"
+        setVitalClinicalSupport({...vitalClinicalSupport, respiratoryRate:message})
+        }else{
+        setVitalClinicalSupport({...vitalClinicalSupport, respiratoryRate:""})
+        }
+    }
+    const handleInputValueCheckTemperature =(e)=>{
+        if(e.target.name==="temperature" && (e.target.value < 35 || e.target.value>47)){      
+        const message ="Temperature must not be greater than 47 and less than 35"
+        setVitalClinicalSupport({...vitalClinicalSupport, temperature:message})
+        }else{
+        setVitalClinicalSupport({...vitalClinicalSupport, temperature:""})
+        }
+    }
+    const handleInputChangeVitalStart =(e)=>{
+        if(e.target.value==="YES" ){
+            setViraLoadStart(true)
+            setObjValues({...objValues, viralLoad:e.target.value})
+        }else{
+            setObjValues({...objValues, viralLoad:e.target.value})
+            setViraLoadStart(false)
+        }
+    }
+
+    //FORM VALIDATION
+    const validate = () => {
+        temp.visitDate = objValues.visitDate ? "" : "This field is required"
+        temp.regimenId = objValues.regimenId ? "" : "This field is required"
+        temp.regimenTypeId = objValues.regimenTypeId ? "" : "This field is required"
+        temp.whoStagingId = objValues.whoStagingId ? "" : "This field is required"
+        temp.functionalStatusId = objValues.functionalStatusId ? "" : "This field is required"
+        //temp.tbStatusId = objValues.tbStatusId ? "" : "This field is required"
+        temp.bodyWeight = vital.bodyWeight ? "" : "This field is required"
+        temp.height = vital.height ? "" : "This field is required"
+        //temp.systolic = vital.systolic ? "" : "This field is required"
+        //temp.diastolic = vital.diastolic ? "" : "This field is required"
+        setErrors({
+            ...temp
+            })    
+        return Object.values(temp).every(x => x === "")
+    }
+    /**** Submit Button Processing  */
+    const handleSubmit = (e) => {                  
+        e.preventDefault(); 
+        if(validate()){                    
+        objValues.personId = props.patientObj.id
+        vital.encounterDate = objValues.visitDate
+        vital.personId=props.patientObj.id
+        objValues.vitalSignDto= vital
+        objValues.hivEnrollmentId= props.patientObj.enrollmentId
+        objValues.clinicalStageId = objValues.whoStagingId 
+        //Logic for cd4 value
+        if(objValues.cd4Type==="Flow Cyteometry"){
+            objValues.cd4 = objValues.cd4Count
+        }
+        //Getting pragnancy value from the ID 
+        if(objValues.pregnancyStatus!==""){
+            const pregnancyDisplay=pregnancyStatus.find((x)=> x.id===objValues.pregnancyStatus)
+            objValues.pregnancyStatus = pregnancyDisplay.display
+        }else{
+            objValues.pregnancyStatus = objValues.pregnancyStatus
+
+        } 
+        setSaving(true);
+        axios.put(`${baseUrl}hiv/art/commencement/${props.activeContent.id}`,objValues,
+        { headers: {"Authorization" : `Bearer ${token}`}},
+        
+        )
+            .then(response => {
+                setSaving(false);
+                toast.success("Record updated successful");
+                props.setActiveContent({...props.activeContent, route:'recent-history'})
+
+            })
+            .catch(error => {
+                setSaving(false);
+                if(error.response && error.response.data){
+                let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
+                toast.error(errorMessage);
+                }
+                else{
+                toast.error("Something went wrong. Please try again...");
+                }
+            });
+        }
+        
+    }
+    function BmiCal (bmi){
+        if(bmi<18.5){
+            return (
+            <Message        
+                size='mini'
+                color='brown'
+                content='Underweight'
+            />
+            )      
+        }else if(bmi >=18.5 && bmi<=24.9){
+            <Message        
+                size='mini'
+                color='olive'
+                content='Well nourished'
+            />
+        }
+        else if( bmi>25){
+            <Message        
+                size='mini'
+                color='blue'
+                content='Overweight/Obese'
+            />
+        }
+        
+    }
     
 
   return (      
@@ -681,7 +701,7 @@ const ArtCommencement = (props) => {
                                 disabled={disabledField}
                                 >
                                     <option value=""> Select</option>
-                                    {patientAge && patientAge >5 &&  (
+                                    {patientAge && patientAge >15 &&  (
                                     <>
                                         {adultRegimenLine.map((value) => (
                                         <option key={value.id} value={value.id}>
@@ -690,7 +710,7 @@ const ArtCommencement = (props) => {
                                         ))}
                                     </>
                                     )}
-                                    {patientAge && patientAge <=5 &&  (
+                                    {patientAge && patientAge <=15 &&  (
                                     <>
                                         {childRegimenLine.map((value) => (
                                         <option key={value.id} value={value.id}>
@@ -795,7 +815,7 @@ const ArtCommencement = (props) => {
                                 type="select"
                                 name="whoStagingId"
                                 id="whoStagingId"
-                                value={objValues.clinicalStageId!==null ? objValues.clinicalStageId :  objValues.whoStagingId}
+                                value={objValues.whoStagingId}
                                 onChange={handleInputChange}
                                 max= {moment(new Date()).format("YYYY-MM-DD") }
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
@@ -872,18 +892,18 @@ const ArtCommencement = (props) => {
                             <Label >Pregnancy Status</Label>
                             <Input
                                 type="select"
-                                name="address"
-                                id="address"
-                                disabled
+                                name="pregnancyStatus"
+                                id="pregnancyStatus"
+                                
                                 onChange={handleInputChange}
-                                value="72"
+                                value={objValues.pregnancyStatus}
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 
 
                             >
                                 <option value=""> Select</option>
         
-                                {pregancyStatus.map((value) => (
+                                {pregnancyStatus.map((value) => (
                                     <option key={value.id} value={value.id}>
                                         {value.display}
                                     </option>
@@ -891,7 +911,7 @@ const ArtCommencement = (props) => {
                             </Input>
                             </FormGroup>
                         </div>
-                        {props.patientObj.enrollment && props.patientObj.enrollment.pregnancyStatusId==='72' && (
+                        {props.patientObj.enrollment && props.patientObj.enrollment.pregnancyStatusId==='"Pregnant"' && (
                         <div className="form-group mb-3 col-md-4">
                             <FormGroup>
                             <Label >LMP</Label>
@@ -1233,7 +1253,7 @@ const ArtCommencement = (props) => {
                             >
                                 <option value=""> Select</option>
         
-                                {pregancyStatus.map((value) => (
+                                {pregnancyStatus.map((value) => (
                                     <option key={value.id} value={value.id}>
                                         {value.display}
                                     </option>

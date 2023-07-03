@@ -62,7 +62,6 @@ const useStyles = makeStyles(theme => ({
 let refillPeriodValue=null
 
 const Pharmacy = (props) => {
-    
     const patientObj = props.patientObj;
     const [selectedCombinedRegimen, setSelectedCombinedRegimen] = useState([]);
     const [enrollDate, setEnrollDate] = useState("");
@@ -105,6 +104,7 @@ const Pharmacy = (props) => {
     const [iptType, setIPT_TYPE] = useState([]);
     const [regimenTypeOther, setRegimenTypeOther] = useState([]);
     const [iptEligibilty, setIptEligibilty] = useState("");
+    const [lastChronicCare, setLastChronicCare] = useState(null);
     //const [currentRegimenValue, setCurrentRegimenValue] = useState("");//this is to get the current regimen value/ID the patient is on 
     //IPT_TYPE
     const [objValues, setObjValues] = useState({
@@ -163,6 +163,7 @@ const Pharmacy = (props) => {
         CheckEACStatus();
         VitalSigns();
         ChildRegimenLine();
+        ChronicCare();
         GetPatientDTOObj();
         GetIptEligibilty();
     }, [selectedOption, regimenType.length>0, objValues.refillPeriod]);
@@ -181,6 +182,22 @@ const Pharmacy = (props) => {
        
     }
     //
+    const ChronicCare =()=>{
+        axios
+        .get(`${baseUrl}observation/person/${props.patientObj.id}`,
+            { headers: {"Authorization" : `Bearer ${token}`} }
+        )
+        .then((response) => {
+
+                const obj1 =response.data.filter(x=> x.type==='Chronic Care')
+                //const lastArryObj=obj1.slice(-1)
+                setLastChronicCare(obj1)
+                //const lastobj;
+        })
+        .catch((error) => {
+        //console.log(error);
+        });       
+    }
     const GetIptEligibilty =()=>{
         axios
         .get(`${baseUrl}observation/check-ipt-eligible/${props.patientObj.id}`,
@@ -302,6 +319,7 @@ const Pharmacy = (props) => {
         //console.log(error);
         });        
     }
+    
     //Check for the last Vital Signs
     const VitalSigns = () => {
         axios
@@ -880,59 +898,70 @@ const Pharmacy = (props) => {
     const handleSubmit = (e) => {        
         e.preventDefault();
         setSaving(true);
-        objValues.adverseDrugReactions=selectedOptionAdr
-        objValues.personId=props.patientObj.id
-        objValues.extra['regimens']=regimenDrugList 
-        objValues.mmdType=mmdType
-        //delete regimenList['name']
-        objValues.regimen=regimenDrugList
-
-        axios.post(`${baseUrl}hiv/art/pharmacy`,objValues,
-        { headers: {"Authorization" : `Bearer ${token}`}},)
-        .then(response => {
-            setSaving(false);
-            //props.PharmacyList();
-            objValues.visitDate=""
-            objValues.refillPeriod=""
-            objValues.nextAppointment=""
-            objValues.adherence=""
-            objValues.adrScreened= ""
-            objValues.dsdModel=""
-            objValues.isDevolve=""
-            objValues.mmdType=""
-            objValues.prescriptionError=""
-            objValues.visitId=""
-            objValues.refill=""
-            objValues.refillType=""
-            objValues.switch=""
-            objValues.substitute=""
-            objValues.dsdModelType=""
-            objValues.iptType=""
-            objValues.visitType=""
-            //props.PatientCurrentObject();
-            toast.success("Pharmacy drug refill successful", {position: toast.POSITION.BOTTOM_CENTER});           
-            props.setActiveContent({...props.activeContent, route:'pharmacy', activeTab:"history" })
-            
-            setRegimenDrugList([]);
-            
-        })
-        .catch(error => {
-            setSaving(false);
-            if(error.response && error.response.data){
-                let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
-                //console.log(errorMessage)
-                if(errorMessage!==""){
-                    toast.error(errorMessage, {position: toast.POSITION.BOTTOM_CENTER});
-                }else if(error.response.data.apierror && error.response.data.apierror.message!=="" && error.response.data.apierror && error.response.data.apierror.subErrors[0].message!==""){
-                  toast.error(error.response.data.apierror.message + " : " + error.response.data.apierror.subErrors[0].field + " " + error.response.data.apierror.subErrors[0].message, {position: toast.POSITION.BOTTOM_CENTER});
+        const observeDate =lastChronicCare.find(x=> x.dateOfObservation===objValues.visitDate)
+            if(observeDate){
+                //if(iptEligibilty.IPTEligibility!==true && objValues.visitType===""){
+                objValues.adverseDrugReactions=selectedOptionAdr
+                objValues.personId=props.patientObj.id
+                objValues.extra['regimens']=regimenDrugList 
+                objValues.mmdType=mmdType
+                //delete regimenList['name']
+                objValues.regimen=regimenDrugList
+                axios.post(`${baseUrl}hiv/art/pharmacy`,objValues,
+                { headers: {"Authorization" : `Bearer ${token}`}},)
+                .then(response => {
+                    setSaving(false);
+                    //props.PharmacyList();
+                    objValues.visitDate=""
+                    objValues.refillPeriod=""
+                    objValues.nextAppointment=""
+                    objValues.adherence=""
+                    objValues.adrScreened= ""
+                    objValues.dsdModel=""
+                    objValues.isDevolve=""
+                    objValues.mmdType=""
+                    objValues.prescriptionError=""
+                    objValues.visitId=""
+                    objValues.refill=""
+                    objValues.refillType=""
+                    objValues.switch=""
+                    objValues.substitute=""
+                    objValues.dsdModelType=""
+                    objValues.iptType=""
+                    objValues.visitType=""
+                    //props.PatientCurrentObject();
+                    toast.success("Pharmacy drug refill successful", {position: toast.POSITION.BOTTOM_CENTER});           
+                    props.setActiveContent({...props.activeContent, route:'pharmacy', activeTab:"history" })  
+                    setRegimenDrugList([]);
+                    
+                })
+                .catch(error => {
+                    setSaving(false);
+                    if(error.response && error.response.data){
+                        let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
+                        //console.log(errorMessage)
+                        if(errorMessage!==""){
+                            toast.error(errorMessage, {position: toast.POSITION.BOTTOM_CENTER});
+                        }else if(error.response.data.apierror && error.response.data.apierror.message!=="" && error.response.data.apierror && error.response.data.apierror.subErrors[0].message!==""){
+                          toast.error(error.response.data.apierror.message + " : " + error.response.data.apierror.subErrors[0].field + " " + error.response.data.apierror.subErrors[0].message, {position: toast.POSITION.BOTTOM_CENTER});
+                        }else{
+                          toast.error(errorMessage, {position: toast.POSITION.BOTTOM_CENTER});
+                        }
+                    }else{
+                        toast.error("Something went wrong, please try again...", {position: toast.POSITION.BOTTOM_CENTER});
+                    }
+                               
+                });
+                // }else{
+                //     toast.error("Please visit type is required", {position: toast.POSITION.BOTTOM_CENTER});  
+                //     setSaving(false); 
+                // }
                 }else{
-                  toast.error(errorMessage, {position: toast.POSITION.BOTTOM_CENTER});
-                }
-            }else{
-                toast.error("Something went wrong, please try again...", {position: toast.POSITION.BOTTOM_CENTER});
-            }
-                       
-        }); 
+                    toast.error("No Chronic Care filled for this Encounter Date, please try again...", {position: toast.POSITION.BOTTOM_CENTER});  
+                    setSaving(false); 
+                } 
+        
+       
     }
 
     let TotalDispensed = regimenDrug.reduce(function(prev, current) {
@@ -942,6 +971,7 @@ const Pharmacy = (props) => {
         const duration = (current && current.frequency ? current.frequency : "") * current.duration
         return prev + +duration
       }, 0);
+
 
 
   return (      
@@ -1336,7 +1366,7 @@ const Pharmacy = (props) => {
                             ))}
                           </>
                     )}
-                    {patientAge <=15 &&  (
+                    {patientAge <=17 &&  (
                         <>
                         {childRegimenLine.map((value) => (
                             <option key={value.id} value={value.id}>
@@ -1569,19 +1599,19 @@ const Pharmacy = (props) => {
                     )}
                     {patientAge <=15 &&  (
                     <>
-                    {iptEligibilty.IPTEligibility===true ? //Logic to check for TPT eligibility to filter TPT drugs
+                    {iptEligibilty.IPTEligibility===true ? //Logic to check for TPT eligibility to filter TPT drugs for children
                         (<>
                             {oIRegimenLine.map((value) => (
                             <option key={value.id} value={value.id}>
-                                {value.label}
+                                {value.description}
                             </option>
                         ))}
                         </>)
                         :
                         (<>
-                            {oIRegimenLine.filter((x)=> x.value!==15).map((value) => (
+                            {oIRegimenLine.filter((x)=> x.id!==15).map((value) => (
                             <option key={value.id} value={value.id}>
-                                {value.label}
+                                {value.description}
                             </option>
                         ))}
                         </>)
@@ -1619,7 +1649,7 @@ const Pharmacy = (props) => {
                 </FormGroup>
             </div>
             
-            { iptEligibilty.IPTEligibility===true  && ( //iptEligibilty
+            { iptEligibilty.IPTEligibility===true  && ( //iptEligibilty check to display Visit type
             <div className="form-group mb-3 col-xs-6 col-sm-6 col-md-6 col-lg-6">
                 <FormGroup>
                 <Label >Visit Type</Label>

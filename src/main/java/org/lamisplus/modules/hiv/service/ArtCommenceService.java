@@ -230,7 +230,6 @@ public class ArtCommenceService {
 		artClinical.setFacilityId(organizationUtil.getCurrentUserOrganization());
 		String cd4Count = artClinicalCommenceDto.getCd4();
 		if(cd4Count != null && !cd4Count.isEmpty()){
-			System.out.println(" cd4:  "+ cd4Count);
 			artClinical.setCd4(Long.parseLong(cd4Count));
 		}
 		return artClinical;

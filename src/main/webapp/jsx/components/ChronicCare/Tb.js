@@ -359,6 +359,7 @@ const TbScreening = (props) => {
                                     id="tbTreatmentStartDate"
                                     onChange={handleInputChange} 
                                     value={props.tbObj.tbTreatmentStartDate} 
+                                    min={props.encounterDate}
                                     max= {moment(new Date()).format("YYYY-MM-DD") }
                                 >
                                 

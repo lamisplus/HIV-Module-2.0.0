@@ -41,7 +41,6 @@ public class ArtPharmacy extends HivAuditEntity implements Persistable<Long> ,Se
     @JoinColumn(name = "visit_id", referencedColumnName = "uuid", nullable = false)
     private Visit visit;
 
-    @PastOrPresent
     @NotNull
     @Column(name = "visit_date", nullable = false)
     private LocalDate visitDate;

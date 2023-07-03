@@ -108,8 +108,8 @@ const CervicalCancer = (props) => {
                                                     screeningVisible:"",
                                                     screenTreatment:"", 
                                                     papPendingingResult:"",
-                                                    papGettingResult:""                                               
-
+                                                    papGettingResult:"",                                               
+                                                    screenTreatmentMethodDate:""
                                                 });
     const [observation, setObservation]=useState({
             data: {},
@@ -555,7 +555,28 @@ const CervicalCancer = (props) => {
                                     <span className={classes.error}>{errors.screenTreatment}</span>
                                 ) : "" }
                             </FormGroup>
-                            </div>                        
+                            </div>
+                            {objValues.screenTreatment!=="" && (
+                            <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                            <Label >Screening Treatment Method Date</Label>
+                            <Input
+                                    type="date"
+                                    name="screenTreatmentMethodDate"
+                                    id="screenTreatmentMethodDate"
+                                    value={objValues.screenTreatmentMethodDate}
+                                    onChange={handleInputChange}
+                                    min={enrollDate}
+                                    max= {moment(new Date()).format("YYYY-MM-DD") }
+                                    required
+                                    >
+                                </Input>
+                                {errors.screenTreatmentMethodDate !=="" ? (
+                                    <span className={classes.error}>{errors.screenTreatmentMethodDate}</span>
+                                ) : "" }
+                            </FormGroup>
+                            </div>
+                            )}                        
                             <div className="form-group mb-3 col-md-6">
                                 <FormGroup>
                                 <Label >Referral </Label>

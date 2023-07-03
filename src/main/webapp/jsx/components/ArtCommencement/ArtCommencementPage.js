@@ -20,6 +20,7 @@ import { Spinner } from "reactstrap";
 //import { DateTimePicker } from "react-widgets";
 import {  Message} from 'semantic-ui-react'
 
+
 const useStyles = makeStyles(theme => ({
     card: {
         margin: theme.spacing(20),
@@ -91,9 +92,6 @@ const useStyles = makeStyles(theme => ({
 const ArtCommencement = (props) => {
     const patientObj = props.patientObj;
     const [enrollDate, setEnrollDate] = useState("");
-    const [dateOfRegistration, setDateOfRegistration] = useState(null);
-    const [statusAtRegistrationId, setStatusAtRegistrationId] = useState("");
-    const [minDate, setMinDate] = useState("");
     //let history = useHistory();
     let gender=""
     const classes = useStyles()
@@ -106,7 +104,7 @@ const ArtCommencement = (props) => {
     //const [tbStatus, setTbStatus] = useState([]);
     //const [regimenLine, setRegimenLine] = useState([]);
     const [regimenType, setRegimenType] = useState([]);
-    const [pregancyStatus, setPregancyStatus] = useState([]);
+    const [pregnancyStatus, setpregnancyStatus] = useState([]);
     const [functionalStatus, setFunctionalStatus] = useState([]);
     const [adultRegimenLine, setAdultRegimenLine] = useState([]);
     const [childRegimenLine, setChildRegimenLine] = useState([]);
@@ -132,8 +130,9 @@ const ArtCommencement = (props) => {
                                                 cd4Count:null,
                                                 cd4SemiQuantitative:"",
                                                 cd4FlowCytometry:"",
-                                                cd4Type:""                                                  
-
+                                                cd4Type:"",                                                  
+                                                pregnancyStatus:"",
+                                                dateOfLpm:""
                                                 });
 
     const [vital, setVitalSignDto]= useState({
@@ -191,298 +190,294 @@ const ArtCommencement = (props) => {
         PatientCurrentObject()
          gender =props.patientObj.gender && props.patientObj.gender.display ? props.patientObj.gender.display : null
       }, [props.patientObj]);
-        //GET  Patients
-        async function PatientCurrentObject() {
-            axios
-                .get(`${baseUrl}hiv/patient/${props.patientObj.id}`,
-                { headers: {"Authorization" : `Bearer ${token}`} }
-                )
-                .then((response) => {
-                    console.log("Current Patient is {}", response.data);
-                    setMinDate(response.data.enrollment.dateOfRegistration)
-                    setStatusAtRegistrationId(response.data.enrollment.statusAtRegistrationId)
-                    setDateOfRegistration(response.data.dateOfRegistration)
+    //GET  Patients
+    const  PatientCurrentObject =() =>{
+        axios
+            .get(`${baseUrl}hiv/patient/${props.patientObj.id}`,
+            { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+                setEnrollDate(response.data.enrollment.entryPointId===21 ? response.data.enrollment.dateConfirmedHiv : response.data.enrollment.dateOfRegistration)
+                setPatientObject(response.data);
+                objValues.pregnancyStatus = response.data.enrollment.pregnancyStatusId
+                //console.log(response.data.enrollment.pregnancyStatusId)
+                setObjValues({...objValues, pregnancyStatus: response.data.enrollment.pregnancyStatusId})
+            })
+            .catch((error) => {  
+            });        
+    }
 
-                    if(response.data.enrollment.statusAtRegistrationId === 55){
-                        let min = moment(new Date("2007-01-01")).format("YYYY-MM-DD")
-                        setMinDate(min)
-                    }
-                    setPatientObject(response.data);
-                })
-                .catch((error) => {  
-                });        
-        }
-        //GET AdultRegimenLine 
-        const AdultRegimenLine =()=>{
-            axios
-                .get(`${baseUrl}hiv/regimen/arv/adult`,
-                    { headers: {"Authorization" : `Bearer ${token}`} }
-                )
-                .then((response) => {
-                    const artRegimen=response.data.filter((x)=> (x.id===1 || x.id===2 || x.id===14)) 
-                    setAdultRegimenLine(artRegimen);
-                })
-                .catch((error) => {
-                //console.log(error);
-                });        
-        }
-        //GET ChildRegimenLine 
-        const ChildRegimenLine =()=>{
-            axios
-                .get(`${baseUrl}hiv/regimen/arv/children`,
-                    { headers: {"Authorization" : `Bearer ${token}`} }
-                )
-                .then((response) => {
-                    const artRegimenChildren=response.data.filter((x)=> (x.id===3 || x.id===4))
-                    setChildRegimenLine(artRegimenChildren);
-                })
-                .catch((error) => {
-                //console.log(error);
-                });        
-        }
-        //Get list of WhoStaging
-        const WhoStaging =()=>{
-            axios
-            .get(`${baseUrl}application-codesets/v2/CLINICAL_STAGE`,
+    //GET AdultRegimenLine 
+    const AdultRegimenLine =()=>{
+        axios
+            .get(`${baseUrl}hiv/regimen/arv/adult`,
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                //console.log(response.data);
-                setClinicalStage(response.data);
+                const artRegimen=response.data.filter((x)=> (x.id===1 || x.id===2 || x.id===14)) 
+                setAdultRegimenLine(artRegimen);
             })
             .catch((error) => {
             //console.log(error);
-            });
-        
-        }
-        const InitialClinicEvaluation =()=>{
-            axios
-            .get(`${baseUrl}observation/person/${props.patientObj.id}`,
+            });        
+    }
+    //GET ChildRegimenLine 
+    const ChildRegimenLine =()=>{
+        axios
+            .get(`${baseUrl}hiv/regimen/arv/children`,
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-
-                    const obj1 =response.data.find(x=> x.type==='Clinical evaluation')
-                    
-                    //const cd4CountObj=obj1.data.plan
-                    //console.log(obj1.data.plan)
-                    objValues.cd4Type=obj1.data.plan.cd4Type
-                    objValues.cd4Count=obj1.data.plan.cd4Count
-                    objValues.whoStagingId = obj1.data.who.stage
-                    objValues.regimenTypeId=obj1.data.regimen.regimenLine
-                    RegimenType(obj1.data.regimen.regimenLine)
-                    objValues.regimenId=obj1.data.regimen.regimen
-                    setVitalSignDto({...obj1.data.physicalExamination})
+                const artRegimenChildren=response.data.filter((x)=> (x.id===3 || x.id===4))
+                setChildRegimenLine(artRegimenChildren);
             })
             .catch((error) => {
             //console.log(error);
-            });       
-        }
-        //Get list of RegimenLine
-        const RegimenLine =()=>{
+            });        
+    }
+    //Get list of WhoStaging
+    const WhoStaging =()=>{
         axios
-           .get(`${baseUrl}hiv/regimen/types`,
-               { headers: {"Authorization" : `Bearer ${token}`} }
-           )
-           .then((response) => {
-               //console.log(response.data);
-               //setRegimenLine(response.data);
-           })
-           .catch((error) => {
-           //console.log(error);
-           });
-       
-        }
-        //Get list of RegimenLine
-        const RegimenType =(id)=>{
+        .get(`${baseUrl}application-codesets/v2/CLINICAL_STAGE`,
+            { headers: {"Authorization" : `Bearer ${token}`} }
+        )
+        .then((response) => {
+            //console.log(response.data);
+            setClinicalStage(response.data);
+        })
+        .catch((error) => {
+        //console.log(error);
+        });
+    
+    }
+    const InitialClinicEvaluation =()=>{
         axios
-            .get(`${baseUrl}hiv/regimen/types/${id}`,
-                { headers: {"Authorization" : `Bearer ${token}`} }
-            )
-            .then((response) => {
-                //console.log(response.data);
-                setRegimenType(response.data);
-            })
-            .catch((error) => {
-            //console.log(error);
-            });
-        
-        }
-        //Get list of PREGANACY_STATUS
-        const PreganacyStatus =()=>{
-        axios
-           .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS`,
-               { headers: {"Authorization" : `Bearer ${token}`} }
-           )
-           .then((response) => {
-               //console.log(response.data);
-               setPregancyStatus(response.data);
-           })
-           .catch((error) => {
-           //console.log(error);
-           });
-       
-        }
-        ///GET LIST OF FUNCTIONAL%20_STATUS
-        async function FunctionalStatus() {
-            axios
-                .get(`${baseUrl}application-codesets/v2/FUNCTIONAL%20_STATUS`,
-                { headers: {"Authorization" : `Bearer ${token}`} }
-                )
-                .then((response) => {
-                    
-                    setFunctionalStatus(response.data);
-                    //setValues(response.data)
-                })
-                .catch((error) => {    
-                });        
-        }
-        // TB STATUS
-        // const TBStatus =()=>{
-        //     axios
-        //        .get(`${baseUrl}application-codesets/v2/TB_STATUS`,
-        //            { headers: {"Authorization" : `Bearer ${token}`} }
-        //        )
-        //        .then((response) => {
-        //            //console.log(response.data);
-        //            setTbStatus(response.data);
-        //        })
-        //        .catch((error) => {
-        //        //console.log(error);
-        //        });
-           
-        //  }
+        .get(`${baseUrl}observation/person/${props.patientObj.id}`,
+            { headers: {"Authorization" : `Bearer ${token}`} }
+        )
+        .then((response) => {
 
-        const handleInputChange = e => {
-            setErrors({...temp, [e.target.name]:""})
-            setObjValues ({...objValues,  [e.target.name]: e.target.value});
-                if(e.target.name==='isViralLoadAtStartOfArt' && e.target.value!==""){
-                    if(e.target.value==='true'){
-                        setViraLoadStart(true)
-                        setObjValues ({...objValues,  [e.target.name]: true});
-                    }else{
-                        setObjValues({...objValues, [e.target.name]:false})
-                        setViraLoadStart(false)
-                    }
-                }
-                else if(e.target.name==='cd4Percentage' && e.target.value!==""){
-                    setObjValues ({...objValues,  [e.target.name]: e.target.value.replace(/\D/g, '')});
-                }
-                else if(e.target.name==='cd4' && e.target.value!==""){
-                    setObjValues ({...objValues,  [e.target.name]: e.target.value.replace(/\D/g, '')});
-                }
-
-                if(e.target.name==='isViralLoadAtStartOfArt' && e.target.value==="false"){
-                    objValues.viralLoadAtStartOfArt=""
-                    objValues.dateOfViralLoadAtStartOfArt=""
-                    setObjValues ({...objValues,  ["viralLoadAtStartOfArt"]: " " });
-                    setObjValues ({...objValues,  ["dateOfViralLoadAtStartOfArt"]: " " });
-                    setObjValues ({...objValues,  [e.target.name]: e.target.value});
-
-                }
+                const obj1 =response.data.find(x=> x.type==='Clinical evaluation')
                 
-        }
+                //const cd4CountObj=obj1.data.plan
+                //console.log(obj1.data.plan)
+                objValues.cd4Type=obj1.data.plan.cd4Type
+                objValues.cd4Count=obj1.data.plan.cd4Count
+                objValues.whoStagingId = obj1.data.who.stage
+                objValues.regimenTypeId=obj1.data.regimen.regimenLine
+                RegimenType(obj1.data.regimen.regimenLine)
+                objValues.regimenId=obj1.data.regimen.regimen
+                setVitalSignDto({...obj1.data.physicalExamination})
+        })
+        .catch((error) => {
+        //console.log(error);
+        });       
+    }
+    //Get list of RegimenLine
+    const RegimenLine =()=>{
+    axios
+        .get(`${baseUrl}hiv/regimen/types`,
+            { headers: {"Authorization" : `Bearer ${token}`} }
+        )
+        .then((response) => {
+            //console.log(response.data);
+            //setRegimenLine(response.data);
+        })
+        .catch((error) => {
+        //console.log(error);
+        });
+    
+    }
+    //Get list of RegimenLine
+    const RegimenType =(id)=>{
+    axios
+        .get(`${baseUrl}hiv/regimen/types/${id}`,
+            { headers: {"Authorization" : `Bearer ${token}`} }
+        )
+        .then((response) => {
+            //console.log(response.data);
+            setRegimenType(response.data);
+        })
+        .catch((error) => {
+        //console.log(error);
+        });
+    
+    }
+    //Get list of PREGANACY_STATUS
+    const PreganacyStatus =()=>{
+    axios
+        .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS`,
+            { headers: {"Authorization" : `Bearer ${token}`} }
+        )
+        .then((response) => {
+            //console.log(response.data);
+            setpregnancyStatus(response.data);
+        })
+        .catch((error) => {
+        //console.log(error);
+        });
+    
+    }
+    ///GET LIST OF FUNCTIONAL%20_STATUS
+    async function FunctionalStatus() {
+        axios
+            .get(`${baseUrl}application-codesets/v2/FUNCTIONAL%20_STATUS`,
+            { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+                
+                setFunctionalStatus(response.data);
+                //setValues(response.data)
+            })
+            .catch((error) => {    
+            });        
+    }
+    // TB STATUS
+    // const TBStatus =()=>{
+    //     axios
+    //        .get(`${baseUrl}application-codesets/v2/TB_STATUS`,
+    //            { headers: {"Authorization" : `Bearer ${token}`} }
+    //        )
+    //        .then((response) => {
+    //            //console.log(response.data);
+    //            setTbStatus(response.data);
+    //        })
+    //        .catch((error) => {
+    //        //console.log(error);
+    //        });
+        
+    //  }
 
-        const handleInputChangeVitalSignDto = e => { 
-            setErrors({...temp, [e.target.name]:""})  
-            setVitalSignDto({ ...vital, [e.target.name]: e.target.value });
-            // if(e.target.name==='muac'){
-            //     setVitalSignDto ({...vital,  [e.target.name]: e.target.value});
-            // } else{
-            //     setVitalSignDto ({...vital,  [e.target.name]: e.target.value.replace(/\D/g, '')});
-            // }
-        }
-        const handleSelecteRegimen = e => { 
-            let regimenID=  e.target.value
-            //regimenTypeId regimenId
-            setObjValues ({...objValues, regimenTypeId:regimenID});
-            RegimenType(regimenID)           
-            setErrors({...temp, [e.target.name]:""})
-        }
-        //to check the input value for clinical decision 
-        const handleInputValueCheckHeight =(e)=>{
-            if(e.target.name==="height" && (e.target.value < 48.26 || e.target.value>216.408)){
-            const message ="Height cannot be greater than 216.408 and less than 48.26"
-            setVitalClinicalSupport({...vitalClinicalSupport, height:message})
-            }else{
-            setVitalClinicalSupport({...vitalClinicalSupport, height:""})
+    const handleInputChange = e => {
+        setErrors({...temp, [e.target.name]:""})
+        setObjValues ({...objValues,  [e.target.name]: e.target.value});
+            if(e.target.name==='isViralLoadAtStartOfArt' && e.target.value!==""){
+                if(e.target.value==='true'){
+                    setViraLoadStart(true)
+                    setObjValues ({...objValues,  [e.target.name]: true});
+                }else{
+                    setObjValues({...objValues, [e.target.name]:false})
+                    setViraLoadStart(false)
+                }
             }
-        }
-        const handleInputValueCheckBodyWeight =(e)=>{
-            if(e.target.name==="bodyWeight" && (e.target.value < 3 || e.target.value>150)){      
-            const message ="Body weight must not be greater than 150 and less than 3"
-            setVitalClinicalSupport({...vitalClinicalSupport, bodyWeight:message})
-            }else{
-            setVitalClinicalSupport({...vitalClinicalSupport, bodyWeight:""})
+            else if(e.target.name==='cd4Percentage' && e.target.value!==""){
+                setObjValues ({...objValues,  [e.target.name]: e.target.value.replace(/\D/g, '')});
             }
-        }
-        const handleInputValueCheckSystolic =(e)=>{
-            if(e.target.name==="systolic" && (e.target.value < 90 || e.target.value>240)){      
-            const message ="Blood Pressure systolic must not be greater than 240 and less than 90"
-            setVitalClinicalSupport({...vitalClinicalSupport, systolic:message})
-            }else{
-            setVitalClinicalSupport({...vitalClinicalSupport, systolic:""})
+            else if(e.target.name==='cd4' && e.target.value!==""){
+                setObjValues ({...objValues,  [e.target.name]: e.target.value.replace(/\D/g, '')});
             }
-        }
-        const handleInputValueCheckDiastolic =(e)=>{
-            if(e.target.name==="diastolic" && (e.target.value < 60 || e.target.value>140)){      
-            const message ="Blood Pressure diastolic must not be greater than 140 and less than 60"
-            setVitalClinicalSupport({...vitalClinicalSupport, diastolic:message})
-            }else{
-            setVitalClinicalSupport({...vitalClinicalSupport, diastolic:""})
+
+            if(e.target.name==='isViralLoadAtStartOfArt' && e.target.value==="false"){
+                objValues.viralLoadAtStartOfArt=""
+                objValues.dateOfViralLoadAtStartOfArt=""
+                setObjValues ({...objValues,  ["viralLoadAtStartOfArt"]: " " });
+                setObjValues ({...objValues,  ["dateOfViralLoadAtStartOfArt"]: " " });
+                setObjValues ({...objValues,  [e.target.name]: e.target.value});
+
             }
-        }
-        const handleInputValueCheckPulse =(e)=>{
-            if(e.target.name==="pulse" && (e.target.value < 40 || e.target.value>120)){      
-            const message ="Pulse must not be greater than 120 and less than 40"
-            setVitalClinicalSupport({...vitalClinicalSupport, pulse:message})
-            }else{
-            setVitalClinicalSupport({...vitalClinicalSupport, pulse:""})
-            }
-        }
-        const handleInputValueCheckRespiratoryRate =(e)=>{
-            if(e.target.name==="respiratoryRate" && (e.target.value < 10 || e.target.value>70)){      
-            const message ="Respiratory Rate must not be greater than 70 and less than 10"
-            setVitalClinicalSupport({...vitalClinicalSupport, respiratoryRate:message})
-            }else{
-            setVitalClinicalSupport({...vitalClinicalSupport, respiratoryRate:""})
-            }
-        }
-        const handleInputValueCheckTemperature =(e)=>{
-            if(e.target.name==="temperature" && (e.target.value < 35 || e.target.value>47)){      
-            const message ="Temperature must not be greater than 47 and less than 35"
-            setVitalClinicalSupport({...vitalClinicalSupport, temperature:message})
-            }else{
-            setVitalClinicalSupport({...vitalClinicalSupport, temperature:""})
-            }
-        }
-        // const handleInputChangeVitalStart =(e)=>{
-        //     if(e.target.value===true ){
-        //         setViraLoadStart(true)
-        //         setObjValues({...objValues, isViralLoadAtStartOfArt:true})
-        //     }else{
-        //         setObjValues({...objValues, isViralLoadAtStartOfArt:false})
-        //         setViraLoadStart(false)
-        //     }
+            
+    }
+
+    const handleInputChangeVitalSignDto = e => { 
+        setErrors({...temp, [e.target.name]:""})  
+        setVitalSignDto({ ...vital, [e.target.name]: e.target.value });
+        // if(e.target.name==='muac'){
+        //     setVitalSignDto ({...vital,  [e.target.name]: e.target.value});
+        // } else{
+        //     setVitalSignDto ({...vital,  [e.target.name]: e.target.value.replace(/\D/g, '')});
         // }
-
-        //FORM VALIDATION
-        const validate = () => {
-            temp.visitDate = objValues.visitDate ? "" : "This field is required"
-            temp.regimenId = objValues.regimenId ? "" : "This field is required"
-            temp.regimenTypeId = objValues.regimenTypeId ? "" : "This field is required"
-            temp.whoStagingId = objValues.whoStagingId ? "" : "This field is required"
-            temp.functionalStatusId = objValues.functionalStatusId ? "" : "This field is required"
-            //temp.tbStatusId = objValues.tbStatusId ? "" : "This field is required"
-            temp.bodyWeight = vital.bodyWeight ? "" : "This field is required"
-            temp.height = vital.height ? "" : "This field is required"
-            //temp.systolic = vital.systolic ? "" : "This field is required"
-            //temp.diastolic = vital.diastolic ? "" : "This field is required"
-            setErrors({
-                ...temp
-                })    
-            return Object.values(temp).every(x => x == "")
+    }
+    const handleSelecteRegimen = e => { 
+        let regimenID=  e.target.value
+        //regimenTypeId regimenId
+        setObjValues ({...objValues, regimenTypeId:regimenID});
+        RegimenType(regimenID)           
+        setErrors({...temp, [e.target.name]:""})
+    }
+    //to check the input value for clinical decision 
+    const handleInputValueCheckHeight =(e)=>{
+        if(e.target.name==="height" && (e.target.value < 48.26 || e.target.value>216.408)){
+        const message ="Height cannot be greater than 216.408 and less than 48.26"
+        setVitalClinicalSupport({...vitalClinicalSupport, height:message})
+        }else{
+        setVitalClinicalSupport({...vitalClinicalSupport, height:""})
         }
+    }
+    const handleInputValueCheckBodyWeight =(e)=>{
+        if(e.target.name==="bodyWeight" && (e.target.value < 3 || e.target.value>150)){      
+        const message ="Body weight must not be greater than 150 and less than 3"
+        setVitalClinicalSupport({...vitalClinicalSupport, bodyWeight:message})
+        }else{
+        setVitalClinicalSupport({...vitalClinicalSupport, bodyWeight:""})
+        }
+    }
+    const handleInputValueCheckSystolic =(e)=>{
+        if(e.target.name==="systolic" && (e.target.value < 90 || e.target.value>240)){      
+        const message ="Blood Pressure systolic must not be greater than 240 and less than 90"
+        setVitalClinicalSupport({...vitalClinicalSupport, systolic:message})
+        }else{
+        setVitalClinicalSupport({...vitalClinicalSupport, systolic:""})
+        }
+    }
+    const handleInputValueCheckDiastolic =(e)=>{
+        if(e.target.name==="diastolic" && (e.target.value < 60 || e.target.value>140)){      
+        const message ="Blood Pressure diastolic must not be greater than 140 and less than 60"
+        setVitalClinicalSupport({...vitalClinicalSupport, diastolic:message})
+        }else{
+        setVitalClinicalSupport({...vitalClinicalSupport, diastolic:""})
+        }
+    }
+    const handleInputValueCheckPulse =(e)=>{
+        if(e.target.name==="pulse" && (e.target.value < 40 || e.target.value>120)){      
+        const message ="Pulse must not be greater than 120 and less than 40"
+        setVitalClinicalSupport({...vitalClinicalSupport, pulse:message})
+        }else{
+        setVitalClinicalSupport({...vitalClinicalSupport, pulse:""})
+        }
+    }
+    const handleInputValueCheckRespiratoryRate =(e)=>{
+        if(e.target.name==="respiratoryRate" && (e.target.value < 10 || e.target.value>70)){      
+        const message ="Respiratory Rate must not be greater than 70 and less than 10"
+        setVitalClinicalSupport({...vitalClinicalSupport, respiratoryRate:message})
+        }else{
+        setVitalClinicalSupport({...vitalClinicalSupport, respiratoryRate:""})
+        }
+    }
+    const handleInputValueCheckTemperature =(e)=>{
+        if(e.target.name==="temperature" && (e.target.value < 35 || e.target.value>47)){      
+        const message ="Temperature must not be greater than 47 and less than 35"
+        setVitalClinicalSupport({...vitalClinicalSupport, temperature:message})
+        }else{
+        setVitalClinicalSupport({...vitalClinicalSupport, temperature:""})
+        }
+    }
+    // const handleInputChangeVitalStart =(e)=>{
+    //     if(e.target.value===true ){
+    //         setViraLoadStart(true)
+    //         setObjValues({...objValues, isViralLoadAtStartOfArt:true})
+    //     }else{
+    //         setObjValues({...objValues, isViralLoadAtStartOfArt:false})
+    //         setViraLoadStart(false)
+    //     }
+    // }
+
+    //FORM VALIDATION
+    const validate = () => {
+        temp.visitDate = objValues.visitDate ? "" : "This field is required"
+        temp.regimenId = objValues.regimenId ? "" : "This field is required"
+        temp.regimenTypeId = objValues.regimenTypeId ? "" : "This field is required"
+        temp.whoStagingId = objValues.whoStagingId ? "" : "This field is required"
+        temp.functionalStatusId = objValues.functionalStatusId ? "" : "This field is required"
+        //temp.tbStatusId = objValues.tbStatusId ? "" : "This field is required"
+        temp.bodyWeight = vital.bodyWeight ? "" : "This field is required"
+        temp.height = vital.height ? "" : "This field is required"
+        //temp.systolic = vital.systolic ? "" : "This field is required"
+        //temp.diastolic = vital.diastolic ? "" : "This field is required"
+        setErrors({
+            ...temp
+            })    
+        return Object.values(temp).every(x => x == "")
+    }
 
     /**** Submit Button Processing  */
     const handleSubmit = (e) => {                  
@@ -493,7 +488,13 @@ const ArtCommencement = (props) => {
         vital.personId=props.patientObj.id
         objValues.vitalSignDto= vital
         objValues.hivEnrollmentId= patientObject && patientObject.enrollment.id
-        objValues.clinicalStageId = objValues.whoStagingId 
+        objValues.clinicalStageId = objValues.whoStagingId
+        if(objValues.pregnancyStatus!==""){
+            const pregnancyDisplay=pregnancyStatus.find((x)=> x.id===objValues.pregnancyStatus)
+            objValues.pregnancyStatus = pregnancyDisplay.display
+        }else{
+            objValues.pregnancyStatus = objValues.pregnancyStatus
+        } 
         //Logic for cd4 value 
         if(objValues.cd4Type==="Flow Cyteometry"){
             objValues.cd4 = objValues.cd4Count
@@ -503,26 +504,26 @@ const ArtCommencement = (props) => {
         { headers: {"Authorization" : `Bearer ${token}`}},
         
         )
-            .then(response => {
-                setSaving(false);
-                //props.setArt(true)
-                props.patientObj.commenced=true
-                toast.success("Record save successful");
-                props.setActiveContent({...props.activeContent, route:'recent-history'})
-                //props.toggle()
-                //props.PatientCurrentStatus()
+        .then(response => {
+            setSaving(false);
+            //props.setArt(true)
+            props.patientObj.commenced=true
+            toast.success("Record save successful");
+            props.setActiveContent({...props.activeContent, route:'recent-history'})
+            //props.toggle()
+            //props.PatientCurrentStatus()
 
-            })
-            .catch(error => {
-                setSaving(false);
-                if(error.response && error.response.data){
-                let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
-                toast.error(errorMessage);
-                }
-                else{
-                toast.error("Something went wrong. Please try again...");
-                }
-            });
+        })
+        .catch(error => {
+            setSaving(false);
+            if(error.response && error.response.data){
+            let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
+            toast.error(errorMessage);
+            }
+            else{
+            toast.error("Something went wrong. Please try again...");
+            }
+        });
         }
         
     }
@@ -563,7 +564,8 @@ const ArtCommencement = (props) => {
             <CardBody>
             <form >
                 <div className="row">
-                
+                  {/* statusAtRegistrationId  entryPointId */}
+                  {patientObject && (patientObject.enrollment.entryPointId==="21" || patientObject.enrollment.statusAtRegistrationId==="55") ? (<>
                     <div className="form-group mb-3 col-md-4">
                         <FormGroup>
                         <Label for="artDate">ART Start Date <span style={{ color:"red"}}> *</span> </Label>
@@ -573,7 +575,7 @@ const ArtCommencement = (props) => {
                             id="visitDate"
                             onChange={handleInputChange}
                             value={objValues.visitDate}
-                            min={minDate}
+                            min="01-01-1980"
                             max= {moment(new Date()).format("YYYY-MM-DD") }
                             
                             style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
@@ -584,6 +586,32 @@ const ArtCommencement = (props) => {
                             ) : "" }
                         </FormGroup>
                     </div>
+                    </>)
+                    :
+                    (<>
+                    <div className="form-group mb-3 col-md-4">
+                        <FormGroup>
+                        <Label for="artDate">ART Start Date <span style={{ color:"red"}}> *</span> </Label>
+                        <Input
+                            type="date"
+                            name="visitDate"
+                            id="visitDate"
+                            onChange={handleInputChange}
+                            value={objValues.visitDate}
+                            min={enrollDate}
+                            max= {moment(new Date()).format("YYYY-MM-DD") }
+                            
+                            style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                            required
+                        />
+                            {errors.visitDate !=="" ? (
+                            <span className={classes.error}>{errors.visitDate}</span>
+                            ) : "" }
+                        </FormGroup>
+                    </div>
+                    </>)
+                    }
+
                     {/* <div className="form-group mb-3 col-md-4">
                         <FormGroup>
                         <Label for="cd4">CD4 at start of ART </Label>
@@ -809,7 +837,7 @@ const ArtCommencement = (props) => {
                             onChange={handleInputChange}
                             max= {moment(new Date()).format("YYYY-MM-DD") }
                             style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                            disabled
+                            
                             >
                                 <option value=""> Select</option>
                                 {clinicalStage.map((value) => (
@@ -858,18 +886,15 @@ const ArtCommencement = (props) => {
                             <Label >Pregnancy Status <span style={{ color:"red"}}> *</span></Label>
                             <Input
                                 type="select"
-                                name="pregancyStatus"
-                                id="pregancyStatus"
-                                disabled
+                                name="pregnancyStatus"
+                                id="pregnancyStatus"
                                 onChange={handleInputChange}
-                                value="72"
+                                value={objValues.pregnancyStatus}
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 //disabled
-
                             >
                                 <option value=""> Select</option>
-        
-                                {pregancyStatus.map((value) => (
+                                {pregnancyStatus.map((value) => (
                                     <option key={value.id} value={value.id}>
                                         {value.display}
                                     </option>
@@ -877,18 +902,18 @@ const ArtCommencement = (props) => {
                             </Input>
                             </FormGroup>
                         </div>
-                        {props.patientObj.enrollment && props.patientObj.enrollment.pregnancyStatusId==='72' && (
+                        {objValues.pregnancyStatus==='73' && (
                         <div className="form-group mb-3 col-md-4">
                             <FormGroup>
                             <Label >LMP</Label>
                             <Input
                                 type="date"
-                                name="LMPDate"
-                                id="LMPDate"
+                                name="dateOfLpm"
+                                id="dateOfLpm"
                                 onChange={handleInputChange}
-                                value={props.patientObj.enrollment.dateOfLpm}
+                                value={objValues.dateOfLpm}
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                                disabled
+                                max= {moment(new Date()).format("YYYY-MM-DD") }
                             />
                             </FormGroup>
                         </div>

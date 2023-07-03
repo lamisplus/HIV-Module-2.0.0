@@ -101,8 +101,8 @@ const MentalHealthScreening = (props) => {
            )
            .then((response) => {
                const patientDTO= response.data.enrollment
-               setEnrollDate (patientDTO.dateOfRegistration)
-               //setEacStatusObj(response.data);
+               //setEnrollDate (patientDTO.dateOfRegistration)
+               setEnrollDate(patientDTO.entryPointId===21 ? patientDTO.dateConfirmedHiv : patientDTO.dateOfRegistration)
                //
            })
            .catch((error) => {

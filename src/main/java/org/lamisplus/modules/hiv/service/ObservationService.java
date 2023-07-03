@@ -35,63 +35,81 @@ public class ObservationService {
    private final ArtPharmacyRepository pharmacyRepository;
 
     public ObservationDto createAnObservation(ObservationDto observationDto) {
-        Long personId = observationDto.getPersonId ();
-        Person person = getPerson (personId);
-        Long orgId = currentUserOrganizationService.getCurrentUserOrganization ();
-        Optional<Observation> anExistingObservationType = getAnExistingObservationType(observationDto, person, orgId);
-        if (anExistingObservationType.isPresent ()) {
-            Observation observation = anExistingObservationType.get();
-            if(observation.getType().equals("Clinical evaluation"))
-                throw new RecordExistException (Observation.class, "type", observationDto.getType ());
-        }
-        processAndUpdateIptFromPharmacy(observationDto, person);
-        observationDto.setFacilityId (orgId);
-        Visit visit = handleHIVisitEncounter.processAndCreateVisit (personId, observationDto.getDateOfObservation());
-        if (visit != null) {
-            observationDto.setVisitId (visit.getId ());
-        }
-      
-        Observation observation = new Observation ();
-        BeanUtils.copyProperties (observationDto, observation);
-        observation.setPerson (person);
-        observation.setUuid (UUID.randomUUID ().toString ());
-        observation.setVisit (visit);
-        observation.setArchived (0);
-        Observation saveObservation = observationRepository.save (observation);
-        observationDto.setId (saveObservation.getId ());
-        return observationDto;
+       try {
+           log.info("saving an observation of type {}", observationDto.getType());
+           Long personId = observationDto.getPersonId();
+           Person person = getPerson(personId);
+           Long orgId = currentUserOrganizationService.getCurrentUserOrganization();
+           Optional<Observation> anExistingObservationType = getAnExistingObservationType(observationDto, person, orgId);
+           if (anExistingObservationType.isPresent()) {
+               Observation observation = anExistingObservationType.get();
+               if (observation.getType().equals("Clinical evaluation"))
+                   throw new RecordExistException(Observation.class, "type", observationDto.getType());
+           }
+           processAndUpdateIptFromPharmacy(observationDto, person);
+           observationDto.setFacilityId(orgId);
+           Visit visit = handleHIVisitEncounter.processAndCreateVisit(personId, observationDto.getDateOfObservation());
+           if (visit != null) {
+               observationDto.setVisitId(visit.getId());
+           }
+           log.info("appending additional info and saving observation of type {}", observationDto.getType());
+           appendAdditionalInfoAndSaveObservation(observationDto, person, visit);
+           log.info("observation save successfully ");
+           return observationDto;
+       }catch (Exception e) {
+           log.error("An error occurred while saving an observation");
+           log.error("error message: " + e.getMessage());
+       }
+       return  observationDto;
     }
     
-   
+    private void appendAdditionalInfoAndSaveObservation(ObservationDto observationDto, Person person, Visit visit) {
+        Observation observation = new Observation();
+        BeanUtils.copyProperties(observationDto, observation);
+        observation.setPerson(person);
+        observation.setUuid(UUID.randomUUID().toString());
+        observation.setVisit(visit);
+        observation.setArchived(0);
+        Observation saveObservation = observationRepository.save(observation);
+        observationDto.setId(saveObservation.getId());
+    }
+    
+    
     private void processAndUpdateIptFromPharmacy(ObservationDto observationDto, Person person) {
+        log.info ("Processing and updating IPT from pharmacy....");
         if(observationDto.getType().equals("Chronic Care")){
             JsonNode tptMonitoring = observationDto.getData().get("tptMonitoring");
             JsonNode iptCompletionDate = tptMonitoring.get("date");
             JsonNode outComeOfIpt = tptMonitoring.get("outComeOfIpt");
+            log.info ("checking for IPT out come");
             if( (outComeOfIpt != null && !outComeOfIpt.isEmpty() ) || (iptCompletionDate != null && !iptCompletionDate.asText().isEmpty()) ){
+                log.info ("found for IPT out come");
                 StringBuilder dateIptCompleted = new StringBuilder();
                 StringBuilder iptCompletionStatus = new StringBuilder();
-                
+                log.info ("checking if IPT out come has a date");
                 if(iptCompletionDate != null ){
+                    log.info ("found for IPT out come date");
                     dateIptCompleted.append(iptCompletionDate.asText());
                 }
                 if(outComeOfIpt != null){
                     iptCompletionStatus.append(outComeOfIpt.asText());
                 }
+                log.info ("fetching current IPT from pharmacy");
                 Optional<ArtPharmacy> recentIPtPharmacy =
                         pharmacyRepository.getPharmacyIpt(person.getUuid());
                 if(recentIPtPharmacy.isPresent()){
+                    log.info ("found current IPT from pharmacy");
                     ArtPharmacy artPharmacy = recentIPtPharmacy.get();
                     JsonNode ipt = artPharmacy.getIpt();
                     ((ObjectNode) ipt).put("dateCompleted", dateIptCompleted.toString());
                     ((ObjectNode) ipt).put("completionStatus", iptCompletionStatus.toString());
                     artPharmacy.setIpt(ipt);
+                    log.info ("updating  current IPT from pharmacy");
                     pharmacyRepository.save(artPharmacy);
+                    log.info ("update was successful  current pharmacy affected uuid {}", artPharmacy.getUuid());
                 }
                 
             }
-            
-            System.out.println(""+ tptMonitoring);
         }
     }
     

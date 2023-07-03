@@ -3,7 +3,6 @@ package org.lamisplus.modules.hiv.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
 import org.lamisplus.modules.base.service.ApplicationCodesetService;
 import org.lamisplus.modules.hiv.domain.dto.HIVStatusTrackerDto;
@@ -21,9 +20,7 @@ import org.lamisplus.modules.patient.repository.PersonRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -193,6 +190,7 @@ public class HIVStatusTrackerService {
 	}
 	
 	public HIVStatusTracker convertDtoToEntity(HIVStatusTrackerDto hivStatusTrackerDto) {
+		Person person = getPerson(hivStatusTrackerDto.getPersonId());
 		HIVStatusTracker hivStatusTracker = new HIVStatusTracker();
 		BeanUtils.copyProperties(hivStatusTrackerDto, hivStatusTracker);
 		String hivStatus = hivStatusTracker.getHivStatus();
@@ -206,6 +204,7 @@ public class HIVStatusTrackerService {
 			hivStatus = "ART Transfer Out";
 		}
 		hivStatusTracker.setHivStatus(hivStatus);
+		hivStatusTracker.setPerson(person);
 		hivStatusTracker.setFacilityId(organizationUtil.getCurrentUserOrganization());
 		return hivStatusTracker;
 	}
@@ -213,6 +212,7 @@ public class HIVStatusTrackerService {
 	public HIVStatusTrackerDto convertEntityToDto(HIVStatusTracker hivStatusTracker) {
 		HIVStatusTrackerDto hivStatusTrackerDto = new HIVStatusTrackerDto();
 		BeanUtils.copyProperties(hivStatusTracker, hivStatusTrackerDto);
+		hivStatusTrackerDto.setPersonId(hivStatusTracker.getPerson().getId());
 		return hivStatusTrackerDto;
 		
 	}

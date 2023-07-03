@@ -537,14 +537,15 @@ const UserRegistration = (props) => {
                                     ) : "" }
                                     </FormGroup>
                                 </div>
+                                {(objValues.entryPointId==="21" || objValues.statusAtRegistrationId==="55") ? (<>
                                 <div className="form-group mb-3 col-md-6">
                                     <FormGroup>
-                                    <Label for="dateOfRegistration">Date of Enrollment <span style={{ color:"red"}}> *</span> </Label>
+                                    <Label for="dateOfRegistration">Date of Enrollment <span style={{ color:"red"}}> *</span></Label>
                                     <Input
                                         type="date"
                                         name="dateOfRegistration"
                                         id="dateOfRegistration"
-                                        min={patientObj.dateOfRegistration}
+                                        min="01-01-1980"
                                         max= {moment(new Date()).format("YYYY-MM-DD") }
                                         onChange={handleInputChange}
                                         value={objValues.dateOfRegistration}
@@ -556,6 +557,30 @@ const UserRegistration = (props) => {
                                     ) : "" }
                                     </FormGroup>
                                 </div>
+                                </>)
+                                :
+                                (<>
+                                    <div className="form-group mb-3 col-md-6">
+                                        <FormGroup>
+                                        <Label for="dateOfRegistration">Date of Enrollment <span style={{ color:"red"}}> *</span></Label>
+                                        <Input
+                                            type="date"
+                                            name="dateOfRegistration"
+                                            id="dateOfRegistration"
+                                            min={basicInfo.dateOfRegistration}
+                                            max= {moment(new Date()).format("YYYY-MM-DD") }
+                                            onChange={handleInputChange}
+                                            value={objValues.dateOfRegistration}
+                                            style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
+                                            
+                                        />
+                                        {errors.dateOfRegistration !=="" ? (
+                                        <span className={classes.error}>{errors.dateOfRegistration}</span>
+                                        ) : "" }
+                                        </FormGroup>
+                                    </div>
+                                </>)
+                                }
                             </div>
                             <div className="row">
                                 <div className="form-group mb-3 col-md-6">
@@ -831,7 +856,7 @@ const UserRegistration = (props) => {
                                     </FormGroup>
                                 </div>
                                 ) : ""}
-                                {basicInfo.age <=14 && (
+                                {basicInfo.age <=17 && (
                                 <div className="form-group mb-3 col-md-3">
                                     
                                     <div className="form-check custom-checkbox ml-1 ">
@@ -931,7 +956,7 @@ const UserRegistration = (props) => {
                                             name="dateReferredToOVCPartner"
                                             id="dateReferredToOVCPartner"
                                             min={basicInfo.dob}
-                                            max={objValues.dateOfRegistration }
+                                            //max={objValues.dateOfRegistration }
                                             onChange={handleInputChange}
                                             value={objValues.dateReferredToOVCPartner}
                                             style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}

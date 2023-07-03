@@ -104,7 +104,7 @@ const RecentHistory = (props) => {
         { headers: {"Authorization" : `Bearer ${token}`} }
         )
         .then((response) => {
-          console.log(response.data)
+          //console.log(response.data)
             setLoading(false)
             setLoadingPharmacy(false)
             setRefillList(response.data);                
@@ -387,28 +387,29 @@ const LoadDeletePage =(row)=>{
       });  
       //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
   }else if(row.path==='pharmacy'){
-      setSaving(true)  
-      //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
-      //props.setActiveContent({...props.activeContent, route:'pharmacy', id:row.id, activeTab:"home", actionType:"update", obj:row})
-      axios
-      .delete(`${baseUrl}art/pharmacy/${row.id}`,
-          { headers: {"Authorization" : `Bearer ${token}`} }
-      )
-      .then((response) => {
-          toast.success("Record Deleted Successfully");
-          RecentActivities()
-          toggle()
-          setSaving(false)
-      })
-      .catch((error) => {
-          if(error.response && error.response.data){
-              let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
-              toast.error(errorMessage);
-            }
-            else{
-              toast.error("Something went wrong. Please try again...");
-            }
-      }); 
+    setSaving(true) 
+    //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
+    //props.setActiveContent({...props.activeContent, route:'pharmacy', id:row.id, activeTab:"home", actionType:"update", obj:row})
+    axios
+    .delete(`${baseUrl}hiv/art/pharmacy/${row.id}`,
+        { headers: {"Authorization" : `Bearer ${token}`} }
+    )
+    .then((response) => {
+        toast.success("Record Deleted Successfully");
+        RecentActivities()
+        toggle()
+        setSaving(false) 
+    })
+    .catch((error) => {
+        setSaving(false) 
+        if(error.response && error.response.data){
+            let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
+            toast.error(errorMessage);
+          }
+          else{
+            toast.error("Something went wrong. Please try again...");
+          }
+    }); 
 
   }else if(row.path==='clinic-visit'){
       setSaving(true)  
@@ -424,6 +425,7 @@ const LoadDeletePage =(row)=>{
           setSaving(false)
       })
       .catch((error) => {
+          setSaving(false)
           if(error.response && error.response.data){
               let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
               toast.error(errorMessage);
@@ -446,6 +448,7 @@ const LoadDeletePage =(row)=>{
         setSaving(false) 
     })
     .catch((error) => {
+      setSaving(false)
         if(error.response && error.response.data){
             let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
             toast.error(errorMessage);
@@ -454,7 +457,30 @@ const LoadDeletePage =(row)=>{
             toast.error("Something went wrong. Please try again...");
           }
     }); 
-  }else{
+  }else if(row.path==='Cervical-cancer'){
+    setSaving(true) 
+    //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
+    axios
+    .delete(`${baseUrl}observation/${row.id}`,
+        { headers: {"Authorization" : `Bearer ${token}`} }
+    )
+    .then((response) => {
+        toast.success("Record Deleted Successfully");
+        RecentActivities()
+        toggle()
+        setSaving(false) 
+    })
+    .catch((error) => {
+        setSaving(false) 
+        if(error.response && error.response.data){
+            let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
+            toast.error(errorMessage);
+          }
+          else{
+            toast.error("Something went wrong. Please try again...");
+          }
+    }); 
+}else{
 
   }
   
@@ -642,11 +668,18 @@ const LoadModal =(row)=>{
                           <strong className="text-primary">{test.labTestOrderStatusName}</strong>.
                         </h6>
                         {test.labTestOrderStatusName==='Result Reported'  && (
-                        <h6 className="mb-0">
-                          Result{" "}<br/>
-                          <strong className="text-primary">{test.result}</strong>.
-                        </h6>
+                          <>
+                            <h6 className="mb-0">
+                              Date Result Reported{" "}<br/>
+                              <strong className="text-primary">{test.dateResultReported}</strong>.
+                            </h6>
+                            <h6 className="mb-0">
+                              Result{" "}<br/>
+                              <strong className="text-primary">{test.result}</strong>.
+                            </h6>
+                          </>
                         )}
+
                       </span>
                       </li>
                     </>
