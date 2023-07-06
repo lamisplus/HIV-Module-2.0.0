@@ -252,7 +252,7 @@ const ArtCommencement = (props) => {
     setVitalSignDto(response.data.vitalSignDto)
     if(response.data.clinicalStageId!==""){
     objValues.whoStagingId=response.data.clinicalStageId
-    setObjValues({...objValues, whoStagingId:response.data.clinicalStageId})
+        setObjValues({...objValues, ['whoStagingId']:response.data.clinicalStageId})
     }
     })
     .catch((error) => {

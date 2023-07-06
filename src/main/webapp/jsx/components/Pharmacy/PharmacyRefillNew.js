@@ -899,6 +899,7 @@ const Pharmacy = (props) => {
         e.preventDefault();
         setSaving(true);
         const observeDate =lastChronicCare.find(x=> x.dateOfObservation===objValues.visitDate)
+        
             if(observeDate){
                 //if(iptEligibilty.IPTEligibility!==true && objValues.visitType===""){
                 objValues.adverseDrugReactions=selectedOptionAdr
