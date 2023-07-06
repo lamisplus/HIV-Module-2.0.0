@@ -899,8 +899,9 @@ const Pharmacy = (props) => {
         e.preventDefault();
         setSaving(true);
         const observeDate =lastChronicCare.find(x=> x.dateOfObservation===objValues.visitDate)
-        if(iptEligibilty.IPTEligibility===true && objValues.visitType!==""){
+        
             if(observeDate){
+                //if(iptEligibilty.IPTEligibility!==true && objValues.visitType===""){
                 objValues.adverseDrugReactions=selectedOptionAdr
                 objValues.personId=props.patientObj.id
                 objValues.extra['regimens']=regimenDrugList 
@@ -952,14 +953,15 @@ const Pharmacy = (props) => {
                     }
                                
                 });
+                // }else{
+                //     toast.error("Please visit type is required", {position: toast.POSITION.BOTTOM_CENTER});  
+                //     setSaving(false); 
+                // }
                 }else{
                     toast.error("No Chronic Care filled for this Encounter Date, please try again...", {position: toast.POSITION.BOTTOM_CENTER});  
                     setSaving(false); 
                 } 
-        }else{
-            toast.error("Please visit type is required", {position: toast.POSITION.BOTTOM_CENTER});  
-            setSaving(false); 
-        }
+        
        
     }
 
@@ -971,7 +973,7 @@ const Pharmacy = (props) => {
         return prev + +duration
       }, 0);
 
-console.log(childRegimenLine)
+
 
   return (      
       <div>
