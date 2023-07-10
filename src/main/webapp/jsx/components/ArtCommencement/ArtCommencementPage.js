@@ -489,12 +489,13 @@ const ArtCommencement = (props) => {
         objValues.vitalSignDto= vital
         objValues.hivEnrollmentId= patientObject && patientObject.enrollment.id
         objValues.clinicalStageId = objValues.whoStagingId
-        if(objValues.pregnancyStatus!==""){
+        if(objValues.pregnancyStatus!==null){
             const pregnancyDisplay=pregnancyStatus.find((x)=> x.id===objValues.pregnancyStatus)
             objValues.pregnancyStatus = pregnancyDisplay.display
-        }else{
-            objValues.pregnancyStatus = objValues.pregnancyStatus
-        } 
+        }
+        // else{
+        //     objValues.pregnancyStatus = objValues.pregnancyStatus
+        // } 
         //Logic for cd4 value 
         if(objValues.cd4Type==="Flow Cyteometry"){
             objValues.cd4 = objValues.cd4Count
