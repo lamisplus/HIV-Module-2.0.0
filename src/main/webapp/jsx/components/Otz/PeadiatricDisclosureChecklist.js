@@ -1149,7 +1149,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
-                          marginTop: "20px"
+                          // marginTop: "20px"
                         }}
                       >
                         <option value="">Select</option>
@@ -1181,7 +1181,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
-                          marginTop: "20px"
+                          // marginTop: "20px"
                         }}
                       >
                         <option value="">Select</option>
@@ -1401,12 +1401,12 @@ const PeadiatricDisclosureChecklist = (props) => {
                   <h5 className="card-title" style={{ color: "#fff" }}>
                     Task 4: Post disclosure assessment (During the subsequent visits assess the post disclosure outcomes)
                   </h5>
-                  {task3Section === false ? (
+                  {task4Section === false ? (
                     <>
                       <span
                         className="float-end"
                         style={{ cursor: "pointer" }}
-                        onClick={() => setSectionControls(!task3Section)}
+                        onClick={() => setSectionControls(!task4Section)}
                       >
                         <FaPlus />
                       </span>
@@ -1416,7 +1416,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                       <span
                         className="float-end"
                         style={{ cursor: "pointer" }}
-                        onClick={() => setSectionControls(!task3Section)}
+                        onClick={() => setSectionControls(!task4Section)}
                       >
                         <FaAngleDown />
                       </span>{" "}
@@ -1427,13 +1427,13 @@ const PeadiatricDisclosureChecklist = (props) => {
                 <div className="row p-4">
                   <div className="form-group mb-3 col-md-6">
                     <FormGroup>
-                      <Label>Date Task 3 executed</Label>
+                      <Label>Date Task 4 executed</Label>
 
                       <Input
                         type="date"
-                        name="dateTask3Executed"
-                        id="dateTask3Executed"
-                        value={formik.values.dateTask3Executed}
+                        name="dateTask4Executed"
+                        id="dateTask4Executed"
+                        value={formik.values.dateTask4Executed}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         style={{
@@ -1442,9 +1442,9 @@ const PeadiatricDisclosureChecklist = (props) => {
                         }}
                       ></Input>
                     </FormGroup>
-                    {formik.errors.dateTask3Executed !== "" ? (
+                    {formik.errors.dateTask4Executed !== "" ? (
                       <span className={classes.error}>
-                        {formik.errors.dateTask3Executed}
+                        {formik.errors.dateTask4Executed}
                       </span>
                     ) : (
                       ""
@@ -1453,13 +1453,13 @@ const PeadiatricDisclosureChecklist = (props) => {
 
                   <div className="form-group mb-3 col-md-6">
                     <FormGroup>
-                      <Label>Task 3 facilitator name</Label>
+                      <Label>Task 4 facilitator name</Label>
 
                       <Input
                         type="text"
-                        name="task3HCW"
-                        id="task3HCW"
-                        value={formik.values.task3HCW}
+                        name="task4HCW"
+                        id="task4HCW"
+                        value={formik.values.task4HCW}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         style={{
@@ -1468,9 +1468,9 @@ const PeadiatricDisclosureChecklist = (props) => {
                         }}
                       ></Input>
                     </FormGroup>
-                    {formik.errors.task3HCW !== "" ? (
+                    {formik.errors.task4HCW !== "" ? (
                       <span className={classes.error}>
-                        {formik.errors.task3HCW}
+                        {formik.errors.task4HCW}
                       </span>
                     ) : (
                       ""
@@ -1480,13 +1480,13 @@ const PeadiatricDisclosureChecklist = (props) => {
                   <div className="form-group mb-3 col-md-6">
                     <FormGroup>
                       <Label>
-                        Reassured the caregiver and the child
+                       Assessed functional school engagement
                       </Label>
                       <Input
-                        name="task3ReassuredTheCaregiverAndChild"
-                        id="task3ReassuredTheCaregiverAndChild"
+                        name="task4AssessedFunctionalSchoolEngagement"
+                        id="task4AssessedFunctionalSchoolEngagement"
                         type="select"
-                        value={formik.values.task3ReassuredTheCaregiverAndChild}
+                        value={formik.values.task4AssessedFunctionalSchoolEngagement}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         style={{
@@ -1499,9 +1499,9 @@ const PeadiatricDisclosureChecklist = (props) => {
                         <option value="no">No</option>
                       </Input>
                     </FormGroup>
-                    {formik.errors.task3ReassuredTheCaregiverAndChild !== "" ? (
+                    {formik.errors.task4AssessedFunctionalSchoolEngagement !== "" ? (
                       <span className={classes.error}>
-                        {formik.errors.task3ReassuredTheCaregiverAndChild}
+                        {formik.errors.task4AssessedFunctionalSchoolEngagement}
                       </span>
                     ) : (
                       ""
@@ -1511,13 +1511,13 @@ const PeadiatricDisclosureChecklist = (props) => {
                   <div className="form-group mb-3 col-md-6">
                     <FormGroup>
                       <Label>
-                        Assessed child and caregiver comfort
+                        Assessed family, social and peer relationship and support after disclosure
                       </Label>
                       <Input
-                        name="task3AssessedChildAndCaregiverComfort"
-                        id="task3AssessedChildAndCaregiverComfort"
+                        name="task4AssessedFamilySocialAndPeerRelationship"
+                        id="task4AssessedFamilySocialAndPeerRelationship"
                         type="select"
-                        value={formik.values.task3AssessedChildAndCaregiverComfort}
+                        value={formik.values.task4AssessedFamilySocialAndPeerRelationship}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         style={{
@@ -1531,9 +1531,9 @@ const PeadiatricDisclosureChecklist = (props) => {
                         <option value="no">No</option>
                       </Input>
                     </FormGroup>
-                    {formik.errors.task3AssessedChildAndCaregiverComfort !== "" ? (
+                    {formik.errors.task4AssessedFamilySocialAndPeerRelationship !== "" ? (
                       <span className={classes.error}>
-                        {formik.errors.task3AssessedChildAndCaregiverComfort}
+                        {formik.errors.task4AssessedFamilySocialAndPeerRelationship}
                       </span>
                     ) : (
                       ""
@@ -1543,14 +1543,14 @@ const PeadiatricDisclosureChecklist = (props) => {
                   <div className="form-group mb-3 col-md-6">
                     <FormGroup>
                       <Label>
-                        Assessed safety (environment and timing)
+                        Assessed the child's interest and engagement in children's activities like playing
                       </Label>
                       <Input
-                        name="task3AssessedSafety"
-                        id="task3AssessedSafety"
+                        name="task4AssessedInterestAndEngagementOfChild"
+                        id="task4AssessedInterestAndEngagementOfChild"
                         type="select"
                         value={
-                          formik.values.task3AssessedSafety
+                          formik.values.task4AssessedInterestAndEngagementOfChild
                         }
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -1565,10 +1565,10 @@ const PeadiatricDisclosureChecklist = (props) => {
                         <option value="no">No</option>
                       </Input>
                     </FormGroup>
-                    {formik.errors.task3AssessedSafety !==
+                    {formik.errors.task4AssessedInterestAndEngagementOfChild !==
                     "" ? (
                       <span className={classes.error}>
-                        {formik.errors.task3AssessedSafety}
+                        {formik.errors.task4AssessedInterestAndEngagementOfChild}
                       </span>
                     ) : (
                       ""
@@ -1578,13 +1578,13 @@ const PeadiatricDisclosureChecklist = (props) => {
                   <div className="form-group mb-3 col-md-6">
                     <FormGroup>
                       <Label>
-                        Assessed the depth of Child's knowledge
+                        Alllowed questions from the child and assessed self-perception and outlook
                       </Label>
                       <Input
-                        name="task3AssessedTheDepthOfChildKnowledge"
-                        id="task3AssessedTheDepthOfChildKnowledge"
+                        name="task4AllowedQuestionsFromChild"
+                        id="task4AllowedQuestionsFromChild"
                         type="select"
-                        value={formik.values.task3AssessedTheDepthOfChildKnowledge}
+                        value={formik.values.task4AllowedQuestionsFromChild}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         style={{
@@ -1598,9 +1598,9 @@ const PeadiatricDisclosureChecklist = (props) => {
                         <option value="no">No</option>
                       </Input>
                     </FormGroup>
-                    {formik.errors.task3AssessedTheDepthOfChildKnowledge !== "" ? (
+                    {formik.errors.task4AllowedQuestionsFromChild !== "" ? (
                       <span className={classes.error}>
-                        {formik.errors.task3AssessedTheDepthOfChildKnowledge}
+                        {formik.errors.task4AllowedQuestionsFromChild}
                       </span>
                     ) : (
                       ""
@@ -1610,77 +1610,13 @@ const PeadiatricDisclosureChecklist = (props) => {
                   <div className="form-group mb-3 col-md-6">
                     <FormGroup>
                       <Label>
-                        Supported caregiver to disclose using the simplest language the child can understand
+                        Addressed negative body or self-image issues
                       </Label>
                       <Input
-                        name="task3SupportedCaregiverToDisclose"
-                        id="task3SupportedCaregiverToDisclose"
+                        name="task4AddressedNegativeBodyOrSelfImageIssues"
+                        id="task4AddressedNegativeBodyOrSelfImageIssues"
                         type="select"
-                        value={formik.values.task3SupportedCaregiverToDisclose}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          marginTop: "20px"
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task3SupportedCaregiverToDisclose !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task3SupportedCaregiverToDisclose}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>
-                        Observed the immediate reactions of both the child and caregiver and addressed concerns or negative reactions
-                      </Label>
-                      <Input
-                        name="task3ObservedTheImmediateReactionOfChildAndCaregiver"
-                        id="task3ObservedTheImmediateReactionOfChildAndCaregiver"
-                        type="select"
-                        value={formik.values.task3ObservedTheImmediateReactionOfChildAndCaregiver}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          marginTop: "20px"
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task3ObservedTheImmediateReactionOfChildAndCaregiver !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task3ObservedTheImmediateReactionOfChildAndCaregiver}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>
-                        Assessed what the caregiver has communicated to the child
-                      </Label>
-                      <Input
-                        name="task2AssessedCaregiverCommunicatedToChild"
-                        id="task2AssessedCaregiverCommunicatedToChild"
-                        type="select"
-                        value={formik.values.task2AssessedCaregiverCommunicatedToChild}
+                        value={formik.values.task4AddressedNegativeBodyOrSelfImageIssues}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         style={{
@@ -1694,43 +1630,9 @@ const PeadiatricDisclosureChecklist = (props) => {
                         <option value="no">No</option>
                       </Input>
                     </FormGroup>
-                    {formik.errors.task2AssessedCaregiverCommunicatedToChild !== "" ? (
+                    {formik.errors.task4AddressedNegativeBodyOrSelfImageIssues !== "" ? (
                       <span className={classes.error}>
-                        {formik.errors.task2AssessedCaregiverCommunicatedToChild}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                 
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>
-                        Invited questions from the child
-                      </Label>
-                      <Input
-                        name="task3InvitedQuestionsFromChild"
-                        id="task3InvitedQuestionsFromChild"
-                        type="select"
-                        value={formik.values.task3InvitedQuestionsFromChild}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          // height: "100px"
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task3InvitedQuestionsFromChild !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task3InvitedQuestionsFromChild}
+                        {formik.errors.task4AddressedNegativeBodyOrSelfImageIssues}
                       </span>
                     ) : (
                       ""
@@ -1740,19 +1642,19 @@ const PeadiatricDisclosureChecklist = (props) => {
                   <div className="form-group mb-3 col-md-6">
                     <FormGroup>
                       <Label>
-                       Revisited/reviewed the benefits of disclosure with the child and caregiver
+                        Have you assessed the child for moodiness and negative behaviors
                       </Label>
                       <Input
-                        name="task3RevistedBenefitsOfDisclosureWithChild"
-                        id="task3RevistedBenefitsOfDisclosureWithChild"
+                        name="task4AssessedChildForMoodiness"
+                        id="task4AssessedChildForMoodiness"
                         type="select"
-                        value={formik.values.task3RevistedBenefitsOfDisclosureWithChild}
+                        value={formik.values.task4AssessedChildForMoodiness}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
-                          // height: "100px"
+                          // marginTop: "20px"
                         }}
                       >
                         <option value="">Select</option>
@@ -1760,9 +1662,9 @@ const PeadiatricDisclosureChecklist = (props) => {
                         <option value="no">No</option>
                       </Input>
                     </FormGroup>
-                    {formik.errors.task3RevistedBenefitsOfDisclosureWithChild !== "" ? (
+                    {formik.errors.task4AssessedChildForMoodiness !== "" ? (
                       <span className={classes.error}>
-                        {formik.errors.task3RevistedBenefitsOfDisclosureWithChild}
+                        {formik.errors.task4AssessedChildForMoodiness}
                       </span>
                     ) : (
                       ""
@@ -1772,19 +1674,19 @@ const PeadiatricDisclosureChecklist = (props) => {
                   <div className="form-group mb-3 col-md-6">
                     <FormGroup>
                       <Label>
-                       Explained care options available to the child and caregiver
+                        Referred appropriately for psychiatric and other complications developed post disclosure if indicated
                       </Label>
                       <Input
-                        name="task3ExplainedCareOptionsAvailable"
-                        id="task3ExplainedCareOptionsAvailable"
+                        name="task4ReferredAppropriately"
+                        id="task4ReferredAppropriately"
                         type="select"
-                        value={formik.values.task3ExplainedCareOptionsAvailable}
+                        value={formik.values.task4ReferredAppropriately}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
-                          // marginTop: "40px"
+                          // marginTop: "20px"
                         }}
                       >
                         <option value="">Select</option>
@@ -1792,9 +1694,41 @@ const PeadiatricDisclosureChecklist = (props) => {
                         <option value="no">No</option>
                       </Input>
                     </FormGroup>
-                    {formik.errors.task3ExplainedCareOptionsAvailable !== "" ? (
+                    {formik.errors.task4ReferredAppropriately !== "" ? (
                       <span className={classes.error}>
-                        {formik.errors.task3ExplainedCareOptionsAvailable}
+                        {formik.errors.task4ReferredAppropriately}
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+
+                  <div className="form-group mb-3 col-md-6">
+                    <FormGroup>
+                      <Label>
+                       Given age-appropriate adherence information
+                      </Label>
+                      <Input
+                        name="task4GivenAppropriateAdherenceInformation"
+                        id="task4GivenAppropriateAdherenceInformation"
+                        type="select"
+                        value={formik.values.task4GivenAppropriateAdherenceInformation}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        style={{
+                          border: "1px solid #014D88",
+                          borderRadius: "0.25rem",
+                          marginTop: "20px"
+                        }}
+                      >
+                        <option value="">Select</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </Input>
+                    </FormGroup>
+                    {formik.errors.task4GivenAppropriateAdherenceInformation !== "" ? (
+                      <span className={classes.error}>
+                        {formik.errors.task4GivenAppropriateAdherenceInformation}
                       </span>
                     ) : (
                       ""
@@ -1803,44 +1737,12 @@ const PeadiatricDisclosureChecklist = (props) => {
 
                   <div className="form-group mb-3 col-md-12">
                     <FormGroup>
-                      <Label>
-                        Concluded the session with reassurance to both the child and caregiver? reiterating importance of confidentiality of information of one's health with the child's caregiver
-                      </Label>
+                      <Label>Task 4 comments</Label>
                       <Input
-                        name="task3ConcludedSessionWithReassurance"
-                        id="task3ConcludedSessionWithReassurance"
-                        type="select"
-                        value={formik.values.task3ConcludedSessionWithReassurance}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          // height: "100px"
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task3ConcludedSessionWithReassurance !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task3ConcludedSessionWithReassurance}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-12">
-                    <FormGroup>
-                      <Label>Task 3 comments</Label>
-                      <Input
-                        name="task3Comments"
-                        id="task3Comments"
+                        name="task4Comments"
+                        id="task4Comments"
                         type="textarea"
-                        value={formik.values.task3Comments}
+                        value={formik.values.task4Comments}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         style={{
@@ -1850,9 +1752,35 @@ const PeadiatricDisclosureChecklist = (props) => {
                         }}
                       ></Input>
                     </FormGroup>
-                    {formik.errors.task3Comments !== "" ? (
+                    {formik.errors.task4Comments !== "" ? (
                       <span className={classes.error}>
-                        {formik.errors.task3Comments}
+                        {formik.errors.task4Comments}
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+
+                  <div className="form-group mb-3 col-md-12">
+                    <FormGroup>
+                      <Label>Final comments</Label>
+                      <Input
+                        name="finalComments"
+                        id="finalComments"
+                        type="textarea"
+                        value={formik.values.finalComments}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        style={{
+                          border: "1px solid #014D88",
+                          borderRadius: "0.25rem",
+                          height: "100px",
+                        }}
+                      ></Input>
+                    </FormGroup>
+                    {formik.errors.finalComments !== "" ? (
+                      <span className={classes.error}>
+                        {formik.errors.finalComments}
                       </span>
                     ) : (
                       ""

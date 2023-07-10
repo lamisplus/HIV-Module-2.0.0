@@ -42,6 +42,22 @@ export const usePeadiatricFormValidationSchema = (onSubmit) => {
     task3RevistedBenefitsOfDisclosureWithChild: "",
     task3ExplainedCareOptionsAvailable: "",
     task3ConcludedSessionWithReassurance: "",
+
+
+    dateTask4Executed:"",
+    task4HCW:"",
+    task4Comments:"",
+
+    task4AssessedFunctionalSchoolEngagement: "",
+    task4AssessedFamilySocialAndPeerRelationship: "",
+    task4AssessedInterestAndEngagementOfChild: "",
+    task4AllowedQuestionsFromChild: "",
+    task4AddressedNegativeBodyOrSelfImageIssues: "",
+    task4AssessedChildForMoodiness: "",
+    task4ReferredAppropriately: "",
+    task4GivenAppropriateAdherenceInformation: "",
+    finalComments: ""
+
   };
 
   const PeadiatricFormInitialSchema = yup.object({
@@ -84,6 +100,20 @@ export const usePeadiatricFormValidationSchema = (onSubmit) => {
     task3RevistedBenefitsOfDisclosureWithChild: yup.string(),
     task3ExplainedCareOptionsAvailable: yup.string(),
     task3ConcludedSessionWithReassurance: yup.string(),
+
+
+    dateTask4Executed:yup.string(),
+    task4HCW:yup.string(),
+    task4Comments:yup.string(),
+    task4AssessedFunctionalSchoolEngagement: yup.string(),
+    task4AssessedFamilySocialAndPeerRelationship: yup.string(),
+    task4AssessedInterestAndEngagementOfChild: yup.string(),
+    task4AllowedQuestionsFromChild: yup.string(),
+    task4AddressedNegativeBodyOrSelfImageIssues: yup.string(),
+    task4AssessedChildForMoodiness: yup.string(),
+    task4ReferredAppropriately: yup.string(),
+    task4GivenAppropriateAdherenceInformation: yup.string(),
+    finalComments: yup.string()
 
     
   });
