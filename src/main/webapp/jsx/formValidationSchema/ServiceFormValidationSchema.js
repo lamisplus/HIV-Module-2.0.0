@@ -89,6 +89,17 @@ export const useServiceFormValidationSchema = (onSubmit) => {
     thirtyMonthsDate: "",
     thirtySixMonthsResult: "",
     thirtySixMonthsDate: "",
+
+    chooseOutcomes: null,
+    exitedOtz: "",
+    transitionDate: "",
+    
+    viralLoadOnOtzExit: "",
+    dateOfAssessmentDone: "",
+    exitedByName: "",
+    exitedByDesignation: "",
+    exitedByDate: "",
+    exitedBySignature: "",
   };
 
   const ServiceFormValidationSchema = yup.object({
@@ -184,6 +195,17 @@ export const useServiceFormValidationSchema = (onSubmit) => {
     thirtyMonthsDate: yup.string(),
     thirtySixMonthsResult: yup.string(),
     thirtySixMonthsDate: yup.string(),
+
+    chooseOutcomes: yup.array,
+    exitedOtz: yup.string(),
+    transitionDate: yup.string(),
+
+    viralLoadOnOtzExit: yup.string(),
+    dateOfAssessmentDone: yup.string(),
+    exitedByName: yup.string(),
+    exitedByDesignation: yup.string(),
+    exitedByDate: yup.string(),
+    exitedBySignature: yup.string(),
   });
 
   const formik = useFormik({

@@ -3339,6 +3339,372 @@ const ServiceForm = (props) => {
                 </div>
               </div>
 
+              <div className="card">
+                <div
+                  className="card-header"
+                  style={{
+                    backgroundColor: "#014d88",
+                    color: "#fff",
+                    fontWeight: "bolder",
+                    borderRadius: "0.2rem",
+                  }}
+                >
+                  <h5 className="card-title" style={{ color: "#fff" }}>
+                    Outcome
+                  </h5>
+
+                  <>
+                    <span className="float-end" style={{ cursor: "pointer" }}>
+                      <FaPlus />
+                    </span>
+                  </>
+                </div>
+
+
+                <div
+                  className="basic-form"
+                  style={{ padding: "0 50px 0 50px" }}
+                >
+                  <div className="row">
+                    <div className="form-group mb-3 col-md-4 p-4">
+                      <div className="form-check custom-checkbox ml-1 ">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          name="activeTb"
+                          id="activeTb"
+                          // value={props.tbObj.activeTb}
+                          // onChange={handleInputChangeContrain}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="basic_checkbox_1"
+                        >
+                          Transferred out
+                        </label>
+                      </div>
+                      <div className="form-check custom-checkbox ml-1 ">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          name="activeTb"
+                          id="activeTb"
+                          // value={props.tbObj.activeTb}
+                          // onChange={handleInputChangeContrain}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="basic_checkbox_1"
+                        >
+                          LTFU
+                        </label>
+                      </div>
+                      <div className="form-check custom-checkbox ml-1 ">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          name="activeTb"
+                          id="activeTb"
+                          // value={props.tbObj.activeTb}
+                          // onChange={handleInputChangeContrain}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="basic_checkbox_1"
+                        >
+                          Dead
+                        </label>
+                      </div>
+                      <div className="form-check custom-checkbox ml-1 ">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          name="activeTb"
+                          id="activeTb"
+                          // value={props.tbObj.activeTb}
+                          // onChange={handleInputChangeContrain}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="basic_checkbox_1"
+                        >
+                          Opt-out
+                        </label>
+                      </div>
+                      <div className="form-check custom-checkbox ml-1 ">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          name="activeTb"
+                          id="activeTb"
+                          // value={props.tbObj.activeTb}
+                          // onChange={handleInputChangeContrain}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="basic_checkbox_1"
+                        >
+                          Transitioned to adult care
+                        </label>
+                      </div>
+                      <div className="form-check custom-checkbox ml-1 ">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          name="activeTb"
+                          id="activeTb"
+                          // value={props.tbObj.activeTb}
+                          // onChange={handleInputChangeContrain}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor="basic_checkbox_1"
+                        >
+                          Exited OTZ
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="form-group mb-3 col-md-4">
+                      <FormGroup>
+                        <Label for="exitedOtz">
+                          Exited OTZ
+                          <span style={{ color: "red" }}> *</span>{" "}
+                        </Label>
+                        <Input
+                          className="form-control"
+                          type="select"
+                          name="exitedOtz"
+                          id="exitedOtz"
+                          value={formik.values.exitedOtz}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.2rem",
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                        {formik.errors.exitedOtz !== "" ? (
+                          <span className={classes.error}>
+                            {formik.errors.exitedOtz}
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </FormGroup>
+                    </div>
+
+                    <div className="form-group mb-3 col-md-4">
+                      <FormGroup>
+                        <Label for="transitionDate">
+                          Transition Date
+                          <span style={{ color: "red" }}> *</span>{" "}
+                        </Label>
+                        <Input
+                          className="form-control"
+                          type="date"
+                          name="transitionDate"
+                          id="transitionDate"
+                          value={formik.values.transitionDate}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.2rem",
+                          }}
+                        />
+                        {formik.errors.transitionDate !== "" ? (
+                          <span className={classes.error}>
+                            {formik.errors.transitionDate}
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </FormGroup>
+                    </div>
+
+                    <div className="form-group mb-3 col-md-4">
+                      <FormGroup>
+                        <Label for="viralLoadOnOtzExit">
+                          Viral load on OTZ exit
+                          <span style={{ color: "red" }}> *</span>{" "}
+                        </Label>
+                        <Input
+                          className="form-control"
+                          type="text"
+                          name="viralLoadOnOtzExit"
+                          id="viralLoadOnOtzExit"
+                          value={formik.values.viralLoadOnOtzExit}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.2rem",
+                          }}
+                        />
+                        {formik.errors.viralLoadOnOtzExit !== "" ? (
+                          <span className={classes.error}>
+                            {formik.errors.viralLoadOnOtzExit}
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </FormGroup>
+                    </div>
+
+                    <div className="form-group mb-3 col-md-4">
+                      <FormGroup>
+                        <Label for="dateOfAssessmentDone">
+                          Viral load assessment date
+                          <span style={{ color: "red" }}> *</span>{" "}
+                        </Label>
+                        <Input
+                          className="form-control"
+                          type="date"
+                          name="dateOfAssessmentDone"
+                          id="dateOfAssessmentDone"
+                          value={formik.values.dateOfAssessmentDone}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.2rem",
+                          }}
+                        />
+                        {formik.errors.dateOfAssessmentDone !== "" ? (
+                          <span className={classes.error}>
+                            {formik.errors.dateOfAssessmentDone}
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </FormGroup>
+                    </div>
+
+                    <div className="form-group mb-3 col-md-4">
+                      <FormGroup>
+                        <Label for="exitedByName">
+                          Exited by (Name)
+                          <span style={{ color: "red" }}> *</span>{" "}
+                        </Label>
+                        <Input
+                          className="form-control"
+                          type="text"
+                          name="exitedByName"
+                          id="exitedByName"
+                          value={formik.values.exitedByName}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.2rem",
+                          }}
+                        />
+                        {formik.errors.exitedByName !== "" ? (
+                          <span className={classes.error}>
+                            {formik.errors.exitedByName}
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </FormGroup>
+                    </div>
+
+                    <div className="form-group mb-3 col-md-4">
+                      <FormGroup>
+                        <Label for="exitedByDesignation">
+                          Exited by (Designation)
+                          <span style={{ color: "red" }}> *</span>{" "}
+                        </Label>
+                        <Input
+                          className="form-control"
+                          type="text"
+                          name="exitedByDesignation"
+                          id="exitedByDesignation"
+                          value={formik.values.exitedByDesignation}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.2rem",
+                          }}
+                        />
+                        {formik.errors.exitedByDesignation !== "" ? (
+                          <span className={classes.error}>
+                            {formik.errors.exitedByDesignation}
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </FormGroup>
+                    </div>
+
+                    <div className="form-group mb-3 col-md-4">
+                      <FormGroup>
+                        <Label for="exitedByDate">
+                          Exited by (Date)
+                          <span style={{ color: "red" }}> *</span>{" "}
+                        </Label>
+                        <Input
+                          className="form-control"
+                          type="date"
+                          name="exitedByDate"
+                          id="exitedByDate"
+                          value={formik.values.exitedByDate}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.2rem",
+                          }}
+                        />
+                        {formik.errors.exitedByDate !== "" ? (
+                          <span className={classes.error}>
+                            {formik.errors.exitedByDate}
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </FormGroup>
+                    </div>
+
+                    <div className="form-group mb-3 col-md-4">
+                      <FormGroup>
+                        <Label for="exitedBySignature">
+                          Exited by (Signature)
+                          <span style={{ color: "red" }}> *</span>{" "}
+                        </Label>
+                        <Input
+                          className="form-control"
+                          type="text"
+                          name="exitedBySignature"
+                          id="exitedBySignature"
+                          value={formik.values.exitedBySignature}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.2rem",
+                          }}
+                        />
+                        {formik.errors.exitedBySignature !== "" ? (
+                          <span className={classes.error}>
+                            {formik.errors.exitedBySignature}
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </FormGroup>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
               {saving && <Spinner />}
               <br />
             </Form>
