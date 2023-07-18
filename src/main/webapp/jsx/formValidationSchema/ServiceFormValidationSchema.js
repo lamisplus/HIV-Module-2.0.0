@@ -102,7 +102,7 @@ export const useServiceFormValidationSchema = (onSubmit) => {
     exitedBySignature: "",
   };
 
-  const ServiceFormValidationSchema = yup.object({
+  const ServiceFormValidationSchema = yup.object().shape({
     facilityName: yup.string(),
     lga: yup.string(),
     state: yup.string(),
@@ -196,7 +196,7 @@ export const useServiceFormValidationSchema = (onSubmit) => {
     thirtySixMonthsResult: yup.string(),
     thirtySixMonthsDate: yup.string(),
 
-    chooseOutcomes: yup.array,
+    chooseOutcomes: yup.array(),
     exitedOtz: yup.string(),
     transitionDate: yup.string(),
 

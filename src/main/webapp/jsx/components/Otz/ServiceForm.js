@@ -9,6 +9,12 @@ import { FaPlus } from "react-icons/fa";
 import { useServiceFormValidationSchema } from "../../formValidationSchema/ServiceFormValidationSchema";
 import { Collapse, IconButton } from "@material-ui/core";
 import { ExpandMore as ExpandMoreIcon } from "@material-ui/icons";
+import MatButton from "@material-ui/core/Button";
+import SaveIcon from "@material-ui/icons/Save";
+import moment from "moment";
+import axios from "axios";
+import { url as baseUrl } from "./../../../api";
+import { token as token } from "./../../../api";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -81,8 +87,42 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ServiceForm = (props) => {
-  const { formik } = useServiceFormValidationSchema();
-  const [saving, setSaving] = useState(false);
+console.log(props)
+
+  const [saving, setSavings] = useState(false);
+  
+  const handleSubmit = (values) => {
+    const observation =  {
+      data: values,
+      dateOfObservation: moment(new Date()).format("YYYY-MM-DD"),
+      facilityId: null,
+      personId: props.patientObj.id,
+      type: "Pediatric OTZ",
+      visitId: null,
+    }
+    axios
+      .post(`${baseUrl}observation`, observation, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        setSavings(false);
+        props.patientObj.mentalHealth = true;
+        toast.success(
+          "Pediatric OTZ screening save successful.\nPlease refer patient to psychiatric hospital"
+        );
+
+      })
+      .catch((error) => {
+        setSavings(false);
+        let errorMessage =
+          error.response.data && error.response.data.apierror.message !== ""
+            ? error.response.data.apierror.message
+            : "Something went wrong, please try again";
+        toast.error(errorMessage);
+      });
+  };
+
+  const { formik } = useServiceFormValidationSchema(handleSubmit);
   const classes = useStyles();
   const [isDropdownsOpen, setIsDropdownsOpen] = useState({
     monthOneAdherenceCounselling: true,
@@ -103,6 +143,7 @@ const ServiceForm = (props) => {
     thirtyMonthsPEVLM: true,
     thirtySixMonthsPEVLM: true,
   });
+
   return (
     <>
       <ToastContainer autoClose={3000} hideProgressBar />
@@ -120,7 +161,7 @@ const ServiceForm = (props) => {
       <Card className={classes.root}>
         <CardContent>
           <div className="col-xl-12 col-lg-12">
-            <Form>
+            <Form >
               <div className="card">
                 <div
                   className="card-header"
@@ -310,7 +351,7 @@ const ServiceForm = (props) => {
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
                         }}
-                      ></Input>
+                      />
                     </FormGroup>
                     {formik.errors.artStartDate !== "" ? (
                       <span className={classes.error}>
@@ -321,7 +362,7 @@ const ServiceForm = (props) => {
                     )}
                   </div>
 
-                  <div className="form-group mb-3 col-md-4">
+                  {/* <div className="form-group mb-3 col-md-4">
                     <FormGroup>
                       <Label>Age at ART start (In years)</Label>
                       <Input
@@ -344,7 +385,7 @@ const ServiceForm = (props) => {
                     ) : (
                       ""
                     )}
-                  </div>
+                  </div> */}
 
                   <div className="form-group mb-3 col-md-4">
                     <FormGroup>
@@ -450,7 +491,7 @@ const ServiceForm = (props) => {
                     )}
                   </div>
 
-                  <div className="form-group mb-3 col-md-6">
+                  <div className="form-group mb-3 col-md-4">
                     <FormGroup>
                       <Label>
                         Baseline Viral Load At Enrollment into OTZ (copies/ml)
@@ -1030,7 +1071,7 @@ const ServiceForm = (props) => {
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors.maMonth1PositiveLivingChoice !==
                               "" ? (
@@ -1259,7 +1300,7 @@ const ServiceForm = (props) => {
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors
                                 .maMonth1leadershipTrainingChoice !== "" ? (
@@ -1596,7 +1637,7 @@ const ServiceForm = (props) => {
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors.maMonth2PositiveLivingChoice !==
                               "" ? (
@@ -3360,7 +3401,6 @@ const ServiceForm = (props) => {
                   </>
                 </div>
 
-
                 <div
                   className="basic-form"
                   style={{ padding: "0 50px 0 50px" }}
@@ -3700,10 +3740,28 @@ const ServiceForm = (props) => {
                         )}
                       </FormGroup>
                     </div>
-
                   </div>
                 </div>
               </div>
+
+              <MatButton
+                type="button"
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                style={{ backgroundColor: "#014d88" }}
+                startIcon={<SaveIcon />}
+                disabled={saving}
+                onClick={()=> handleSubmit(formik.values)}
+              >
+                {!saving ? (
+                  <span style={{ textTransform: "capitalize" }}>Submit</span>
+                ) : (
+                  <span style={{ textTransform: "capitalize" }}>
+                    Submitting...
+                  </span>
+                )}
+              </MatButton>
 
               {saving && <Spinner />}
               <br />

@@ -89,6 +89,17 @@ const useStyles = makeStyles((theme) => ({
 const PeadiatricDisclosureChecklist = (props) => {
   const patientObj = props.patientObj;
   const [saving, setSaving] = useState(false);
+  const [observation, setObservation]=useState({
+    data: {},
+    dateOfObservation: "",
+    facilityId: null,
+    personId: 0,
+    type: "Pediatric OTZ",
+    visitId: null
+})
+
+
+
   const classes = useStyles();
   const [
     {
