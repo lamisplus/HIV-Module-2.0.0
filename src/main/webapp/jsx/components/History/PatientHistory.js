@@ -98,9 +98,14 @@ const PatientnHistory = (props) => {
         
         if(row.path==='Mental-health'){        
             props.setActiveContent({...props.activeContent, route:'mental-health-view', id:row.id, actionType:action})
-
+            
         }else if(row.path==='Art-commence'){
             props.setActiveContent({...props.activeContent, route:'art-commencement-view', id:row.id, actionType:action})
+
+        }else if(row.path==='Paediatric-OTZ'){
+            props.setActiveContent({...props.activeContent, route:'otz-peadiatric-disclosure-checklist', id:row.id, actionType:action})
+        }else if(row.path==='Service-OTZ'){
+            props.setActiveContent({...props.activeContent, route:'otz-service-form', id:row.id, actionType:action})
 
         }else if(row.path==='Clinical-evaluation'){
             props.setActiveContent({...props.activeContent, route:'adult-clinic-eveluation-view', id:row.id, actionType:action})

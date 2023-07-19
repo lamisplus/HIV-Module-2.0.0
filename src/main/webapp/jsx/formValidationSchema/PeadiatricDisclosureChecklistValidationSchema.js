@@ -119,7 +119,7 @@ export const usePeadiatricFormValidationSchema = (onSubmit) => {
   });
 
   const formik = useFormik({
-    initialValues: peadiatricFormIntialValues,
+    initialValues:  peadiatricFormIntialValues,
     onSubmit,
     validationSchema: PeadiatricFormInitialSchema,
   });

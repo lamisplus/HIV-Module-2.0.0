@@ -87,30 +87,26 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ServiceForm = (props) => {
-console.log(props)
-
-  const [saving, setSavings] = useState(false);
   
-  const handleSubmit = (values) => {
-    const observation =  {
+  const [saving, setSavings] = useState(false);
+
+  const submitNewRecord = (values) => {
+    const observation = {
       data: values,
       dateOfObservation: moment(new Date()).format("YYYY-MM-DD"),
       facilityId: null,
       personId: props.patientObj.id,
-      type: "Pediatric OTZ",
+      type: "Service OTZ",
       visitId: null,
-    }
+    };
     axios
       .post(`${baseUrl}observation`, observation, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
         setSavings(false);
-        props.patientObj.mentalHealth = true;
-        toast.success(
-          "Pediatric OTZ screening save successful.\nPlease refer patient to psychiatric hospital"
-        );
-
+        // props.patientObj.mentalHealth = true;
+        toast.success("Service OTZ screening save successful.");
       })
       .catch((error) => {
         setSavings(false);
@@ -122,8 +118,65 @@ console.log(props)
       });
   };
 
+  const updateOldRecord = (values) => {
+    const observation = {
+      data: values,
+      dateOfObservation: moment(new Date()).format("YYYY-MM-DD"),
+      facilityId: null,
+      personId: props.patientObj.id,
+      type: "Service OTZ",
+      visitId: null,
+    };
+    axios
+      .put(`${baseUrl}observation/${props.activeContent.id}`, observation, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        setSavings(false);
+        toast.success("Service OTZ screening save successful.");
+      })
+      .catch((error) => {
+        setSavings(false);
+        let errorMessage =
+          error.response.data && error.response.data.apierror.message !== ""
+            ? error.response.data.apierror.message
+            : "Something went wrong, please try again";
+        toast.error(errorMessage);
+      });
+  };
+
+  const handleSubmit = (values) => {
+    if (props?.activeContent?.id) {
+      updateOldRecord(values);
+      return;
+    }
+    submitNewRecord(values);
+  };
+
   const { formik } = useServiceFormValidationSchema(handleSubmit);
+
+  const getOldRecordIfExists = () => {
+    axios
+      .get(`${baseUrl}observation/${props?.activeContent?.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        const patientDTO = response.data.data
+        formik.setValues(patientDTO)
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  useEffect(() => {
+    if (props.activeContent.id) {
+      getOldRecordIfExists()
+    }
+  }, [])
+  
   const classes = useStyles();
+  
   const [isDropdownsOpen, setIsDropdownsOpen] = useState({
     monthOneAdherenceCounselling: true,
     monthTwoAdherenceCounselling: true,
@@ -161,7 +214,7 @@ console.log(props)
       <Card className={classes.root}>
         <CardContent>
           <div className="col-xl-12 col-lg-12">
-            <Form >
+            <Form>
               <div className="card">
                 <div
                   className="card-header"
@@ -1141,7 +1194,7 @@ console.log(props)
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors.maMonth1LiteracyTreatmentChoice !==
                               "" ? (
@@ -1219,7 +1272,7 @@ console.log(props)
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors
                                 .maMonth1AdolescentsParticipationChoice !==
@@ -1375,7 +1428,7 @@ console.log(props)
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors.maMonth1PeerToPeerChoice !== "" ? (
                                 <span className={classes.error}>
@@ -1439,7 +1492,7 @@ console.log(props)
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors.maMonth1RoleOfOtzChoice !== "" ? (
                                 <span className={classes.error}>
@@ -1506,7 +1559,7 @@ console.log(props)
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors
                                 .maMonth1OtzChampionOrientationDate !== "" ? (
@@ -1707,7 +1760,7 @@ console.log(props)
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors.maMonth2LiteracyTreatmentChoice !==
                               "" ? (
@@ -1785,7 +1838,7 @@ console.log(props)
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors
                                 .maMonth2AdolescentsParticipationChoice !==
@@ -1866,7 +1919,7 @@ console.log(props)
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors
                                 .maMonth2leadershipTrainingChoice !== "" ? (
@@ -1941,7 +1994,7 @@ console.log(props)
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors.maMonth2PeerToPeerChoice !== "" ? (
                                 <span className={classes.error}>
@@ -2005,7 +2058,7 @@ console.log(props)
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors.maMonth2RoleOfOtzChoice !== "" ? (
                                 <span className={classes.error}>
@@ -2072,7 +2125,7 @@ console.log(props)
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors
                                 .maMonth2OtzChampionOrientationChoice !== "" ? (
@@ -2205,7 +2258,7 @@ console.log(props)
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors.maMonth3PositiveLivingChoice !==
                               "" ? (
@@ -2275,7 +2328,7 @@ console.log(props)
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors.maMonth3LiteracyTreatmentChoice !==
                               "" ? (
@@ -2353,7 +2406,7 @@ console.log(props)
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors
                                 .maMonth3AdolescentsParticipationChoice !==
@@ -2434,7 +2487,7 @@ console.log(props)
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors
                                 .maMonth3leadershipTrainingChoice !== "" ? (
@@ -2509,7 +2562,7 @@ console.log(props)
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors.maMonth3PeerToPeerChoice !== "" ? (
                                 <span className={classes.error}>
@@ -2573,7 +2626,7 @@ console.log(props)
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors.maMonth3RoleOfOtzChoice !== "" ? (
                                 <span className={classes.error}>
@@ -2640,7 +2693,7 @@ console.log(props)
                               >
                                 <option value="">Select</option>
                                 <option value="yes">Yes</option>
-                                <option value="no">Select</option>
+                                <option value="no">No</option>
                               </Input>
                               {formik.errors
                                 .maMonth3OtzChampionOrientationChoice !== "" ? (
@@ -3744,24 +3797,26 @@ console.log(props)
                 </div>
               </div>
 
-              <MatButton
-                type="button"
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                style={{ backgroundColor: "#014d88" }}
-                startIcon={<SaveIcon />}
-                disabled={saving}
-                onClick={()=> handleSubmit(formik.values)}
-              >
-                {!saving ? (
-                  <span style={{ textTransform: "capitalize" }}>Submit</span>
-                ) : (
-                  <span style={{ textTransform: "capitalize" }}>
-                    Submitting...
-                  </span>
-                )}
-              </MatButton>
+              <div className="d-flex justify-content-end">
+                <MatButton
+                  type="button"
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                  style={{ backgroundColor: "#014d88" }}
+                  startIcon={<SaveIcon />}
+                  disabled={saving}
+                  onClick={() => handleSubmit(formik.values)}
+                >
+                  {!saving ? (
+                    <span style={{ textTransform: "capitalize" }}>Submit</span>
+                  ) : (
+                    <span style={{ textTransform: "capitalize" }}>
+                      Submitting...
+                    </span>
+                  )}
+                </MatButton>
+              </div>
 
               {saving && <Spinner />}
               <br />
