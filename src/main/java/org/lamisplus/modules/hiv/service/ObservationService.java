@@ -40,7 +40,7 @@ public class ObservationService {
            Long personId = observationDto.getPersonId();
            Person person = getPerson(personId);
            Long orgId = currentUserOrganizationService.getCurrentUserOrganization();
-           Optional<Observation> anExistingObservationType = getAnExistingObservationType(observationDto, person, orgId);
+           Optional<Observation> anExistingObservationType = getAnExistingClinicalEvaluationType(observationDto, person, orgId);
            if (anExistingObservationType.isPresent()) {
                Observation observation = anExistingObservationType.get();
                if (observation.getType().equals("Clinical evaluation"))
@@ -59,8 +59,8 @@ public class ObservationService {
        }catch (Exception e) {
            log.error("An error occurred while saving an observation");
            log.error("error message: " + e.getMessage());
+           throw new IllegalStateException("An error occurred while saving "+e.getMessage());
        }
-       return  observationDto;
     }
     
     private void appendAdditionalInfoAndSaveObservation(ObservationDto observationDto, Person person, Visit visit) {
@@ -113,9 +113,9 @@ public class ObservationService {
         }
     }
     
-    private Optional<Observation> getAnExistingObservationType(ObservationDto observationDto, Person person, Long orgId) {
+    private Optional<Observation> getAnExistingClinicalEvaluationType(ObservationDto observationDto, Person person, Long orgId) {
         return observationRepository
-                .getAllByTypeAndPersonAndFacilityIdAndArchived (observationDto.getType (), person, orgId, 0);
+                .getAllByTypeAndPersonAndFacilityIdAndArchived ("Clinical evaluation", person, orgId, 0);
     }
 
 
