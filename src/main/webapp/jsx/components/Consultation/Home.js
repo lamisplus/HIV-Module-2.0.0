@@ -420,7 +420,7 @@ const ClinicVisit = (props) => {
               { headers: {"Authorization" : `Bearer ${token}`} }
           )
           .then((response) => {
-            setAdultRegimenLine(response.data);
+            setAdultRegimenLine(response.data.filter((x)=> (x.id===1 || x.id===2 || x.id===14)));
           })
           .catch((error) => {
           //console.log(error);
@@ -433,7 +433,8 @@ const ClinicVisit = (props) => {
               { headers: {"Authorization" : `Bearer ${token}`} }
           )
           .then((response) => {
-            setChildRegimenLine(response.data);
+            setChildRegimenLine(response.data.filter((x)=> (x.id===3 || x.id===4 )));
+    
           })
           .catch((error) => {
           //console.log(error);
@@ -798,7 +799,7 @@ const ClinicVisit = (props) => {
     setErrors({
         ...temp
     })
-    return Object.values(temp).every(x => x == "")
+    return Object.values(temp).every(x => x === "")
   }
   const handleSelectedTestGroup = e =>{
       setTests ({...tests,  labTestGroupId: e.target.value});
@@ -888,6 +889,7 @@ const ClinicVisit = (props) => {
     
   }
 
+  console.log(errors)
   return (
     <div className={classes.root}>
     <div className="row">
@@ -1724,7 +1726,7 @@ const ClinicVisit = (props) => {
                         required
                       >
                         <option value="select">Select </option>
-                        {patientAge >5 &&  (
+                        {patientAge >17 &&  (
                           <>
                             {adultRegimenLine.map((value) => (
                               <option key={value.id} value={value.id}>
@@ -1733,7 +1735,7 @@ const ClinicVisit = (props) => {
                             ))}
                           </>
                         )}
-                        {patientAge <=5 &&  (
+                        {patientAge <=17 &&  (
                           <>
                             {childRegimenLine.map((value) => (
                               <option key={value.id} value={value.id}>

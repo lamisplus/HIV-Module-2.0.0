@@ -1356,37 +1356,35 @@ const Pharmacy = (props) => {
                 
                 </FormGroup>
             </div>
-            {showIptType || objValues.iptType!=='' && ( 
-                <>
-                { iptEligibilty.IPTEligibility===true  && ( //iptEligibilty check to display Visit type
-                <div className="form-group mb-3 col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                    <FormGroup>
-                    <Label >Visit Type</Label>
+
+            { iptEligibilty.IPTEligibility===true  && ( //iptEligibilty check to display Visit type
+            <div className="form-group mb-3 col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                <FormGroup>
+                <Label >Visit Type</Label>
+                
+                <Input
+                    type="select"
+                    name="iptType"
+                    id="iptType"
+                    value={objValues.iptType}
+                    onChange={handleInputChange} 
+                    style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                                    
+                    >
+                    <option value="">Select </option>
                     
-                    <Input
-                        type="select"
-                        name="iptType"
-                        id="iptType"
-                        value={objValues.iptType}
-                        onChange={handleInputChange} 
-                        style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                                        
-                        >
-                        <option value="">Select </option>
+                    {iptType.map((value) => (
+                        <option key={value.id} value={value.code}>
+                            {value.display}
+                        </option>
+                    ))}
                         
-                        {iptType.map((value) => (
-                            <option key={value.id} value={value.code}>
-                                {value.display}
-                            </option>
-                        ))}
-                            
-                    </Input>
-                    
-                    </FormGroup>
-                </div>
-                )}
-                </>
+                </Input>
+                
+                </FormGroup>
+            </div>
             )}
+               
             <LabelSui as='a' color='blue' style={{width:'106%', height:'35px'}} ribbon>
               <h4 style={{color:'#fff'}}>TB DRUG</h4>
             </LabelSui>

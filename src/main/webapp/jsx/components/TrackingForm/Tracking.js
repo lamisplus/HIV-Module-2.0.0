@@ -93,16 +93,16 @@ const Tracking = (props) => {
     const [reasonDefaulting, setreasonDefaulting] = useState([]);
     const [personContact, setpersonContact] = useState([]);
     const [modeCommunication, setmodeCommunication] = useState([]);
-    const [vaCauseOfDeath, setVaCauseOfDeath] = useState([]);
+    const [vaCauseOfDeathType, setvaCauseOfDeathType] = useState([]);
     const [dsdStatus, setdsdStatus] = useState([]);
     const [enrollDate, setEnrollDate] = useState(""); 
-    const [vaCauseOfDeathAdult, setVaCauseOfDeathAdult] = useState([]);
-    const [vaCauseOfDeathAdultNonCommunicableDiseases, setVaCauseOfDeathAdultNonCommunicableDiseases] = useState([]);
-    const [vaCauseOfDeathAdultInjuries, setVaCauseOfDeathAdultInjuries] = useState([]);
-    const [vaCauseOfDeathChild, setVaCauseOfDeathChild] = useState([]);
-    const [vaCauseOfDeathChildNonCommunicableDiseases, setVaCauseOfDeathChildNonCommunicableDiseases] = useState([]);
-    const [vaCauseOfDeathNeonate, setVaCauseOfDeathNeonate] = useState([]);
-    const [vaCauseOfDeathChildInjuries, setVaCauseOfDeathChildInjuries] = useState([]);
+    const [vaCauseOfDeathTypeAdult, setvaCauseOfDeathTypeAdult] = useState([]);
+    const [vaCauseOfDeathTypeAdultNonCommunicableDiseases, setvaCauseOfDeathTypeAdultNonCommunicableDiseases] = useState([]);
+    const [vaCauseOfDeathTypeAdultInjuries, setvaCauseOfDeathTypeAdultInjuries] = useState([]);
+    const [vaCauseOfDeathTypeChild, setvaCauseOfDeathTypeChild] = useState([]);
+    const [vaCauseOfDeathTypeChildNonCommunicableDiseases, setvaCauseOfDeathTypeChildNonCommunicableDiseases] = useState([]);
+    const [vaCauseOfDeathTypeNeonate, setvaCauseOfDeathTypeNeonate] = useState([]);
+    const [vaCauseOfDeathTypeChildInjuries, setvaCauseOfDeathTypeChildInjuries] = useState([]);
     let history = useHistory();
     const [observation, setObservation]=useState({
         data: {},
@@ -132,8 +132,8 @@ const Tracking = (props) => {
             reasonForLossToFollowUpOthers:"",
             attempts:"",
             patientId:props.patientObj.id,
+            vaCauseOfDeathType:"",
             vaCauseOfDeath:"",
-            vaCauseOfDeathOthers:"",
             statusTracker: {
                 agreedDate: "",
                 causeOfDeath: "",
@@ -145,7 +145,8 @@ const Tracking = (props) => {
                 trackDate: "",
                 trackOutcome: "",
                 visitId: "",
-                
+                vaCauseOfDeathType:"",
+                vaCauseOfDeath:""
               },
             dateOfObservation:""
 
@@ -242,7 +243,7 @@ const Tracking = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                setVaCauseOfDeath(response.data);
+                setvaCauseOfDeathType(response.data);
             })
             .catch((error) => {
             //console.log(error);
@@ -254,7 +255,7 @@ const Tracking = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                setVaCauseOfDeathAdult(response.data);
+                setvaCauseOfDeathTypeAdult(response.data);
             })
             .catch((error) => {
             //console.log(error);
@@ -266,7 +267,7 @@ const Tracking = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                setVaCauseOfDeathAdultNonCommunicableDiseases(response.data);
+                setvaCauseOfDeathTypeAdultNonCommunicableDiseases(response.data);
             })
             .catch((error) => {
             //console.log(error);
@@ -278,7 +279,7 @@ const Tracking = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                setVaCauseOfDeathAdultInjuries(response.data);
+                setvaCauseOfDeathTypeAdultInjuries(response.data);
             })
             .catch((error) => {
             //console.log(error);
@@ -290,7 +291,7 @@ const Tracking = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                setVaCauseOfDeathChild(response.data);
+                setvaCauseOfDeathTypeChild(response.data);
             })
             .catch((error) => {
             //console.log(error);
@@ -302,7 +303,7 @@ const Tracking = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                setVaCauseOfDeathChildNonCommunicableDiseases(response.data);
+                setvaCauseOfDeathTypeChildNonCommunicableDiseases(response.data);
             })
             .catch((error) => {
             //console.log(error);
@@ -314,7 +315,7 @@ const Tracking = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                setVaCauseOfDeathChildInjuries(response.data);
+                setvaCauseOfDeathTypeChildInjuries(response.data);
             })
             .catch((error) => {
             //console.log(error);
@@ -326,7 +327,7 @@ const Tracking = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                setVaCauseOfDeathNeonate(response.data);
+                setvaCauseOfDeathTypeNeonate(response.data);
             })
             .catch((error) => {
             //console.log(error);
@@ -521,6 +522,9 @@ const Tracking = (props) => {
                 objValues.statusTracker.statusDate=objValues.dateOfDiscontinuation!==null && objValues.dateOfDiscontinuation!=="" ? objValues.dateOfDiscontinuation : objValues.dateReturnToCare
                 objValues.statusTracker.trackDate=objValues.dateOfDiscontinuation!==null && objValues.dateOfDiscontinuation!=="" ? objValues.dateOfDiscontinuation : objValues.dateReturnToCare
                 objValues.statusTracker.trackOutcome=objValues.reasonForTracking
+                //Adding VACAUSE OF DEATH 
+                objValues.statusTracker.vaCauseOfDeathType=objValues.vaCauseOfDeathType
+                objValues.statusTracker.vaCauseOfDeath=objValues.vaCauseOfDeath
                 if(objValues.careInFacilityDiscountinued==='No'){
                     objValues.statusTracker=null
                 }
@@ -562,6 +566,8 @@ const Tracking = (props) => {
                 }
             }  
     }
+
+  //console.log(props.patientObj.age)
 
   return (      
         <div>                   
@@ -1069,6 +1075,32 @@ const Tracking = (props) => {
                         <Label for="">VA Cause of Death</Label>
                         <Input
                             type="select"
+                            name="vaCauseOfDeathType"
+                            id="vaCauseOfDeathType"
+                            onChange={handleInputChange}
+                            value={objValues.vaCauseOfDeathType} 
+                            style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                            
+                        >
+                            <option value="">Select</option>
+                             {vaCauseOfDeathType.map((value) => (
+                                    <option key={value.code} value={value.display}>
+                                        {value.display}
+                                    </option>
+                                ))}
+                        </Input>
+                        {errors.vaCauseOfDeathType !=="" ? (
+                            <span className={classes.error}>{errors.vaCauseOfDeathType}</span>
+                            ) : "" }
+                        </FormGroup>
+                        </div>
+                        {/* Start of VA Cause of Death  base on selection */}
+                        {objValues.vaCauseOfDeathType==='Adult Causes' && (
+                        <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                        <Label for="">VA Cause of Death - ({objValues.vaCauseOfDeathType})</Label>
+                        <Input
+                            type="select"
                             name="vaCauseOfDeath"
                             id="vaCauseOfDeath"
                             onChange={handleInputChange}
@@ -1077,7 +1109,7 @@ const Tracking = (props) => {
                             
                         >
                             <option value="">Select</option>
-                             {vaCauseOfDeath.map((value) => (
+                             {vaCauseOfDeathTypeAdult.map((value) => (
                                     <option key={value.code} value={value.display}>
                                         {value.display}
                                     </option>
@@ -1088,185 +1120,159 @@ const Tracking = (props) => {
                             ) : "" }
                         </FormGroup>
                         </div>
-                        {/* Start of VA Cause of Death  base on selection */}
-                        {objValues.vaCauseOfDeath==='Adult Causes' && (
+                        )}
+                        {objValues.vaCauseOfDeathType==='Adult Causes -Non-communicable diseases' && (
                         <div className="form-group mb-3 col-md-6">
                         <FormGroup>
-                        <Label for="">VA Cause of Death - ({objValues.vaCauseOfDeath})</Label>
+                        <Label for="">VA Cause of Death - ({objValues.vaCauseOfDeathType})</Label>
                         <Input
                             type="select"
-                            name="vaCauseOfDeathOthers"
-                            id="vaCauseOfDeathOthers"
+                            name="vaCauseOfDeath"
+                            id="vaCauseOfDeath"
                             onChange={handleInputChange}
-                            value={objValues.vaCauseOfDeathOthers} 
+                            value={objValues.vaCauseOfDeath} 
                             style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                             
                         >
                             <option value="">Select</option>
-                             {vaCauseOfDeathAdult.map((value) => (
+                             {vaCauseOfDeathTypeAdultNonCommunicableDiseases.map((value) => (
                                     <option key={value.code} value={value.display}>
                                         {value.display}
                                     </option>
                                 ))}
                         </Input>
-                        {errors.vaCauseOfDeathOthers !=="" ? (
-                            <span className={classes.error}>{errors.vaCauseOfDeathOthers}</span>
+                        {errors.vaCauseOfDeath !=="" ? (
+                            <span className={classes.error}>{errors.vaCauseOfDeath}</span>
                             ) : "" }
                         </FormGroup>
                         </div>
                         )}
-                        {objValues.vaCauseOfDeath==='Adult Causes -Non-communicable diseases' && (
+                        {objValues.vaCauseOfDeathType==='Adult Causes - Injuries' && (
                         <div className="form-group mb-3 col-md-6">
                         <FormGroup>
-                        <Label for="">VA Cause of Death - ({objValues.vaCauseOfDeath})</Label>
+                        <Label for="">VA Cause of Death - ({objValues.vaCauseOfDeathType})</Label>
                         <Input
                             type="select"
-                            name="vaCauseOfDeathOthers"
-                            id="vaCauseOfDeathOthers"
+                            name="vaCauseOfDeath"
+                            id="vaCauseOfDeath"
                             onChange={handleInputChange}
-                            value={objValues.vaCauseOfDeathOthers} 
+                            value={objValues.vaCauseOfDeath} 
                             style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                             
                         >
                             <option value="">Select</option>
-                             {vaCauseOfDeathAdultNonCommunicableDiseases.map((value) => (
+                             {vaCauseOfDeathTypeAdultInjuries.map((value) => (
                                     <option key={value.code} value={value.display}>
                                         {value.display}
                                     </option>
                                 ))}
                         </Input>
-                        {errors.vaCauseOfDeathOthers !=="" ? (
-                            <span className={classes.error}>{errors.vaCauseOfDeathOthers}</span>
+                        {errors.vaCauseOfDeath !=="" ? (
+                            <span className={classes.error}>{errors.vaCauseOfDeath}</span>
                             ) : "" }
                         </FormGroup>
                         </div>
                         )}
-                        {objValues.vaCauseOfDeath==='Adult Causes - Injuries' && (
+                        {objValues.vaCauseOfDeathType==='Child Causes' && (
                         <div className="form-group mb-3 col-md-6">
                         <FormGroup>
-                        <Label for="">VA Cause of Death - ({objValues.vaCauseOfDeath})</Label>
+                        <Label for="">VA Cause of Death - ({objValues.vaCauseOfDeathType})</Label>
                         <Input
                             type="select"
-                            name="vaCauseOfDeathOthers"
-                            id="vaCauseOfDeathOthers"
+                            name="vaCauseOfDeath"
+                            id="vaCauseOfDeath"
                             onChange={handleInputChange}
-                            value={objValues.vaCauseOfDeathOthers} 
+                            value={objValues.vaCauseOfDeath} 
                             style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                             
                         >
                             <option value="">Select</option>
-                             {vaCauseOfDeathAdultInjuries.map((value) => (
+                             {vaCauseOfDeathTypeChild.map((value) => (
                                     <option key={value.code} value={value.display}>
                                         {value.display}
                                     </option>
                                 ))}
                         </Input>
-                        {errors.vaCauseOfDeathOthers !=="" ? (
-                            <span className={classes.error}>{errors.vaCauseOfDeathOthers}</span>
+                        {errors.vaCauseOfDeath !=="" ? (
+                            <span className={classes.error}>{errors.vaCauseOfDeath}</span>
                             ) : "" }
                         </FormGroup>
                         </div>
                         )}
-                        {objValues.vaCauseOfDeath==='Child Causes' && (
+                        {objValues.vaCauseOfDeathType==='Child Causes - Non-communicable diseases' && (
                         <div className="form-group mb-3 col-md-6">
                         <FormGroup>
-                        <Label for="">VA Cause of Death - ({objValues.vaCauseOfDeath})</Label>
+                        <Label for="">VA Cause of Death - ({objValues.vaCauseOfDeathType})</Label>
                         <Input
                             type="select"
-                            name="vaCauseOfDeathOthers"
-                            id="vaCauseOfDeathOthers"
+                            name="vaCauseOfDeath"
+                            id="vaCauseOfDeath"
                             onChange={handleInputChange}
-                            value={objValues.vaCauseOfDeathOthers} 
+                            value={objValues.vaCauseOfDeath} 
                             style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                             
                         >
                             <option value="">Select</option>
-                             {vaCauseOfDeathChild.map((value) => (
+                             {vaCauseOfDeathTypeChildNonCommunicableDiseases.map((value) => (
                                     <option key={value.code} value={value.display}>
                                         {value.display}
                                     </option>
                                 ))}
                         </Input>
-                        {errors.vaCauseOfDeathOthers !=="" ? (
-                            <span className={classes.error}>{errors.vaCauseOfDeathOthers}</span>
+                        {errors.vaCauseOfDeath !=="" ? (
+                            <span className={classes.error}>{errors.vaCauseOfDeath}</span>
                             ) : "" }
                         </FormGroup>
                         </div>
                         )}
-                        {objValues.vaCauseOfDeath==='Child Causes - Non-communicable diseases' && (
+                        {objValues.vaCauseOfDeathType==='Neonates Causes' && (
                         <div className="form-group mb-3 col-md-6">
                         <FormGroup>
-                        <Label for="">VA Cause of Death - ({objValues.vaCauseOfDeath})</Label>
+                        <Label for="">VA Cause of Death - ({objValues.vaCauseOfDeathType})</Label>
                         <Input
                             type="select"
-                            name="vaCauseOfDeathOthers"
-                            id="vaCauseOfDeathOthers"
+                            name="vaCauseOfDeath"
+                            id="vaCauseOfDeath"
                             onChange={handleInputChange}
-                            value={objValues.vaCauseOfDeathOthers} 
+                            value={objValues.vaCauseOfDeath} 
                             style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                             
                         >
                             <option value="">Select</option>
-                             {vaCauseOfDeathChildNonCommunicableDiseases.map((value) => (
+                             {vaCauseOfDeathTypeNeonate.map((value) => (
                                     <option key={value.code} value={value.display}>
                                         {value.display}
                                     </option>
                                 ))}
                         </Input>
-                        {errors.vaCauseOfDeathOthers !=="" ? (
-                            <span className={classes.error}>{errors.vaCauseOfDeathOthers}</span>
+                        {errors.vaCauseOfDeath !=="" ? (
+                            <span className={classes.error}>{errors.vaCauseOfDeath}</span>
                             ) : "" }
                         </FormGroup>
                         </div>
                         )}
-                        {objValues.vaCauseOfDeath==='Neonates Causes' && (
+                        {objValues.vaCauseOfDeathType==='Child Causes - Injuries' && (
                         <div className="form-group mb-3 col-md-6">
                         <FormGroup>
-                        <Label for="">VA Cause of Death - ({objValues.vaCauseOfDeath})</Label>
+                        <Label for="">VA Cause of Death - ({objValues.vaCauseOfDeathType})</Label>
                         <Input
                             type="select"
-                            name="vaCauseOfDeathOthers"
-                            id="vaCauseOfDeathOthers"
+                            name="vaCauseOfDeath"
+                            id="vaCauseOfDeath"
                             onChange={handleInputChange}
-                            value={objValues.vaCauseOfDeathOthers} 
+                            value={objValues.vaCauseOfDeath} 
                             style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                             
                         >
                             <option value="">Select</option>
-                             {vaCauseOfDeathNeonate.map((value) => (
+                             {vaCauseOfDeathTypeChildInjuries.map((value) => (
                                     <option key={value.code} value={value.display}>
                                         {value.display}
                                     </option>
                                 ))}
                         </Input>
-                        {errors.vaCauseOfDeathOthers !=="" ? (
-                            <span className={classes.error}>{errors.vaCauseOfDeathOthers}</span>
-                            ) : "" }
-                        </FormGroup>
-                        </div>
-                        )}
-                        {objValues.vaCauseOfDeath==='Child Causes - Injuries' && (
-                        <div className="form-group mb-3 col-md-6">
-                        <FormGroup>
-                        <Label for="">VA Cause of Death - ({objValues.vaCauseOfDeath})</Label>
-                        <Input
-                            type="select"
-                            name="vaCauseOfDeathOthers"
-                            id="vaCauseOfDeathOthers"
-                            onChange={handleInputChange}
-                            value={objValues.vaCauseOfDeathOthers} 
-                            style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                            
-                        >
-                            <option value="">Select</option>
-                             {vaCauseOfDeathChildInjuries.map((value) => (
-                                    <option key={value.code} value={value.display}>
-                                        {value.display}
-                                    </option>
-                                ))}
-                        </Input>
-                        {errors.vaCauseOfDeathOthers !=="" ? (
-                            <span className={classes.error}>{errors.vaCauseOfDeathOthers}</span>
+                        {errors.vaCauseOfDeath !=="" ? (
+                            <span className={classes.error}>{errors.vaCauseOfDeath}</span>
                             ) : "" }
                         </FormGroup>
                         </div>
