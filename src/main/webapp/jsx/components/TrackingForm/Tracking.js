@@ -145,6 +145,8 @@ const Tracking = (props) => {
                 trackDate: "",
                 trackOutcome: "",
                 visitId: "",
+                vaCauseOfDeathType:"",
+                vaCauseOfDeath:""
               },
             dateOfObservation:""
 
@@ -515,13 +517,14 @@ const Tracking = (props) => {
                 observation.personId =patientObj.id
                 observation.data=objValues 
                 objValues.statusTracker.causeOfDeath=objValues.causeOfDeath
-                objValues.statusTracker.vaCauseOfDeath=objValues.vaCauseOfDeath;
-                objValues.statusTracker.vaCauseOfDeathType=objValues.vaCauseOfDeathType;
                 objValues.statusTracker.hivStatus=objValues.reasonForDiscountinuation
                 objValues.statusTracker.reasonForInterruption=objValues.reasonForDiscountinuation
                 objValues.statusTracker.statusDate=objValues.dateOfDiscontinuation!==null && objValues.dateOfDiscontinuation!=="" ? objValues.dateOfDiscontinuation : objValues.dateReturnToCare
                 objValues.statusTracker.trackDate=objValues.dateOfDiscontinuation!==null && objValues.dateOfDiscontinuation!=="" ? objValues.dateOfDiscontinuation : objValues.dateReturnToCare
                 objValues.statusTracker.trackOutcome=objValues.reasonForTracking
+                //Adding VACAUSE OF DEATH 
+                objValues.statusTracker.vaCauseOfDeathType=objValues.vaCauseOfDeathType
+                objValues.statusTracker.vaCauseOfDeath=objValues.vaCauseOfDeath
                 if(objValues.careInFacilityDiscountinued==='No'){
                     objValues.statusTracker=null
                 }
@@ -563,6 +566,8 @@ const Tracking = (props) => {
                 }
             }  
     }
+
+  //console.log(props.patientObj.age)
 
   return (      
         <div>                   

@@ -252,7 +252,7 @@ const ArtCommencement = (props) => {
     setVitalSignDto(response.data.vitalSignDto)
     if(response.data.clinicalStageId!==""){
     objValues.whoStagingId=response.data.clinicalStageId
-    setObjValues({...objValues, whoStagingId:response.data.clinicalStageId})
+        setObjValues({...objValues, ['whoStagingId']:response.data.clinicalStageId})
     }
     })
     .catch((error) => {
@@ -489,8 +489,6 @@ const ArtCommencement = (props) => {
             })    
         return Object.values(temp).every(x => x === "")
     }
-
-
     /**** Submit Button Processing  */
     const handleSubmit = (e) => {                  
         e.preventDefault(); 
@@ -505,7 +503,14 @@ const ArtCommencement = (props) => {
         if(objValues.cd4Type==="Flow Cyteometry"){
             objValues.cd4 = objValues.cd4Count
         }
+        //Getting pragnancy value from the ID 
+        if(objValues.pregnancyStatus!==""){
+            const pregnancyDisplay=pregnancyStatus.find((x)=> x.id===objValues.pregnancyStatus)
+            objValues.pregnancyStatus = pregnancyDisplay.display
+        }else{
+            objValues.pregnancyStatus = objValues.pregnancyStatus
 
+        } 
         setSaving(true);
         axios.put(`${baseUrl}hiv/art/commencement/${props.activeContent.id}`,objValues,
         { headers: {"Authorization" : `Bearer ${token}`}},
@@ -899,14 +904,14 @@ const ArtCommencement = (props) => {
                                 <option value=""> Select</option>
         
                                 {pregnancyStatus.map((value) => (
-                                    <option key={value.id} value={value.display}>
+                                    <option key={value.id} value={value.id}>
                                         {value.display}
                                     </option>
                                 ))}
                             </Input>
                             </FormGroup>
                         </div>
-                        {props.patientObj.enrollment && props.patientObj.enrollment.pregnancyStatusId==='72' && (
+                        {props.patientObj.enrollment && props.patientObj.enrollment.pregnancyStatusId==='"Pregnant"' && (
                         <div className="form-group mb-3 col-md-4">
                             <FormGroup>
                             <Label >LMP</Label>

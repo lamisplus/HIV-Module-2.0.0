@@ -170,6 +170,7 @@ const UserRegistration = (props) => {
     const location = useLocation();
      //HIV INFORMATION
      const [femaleStatus, setfemaleStatus]= useState(false)
+     const [dateValidate, setDateValidate]= useState(false)
      //const [values, setValues] = useState([]);
      const [objValues, setObjValues] = useState(
         {id:"", uniqueId: "",dateOfRegistration:"",entryPointId:"", facilityName:"",statusAtRegistrationId:"",
@@ -327,13 +328,6 @@ const UserRegistration = (props) => {
             const birthDate = new Date(e.target.value);
             let age_now = today.getFullYear() - birthDate.getFullYear();
             const m = today.getMonth() - birthDate.getMonth();
-                // if(m<18){
-                //     //alert()
-                //     //toast.error("The child is less than 18months",  {position: toast.POSITION.TOP_RIGHT})
-                //     setDisabledAgeBaseOnAge(true)
-                // }else{
-                //     setDisabledAgeBaseOnAge(false)
-                // }
                 if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
                     age_now--;
                 }
@@ -500,7 +494,7 @@ const UserRegistration = (props) => {
             temp.dateOfRegistration = basicInfo.dateOfRegistration ? "" : "Date of Registration is required."
             temp.educationId = basicInfo.educationId ? "" : "Education is required."
             temp.streetAddress = basicInfo.streetAddress ? "" : "Address is required."
-            temp.phoneNumber = basicInfo.phoneNumber ? "" : "Phone Number  is required."
+            //temp.phoneNumber = basicInfo.phoneNumber ? "" : "Phone Number  is required."
             temp.countryId = basicInfo.countryId ? "" : "Country is required."    
             temp.stateId = basicInfo.stateId ? "" : "State is required."  
             temp.district = basicInfo.district ? "" : "Province/LGA is required." 
@@ -736,25 +730,24 @@ const UserRegistration = (props) => {
     const handleInputChange = e => {        
         setObjValues ({...objValues,  [e.target.name]: e.target.value});
         if(e.target.name ==="entryPointId" ){
-            if(e.target.value==="21"){
-                setTransferIn(true)
+            if(e.target.value===21){
+
                 setObjValues ({...objValues,  [e.target.name]: e.target.value});
             }else{
-                setTransferIn(false)
+
                 objValues.facilityName=""// make the value empty
                 //setObjValues ({...objValues,  ['facilityName']: ""});
                 setObjValues ({...objValues,  [e.target.name]: e.target.value});
             }
-            if(e.target.value==="24"){
-                setTransferIn(true)
+            if(e.target.value===24){
                 setObjValues ({...objValues,  [e.target.name]: e.target.value});
             }else{
-                setTransferIn(false)
                 objValues.careEntryPointOther=""// make the value empty
                 //setObjValues ({...objValues,  ['facilityName']: ""});
                 setObjValues ({...objValues,  [e.target.name]: e.target.value});
             }
-        }               
+        }  
+        
     }    
     
     const checkPhoneNumber=(e, inputName)=>{
@@ -1590,13 +1583,14 @@ const UserRegistration = (props) => {
                                         value={objValues.uniqueId}
                                         style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
                                         
-                                        
                                     />
                                     {errors.uniqueId !=="" ? (
                                     <span className={classes.error}>{errors.uniqueId}</span>
                                     ) : "" }
                                     </FormGroup>
                                 </div>
+                              
+                                {(objValues.entryPointId==="21" || objValues.statusAtRegistrationId==="55") ? (<>
                                 <div className="form-group mb-3 col-md-6">
                                     <FormGroup>
                                     <Label for="dateOfRegistration">Date of Enrollment <span style={{ color:"red"}}> *</span></Label>
@@ -1604,7 +1598,7 @@ const UserRegistration = (props) => {
                                         type="date"
                                         name="dateOfRegistration"
                                         id="dateOfRegistration"
-                                        min={basicInfo.dateOfRegistration}
+                                        min="01-01-1980"
                                         max= {moment(new Date()).format("YYYY-MM-DD") }
                                         onChange={handleInputChange}
                                         value={objValues.dateOfRegistration}
@@ -1616,6 +1610,30 @@ const UserRegistration = (props) => {
                                     ) : "" }
                                     </FormGroup>
                                 </div>
+                                </>)
+                                :
+                                (<>
+                                    <div className="form-group mb-3 col-md-6">
+                                        <FormGroup>
+                                        <Label for="dateOfRegistration">Date of Enrollment <span style={{ color:"red"}}> *</span></Label>
+                                        <Input
+                                            type="date"
+                                            name="dateOfRegistration"
+                                            id="dateOfRegistration"
+                                            min={basicInfo.dateOfRegistration}
+                                            max= {moment(new Date()).format("YYYY-MM-DD") }
+                                            onChange={handleInputChange}
+                                            value={objValues.dateOfRegistration}
+                                            style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
+                                            
+                                        />
+                                        {errors.dateOfRegistration !=="" ? (
+                                        <span className={classes.error}>{errors.dateOfRegistration}</span>
+                                        ) : "" }
+                                        </FormGroup>
+                                    </div>
+                                </>)
+                                }
                             </div>
                             <div className="row">
                                 <div className="form-group mb-3 col-md-6">
@@ -1913,8 +1931,7 @@ const UserRegistration = (props) => {
                                         </label>
                                     </div>
                                 </div>
-                                )}
-                                
+                                )}                                
                                 {ovcEnrolled===true && 
                                 (
                                 <>        

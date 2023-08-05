@@ -20,6 +20,7 @@ import { Spinner } from "reactstrap";
 //import { DateTimePicker } from "react-widgets";
 import {  Message} from 'semantic-ui-react'
 
+
 const useStyles = makeStyles(theme => ({
     card: {
         margin: theme.spacing(20),
@@ -130,7 +131,8 @@ const ArtCommencement = (props) => {
                                                 cd4SemiQuantitative:"",
                                                 cd4FlowCytometry:"",
                                                 cd4Type:"",                                                  
-                                                pregnancyStatus:""
+                                                pregnancyStatus:"",
+                                                dateOfLpm:""
                                                 });
 
     const [vital, setVitalSignDto]= useState({
@@ -189,7 +191,7 @@ const ArtCommencement = (props) => {
          gender =props.patientObj.gender && props.patientObj.gender.display ? props.patientObj.gender.display : null
       }, [props.patientObj]);
     //GET  Patients
-    async function PatientCurrentObject() {
+    const  PatientCurrentObject =() =>{
         axios
             .get(`${baseUrl}hiv/patient/${props.patientObj.id}`,
             { headers: {"Authorization" : `Bearer ${token}`} }
@@ -197,10 +199,14 @@ const ArtCommencement = (props) => {
             .then((response) => {
                 setEnrollDate(response.data.enrollment.entryPointId===21 ? response.data.enrollment.dateConfirmedHiv : response.data.enrollment.dateOfRegistration)
                 setPatientObject(response.data);
+                objValues.pregnancyStatus = response.data.enrollment.pregnancyStatusId
+                //console.log(response.data.enrollment.pregnancyStatusId)
+                setObjValues({...objValues, pregnancyStatus: response.data.enrollment.pregnancyStatusId})
             })
             .catch((error) => {  
             });        
     }
+
     //GET AdultRegimenLine 
     const AdultRegimenLine =()=>{
         axios
@@ -482,7 +488,15 @@ const ArtCommencement = (props) => {
         vital.personId=props.patientObj.id
         objValues.vitalSignDto= vital
         objValues.hivEnrollmentId= patientObject && patientObject.enrollment.id
-        objValues.clinicalStageId = objValues.whoStagingId 
+        objValues.clinicalStageId = objValues.whoStagingId
+        if(objValues.pregnancyStatus!==null){
+            const pregnancyDisplay=pregnancyStatus.find((x)=> x.id===parseInt(objValues.pregnancyStatus))
+            objValues.pregnancyStatus = pregnancyDisplay.display
+
+        }
+        // else{
+        //     objValues.pregnancyStatus = objValues.pregnancyStatus
+        // } 
         //Logic for cd4 value 
         if(objValues.cd4Type==="Flow Cyteometry"){
             objValues.cd4 = objValues.cd4Count
@@ -540,6 +554,7 @@ const ArtCommencement = (props) => {
         }
         
     }
+console.log(errors)
 
   return (      
       <div >
@@ -552,7 +567,31 @@ const ArtCommencement = (props) => {
             <CardBody>
             <form >
                 <div className="row">
-                
+                  {/* statusAtRegistrationId  entryPointId */}
+                  {patientObject && (patientObject.enrollment.entryPointId==="21" || patientObject.enrollment.statusAtRegistrationId==="55") ? (<>
+                    <div className="form-group mb-3 col-md-4">
+                        <FormGroup>
+                        <Label for="artDate">ART Start Date <span style={{ color:"red"}}> *</span> </Label>
+                        <Input
+                            type="date"
+                            name="visitDate"
+                            id="visitDate"
+                            onChange={handleInputChange}
+                            value={objValues.visitDate}
+                            min="01-01-1980"
+                            max= {moment(new Date()).format("YYYY-MM-DD") }
+                            
+                            style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                            required
+                        />
+                            {errors.visitDate !=="" ? (
+                            <span className={classes.error}>{errors.visitDate}</span>
+                            ) : "" }
+                        </FormGroup>
+                    </div>
+                    </>)
+                    :
+                    (<>
                     <div className="form-group mb-3 col-md-4">
                         <FormGroup>
                         <Label for="artDate">ART Start Date <span style={{ color:"red"}}> *</span> </Label>
@@ -573,6 +612,9 @@ const ArtCommencement = (props) => {
                             ) : "" }
                         </FormGroup>
                     </div>
+                    </>)
+                    }
+
                     {/* <div className="form-group mb-3 col-md-4">
                         <FormGroup>
                         <Label for="cd4">CD4 at start of ART </Label>
@@ -798,7 +840,7 @@ const ArtCommencement = (props) => {
                             onChange={handleInputChange}
                             max= {moment(new Date()).format("YYYY-MM-DD") }
                             style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                            disabled
+                            
                             >
                                 <option value=""> Select</option>
                                 {clinicalStage.map((value) => (
@@ -856,25 +898,25 @@ const ArtCommencement = (props) => {
                             >
                                 <option value=""> Select</option>
                                 {pregnancyStatus.map((value) => (
-                                    <option key={value.id} value={value.display}>
+                                    <option key={value.id} value={value.id}>
                                         {value.display}
                                     </option>
                                 ))}
                             </Input>
                             </FormGroup>
                         </div>
-                        {props.patientObj.enrollment && props.patientObj.enrollment.pregnancyStatusId==='72' && (
+                        {objValues.pregnancyStatus==='73' && (
                         <div className="form-group mb-3 col-md-4">
                             <FormGroup>
                             <Label >LMP</Label>
                             <Input
                                 type="date"
-                                name="LMPDate"
-                                id="LMPDate"
+                                name="dateOfLpm"
+                                id="dateOfLpm"
                                 onChange={handleInputChange}
-                                value={props.patientObj.enrollment.dateOfLpm}
+                                value={objValues.dateOfLpm}
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                                disabled
+                                max= {moment(new Date()).format("YYYY-MM-DD") }
                             />
                             </FormGroup>
                         </div>

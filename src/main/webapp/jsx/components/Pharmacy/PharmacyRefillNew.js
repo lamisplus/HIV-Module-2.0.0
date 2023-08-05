@@ -319,6 +319,7 @@ const Pharmacy = (props) => {
         //console.log(error);
         });        
     }
+    
     //Check for the last Vital Signs
     const VitalSigns = () => {
         axios
@@ -898,65 +899,70 @@ const Pharmacy = (props) => {
         e.preventDefault();
         setSaving(true);
         const observeDate =lastChronicCare.find(x=> x.dateOfObservation===objValues.visitDate)
-        console.log(observeDate)
-        if(observeDate){
-        objValues.adverseDrugReactions=selectedOptionAdr
-        objValues.personId=props.patientObj.id
-        objValues.extra['regimens']=regimenDrugList 
-        objValues.mmdType=mmdType
-        //delete regimenList['name']
-        objValues.regimen=regimenDrugList
-
-        axios.post(`${baseUrl}hiv/art/pharmacy`,objValues,
-        { headers: {"Authorization" : `Bearer ${token}`}},)
-        .then(response => {
-            setSaving(false);
-            //props.PharmacyList();
-            objValues.visitDate=""
-            objValues.refillPeriod=""
-            objValues.nextAppointment=""
-            objValues.adherence=""
-            objValues.adrScreened= ""
-            objValues.dsdModel=""
-            objValues.isDevolve=""
-            objValues.mmdType=""
-            objValues.prescriptionError=""
-            objValues.visitId=""
-            objValues.refill=""
-            objValues.refillType=""
-            objValues.switch=""
-            objValues.substitute=""
-            objValues.dsdModelType=""
-            objValues.iptType=""
-            objValues.visitType=""
-            //props.PatientCurrentObject();
-            toast.success("Pharmacy drug refill successful", {position: toast.POSITION.BOTTOM_CENTER});           
-            props.setActiveContent({...props.activeContent, route:'pharmacy', activeTab:"history" })
-            
-            setRegimenDrugList([]);
-            
-        })
-        .catch(error => {
-            setSaving(false);
-            if(error.response && error.response.data){
-                let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
-                //console.log(errorMessage)
-                if(errorMessage!==""){
-                    toast.error(errorMessage, {position: toast.POSITION.BOTTOM_CENTER});
-                }else if(error.response.data.apierror && error.response.data.apierror.message!=="" && error.response.data.apierror && error.response.data.apierror.subErrors[0].message!==""){
-                  toast.error(error.response.data.apierror.message + " : " + error.response.data.apierror.subErrors[0].field + " " + error.response.data.apierror.subErrors[0].message, {position: toast.POSITION.BOTTOM_CENTER});
+        
+            if(observeDate){
+                //if(iptEligibilty.IPTEligibility!==true && objValues.visitType===""){
+                objValues.adverseDrugReactions=selectedOptionAdr
+                objValues.personId=props.patientObj.id
+                objValues.extra['regimens']=regimenDrugList 
+                objValues.mmdType=mmdType
+                //delete regimenList['name']
+                objValues.regimen=regimenDrugList
+                axios.post(`${baseUrl}hiv/art/pharmacy`,objValues,
+                { headers: {"Authorization" : `Bearer ${token}`}},)
+                .then(response => {
+                    setSaving(false);
+                    //props.PharmacyList();
+                    objValues.visitDate=""
+                    objValues.refillPeriod=""
+                    objValues.nextAppointment=""
+                    objValues.adherence=""
+                    objValues.adrScreened= ""
+                    objValues.dsdModel=""
+                    objValues.isDevolve=""
+                    objValues.mmdType=""
+                    objValues.prescriptionError=""
+                    objValues.visitId=""
+                    objValues.refill=""
+                    objValues.refillType=""
+                    objValues.switch=""
+                    objValues.substitute=""
+                    objValues.dsdModelType=""
+                    objValues.iptType=""
+                    objValues.visitType=""
+                    //props.PatientCurrentObject();
+                    toast.success("Pharmacy drug refill successful", {position: toast.POSITION.BOTTOM_CENTER});           
+                    props.setActiveContent({...props.activeContent, route:'pharmacy', activeTab:"history" })  
+                    setRegimenDrugList([]);
+                    
+                })
+                .catch(error => {
+                    setSaving(false);
+                    if(error.response && error.response.data){
+                        let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
+                        //console.log(errorMessage)
+                        if(errorMessage!==""){
+                            toast.error(errorMessage, {position: toast.POSITION.BOTTOM_CENTER});
+                        }else if(error.response.data.apierror && error.response.data.apierror.message!=="" && error.response.data.apierror && error.response.data.apierror.subErrors[0].message!==""){
+                          toast.error(error.response.data.apierror.message + " : " + error.response.data.apierror.subErrors[0].field + " " + error.response.data.apierror.subErrors[0].message, {position: toast.POSITION.BOTTOM_CENTER});
+                        }else{
+                          toast.error(errorMessage, {position: toast.POSITION.BOTTOM_CENTER});
+                        }
+                    }else{
+                        toast.error("Something went wrong, please try again...", {position: toast.POSITION.BOTTOM_CENTER});
+                    }
+                               
+                });
+                // }else{
+                //     toast.error("Please visit type is required", {position: toast.POSITION.BOTTOM_CENTER});  
+                //     setSaving(false); 
+                // }
                 }else{
-                  toast.error(errorMessage, {position: toast.POSITION.BOTTOM_CENTER});
-                }
-            }else{
-                toast.error("Something went wrong, please try again...", {position: toast.POSITION.BOTTOM_CENTER});
-            }
-                       
-        });
-        }else{
-            toast.error("No Chronic Care filled for this Encounter Date, please try again...", {position: toast.POSITION.BOTTOM_CENTER});  
-            setSaving(false); 
-        } 
+                    toast.error("No Chronic Care filled for this Encounter Date, please try again...", {position: toast.POSITION.BOTTOM_CENTER});  
+                    setSaving(false); 
+                } 
+        
+       
     }
 
     let TotalDispensed = regimenDrug.reduce(function(prev, current) {
@@ -967,7 +973,7 @@ const Pharmacy = (props) => {
         return prev + +duration
       }, 0);
 
-console.log(lastChronicCare)
+
 
   return (      
       <div>
@@ -1361,7 +1367,7 @@ console.log(lastChronicCare)
                             ))}
                           </>
                     )}
-                    {patientAge <=15 &&  (
+                    {patientAge <=17 &&  (
                         <>
                         {childRegimenLine.map((value) => (
                             <option key={value.id} value={value.id}>

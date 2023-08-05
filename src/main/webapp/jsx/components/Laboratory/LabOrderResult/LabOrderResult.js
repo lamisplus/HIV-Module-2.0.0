@@ -285,7 +285,8 @@ const Laboratory = (props) => {
     const addOrder = e => {  
         if(validate()){
             tests.sampleCollectionDate = moment(tests.sampleCollectionDate).format("YYYY-MM-DD HH:MM:SS") 
-            //tests.dateResultReceived = moment(tests.dateResultReceived).format("YYYY-MM-DD HH:MM:SS")
+            tests.dateResultReceived = tests.dateResultReceived !=="" ? moment(tests.dateResultReceived).format("YYYY-MM-DD HH:MM:SS") :""
+            
             tests.visitId=visitId
             
             setTestOrderList([...testOrderList, tests])
@@ -346,7 +347,7 @@ const Laboratory = (props) => {
         e.preventDefault();            
         setSaving(true);
         tests.sampleCollectionDate = moment(tests.sampleCollectionDate).format("YYYY-MM-DD HH:MM:SS") 
-        //tests.dateResultReceived = moment(tests.dateResultReceived).format("YYYY-MM-DD HH:MM:SS")
+        tests.dateResultReceived = tests.dateResultReceived !=="" ? moment(tests.dateResultReceived).format("YYYY-MM-DD HH:MM:SS") :""
         axios.post(`${baseUrl}laboratory/rde-orders`,testOrderList,
             { headers: {"Authorization" : `Bearer ${token}`}},)
             .then(response => {

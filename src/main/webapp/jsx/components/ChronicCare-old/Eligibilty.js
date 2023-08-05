@@ -282,8 +282,8 @@ const Eligibility = (props) => {
                                     type="text"
                                     name="lastCd4Result"
                                     id="lastCd4Result"
+                                    onChange={handleEligibility}
                                     value={props.eligibility.lastCd4Result} 
-                                    onChange={handleEligibility} 
                                 />
                             </InputGroup>
                         
@@ -299,8 +299,8 @@ const Eligibility = (props) => {
                                     id="lastCd4ResultDate"
                                     value={props.eligibility.lastCd4ResultDate} 
                                     min={props.encounterDate}
+                                    onChange={handleEligibility}
                                     max= {moment(new Date()).format("YYYY-MM-DD") }
-                                    onChange={handleEligibility} 
                                 />
                             </InputGroup>
                         
@@ -315,8 +315,8 @@ const Eligibility = (props) => {
                                     type="text"
                                     name="lastViralLoadResult"
                                     id="lastViralLoadResult"
+                                    onChange={handleEligibility}
                                     value={props.eligibility.lastViralLoadResult}  
-                                    onChange={handleEligibility} 
                                 />
                             </InputGroup>
                             </FormGroup>
@@ -329,10 +329,10 @@ const Eligibility = (props) => {
                                     type="date"
                                     name="lastViralLoadResultDate"
                                     id="lastViralLoadResultDate"
+                                    onChange={handleEligibility}
                                     value={props.eligibility.lastViralLoadResultDate} 
                                     min={props.encounterDate}
                                     max= {moment(new Date()).format("YYYY-MM-DD") }
-                                    onChange={handleEligibility} 
                                 />
                             </InputGroup>
                         
