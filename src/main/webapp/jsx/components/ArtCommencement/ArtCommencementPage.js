@@ -131,7 +131,7 @@ const ArtCommencement = (props) => {
                                                 cd4SemiQuantitative:"",
                                                 cd4FlowCytometry:"",
                                                 cd4Type:"",                                                  
-                                                pregnancyStatus:"",
+                                                pregnancyStatus:null,
                                                 dateOfLpm:""
                                                 });
 
@@ -554,7 +554,7 @@ const ArtCommencement = (props) => {
         }
         
     }
-console.log(errors)
+
 
   return (      
       <div >

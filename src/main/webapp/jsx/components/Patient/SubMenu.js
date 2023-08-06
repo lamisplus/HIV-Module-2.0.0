@@ -5,7 +5,7 @@ import { url as baseUrl, token } from "../../../api";
 
 function SubMenu(props) {
     //const classes = useStyles();
-    const [activeItem, setActiveItem] = useState('home');
+    const [activeItem, setActiveItem] = useState('recent-history');
     const patientObj = props.patientObj
     const patientCurrentStatus=props.patientObj && props.patientObj.currentStatus==="Died (Confirmed)" ? true : false ;
     //const [patientObj, setpatientObj] = useState(patientObjs)
@@ -132,7 +132,7 @@ function SubMenu(props) {
                 (
                 <Menu size='tiny' color={"blue"} inverted pointing >
                     <Menu.Item onClick={() => onClickHome()} name='home' 
-                    active={activeItem === 'home'} title="Home"> Home</Menu.Item>
+                    active={activeItem === 'recent-history'} title="Home"> Home</Menu.Item>
                     {!patientObj.clinicalEvaluation  && (<Menu.Item onClick={() => loadAdultEvaluation()} name='initial'
                     active={activeItem === 'initial'} title="Initial Evaluation"> Initial Evaluation</Menu.Item>)}
                     {!patientObj.commenced && (<Menu.Item onClick={() => loadArtCommencement()} name='art'
@@ -148,7 +148,7 @@ function SubMenu(props) {
                (
                 <Menu size='tiny' color={"black"} inverted>                    
                     <Menu.Item onClick={() => onClickHome()} disabled={patientCurrentStatus} name='home'
-                    active={activeItem === 'home'} title="Home"> Home</Menu.Item>
+                    active={activeItem === 'recent-history'} title="Home"> Home</Menu.Item>
                      {!patientObj.clinicalEvaluation && patientObj.createBy==="Lamis data migration system" && (<Menu.Item onClick={() => loadAdultEvaluation()} name='initial'
                     active={activeItem === 'initial'} title="Initial Evaluation"> Initial Evaluation</Menu.Item>)}
                     <Menu.Item onClick={() => onClickConsultation()} disabled={patientCurrentStatus} name='visit'
@@ -198,14 +198,11 @@ function SubMenu(props) {
                         <Dropdown.Item onClick={() => loadOtzServiceForm(patientObj)} name='OTZ Service Form'
                             active={activeItem === 'otz-service-form'} title="Tracking Form">OTZ Service Form
                         </Dropdown.Item>
-                        {/* <Dropdown.Item onClick={() => loadOtzRegister(patientObj)} name='OTZ Register'
-                            active={activeItem === 'otz-register'} title="OTZ Register">OTZ Register
-                        </Dropdown.Item> */}
                         <Dropdown.Item onClick={() => loadOtzCheckList(patientObj)} name='Peadiatric Disclosure Checklist'
                             active={activeItem === 'otz-peadiatric-disclosure-checklist'} title="Peadiatric Disclosure Checklist">Peadiatric Disclosure Checklist
                         </Dropdown.Item>
                         </Dropdown.Menu>
-                    </Dropdown> */}
+                    </Dropdown>  */}
                     </Menu.Menu> 
                     
                     {/* <Menu.Item onClick={() => loadTransferForm(patientObj)} name='transfer'
