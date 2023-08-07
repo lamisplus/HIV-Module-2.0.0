@@ -134,8 +134,9 @@ const ArtCommencement = (props) => {
                                                 cd4Count:"",
                                                 cd4SemiQuantitative:"",
                                                 cd4FlowCyteometry:"",
-                                                cd4Type:""
-
+                                                cd4Type:"",
+                                                pregnancyStatus:null,
+                                                dateOfLpm:""
                                                 });
 
     const [vital, setVitalSignDto]= useState({
@@ -504,10 +505,11 @@ const ArtCommencement = (props) => {
             objValues.cd4 = objValues.cd4Count
         }
         //Getting pragnancy value from the ID 
-        if(objValues.pregnancyStatus!==""){
-            const pregnancyDisplay=pregnancyStatus.find((x)=> x.id===objValues.pregnancyStatus)
+        if(objValues.pregnancyStatus!==null){
+            const pregnancyDisplay=pregnancyStatus.find((x)=> x.id===parseInt(objValues.pregnancyStatus))
             objValues.pregnancyStatus = pregnancyDisplay.display
-        }else{
+        }
+        else{
             objValues.pregnancyStatus = objValues.pregnancyStatus
 
         } 
@@ -917,8 +919,8 @@ const ArtCommencement = (props) => {
                             <Label >LMP</Label>
                             <Input
                                 type="date"
-                                name="LMPDate"
-                                id="LMPDate"
+                                name="dateOfLpm"
+                                id="dateOfLpm"
                                 onChange={handleInputChange}
                                 value={props.patientObj.enrollment.dateOfLpm}
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}

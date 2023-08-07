@@ -283,6 +283,7 @@ const Eligibility = (props) => {
                                     name="lastCd4Result"
                                     id="lastCd4Result"
                                     value={props.eligibility.lastCd4Result} 
+                                    onChange={handleEligibility} 
                                 />
                             </InputGroup>
                         
@@ -299,6 +300,7 @@ const Eligibility = (props) => {
                                     value={props.eligibility.lastCd4ResultDate} 
                                     min={props.encounterDate}
                                     max= {moment(new Date()).format("YYYY-MM-DD") }
+                                    onChange={handleEligibility} 
                                 />
                             </InputGroup>
                         
@@ -314,6 +316,7 @@ const Eligibility = (props) => {
                                     name="lastViralLoadResult"
                                     id="lastViralLoadResult"
                                     value={props.eligibility.lastViralLoadResult}  
+                                    onChange={handleEligibility} 
                                 />
                             </InputGroup>
                             </FormGroup>
@@ -329,6 +332,7 @@ const Eligibility = (props) => {
                                     value={props.eligibility.lastViralLoadResultDate} 
                                     min={props.encounterDate}
                                     max= {moment(new Date()).format("YYYY-MM-DD") }
+                                    onChange={handleEligibility} 
                                 />
                             </InputGroup>
                         
