@@ -77,7 +77,8 @@ public class ArtPharmacyService {
 	private void checkIfSelectRegimenIsAlreadyDispensed(RegisterArtPharmacyDTO dto) {
 		Set<RegimenRequestDto> regimens = dto.getRegimen();
 		if(!regimens.isEmpty()){
-			System.out.println("I am checking if a the give regimen exist");			Person person = getPerson(dto.getPersonId());
+			System.out.println("I am checking if a the give regimen exist");
+			Person person = getPerson(dto.getPersonId());
 			regimens.forEach(regimen -> {
 				LocalDate visitDate = dto.getVisitDate();
 				if(visitDate != null){

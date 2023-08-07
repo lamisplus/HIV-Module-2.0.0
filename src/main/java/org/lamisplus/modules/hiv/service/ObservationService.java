@@ -41,8 +41,18 @@ public class ObservationService {
            Person person = getPerson(personId);
            Long orgId = currentUserOrganizationService.getCurrentUserOrganization();
            Optional<Observation> anExistingObservationType = getAnExistingClinicalEvaluationType(observationDto.getType(), person, orgId);
+           List<Observation> personObservations =
+                   observationRepository.getAllByPersonAndFacilityId(person, person.getFacilityId());
+           boolean sameEncounterObservation =
+                   personObservations
+                           .stream()
+                           .anyMatch(o -> o.getType().equals(observationDto.getType())
+                                   && o.getDateOfObservation().equals(observationDto.getDateOfObservation()));
+           if(sameEncounterObservation){
+               throw new RecordExistException(Observation.class, "date of observation", ""+observationDto.getDateOfObservation());
+           }
            if (anExistingObservationType.isPresent() && anExistingObservationType.get().getType().equals("Clinical evaluation")) {
-                    log.info("already exists");
+                   
                    throw new RecordExistException(Observation.class, "type", observationDto.getType());
            }
            processAndUpdateIptFromPharmacy(observationDto, person);
