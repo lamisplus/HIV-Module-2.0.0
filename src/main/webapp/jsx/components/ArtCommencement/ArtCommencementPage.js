@@ -131,7 +131,7 @@ const ArtCommencement = (props) => {
                                                 cd4SemiQuantitative:"",
                                                 cd4FlowCytometry:"",
                                                 cd4Type:"",                                                  
-                                                pregnancyStatus:"",
+                                                pregnancyStatus:null,
                                                 dateOfLpm:""
                                                 });
 
@@ -490,8 +490,9 @@ const ArtCommencement = (props) => {
         objValues.hivEnrollmentId= patientObject && patientObject.enrollment.id
         objValues.clinicalStageId = objValues.whoStagingId
         if(objValues.pregnancyStatus!==null){
-            const pregnancyDisplay=pregnancyStatus.find((x)=> x.id===objValues.pregnancyStatus)
+            const pregnancyDisplay=pregnancyStatus.find((x)=> x.id===parseInt(objValues.pregnancyStatus))
             objValues.pregnancyStatus = pregnancyDisplay.display
+
         }
         // else{
         //     objValues.pregnancyStatus = objValues.pregnancyStatus
@@ -553,6 +554,7 @@ const ArtCommencement = (props) => {
         }
         
     }
+
 
   return (      
       <div >

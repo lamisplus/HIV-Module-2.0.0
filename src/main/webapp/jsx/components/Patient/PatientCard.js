@@ -110,10 +110,8 @@ function PatientCard(props) {
   };
   const getPhoneNumber = (identifier) => {
     const identifiers = identifier;
-    const phoneNumber = identifiers.contactPoint.find(
-      (obj) => obj.type === "phone"
-    );
-    return phoneNumber ? phoneNumber.value : "";
+    const phoneNumber = identifiers.contactPoint.find(obj => obj.type === 'phone');       
+    return phoneNumber ? phoneNumber.value : '';
   };
   const getAddress = (identifier) => {
     const identifiers = identifier;
@@ -215,7 +213,7 @@ function PatientCard(props) {
                           {" "}
                           Phone Number :
                           <b style={{ color: "#0B72AA" }}>
-                            {getPhoneNumber(patientObject.contactPoint)}
+                          {patientObject.contactPoint!==null ? getPhoneNumber(patientObject.contactPoint) : ""}
                           </b>
                         </span>
                       </Col>
