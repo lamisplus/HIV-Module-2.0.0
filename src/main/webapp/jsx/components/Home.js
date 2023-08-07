@@ -1,7 +1,7 @@
 import React, { useState, Fragment } from "react";
 import { Row, Col, Card, Tab, Tabs } from "react-bootstrap";
 import Dashboard from "./Patient/PatientList";
-//import VisualisationHome from './Visualisation/Index'
+import VisualisationHome from './Visualisation/Index'
 import LostToFollowUp from "./Patient/PatientListIit";
 import ArtPatients from "./Patient/ArtPatients";
 import Index from "./Ovc/Index";
