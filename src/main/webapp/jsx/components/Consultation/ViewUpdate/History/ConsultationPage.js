@@ -664,7 +664,7 @@ const ClinicVisit = (props) => {
       //patientAge>=10  && (temp.pregnancyStatus = objValues.pregnancyStatus ? "" : "This field is required")
       {(patientAge>=10 && patientObj.sex==='Female')  && (temp.pregnancyStatus = objValues.pregnancyStatus ? "" : "This field is required")}
       temp.functionalStatusId = objValues.functionalStatusId ? "" : "This field is required"
-      temp.levelOfAdherence = objValues.levelOfAdherence ? "" : "This field is required"
+      //temp.levelOfAdherence = objValues.levelOfAdherence ? "" : "This field is required"
       //temp.labTestGroupId = vital.diastolic ? "" : "This field is required"
       //temp.systolic = vital.systolic ? "" : "This field is required"
       temp.height = vital.height ? "" : "This field is required"
@@ -1348,7 +1348,7 @@ const ClinicVisit = (props) => {
               
               <div className=" mb-3 col-md-6">
               <FormGroup>
-                <FormLabelName >Level of Adherence <span style={{ color:"red"}}> *</span></FormLabelName>
+                <FormLabelName >Level of Adherence </FormLabelName>
                 <Input
                   type="select"
                   name="levelOfAdherence"
@@ -1394,9 +1394,9 @@ const ClinicVisit = (props) => {
                   
                   </FormGroup>
                 </div>
-                <div className="form-group mb-3 col-md-6">
+                {/* <div className="form-group mb-3 col-md-6">
                     <FormGroup>
-                    <FormLabelName >TB Status <span style={{ color:"red"}}> *</span></FormLabelName>
+                    <FormLabelName >TB Status </FormLabelName>
                     <Input
                         type="select"
                         name="tbStatus"
@@ -1418,7 +1418,7 @@ const ClinicVisit = (props) => {
                         <span className={classes.error}>{errors.tbStatus}</span>
                         ) : "" }
                     </FormGroup>
-                </div>
+                </div> */}
                 {patientAge>= 10 && (patientObj.sex==='Female' || patientObj.sex==='FEMALE' || patientObj.sex==='female') && (
                 <>
                   <div className=" mb-3 col-md-6">

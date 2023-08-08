@@ -183,12 +183,12 @@ const ArtCommencement = (props) => {
     const patientAge=calculate_age(moment(patientObj.dateOfBirth).format("DD-MM-YYYY"));
 
     useEffect(() => {
+        GetARTCommencement();
         FunctionalStatus();
         WhoStaging();
         TBStatus();
         PreganacyStatus();
         RegimenLine();
-        GetARTCommencement();
         AdultRegimenLine();
         ChildRegimenLineObj();
         PatientCurrentObject();
@@ -244,8 +244,8 @@ const ArtCommencement = (props) => {
     { headers: {"Authorization" : `Bearer ${token}`} }
     )
     .then((response) => { 
-    //console.log(response.data);     
-    setObjValues(response.data)
+    console.log(response.data)   
+    setObjValues({...objValues, ...response.data})
     if(response.data.isViralLoadAtStartOfArt===true){
     setViraLoadStart(true)
     }
@@ -253,7 +253,6 @@ const ArtCommencement = (props) => {
     setVitalSignDto(response.data.vitalSignDto)
     if(response.data.clinicalStageId!==""){
     objValues.whoStagingId=response.data.clinicalStageId
-        setObjValues({...objValues, ['whoStagingId']:response.data.clinicalStageId})
     }
     })
     .catch((error) => {
@@ -505,14 +504,7 @@ const ArtCommencement = (props) => {
             objValues.cd4 = objValues.cd4Count
         }
         //Getting pragnancy value from the ID 
-        if(objValues.pregnancyStatus!==null){
-            const pregnancyDisplay=pregnancyStatus.find((x)=> x.id===parseInt(objValues.pregnancyStatus))
-            objValues.pregnancyStatus = pregnancyDisplay.display
-        }
-        else{
-            objValues.pregnancyStatus = objValues.pregnancyStatus
-
-        } 
+        
         setSaving(true);
         axios.put(`${baseUrl}hiv/art/commencement/${props.activeContent.id}`,objValues,
         { headers: {"Authorization" : `Bearer ${token}`}},
@@ -562,8 +554,9 @@ const ArtCommencement = (props) => {
         }
         
     }
-    
-
+  console.log(objValues)  
+  //console.log(enrollDate)  
+  
   return (      
       <div >
                   
@@ -585,7 +578,7 @@ const ArtCommencement = (props) => {
                                 id="visitDate"
                                 onChange={handleInputChange}
                                 value={objValues.visitDate}
-                                min={enrollDate}
+                                min={enrollDate!==""? enrollDate :""}
                                 max= {moment(new Date()).format("YYYY-MM-DD") }
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 disabled={disabledField}
@@ -906,7 +899,7 @@ const ArtCommencement = (props) => {
                                 <option value=""> Select</option>
         
                                 {pregnancyStatus.map((value) => (
-                                    <option key={value.id} value={value.id}>
+                                    <option key={value.id} value={value.display}>
                                         {value.display}
                                     </option>
                                 ))}
