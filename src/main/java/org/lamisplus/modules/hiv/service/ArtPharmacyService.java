@@ -77,7 +77,7 @@ public class ArtPharmacyService {
 	private void checkIfSelectRegimenIsAlreadyDispensed(RegisterArtPharmacyDTO dto) {
 		Set<RegimenRequestDto> regimens = dto.getRegimen();
 		if(!regimens.isEmpty()){
-			System.out.println("I am checking if a the give regimen exist");
+			log.info("I am checking if a the give regimen exist");
 			Person person = getPerson(dto.getPersonId());
 			regimens.forEach(regimen -> {
 				LocalDate visitDate = dto.getVisitDate();
@@ -85,13 +85,14 @@ public class ArtPharmacyService {
 					Long count = artPharmacyRepository.getCountForAnAlreadyDispenseRegimen(person.getUuid(),
 							regimen.getRegimenId(),
 							visitDate);
-					System.out.println("already exist: " + count);
-					if(count != null) throw new RecordExistException(Regimen.class, "name", regimen.getRegimenName() + " is already dispensed on this " +
+					log.info("already exist: " + count);
+					if(count != null)
+						throw new RecordExistException(Regimen.class, "name", regimen.getRegimenName() + " is already dispensed on this " +
 							"date "+ visitDate);
 				}
 			});
 		}
-		System.out.println("I am checking completed");
+		log.info("Checking completed");
 	}
 	
 	
