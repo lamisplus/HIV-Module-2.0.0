@@ -698,5 +698,44 @@
                 ADD CONSTRAINT FK_HIV_EAC_OUT_COME_ON_VISIT FOREIGN KEY (visit_id) REFERENCES patient_visit (uuid);
         </sql>
     </changeSet>
-
+    <changeSet id="202307016100-01" author="niyi">
+        <validCheckSum>ANY</validCheckSum>
+        <dropTable tableName="ovc_linkage" />
+        <createTable schemaName="public" tableName="ovc_linkage">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="art_number" type="varchar(255)"/>
+            <column name="birth_date" type="date" />
+            <column name="caregiver_other_name" type="varchar(255)" />
+            <column name="caregiver_surname" type="varchar(255)" />
+            <column name="datim_code" type="varchar(255)" />
+            <column name="drug_refill_notification" type="varchar(255)" />
+            <column name="enrolled_in_ovc_program" type="varchar(255)" />
+            <column name="enrollment_date" type="date" />
+            <column name="entry_point" type="varchar(255)" />
+            <column name="facility_name" type="varchar(255)" />
+            <column name="gender" type="varchar(255)" />
+            <column name="household_unique_id" type="varchar(255)" />
+            <column name="last_name" type="varchar(255)" />
+            <column name="lga_of_residence" type="varchar(255)" />
+            <column name="offer_date" type="date" />
+            <column name="other_name" type="varchar(255)" />
+            <column name="phone_number" type="varchar(255)" />
+            <column name="reason_for_decline" type="varchar(255)" />
+            <column name="share_contact_with_ovc" type="varchar(255)" />
+            <column name="state_of_residence" type="varchar(255)" />
+            <column name="ovc_unique_id" type="varchar(255)">
+                <constraints unique="true" />
+            </column>
+            <column name="archived" type="integer" />
+            <column name="cbo_name" type="varchar(255)" />
+            <column name="facility_staff_name" type="varchar(255)" />
+            <column name="created_by" type="varchar(255)" />
+            <column name="date_created" type="datetime" />
+            <column name="modified_by" type="varchar(255)" />
+            <column name="date_modified" type="datetime" />
+            <column name="status" type="varchar(255)" />
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
