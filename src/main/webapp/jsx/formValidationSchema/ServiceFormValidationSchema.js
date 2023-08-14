@@ -3,12 +3,12 @@ import * as yup from "yup";
 
 export const useServiceFormValidationSchema = (onSubmit) => {
   const serviceFormInitialValues = {
-    facilityName: "",
-    lga: "",
-    state: "",
-    clientName: "",
-    patienttId: "",
-    sex: "",
+    // facilityName: "",
+    // lga: "",
+    // state: "",
+    // clientName: "",
+    // patienttId: "",
+    // sex: "",
     artStartDate: "",
     ageAtArtStart: "",
     telephone: "",
@@ -103,12 +103,12 @@ export const useServiceFormValidationSchema = (onSubmit) => {
   };
 
   const ServiceFormValidationSchema = yup.object().shape({
-    facilityName: yup.string(),
-    lga: yup.string(),
-    state: yup.string(),
-    clientName: yup.string(),
-    patienttId: yup.string(),
-    sex: yup.string(),
+    // facilityName: yup.string(),
+    // lga: yup.string(),
+    // state: yup.string(),
+    // clientName: yup.string(),
+    // patienttId: yup.string(),
+    // sex: yup.string(),
     artStartDate: yup.string(),
     ageAtArtStart: yup.string(),
     telephone: yup.string(),

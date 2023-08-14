@@ -237,7 +237,7 @@ const ServiceForm = (props) => {
                 </div>
 
                 <div className="row p-4">
-                  <div className="form-group mb-3 col-md-4">
+                  {/* <div className="form-group mb-3 col-md-4">
                     <FormGroup>
                       <Label>Facility Name</Label>
 
@@ -388,7 +388,7 @@ const ServiceForm = (props) => {
                     ) : (
                       ""
                     )}
-                  </div>
+                  </div> */}
 
                   <div className="form-group mb-3 col-md-4">
                     <FormGroup>
