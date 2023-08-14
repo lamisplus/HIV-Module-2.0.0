@@ -65,7 +65,9 @@ public class ArtCommenceService {
 						.orElseThrow(() -> new EntityNotFoundException(HivEnrollment.class, "id", String.valueOf(hivEnrollmentId)));
 		boolean isEnrollmentDateAfterArtCommence = hivEnrollment.getDateOfRegistration().isAfter(artClinicalCommenceDto.getVisitDate());
 		
-		if (isEnrollmentDateAfterArtCommence) {
+		Long entryPointId = hivEnrollment.getEntryPointId();
+		
+		if (isEnrollmentDateAfterArtCommence && entryPointId != 21 ) {
 			final String message = artClinicalCommenceDto.getVisitDate() + " is below enrollment date " + hivEnrollment.getDateOfRegistration();
 			throw new IllegalTypeException(ARTClinical.class, "Art commence date", message);
 		}

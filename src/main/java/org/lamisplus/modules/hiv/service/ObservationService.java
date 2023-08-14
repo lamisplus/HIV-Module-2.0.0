@@ -40,10 +40,19 @@ public class ObservationService {
            Long personId = observationDto.getPersonId();
            Person person = getPerson(personId);
            Long orgId = currentUserOrganizationService.getCurrentUserOrganization();
-           Optional<Observation> anExistingObservationType = getAnExistingClinicalEvaluationType(observationDto, person, orgId);
-           if (anExistingObservationType.isPresent()) {
-               Observation observation = anExistingObservationType.get();
-               if (observation.getType().equals("Clinical evaluation"))
+           Optional<Observation> anExistingObservationType = getAnExistingClinicalEvaluationType(observationDto.getType(), person, orgId);
+           List<Observation> personObservations =
+                   observationRepository.getAllByPersonAndFacilityId(person, person.getFacilityId());
+           boolean sameEncounterObservation =
+                   personObservations
+                           .stream()
+                           .anyMatch(o -> o.getType().equals(observationDto.getType())
+                                   && o.getDateOfObservation().equals(observationDto.getDateOfObservation()));
+           if(sameEncounterObservation){
+               throw new RecordExistException(Observation.class, "date of observation", ""+observationDto.getDateOfObservation());
+           }
+           if (anExistingObservationType.isPresent() && anExistingObservationType.get().getType().equals("Clinical evaluation")) {
+                   
                    throw new RecordExistException(Observation.class, "type", observationDto.getType());
            }
            processAndUpdateIptFromPharmacy(observationDto, person);
@@ -113,9 +122,9 @@ public class ObservationService {
         }
     }
     
-    private Optional<Observation> getAnExistingClinicalEvaluationType(ObservationDto observationDto, Person person, Long orgId) {
+    private Optional<Observation> getAnExistingClinicalEvaluationType(String type, Person person, Long orgId) {
         return observationRepository
-                .getAllByTypeAndPersonAndFacilityIdAndArchived ("Clinical evaluation", person, orgId, 0);
+                .getAllByTypeAndPersonAndFacilityIdAndArchived (type, person, orgId, 0);
     }
 
 
