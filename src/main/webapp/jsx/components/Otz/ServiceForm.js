@@ -89,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
 const ServiceForm = (props) => {
   const [saving, setSavings] = useState(false);
   const [currentRecord, SetCurrentRecord] = useState(null);
-
+console.log("service form", props.activeContent.enrollment.dateOfRegistration)
   const submitNewRecord = (values) => {
     const observation = {
       data: values,
@@ -199,12 +199,62 @@ const ServiceForm = (props) => {
   });
 
   const setCustomArtDate = (e) => {
-    if(formik.values.artStartDate !== '') {
-    toast.info('All other date values has been reset',{position:'top-right'});
+    if (formik.values.artStartDate !== "") {
+      toast.warning("All other date values have been reset", {
+        position: "top-right",
+      });
     }
-    formik.setFieldValue("artStartDate", e.target.value)
-    formik.setValues({...formik.values, artStartDate: e.target.value})
-  }
+    // formik.setFieldValue("artStartDate", e.target.value);
+    formik.setValues({
+      ...formik.values,
+      artStartDate: e.target.value,
+      //resetting all other date values as they are relative to artStartDate and date enrolled into OTZ
+      dateEnrolledIntoOtz: "",
+      dateDone: "",
+      acMonth1EacDate1: "",
+      acMonth1EacDate2: "",
+      acMonth1EacDate3: "",
+      acMonth2EacDate1: "",
+      acMonth2EacDate2: "",
+      acMonth2EacDate3: "",
+      acMonth3EacDate1: "",
+      acMonth3EacDate2: "",
+      acMonth3EacDate3: "",
+      vlMonth1Date: "",
+      vlMonth2Date: "",
+      vlMonth3Date: "",
+      maMonth1PositiveLivingDate: "",
+      maMonth1LiteracyTreatmentDate: "",
+      maMonth1AdolescentsParticipationDate: "",
+      maMonth1leadershipTrainingDate: "",
+      maMonth1PeerToPeerDate: "",
+      maMonth1RoleOfOtzDate: "",
+      maMonth1OtzChampionOrientationDate: "",
+      maMonth2PositiveLivingDate: "",
+      maMonth2LiteracyTreatmentDate: "",
+      maMonth2AdolescentsParticipationDate: "",
+      maMonth2leadershipTrainingDate: "",
+      maMonth2PeerToPeerDate: "",
+      maMonth2RoleOfOtzDate: "",
+      maMonth2OtzChampionOrientationDate: "",
+      maMonth3PositiveLivingDate: "",
+      maMonth3LiteracyTreatmentDate: "",
+      maMonth3AdolescentsParticipationDate: "",
+      maMonth3leadershipTrainingDate: "",
+      maMonth3PeerToPeerDate: "",
+      maMonth3RoleOfOtzDate: "",
+      maMonth3OtzChampionOrientationDate: "",
+      sixMonthsDate: "",
+      twelveMonthsDate: "",
+      eighteenMonthsDate: "",
+      twentyFourMonthsDate: "",
+      thirtyMonthsDate: "",
+      thirtySixMonthsDate: "",
+      transitionDate: "",
+      dateOfAssessmentDone: "",
+      exitedByDate: "",
+    });
+  };
 
   return (
     <>
@@ -253,15 +303,16 @@ const ServiceForm = (props) => {
                         name="artStartDate"
                         id="artStartDate"
                         type="date"
-                        value={formik.values.artStartDate}
+                        value={props?.activeContent?.enrollment?.dateOfRegistration}
                         onChange={setCustomArtDate}
-                        disabled={!!currentRecord?.artStartDate}
+                        disabled
                         onBlur={formik.handleBlur}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
                         }}
-                        {...{ min: moment(Date.now()).format("YYYY-MM-DD") }}
+                        readOnly
+                        {...{ max: moment(new Date(props?.activeContent?.enrollment?.dateOfRegistration)).format("YYYY-MM-DD") }}
                       />
                     </FormGroup>
                     {formik.errors.artStartDate !== "" ? (
@@ -3200,7 +3251,7 @@ const ServiceForm = (props) => {
                               </Label>
                               <Input
                                 className="form-control"
-                                type="select"
+                                type="date"
                                 name="thirtySixMonthsDate"
                                 id="thirtySixMonthsDate"
                                 value={formik.values.thirtySixMonthsDate}
