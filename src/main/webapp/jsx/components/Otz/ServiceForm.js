@@ -87,8 +87,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ServiceForm = (props) => {
-  
   const [saving, setSavings] = useState(false);
+  const [currentRecord, SetCurrentRecord] = useState(null);
 
   const submitNewRecord = (values) => {
     const observation = {
@@ -161,22 +161,23 @@ const ServiceForm = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        const patientDTO = response.data.data
-        formik.setValues(patientDTO)
+        const patientDTO = response.data.data;
+        formik.setValues(patientDTO);
+        SetCurrentRecord(patientDTO);
       })
       .catch((error) => {
         console.log(error);
       });
-  }
+  };
 
   useEffect(() => {
     if (props.activeContent.id) {
-      getOldRecordIfExists()
+      getOldRecordIfExists();
     }
-  }, [])
-  
+  }, []);
+
   const classes = useStyles();
-  
+
   const [isDropdownsOpen, setIsDropdownsOpen] = useState({
     monthOneAdherenceCounselling: true,
     monthTwoAdherenceCounselling: true,
@@ -196,6 +197,14 @@ const ServiceForm = (props) => {
     thirtyMonthsPEVLM: true,
     thirtySixMonthsPEVLM: true,
   });
+
+  const setCustomArtDate = (e) => {
+    if(formik.values.artStartDate !== '') {
+    toast.info('All other date values has been reset',{position:'top-right'});
+    }
+    formik.setFieldValue("artStartDate", e.target.value)
+    formik.setValues({...formik.values, artStartDate: e.target.value})
+  }
 
   return (
     <>
@@ -237,159 +246,6 @@ const ServiceForm = (props) => {
                 </div>
 
                 <div className="row p-4">
-                  {/* <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>Facility Name</Label>
-
-                      <Input
-                        type="text"
-                        name="facilityName"
-                        id="facilityName"
-                        value={formik.values.facilityName}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.facilityName !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.facilityName}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>LGA</Label>
-
-                      <Input
-                        type="text"
-                        name="lga"
-                        id="lga"
-                        value={formik.values.lga}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.lga !== "" ? (
-                      <span className={classes.error}>{formik.errors.lga}</span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>State</Label>
-                      <Input
-                        name="state"
-                        id="state"
-                        type="text"
-                        value={formik.values.state}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.state !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.state}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>Client Name (Surname first)</Label>
-
-                      <Input
-                        type="text"
-                        name="clientName"
-                        id="clientName"
-                        value={formik.values.clientName}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.clientName !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.clientName}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>Patient ID</Label>
-                      <Input
-                        name="patientId"
-                        id="patientId"
-                        type="text"
-                        value={formik.values.patientId}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.patientId !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.patientId}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>Sex</Label>
-                      <Input
-                        name="sex"
-                        id="sex"
-                        type="select"
-                        value={formik.values.sex}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.sex !== "" ? (
-                      <span className={classes.error}>{formik.errors.sex}</span>
-                    ) : (
-                      ""
-                    )}
-                  </div> */}
-
                   <div className="form-group mb-3 col-md-4">
                     <FormGroup>
                       <Label>ART start date</Label>
@@ -398,92 +254,19 @@ const ServiceForm = (props) => {
                         id="artStartDate"
                         type="date"
                         value={formik.values.artStartDate}
-                        onChange={formik.handleChange}
+                        onChange={setCustomArtDate}
+                        disabled={!!currentRecord?.artStartDate}
                         onBlur={formik.handleBlur}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
                         }}
+                        {...{ min: moment(Date.now()).format("YYYY-MM-DD") }}
                       />
                     </FormGroup>
                     {formik.errors.artStartDate !== "" ? (
                       <span className={classes.error}>
                         {formik.errors.artStartDate}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  {/* <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>Age at ART start (In years)</Label>
-                      <Input
-                        name="ageAtArtStart"
-                        id="ageAtArtStart"
-                        type="date"
-                        value={formik.values.ageAtArtStart}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.ageAtArtStart !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.ageAtArtStart}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div> */}
-
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>Age at ART start (In years)</Label>
-                      <Input
-                        name="ageAtArtStart"
-                        id="ageAtArtStart"
-                        type="date"
-                        value={formik.values.ageAtArtStart}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.ageAtArtStart !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.ageAtArtStart}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>Telephone</Label>
-                      <Input
-                        name="telephone"
-                        id="telephone"
-                        type="text"
-                        value={formik.values.telephone}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.telephone !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.telephone}
                       </span>
                     ) : (
                       ""
@@ -500,11 +283,17 @@ const ServiceForm = (props) => {
                         value={formik.values.dateEnrolledIntoOtz}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        disabled={!!currentRecord?.dateEnrolledIntoOtz}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
                         }}
-                      ></Input>
+                        {...{
+                          min: moment(
+                            new Date(formik.values.artStartDate)
+                          ).format("YYYY-MM-DD"),
+                        }}
+                      />
                     </FormGroup>
                     {formik.errors.dateEnrolledIntoOtz !== "" ? (
                       <span className={classes.error}>
@@ -522,6 +311,7 @@ const ServiceForm = (props) => {
                         name="OtzPlus"
                         id="OtzPlus"
                         type="select"
+                        disabled={!!currentRecord?.OtzPlus}
                         value={formik.values.OtzPlus}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -556,6 +346,9 @@ const ServiceForm = (props) => {
                         value={formik.values.baselineViralLoadAtEnrollment}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        disabled={
+                          !!currentRecord?.baselineViralLoadAtEnrollment
+                        }
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
@@ -581,6 +374,7 @@ const ServiceForm = (props) => {
                         value={formik.values.dateDone}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        disabled={!!currentRecord?.dateDone}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
@@ -3829,3 +3623,158 @@ const ServiceForm = (props) => {
 };
 
 export default ServiceForm;
+
+{
+  /* <div className="form-group mb-3 col-md-4">
+                    <FormGroup>
+                      <Label>Facility Name</Label>
+
+                      <Input
+                        type="text"
+                        name="facilityName"
+                        id="facilityName"
+                        value={formik.values.facilityName}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        style={{
+                          border: "1px solid #014D88",
+                          borderRadius: "0.25rem",
+                        }}
+                      ></Input>
+                    </FormGroup>
+                    {formik.errors.facilityName !== "" ? (
+                      <span className={classes.error}>
+                        {formik.errors.facilityName}
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+
+                  <div className="form-group mb-3 col-md-4">
+                    <FormGroup>
+                      <Label>LGA</Label>
+
+                      <Input
+                        type="text"
+                        name="lga"
+                        id="lga"
+                        value={formik.values.lga}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        style={{
+                          border: "1px solid #014D88",
+                          borderRadius: "0.25rem",
+                        }}
+                      ></Input>
+                    </FormGroup>
+                    {formik.errors.lga !== "" ? (
+                      <span className={classes.error}>{formik.errors.lga}</span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+
+                  <div className="form-group mb-3 col-md-4">
+                    <FormGroup>
+                      <Label>State</Label>
+                      <Input
+                        name="state"
+                        id="state"
+                        type="text"
+                        value={formik.values.state}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        style={{
+                          border: "1px solid #014D88",
+                          borderRadius: "0.25rem",
+                        }}
+                      ></Input>
+                    </FormGroup>
+                    {formik.errors.state !== "" ? (
+                      <span className={classes.error}>
+                        {formik.errors.state}
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+
+                  <div className="form-group mb-3 col-md-4">
+                    <FormGroup>
+                      <Label>Client Name (Surname first)</Label>
+
+                      <Input
+                        type="text"
+                        name="clientName"
+                        id="clientName"
+                        value={formik.values.clientName}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        style={{
+                          border: "1px solid #014D88",
+                          borderRadius: "0.25rem",
+                        }}
+                      ></Input>
+                    </FormGroup>
+                    {formik.errors.clientName !== "" ? (
+                      <span className={classes.error}>
+                        {formik.errors.clientName}
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+
+                  <div className="form-group mb-3 col-md-4">
+                    <FormGroup>
+                      <Label>Patient ID</Label>
+                      <Input
+                        name="patientId"
+                        id="patientId"
+                        type="text"
+                        value={formik.values.patientId}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        style={{
+                          border: "1px solid #014D88",
+                          borderRadius: "0.25rem",
+                        }}
+                      ></Input>
+                    </FormGroup>
+                    {formik.errors.patientId !== "" ? (
+                      <span className={classes.error}>
+                        {formik.errors.patientId}
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+
+                  <div className="form-group mb-3 col-md-4">
+                    <FormGroup>
+                      <Label>Sex</Label>
+                      <Input
+                        name="sex"
+                        id="sex"
+                        type="select"
+                        value={formik.values.sex}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        style={{
+                          border: "1px solid #014D88",
+                          borderRadius: "0.25rem",
+                        }}
+                      >
+                        <option value="">Select</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                      </Input>
+                    </FormGroup>
+                    {formik.errors.sex !== "" ? (
+                      <span className={classes.error}>{formik.errors.sex}</span>
+                    ) : (
+                      ""
+                    )}
+                  </div> */
+}
