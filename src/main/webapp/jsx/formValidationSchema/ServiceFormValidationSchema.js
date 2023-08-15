@@ -9,7 +9,7 @@ export const useServiceFormValidationSchema = (onSubmit) => {
     // clientName: "",
     // patienttId: "",
     // sex: "",
-    artStartDate: "",
+    // artStartDate: "",
     // ageAtArtStart: "",
     // telephone: "",
     dateEnrolledIntoOtz: "",

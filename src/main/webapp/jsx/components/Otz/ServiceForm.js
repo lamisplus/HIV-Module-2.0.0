@@ -198,7 +198,7 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
     thirtySixMonthsPEVLM: true,
   });
 
-  const setCustomArtDate = (e) => {
+  const setCustomDate = (e) => {
     if (formik.values.artStartDate !== "") {
       toast.warning("All other date values have been reset", {
         position: "top-right",
@@ -304,9 +304,9 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                         id="artStartDate"
                         type="date"
                         value={props?.activeContent?.enrollment?.dateOfRegistration}
-                        onChange={setCustomArtDate}
+                        // onChange={setCustomArtDate}
                         disabled
-                        onBlur={formik.handleBlur}
+                        // onBlur={formik.handleBlur}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
@@ -315,13 +315,13 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                         {...{ max: moment(new Date(props?.activeContent?.enrollment?.dateOfRegistration)).format("YYYY-MM-DD") }}
                       />
                     </FormGroup>
-                    {formik.errors.artStartDate !== "" ? (
+                    {/* {formik.errors.artStartDate !== "" ? (
                       <span className={classes.error}>
                         {formik.errors.artStartDate}
                       </span>
                     ) : (
                       ""
-                    )}
+                    )} */}
                   </div>
 
                   <div className="form-group mb-3 col-md-4">
@@ -341,7 +341,12 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                         }}
                         {...{
                           min: moment(
-                            new Date(formik.values.artStartDate)
+                            new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                          ).format("YYYY-MM-DD"),
+                        }}
+                        {...{
+                          max: moment(
+                            Date.now()
                           ).format("YYYY-MM-DD"),
                         }}
                       />
