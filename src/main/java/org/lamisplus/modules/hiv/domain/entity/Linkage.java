@@ -1,13 +1,13 @@
-package org.nomisng.domain.entity;
+package org.lamisplus.modules.hiv.domain.entity;
 
 import lombok.*;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.ResultCheckStyle;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import org.hibernate.proxy.HibernateProxy;
-import org.nomisng.domain.enumeration.YesNo;
+import org.lamisplus.modules.base.domain.entities.Audit;
+import org.lamisplus.modules.hiv.domain.dto.YesNo;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -23,7 +23,7 @@ import java.util.UUID;
 @Table(name = "ovc_linkage")
 @SQLDelete(sql = "UPDATE public.ovc_linkage SET archived = 1, date_modified = CURRENT_TIMESTAMP WHERE id = ?", check = ResultCheckStyle.COUNT)
 @Where(clause = "archived = 0")
-public class Linkage extends Audit{
+public class Linkage extends Audit {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
