@@ -5,6 +5,7 @@ import { url as baseUrl, token } from "../../../api";
 
 function SubMenu(props) {
     //const classes = useStyles();
+    console.log("This is submenu", props)
     const [activeItem, setActiveItem] = useState('recent-history');
     const patientObj = props.patientObj
     const patientCurrentStatus=props.patientObj && props.patientObj.currentStatus==="Died (Confirmed)" ? true : false ;
@@ -66,7 +67,7 @@ function SubMenu(props) {
    
     const onClickConsultation = (row) =>{ 
         setActiveItem('visit')       
-        props.setActiveContent({...props.activeContent, route:'consultation'})
+        props.setActiveContent({...props.activeContent,  route:'consultation'})
     }
     const onClickHome = (row) =>{    
         setActiveItem('home')    
@@ -109,7 +110,7 @@ function SubMenu(props) {
     }
     const loadOtzServiceForm = ()=>{
         setActiveItem('otz-service-form')
-        props.setActiveContent({...props.activeContent, route:'otz-service-form'})
+        props.setActiveContent({...props.activeContent, ...props.expandedPatientObj, route:'otz-service-form'})
     }
     const loadOtzCheckList = ()=>{
         setActiveItem('otz-peadiatric-disclosure-checklist')
@@ -193,7 +194,7 @@ function SubMenu(props) {
                         </Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
-                    {/* <Dropdown item text='OTZ'>
+                    <Dropdown item text='OTZ'>
                         <Dropdown.Menu>
                         <Dropdown.Item onClick={() => loadOtzServiceForm(patientObj)} name='OTZ Service Form'
                             active={activeItem === 'otz-service-form'} title="Tracking Form">OTZ Service Form
@@ -202,7 +203,7 @@ function SubMenu(props) {
                             active={activeItem === 'otz-peadiatric-disclosure-checklist'} title="Peadiatric Disclosure Checklist">Peadiatric Disclosure Checklist
                         </Dropdown.Item>
                         </Dropdown.Menu>
-                    </Dropdown>  */}
+                    </Dropdown> 
                     </Menu.Menu> 
                     
                     {/* <Menu.Item onClick={() => loadTransferForm(patientObj)} name='transfer'
