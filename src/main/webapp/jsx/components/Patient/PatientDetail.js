@@ -113,6 +113,7 @@ function PatientCard(props) {
               { headers: {"Authorization" : `Bearer ${token}`} }
               )
               .then((response) => {
+              
                 setPatientObj1(response.data);
               })
               .catch((error) => {  
@@ -130,7 +131,7 @@ function PatientCard(props) {
         <CardContent>
             <PatientCardDetail patientObj={patientObj} setArt={setArt} setActiveContent={setActiveContent} patientObj1={patientObj1}/>
             <Sticky>           
-            <SubMenu patientObj={patientObj} art={art} setActiveContent={setActiveContent}/>
+            <SubMenu expandedPatientObj={patientObj1} patientObj={patientObj} art={art} setActiveContent={setActiveContent}/>
             </Sticky>
             <br/>
           {activeContent.route==='recent-history' &&(<RecentHistory patientObj={patientObj} setActiveContent={setActiveContent} activeContent={activeContent}/>)}
