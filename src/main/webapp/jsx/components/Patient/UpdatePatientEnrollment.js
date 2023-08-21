@@ -867,14 +867,14 @@ const UserRegistration = (props) => {
                                         >
                                         <option value=""> Select</option>                    
                                         {(basicInfo.sex==='Female' || basicInfo.sex==='female')    && ( <>      
-                                                {kP.filter((x)=>x.display!=='FSW').map((value) => (
+                                                {kP.filter((x)=>x.display!=='MSM').map((value) => (
                                                     <option key={value.id} value={value.id}>
                                                         {value.display}
                                                     </option>
                                                 ))}
                                             </> )}
                                             {(basicInfo.sex==='Male' || basicInfo.sex==='male')   && ( <>      
-                                                {kP.filter((x)=>x.display!=='MSM').map((value) => (
+                                                {kP.filter((x)=>x.display!=='FSW').map((value) => (
                                                     <option key={value.id} value={value.id}>
                                                         {value.display}
                                                     </option>
