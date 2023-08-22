@@ -23,7 +23,9 @@ public interface ArtPharmacyRepository extends JpaRepository<ArtPharmacy, Long> 
 			"INNER join hiv_regimen r ON r.id = ap.regimens_id " +
 			"WHERE person_uuid = ?1 " +
 			"AND r.id = ?2 " +
-			"AND visit_date = ?3", nativeQuery = true)
+			"AND visit_date = ?3 "+
+			"AND archived = 0 ",
+			nativeQuery = true)
     Long getCountForAnAlreadyDispenseRegimen(String personUuid, Long regimenId, LocalDate visitDate);
 	
 	Page<ArtPharmacy> getArtPharmaciesByPersonAndArchived(Person person, Integer archived, Pageable pageable);
