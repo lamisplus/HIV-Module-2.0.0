@@ -53,6 +53,14 @@ public class LinkageService {
         return repository.saveAll(updateLinkage);
     }
     
+    
+    public List<OvcLinkage> getOvcLinkageList() {
+      return repository.findAll()
+               .stream()
+               .filter(o-> o.getArchived()== 0)
+               .collect(Collectors.toList());
+    }
+    
     public Optional<OvcLinkage> findById(UUID id) {
         return repository.findById(id);
     }

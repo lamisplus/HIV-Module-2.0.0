@@ -4,22 +4,21 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.lamisplus.modules.hiv.domain.entity.OvcLinkage;
 import org.lamisplus.modules.hiv.service.LinkageService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RequestMapping("/api/v1/linkages")
 @RestController
 @RequiredArgsConstructor
 @Api
 @Slf4j
-public class LinkageController {
+public class OvcLinkageController {
     private final LinkageService linkageService;
 
 //    @GetMapping("/{id}")
@@ -61,6 +60,11 @@ public class LinkageController {
             msg = "File imported successfully";
         };
         return ResponseEntity.ok().body(msg);
+    }
+    @GetMapping ("")
+    @ApiOperation(value = "return a list of imported OVC clients")
+    public ResponseEntity<List<OvcLinkage>> importFile(){
+        return ResponseEntity.ok(linkageService.getOvcLinkageList());
     }
 
 //    @GetMapping("/available-files")
