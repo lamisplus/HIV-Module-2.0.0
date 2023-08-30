@@ -176,7 +176,7 @@ const UserRegistration = (props) => {
         {id:"", uniqueId: "",dateOfRegistration:"",entryPointId:"", facilityName:"",statusAtRegistrationId:"",
         dateConfirmedHiv:"",sourceOfReferrerId:"",enrollmentSettingId:"",pregnancyStatusId:"",dateOfLpm:"",
         tbStatusId:"",targetGroupId:"",ovc_enrolled:"",ovcNumber:"",
-        householdNumber:"", referredToOVCPartner:"", dateReferredToOVCPartner:"",
+        houseHoldNumber:"", referredToOVCPartner:"", dateReferredToOVCPartner:"",
         referredFromOVCPartner:"", dateReferredFromOVCPartner:"",
         careEntryPointOther:"",
         ovcUniqueId:"",lipName:""
@@ -1941,8 +1941,8 @@ const UserRegistration = (props) => {
                                         <Label >Household Unique Number</Label>
                                         <Input
                                             type="text"
-                                            name="householdNumber"
-                                            id="householdNumber"
+                                            name="houseHoldNumber"
+                                            id="houseHoldNumber"
                                             required={ovcEnrolled}
                                             onChange={handleInputChange}
                                             style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
@@ -1956,12 +1956,12 @@ const UserRegistration = (props) => {
                                         <Label >OVC Unique ID</Label>
                                         <Input
                                             type="text"
-                                            name="ovcUniqueId"
-                                            id="ovcUniqueId"
+                                            name="ovcNumber"
+                                            id="ovcNumber"
                                             required={ovcEnrolled}
                                             onChange={handleInputChange}
                                             style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
-                                            value={objValues.ovcUniqueId}
+                                            value={objValues.ovcNumber}
                                             
                                         />
                                         </FormGroup>
