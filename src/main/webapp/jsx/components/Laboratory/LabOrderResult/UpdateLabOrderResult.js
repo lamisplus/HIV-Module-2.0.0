@@ -476,7 +476,7 @@ useEffect(() => {
                                     <Label for="priority">Result {tests.dateResultReceived!==""? (<span style={{ color:"red"}}> *</span> ) : "" }</Label>
                                     
                                     <Input
-                                        type="text"
+                                        type={tests.labTestId===1 ? "number" : "text"}
                                         name="result"
                                         id="result"
                                         value={tests.result}

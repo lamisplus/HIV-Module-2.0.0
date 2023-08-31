@@ -114,7 +114,7 @@ const UserRegistration = (props) => {
             id:"", uniqueId: "",dateOfRegistration:"",entryPointId:"", facilityName:"",statusAtRegistrationId:"",
             dateConfirmedHiv:"",sourceOfReferrerId:"",enrollmentSettingId:"",pregnancyStatusId:"",
             dateOfLpm:"",tbStatusId:"",targetGroupId:"",ovc_enrolled:"",ovcNumber:"",
-            householdNumber:"", referredToOVCPartner:"", dateReferredToOVCPartner:"",
+            houseHoldNumber:"", referredToOVCPartner:"", dateReferredToOVCPartner:"",
             referredFromOVCPartner:"", dateReferredFromOVCPartner:"",
             careEntryPointOther:"",
             personId:"",ovcUniqueId:"",lipName:""
@@ -166,6 +166,10 @@ const UserRegistration = (props) => {
             .then((response) => {
                 //console.log(response.data.enrollment)
                 setObjValues(response.data.enrollment);
+                if(response.data.enrollment.houseHoldNumber!=="" && response.data.enrollment.houseHoldNumber!==null){
+                    setOvcEnrolled(true)
+                }
+
             })
             .catch((error) => {  
             });        
@@ -939,12 +943,12 @@ const UserRegistration = (props) => {
                                         <Label >Household Unique Number</Label>
                                         <Input
                                             type="text"
-                                            name="householdNumber"
-                                            id="householdNumber"
+                                            name="houseHoldNumber"
+                                            id="houseHoldNumber"
                                             required={ovcEnrolled}
                                             onChange={handleInputChange}
                                             style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
-                                            value={objValues.householdNumber}
+                                            value={objValues.houseHoldNumber}
                                             disabled={disabledField}
                                         />
                                         </FormGroup>
@@ -954,12 +958,12 @@ const UserRegistration = (props) => {
                                         <Label >OVC Unique ID</Label>
                                         <Input
                                             type="text"
-                                            name="ovcUniqueId"
-                                            id="ovcUniqueId"
+                                            name="ovcNumber"
+                                            id="ovcNumber"
                                             required={ovcEnrolled}
                                             onChange={handleInputChange}
                                             style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
-                                            value={objValues.ovcUniqueId}
+                                            value={objValues.ovcNumber}
                                             disabled={disabledField}
                                         />
                                         </FormGroup>
@@ -1033,45 +1037,7 @@ const UserRegistration = (props) => {
                                             ) : "" }  */}
                                         </FormGroup>
                                     </div>
-                                    <div className="row">
-                                    <h3>OVC Service Provided</h3>
-                                    <div className="form-group mb-3 col-md-4">
-                                        <FormGroup>
-                                        <Label >Service Domain</Label>
-                                        <Input
-                                            type="select"
-                                            name="dateReferredFromOVCPartner"
-                                            id="dateReferredFromOVCPartner"
-                                            min={basicInfo.dob}
-                                            max={objValues.dateOfRegistration }
-                                            onChange={handleInputChange}
-                                            value={objValues.dateReferredFromOVCPartner}
-                                            style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
-                                            
-                                        /> 
-                                        </FormGroup>
                                     </div>
-                                    <div className="form-group mb-3 col-md-4">
-                                        <FormGroup>
-                                        <Label >Avialable Services</Label>
-                                        <Input
-                                            type="text"
-                                            name="services"
-                                            id="services"
-                                            onChange={handleInputChange}
-                                            value={objValues.services}
-                                            style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
-                                            
-                                        /> 
-                                        </FormGroup>
-                                    </div>
-                                    <div className="form-group mb-3 col-md-2">
-                                    <LabelSui as='a' color='black'  size='tiny'  style={{ marginTop:35}}>
-                                        <Icon name='plus' /> Add
-                                    </LabelSui> 
-                                </div>
-                                    </div>
-                                </div>
                                 </>
                                 )}
                             </div>
