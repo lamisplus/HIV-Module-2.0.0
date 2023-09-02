@@ -1970,7 +1970,7 @@ const UserRegistration = (props) => {
                                         <FormGroup>
                                         <Label >Referred To OVC Partner</Label>
                                         <Input
-                                            type="text"
+                                            type="select"
                                             name="referredToOVCPartner"
                                             id="referredToOVCPartner"
                                             required={ovcEnrolled}
@@ -1978,7 +1978,11 @@ const UserRegistration = (props) => {
                                             style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
                                             value={objValues.referredToOVCPartner}
                                             
-                                        />
+                                        >
+                                            <option value=""> Select</option>
+                                            <option value="YES"> YES</option>
+                                            <option value="NO"> NO</option>
+                                        </Input>
                                         </FormGroup>
                                     </div>
                                     <div className="form-group mb-3 col-md-6">
@@ -2011,8 +2015,12 @@ const UserRegistration = (props) => {
                                             onChange={handleInputChange}
                                             style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
                                             value={objValues.referredFromOVCPartner}
-                                            
-                                        />
+
+                                        >
+                                            <option value=""> Select</option>
+                                            <option value="YES"> YES</option>
+                                            <option value="NO"> NO</option>
+                                        </Input>
                                         </FormGroup>
                                     </div>
                                     <div className="form-group mb-3 col-md-6">

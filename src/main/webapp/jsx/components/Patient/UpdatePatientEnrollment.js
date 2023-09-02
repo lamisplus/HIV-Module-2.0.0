@@ -973,7 +973,7 @@ const UserRegistration = (props) => {
                                         <FormGroup>
                                         <Label >Referred To OVC Partner</Label>
                                         <Input
-                                            type="text"
+                                            type="select"
                                             name="referredToOVCPartner"
                                             id="referredToOVCPartner"
                                             required={ovcEnrolled}
@@ -981,7 +981,11 @@ const UserRegistration = (props) => {
                                             style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
                                             value={objValues.referredToOVCPartner}
                                             disabled={disabledField}
-                                        />
+                                        >
+                                            <option value=""> Select</option>
+                                            <option value="YES"> YES</option>
+                                            <option value="NO"> NO</option>
+                                        </Input>
                                         </FormGroup>
                                     </div>
                                     <div className="form-group mb-3 col-md-6">
@@ -1007,7 +1011,7 @@ const UserRegistration = (props) => {
                                         <FormGroup>
                                         <Label >Referred From OVC Partner</Label>
                                         <Input
-                                            type="text"
+                                            type="select"
                                             name="referredFromOVCPartner"
                                             id="referredFromOVCPartner"
                                             required={ovcEnrolled}
@@ -1015,7 +1019,11 @@ const UserRegistration = (props) => {
                                             style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
                                             value={objValues.referredFromOVCPartner}
                                             disabled={disabledField}
-                                        />
+                                        >
+                                            <option value=""> Select</option>
+                                            <option value="YES"> YES</option>
+                                            <option value="NO"> NO</option>
+                                        </Input>
                                         </FormGroup>
                                     </div>
                                     <div className="form-group mb-3 col-md-6">
