@@ -199,12 +199,6 @@ const ServiceForm = (props) => {
   });
 
   const setCustomDate = (e) => {
-    if (formik.values.artStartDate !== "") {
-      toast.warning("All other date values have been reset", {
-        position: "top-right",
-      });
-    }
-    // formik.setFieldValue("artStartDate", e.target.value);
     formik.setValues({
       ...formik.values,
       // artStartDate: e.target.value,
