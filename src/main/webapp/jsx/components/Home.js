@@ -61,9 +61,9 @@ const Home = () => {
                   <Tab eventKey="art-patients" title="ART Patients">
                     <ArtPatients />
                   </Tab>
-                  {/* <Tab eventKey="list" title="OVC">
-                    <Index />
-                  </Tab> */}
+                  {/*<Tab eventKey="list" title="OVC">*/}
+                  {/*  <Index />*/}
+                  {/*</Tab>*/}
                   {/* <Tab eventKey="visualization" title="Data Visualisation">                   
                     <VisualisationHome />
                   </Tab>                     */}

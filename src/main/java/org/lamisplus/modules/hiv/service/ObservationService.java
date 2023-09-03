@@ -40,20 +40,21 @@ public class ObservationService {
            Long personId = observationDto.getPersonId();
            Person person = getPerson(personId);
            Long orgId = currentUserOrganizationService.getCurrentUserOrganization();
-           Optional<Observation> anExistingObservationType = getAnExistingClinicalEvaluationType("Clinical evaluation", person, orgId);
+           boolean anExistingClinicalEvaluation = getAnExistingClinicalEvaluationType("Clinical evaluation", person, orgId).isEmpty();
            List<Observation> personObservations =
                    observationRepository.getAllByPersonAndFacilityId(person, person.getFacilityId());
-           boolean sameEncounterObservation =
-                   personObservations
-                           .stream()
-                           .anyMatch(o -> o.getType().equals(observationDto.getType())
-                                   && o.getDateOfObservation().equals(observationDto.getDateOfObservation()));
+           if (!anExistingClinicalEvaluation && observationDto.getType().equals("Clinical evaluation")) {
+               throw new RecordExistException(Observation.class, "type", observationDto.getType());
+           }
+    
+           boolean sameEncounterObservation = personObservations
+                   .stream()
+                   .anyMatch(o -> o.getType().equals(observationDto.getType())
+                           && o.getDateOfObservation().equals(observationDto.getDateOfObservation()));
            if(sameEncounterObservation){
                throw new RecordExistException(Observation.class, "date of observation", ""+observationDto.getDateOfObservation());
            }
-           if (anExistingObservationType.isPresent() && observationDto.getType().equals("Clinical evaluation")) {
-                   throw new RecordExistException(Observation.class, "type", observationDto.getType());
-           }
+           
            processAndUpdateIptFromPharmacy(observationDto, person);
            observationDto.setFacilityId(orgId);
            Visit visit = handleHIVisitEncounter.processAndCreateVisit(personId, observationDto.getDateOfObservation());
@@ -121,7 +122,7 @@ public class ObservationService {
         }
     }
     
-    private Optional<Observation> getAnExistingClinicalEvaluationType(String type, Person person, Long orgId) {
+    private List<Observation> getAnExistingClinicalEvaluationType(String type, Person person, Long orgId) {
         return observationRepository
                 .getAllByTypeAndPersonAndFacilityIdAndArchived (type, person, orgId, 0);
     }
