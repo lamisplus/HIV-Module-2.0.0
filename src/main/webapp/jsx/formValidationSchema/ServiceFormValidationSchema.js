@@ -289,7 +289,7 @@ export const useServiceFormValidationSchema = (onSubmit) => {
 
     twentyFourMonthsResult: yup.string(),
     twentyFourMonthsDate: yup.date().when('twentyFourMonthsResult', {
-      is: (twentyFourMonthsResult) => twentyFourMonthsResult && twentyFourMonthsResult.trim() !== '',,
+      is: (twentyFourMonthsResult) => twentyFourMonthsResult && twentyFourMonthsResult.trim() !== '',
       then: yup.date().required("Date is required")
     }),
 
