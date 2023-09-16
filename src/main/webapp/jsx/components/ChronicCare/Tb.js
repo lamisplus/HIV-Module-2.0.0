@@ -202,6 +202,7 @@ const TbScreening = (props) => {
       props.tbObj.isTbTestConfirmed === "No" &&
       props.tbObj.previouslyCompletedTPT === "No"
     ) {
+      setcontraindicationDisplay(true);
       props.tbObj.eligibleForTPT = "Yes";
       props.setTbObj({
         ...props.tbObj,
@@ -209,7 +210,9 @@ const TbScreening = (props) => {
         ["status"]: "No signs or symptoms of TB",
         ["eligibleForTPT"]: "Yes",
       });
-    } else if (
+    }
+
+    if (
       // second TPT logic
       props.tbObj.currentlyOnTuberculosis === "No" &&
       props.tbObj.previouslyCompletedTPT === "No" &&
@@ -227,6 +230,7 @@ const TbScreening = (props) => {
         props.tbObj.abnormalChest === true ||
         props.tbObj.poorTreatmentAdherence === true)
     ) {
+      setcontraindicationDisplay(true);
       props.tbObj.eligibleForTPT = "No";
       props.setTbObj({
         ...props.tbObj,
@@ -234,7 +238,6 @@ const TbScreening = (props) => {
         ["status"]: "No signs or symptoms of TB",
         ["eligibleForTPT"]: "No",
       });
-      console.log(props.tbObj.eligibleForTPT);
     } else if (
       // Third Logic
       props.tbObj.currentlyOnTuberculosis === "No" &&
@@ -254,6 +257,7 @@ const TbScreening = (props) => {
         props.tbObj.abnormalChest !== false ||
         props.tbObj.poorTreatmentAdherence !== false)
     ) {
+      setcontraindicationDisplay(true);
       props.tbObj.eligibleForTPT = "No";
       props.setTbObj({
         ...props.tbObj,
@@ -280,6 +284,7 @@ const TbScreening = (props) => {
       props.tbObj.abnormalChest === false &&
       props.tbObj.poorTreatmentAdherence === false
     ) {
+      setcontraindicationDisplay(true);
       props.tbObj.eligibleForTPT = "No";
       props.setTbObj({
         ...props.tbObj,
@@ -324,6 +329,41 @@ const TbScreening = (props) => {
         ...props.tbObj,
         ["outcome"]: "Presumptive",
         ["status"]: "Presumptive TB and referred for evaluation",
+        ["eligibleForTPT"]: "No",
+      });
+    }
+
+    if (
+      props.tbObj.currentlyOnTuberculosis === "Yes" &&
+      (props.tbObj.coughing === "Yes" ||
+        props.tbObj.fever === "Yes" ||
+        props.tbObj.losingWeight === "Yes" ||
+        props.tbObj.nightSweats === "Yes" ||
+        props.tbObj.poorWeightGain === "Yes" ||
+        props.tbObj.historyWithAdults === "Yes" ||
+        props.tbObj.isTbTestConfirmed === "Yes")
+    ) {
+      props.tbObj.eligibleForTPT = "No";
+      props.setTbObj({
+        ...props.tbObj,
+        ["outcome"]: "Presumptive",
+        ["status"]: "Currently on TPT",
+        ["eligibleForTPT"]: "No",
+      });
+    } else if (
+      props.tbObj.currentlyOnTuberculosis === "Yes" &&
+      props.tbObj.tbTreatment === "No" &&
+      props.tbObj.coughing === "No" &&
+      props.tbObj.fever === "No" &&
+      props.tbObj.losingWeight === "No" &&
+      props.tbObj.nightSweats === "No" &&
+      props.tbObj.isTbTestConfirmed === "No"
+    ) {
+      props.tbObj.eligibleForTPT = "No";
+      props.setTbObj({
+        ...props.tbObj,
+        ["outcome"]: "Not Presumptive",
+        ["status"]: "Currently on TPT",
         ["eligibleForTPT"]: "No",
       });
     }
