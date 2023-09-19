@@ -1053,7 +1053,12 @@ const TbScreening = (props) => {
                 TB Screening Outcome:<b>{" " + props.tbObj.outcome}</b>
               </p>
               <p style={{ color: "black" }}>
-                TB Screening Status:<b>{" " + props.tbObj.status}</b>
+                TB Screening Status:
+                <b>
+                  {" " + props.tbObj.status === "undefined"
+                    ? ""
+                    : props.tbObj.status}
+                </b>
               </p>
             </div>
           </form>
