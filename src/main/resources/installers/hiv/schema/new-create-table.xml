@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <property name="autoIncrement" value="true"/>
+
+
+<changeSet id="202307016100-01" author="amos">
+    <preConditions onFail="MARK_RAN">
+        <sqlCheck expectedResult="0">
+            SELECT COUNT(table_name) FROM information_schema.tables WHERE table_name = 'hiv_ovc_linkage';
+        </sqlCheck>
+    </preConditions>
+    <sql>
+        CREATE TABLE hiv_ovc_linkage
+        (
+            id                       UUID    NOT NULL,
+            created_date             TIMESTAMP WITHOUT TIME ZONE,
+            created_by               VARCHAR(255),
+            last_modified_date       TIMESTAMP WITHOUT TIME ZONE,
+            last_modified_by         VARCHAR(255),
+            facility_id              BIGINT,
+            art_number               VARCHAR(255),
+            last_name                VARCHAR(255),
+            other_name               VARCHAR(255),
+            gender                   VARCHAR(255),
+            birth_date               date,
+            facility_name            VARCHAR(255),
+            datim_code               VARCHAR(255),
+            state_of_residence       VARCHAR(255),
+            lga_of_residence         VARCHAR(255),
+            entry_point              VARCHAR(255),
+            share_contact_with_ovc   INTEGER,
+            reason_for_decline       VARCHAR(255),
+            drug_refill_notification INTEGER,
+            phone_number             VARCHAR(255),
+            caregiver_surname        VARCHAR(255),
+            caregiver_other_name     VARCHAR(255),
+            offer_date               date,
+            enrollment_date          date,
+            ovc_unique_id            VARCHAR(255),
+            household_unique_id      VARCHAR(255),
+            enrolled_in_ovc_program  INTEGER,
+            archived                 INTEGER NOT NULL,
+            cbo_name                 VARCHAR(255),
+            facility_staff_name      VARCHAR(255),
+            status                   VARCHAR(255),
+            CONSTRAINT pk_hiv_ovc_linkage PRIMARY KEY (id)
+        );
+    </sql>
+</changeSet>
+</databaseChangeLog>
