@@ -156,15 +156,48 @@ const Patient = (props) => {
               field: "name",
               hidden: showPPI,
             },
-            { title: "Unique ID", field: "uniqueId", filtering: false },
-            { title: "Sex", field: "sex", filtering: false },
-            { title: "Age", field: "age", filtering: false },
-            //{ title: "Enrollment Status", field: "v_status", filtering: false },
+            { title: "Art Number", field: "artNumber", filtering: false },
+            {
+              title: "Care giver other name",
+              field: "caregiverOtherName",
+              filtering: false,
+            },
+            {
+              title: "Care giver surname",
+              field: "caregiverSurname",
+              filtering: false,
+            },
+            { title: "CBO Name", field: "cboName", filtering: false },
             //{ title: "ART Number", field: "v_status", filtering: false },
-            { title: "ART Status", field: "status", filtering: false },
-            { title: "Actions", field: "actions", filtering: false },
+            {
+              title: "Enrolled In OVC Program",
+              field: "enrolledInOvcProgram",
+              filtering: false,
+            },
+            { title: "Created Date", field: "createdDate", filtering: false },
           ]}
-          data={[]}
+          data={(query) =>
+            new Promise((resolve, reject) =>
+              axios
+                .get(`${baseUrl}linkages`, {
+                  headers: { Authorization: `Bearer ${token}` },
+                })
+                .then((response) => response)
+                .then((result) => {
+                  resolve({
+                    data: result.data.map((row) => ({
+                      name: row.lastName,
+                      artNumber: row.artNumber,
+                      caregiverOtherName: row.caregiverOtherName,
+                      caregiverSurname: row.caregiverSurname,
+                      cboName: row.cboName,
+                      enrolledInOvcProgram: row.enrolledInOvcProgram,
+                      createdDate: row.createdDate,
+                    })),
+                  });
+                })
+            )
+          }
           options={{
             search: true,
             headerStyle: {
