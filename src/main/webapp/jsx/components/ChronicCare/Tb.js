@@ -391,7 +391,7 @@ const TbScreening = (props) => {
   };
 
   const handleInputChange = (e) => {
-    console.log(e.target.name, e.target.value);
+    // console.log(e.target.name, e.target.value);
     props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.value });
 
     //making some fields to be empty once the selection logic is apply(skip logic)

@@ -211,7 +211,6 @@ const ClinicVisit = (props) => {
     tbPrevention: "",
     arvdrugsRegimen: {},
     viralLoadOrder: {},
-    tbPrevention: "",
   });
   const [vital, setVitalSignDto] = useState({
     bodyWeight: "",
@@ -253,13 +252,14 @@ const ClinicVisit = (props) => {
     viralLoadIndication: "",
     visitId: "",
   });
+  const [careSupportObj, setCareSupportObj] = useState(null);
+  const [careSupportTb, setCareSupportTb] = useState(null);
   useEffect(() => {
     FunctionalStatus();
     WhoStaging();
     AdherenceLevel();
     TBStatus();
     VitalSigns();
-
     PatientDetailId();
     ViraLoadIndication();
     TestGroup();
@@ -273,6 +273,7 @@ const ClinicVisit = (props) => {
     FAMILY_PLANNING_METHOD();
     GetPatientDTOObj();
     PatientCurrentRegimen();
+    GetCareSupport()
     if (props.patientObj.id) {
       ClinicVisitList();
     }
@@ -295,7 +296,20 @@ const ClinicVisit = (props) => {
         //console.log(error);
       });
   };
+  const GetCareSupport =()=>{
+    axios
+        .get(`${baseUrl}observation/person/${props.patientObj.id}`,
+            { headers: {"Authorization" : `Bearer ${token}`} }
+        )
+        .then((response) => {
+          //console.log(response.data.filter((x)=> x.type==='Chronic Care'))
+          setCareSupportObj(response.data.filter((x)=> x.type==='Chronic Care'))
+        })
+        .catch((error) => {
+          //console.log(error);
+        });
 
+  }
   //Get the patient current regimen
   const PatientCurrentRegimen = () => {
     axios
@@ -623,11 +637,21 @@ const ClinicVisit = (props) => {
   const handleInputChangeVitalSignDto = (e) => {
     setErrors({ ...errors, [e.target.name]: "" });
     setVitalSignDto({ ...vital, [e.target.name]: e.target.value });
-    // if(e.target.name!=='encounterDate' && e.target.name!=='muac'){
-    //   setVitalSignDto({ ...vital, [e.target.name]: e.target.value.replace(/\D/g, '') });
-    // }else{
-    //   setVitalSignDto({ ...vital, [e.target.name]: e.target.value });
-    // }
+    if(e.target.name==='encounterDate' ){
+      //Validate the care and support date against the encounter date that was selected
+      const supportCareDetail= careSupportObj.find((x)=> x.dateOfObservation===e.target.value)
+      if(supportCareDetail!==undefined){
+        setCareSupportTb(supportCareDetail && supportCareDetail.data.tbIptScreening.status)
+        setSaving(false)
+      }else{
+        toast.error("Please select a valid date that exist for care & support")
+        setSaving(true)
+      }
+      //objValues.tbStatus=supportCareDetail.data.tbIptScreening.status!==""? supportCareDetail.data.tbIptScreening.status :""
+      //setVitalSignDto({ ...vital, [e.target.name]: e.target.value.replace(/\D/g, '') });
+    }else{
+      //setVitalSignDto({ ...vital, [e.target.name]: e.target.value });
+    }
   };
   //Validations of the Lab Viral Load
   const validateLabOrder = () => {
@@ -910,8 +934,7 @@ const ClinicVisit = (props) => {
       objValues.viralLoadOrder = testOrderList;
       objValues.arvdrugsRegimen = arvDrugOrderList;
       objValues["vitalSignDto"] = vital;
-
-      console.log(objValues.tbStatus);
+      //console.log(objValues.tbStatus);
 
       axios
         .post(`${baseUrl}hiv/art/clinic-visit/`, objValues, {
@@ -2237,6 +2260,7 @@ const ClinicVisit = (props) => {
               tbObj={tbObj}
               setTbObj={setTbObj}
               errors={errors}
+              careSupportTb={careSupportTb}
               setErrors={setErrors}
             />
             <Label

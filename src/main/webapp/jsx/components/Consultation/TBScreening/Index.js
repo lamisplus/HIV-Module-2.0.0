@@ -105,7 +105,14 @@ const TBScreeningForm = (props) => {
     ) {
       props.tbObj.tbStatusId = "";
     }
-  }, [props.tbObj]);
+    console.log(props.careSupportTb);
+    if(props.careSupportTb!==""){
+       //The value of the TB status id
+       const tbStatusId=tbStatus.find((x)=> x.display===props.careSupportTb)
+        //console.log(tbStatus.find((x)=> x.display===props.careSupportTb));
+      props.tbObj.tbStatusId=tbStatusId && tbStatusId.id!==""? tbStatusId.id :""
+    }
+  }, [props.tbObj,props.careSupportTb]);
   ///GET LIST OF FUNCTIONAL%20_STATUS
   // TB STATUS
   const TBStatus = () => {

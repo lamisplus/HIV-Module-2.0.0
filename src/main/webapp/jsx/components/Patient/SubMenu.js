@@ -241,6 +241,13 @@ function SubMenu(props) {
                   </Menu.Item>
                 )}
               <Menu.Item
+                  onClick={() => loadChronicCare(patientObj)}
+                  name="chronic care"
+                  active={activeItem === "chronic-care"}
+              >
+                Care & Support
+              </Menu.Item>
+              <Menu.Item
                 onClick={() => onClickConsultation()}
                 disabled={patientCurrentStatus}
                 name="visit"
@@ -249,13 +256,7 @@ function SubMenu(props) {
               >
                 Care Card
               </Menu.Item>
-              <Menu.Item
-                onClick={() => loadChronicCare(patientObj)}
-                name="chronic care"
-                active={activeItem === "chronic-care"}
-              >
-                Care & Support
-              </Menu.Item>
+
               <Menu.Menu position="" name="lab" active={activeItem === "lab"}>
                 <Dropdown item text="Laboratory">
                   <Dropdown.Menu>
