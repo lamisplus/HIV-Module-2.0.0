@@ -5,16 +5,12 @@ import { url as baseUrl, token } from "../../../api";
 
 function SubMenu(props) {
   //const classes = useStyles();
-  console.log("This is submenu", props);
   const [activeItem, setActiveItem] = useState("recent-history");
   const patientObj = props.patientObj;
   const patientCurrentStatus =
     props.patientObj && props.patientObj.currentStatus === "Died (Confirmed)"
       ? true
       : false;
-  //const [patientObj, setpatientObj] = useState(patientObjs)
-  // let mentalStatus=false
-  // let initialEvaluationStatus=false
 
   useEffect(() => {
     if (props.patientObj && props.patientObj !== null) {
