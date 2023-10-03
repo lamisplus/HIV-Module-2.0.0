@@ -255,7 +255,6 @@ const ChronicCare = (props) => {
            .then((response) => {  
                 const DateObj=response.data.filter((x)=> x.type==='Chronic Care')
                 if(response.data){
-                    console.log(DateObj)
                     setChronicDateExist(DateObj)
                 }
 
