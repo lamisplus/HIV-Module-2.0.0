@@ -253,7 +253,7 @@ const ChronicCare = (props) => {
                { headers: {"Authorization" : `Bearer ${token}`} }
            )
            .then((response) => {  
-                const DateObj=response.data
+                const DateObj=response.data.filter((x)=> x.type==='Chronic Care')
                 if(response.data){
                     setChronicDateExist(DateObj)
                 }
@@ -280,8 +280,9 @@ const ChronicCare = (props) => {
     }
 
     const handleSubmit = async (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
         setSaving(true);
+
         observation.personId =patientObj.id
         observationObj.eligibility=eligibility
         observationObj.nutrition=
@@ -296,7 +297,7 @@ const ChronicCare = (props) => {
             //check for duplicate visit Date
            if(chronicDateExist!==null &&  chronicDateExist.find((x)=> x.dateOfObservation===observation.dateOfObservation) ){
             toast.error("Chronic Care visit date "+ observation.dateOfObservation + " already exist. " , {position: toast.POSITION.BOTTOM_CENTER})
-            setSaving(false); 
+               setSaving(false);
            }else{
             if(props.activeContent && props.activeContent.actionType==="update"){//Perform operation for updation action)
                 axios.put(`${baseUrl}observation/${props.activeContent.id}`,observation,
@@ -385,7 +386,7 @@ const ChronicCare = (props) => {
         <ToastContainer autoClose={3000} hideProgressBar />
         <div className="row page-titles mx-0" style={{marginTop:"0px", marginBottom:"-10px"}}>
 			<ol className="breadcrumb">
-				<li className="breadcrumb-item active"><h2> Chronic Care</h2></li>
+				<li className="breadcrumb-item active"><h2> Care and Support</h2></li>
 			</ol>
 		  </div>
 

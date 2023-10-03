@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MaterialTable, { MTableToolbar } from "material-table";
+import Import from "./Import";
 import axios from "axios";
 
 import { token as token, url as baseUrl } from "../../../api";
@@ -110,6 +111,8 @@ const useStyles = makeStyles((theme) => ({
 
 const Patient = (props) => {
   const [showPPI, setShowPPI] = useState(true);
+  const [modal, setModal] = useState(false);
+  const toggle = () => setModal(!modal);
 
   const handleCheckBox = (e) => {
     if (e.target.checked) {
@@ -120,93 +123,132 @@ const Patient = (props) => {
   };
 
   return (
-    <div>
-      <Button
-        variant="contained"
-        color="primary"
-        className=" float-right mr-1"
-        startIcon={<IosShareIcon />}
-        style={{ backgroundColor: "rgb(153, 46, 98)" }}
-        // onClick={syncDataBase}
-      >
-        <span style={{ textTransform: "capitalize" }}>Export </span>
-      </Button>{" "}
-      <Button
-        variant="contained"
-        color="primary"
-        className=" float-right mr-1"
-        startIcon={<SystemUpdateAltIcon />}
-        style={{ backgroundColor: "rgb(153, 46, 98)" }}
-        // onClick={syncDataBase}
-      >
-        <span style={{ textTransform: "capitalize" }}>Import </span>
-      </Button>
-      <br />
-      <br />
-      <MaterialTable
-        icons={tableIcons}
-        title="OVC Patients"
-        columns={[
-          {
-            title: "Patient Name",
-            field: "name",
-            hidden: showPPI,
-          },
-          { title: "Unique ID", field: "uniqueId", filtering: false },
-          { title: "Sex", field: "sex", filtering: false },
-          { title: "Age", field: "age", filtering: false },
-          //{ title: "Enrollment Status", field: "v_status", filtering: false },
-          //{ title: "ART Number", field: "v_status", filtering: false },
-          { title: "ART Status", field: "status", filtering: false },
-          { title: "Actions", field: "actions", filtering: false },
-        ]}
-        data={[]}
-        options={{
-          search: true,
-          headerStyle: {
-            backgroundColor: "#014d88",
-            color: "#fff",
-          },
-          searchFieldStyle: {
-            width: "200%",
-            margingLeft: "250px",
-          },
-          filtering: false,
-          exportButton: false,
-          searchFieldAlignment: "left",
-          pageSizeOptions: [10, 20, 100],
-          pageSize: 10,
-          debounceInterval: 400,
-        }}
-        components={{
-          Toolbar: (props) => (
-            <div>
-              <div className="form-check custom-checkbox  float-left mt-4 ml-3 ">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  name="showPP!"
-                  id="showPP"
-                  value="showPP"
-                  checked={showPPI === true ? false : true}
-                  onChange={handleCheckBox}
-                  style={{
-                    border: "1px solid #014D88",
-                    borderRadius: "0.25rem",
-                  }}
-                />
-                <label className="form-check-label" htmlFor="basic_checkbox_1">
-                  <b style={{ color: "#014d88", fontWeight: "bold" }}>
-                    SHOW PII
-                  </b>
-                </label>
+    <>
+      <div>
+        <Button
+          variant="contained"
+          color="primary"
+          className=" float-right mr-1"
+          startIcon={<IosShareIcon />}
+          style={{ backgroundColor: "rgb(153, 46, 98)" }}
+          // onClick={syncDataBase}
+        >
+          <span style={{ textTransform: "capitalize" }}>Export </span>
+        </Button>{" "}
+        <Button
+          variant="contained"
+          color="primary"
+          className=" float-right mr-1"
+          startIcon={<SystemUpdateAltIcon />}
+          style={{ backgroundColor: "rgb(153, 46, 98)" }}
+          onClick={toggle}
+        >
+          <span style={{ textTransform: "capitalize" }}>Import </span>
+        </Button>
+        <br />
+        <br />
+        <MaterialTable
+          icons={tableIcons}
+          title="OVC Patients"
+          columns={[
+            {
+              title: "Patient Name",
+              field: "name",
+              hidden: showPPI,
+            },
+            { title: "Art Number", field: "artNumber", filtering: false },
+            {
+              title: "Care giver other name",
+              field: "caregiverOtherName",
+              filtering: false,
+            },
+            {
+              title: "Care giver surname",
+              field: "caregiverSurname",
+              filtering: false,
+            },
+            { title: "CBO Name", field: "cboName", filtering: false },
+            //{ title: "ART Number", field: "v_status", filtering: false },
+            {
+              title: "Enrolled In OVC Program",
+              field: "enrolledInOvcProgram",
+              filtering: false,
+            },
+            { title: "Created Date", field: "createdDate", filtering: false },
+          ]}
+          data={(query) =>
+            new Promise((resolve, reject) =>
+              axios
+                .get(`${baseUrl}linkages`, {
+                  headers: { Authorization: `Bearer ${token}` },
+                })
+                .then((response) => response)
+                .then((result) => {
+                  resolve({
+                    data: result.data.map((row) => ({
+                      name: row.lastName,
+                      artNumber: row.artNumber,
+                      caregiverOtherName: row.caregiverOtherName,
+                      caregiverSurname: row.caregiverSurname,
+                      cboName: row.cboName,
+                      enrolledInOvcProgram: row.enrolledInOvcProgram,
+                      createdDate: row.createdDate,
+                    })),
+                  });
+                })
+            )
+          }
+          options={{
+            search: true,
+            headerStyle: {
+              backgroundColor: "#014d88",
+              color: "#fff",
+            },
+            searchFieldStyle: {
+              width: "200%",
+              margingLeft: "250px",
+            },
+            filtering: false,
+            exportButton: false,
+            searchFieldAlignment: "left",
+            pageSizeOptions: [10, 20, 100],
+            pageSize: 10,
+            debounceInterval: 400,
+          }}
+          components={{
+            Toolbar: (props) => (
+              <div>
+                <div className="form-check custom-checkbox  float-left mt-4 ml-3 ">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    name="showPP!"
+                    id="showPP"
+                    value="showPP"
+                    checked={showPPI === true ? false : true}
+                    onChange={handleCheckBox}
+                    style={{
+                      border: "1px solid #014D88",
+                      borderRadius: "0.25rem",
+                    }}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor="basic_checkbox_1"
+                  >
+                    <b style={{ color: "#014d88", fontWeight: "bold" }}>
+                      SHOW PII
+                    </b>
+                  </label>
+                </div>
+                <MTableToolbar {...props} />
               </div>
-              <MTableToolbar {...props} />
-            </div>
-          ),
-        }}
-      />
-    </div>
+            ),
+          }}
+        />
+      </div>
+      <Import modal={modal} toggle={toggle} />
+    </>
   );
 };
 
