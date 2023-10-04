@@ -673,7 +673,7 @@ const Tracking = (props) => {
           objValues.statusTracker.biometricStatus = objValues.biometricStatus;
         }
         setSaving(true);
-        console.log("patient-tracker", objValues);
+
         axios
           .post(`${baseUrl}patient-tracker`, objValues, {
             headers: { Authorization: `Bearer ${token}` },
