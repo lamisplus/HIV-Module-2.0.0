@@ -43,6 +43,30 @@
         </sql>
     </changeSet>
 
+    <changeSet failOnError="true"  id="20231204-10" author="victor">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="hiv_status_tracker" columnName="biometric_status" />
+            </not>
+        </preConditions>
+        <sql>
+            ALTER TABLE hiv_status_tracker
+            ADD biometric_status VARCHAR(100)
+        </sql>
+    </changeSet>
+
+    <changeSet failOnError="true"  id="20231205-10" author="victor">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="hiv_patient_tracker" columnName="biometric_status" />
+            </not>
+        </preConditions>
+        <sql>
+            ALTER TABLE hiv_patient_tracker
+            ADD biometric_status VARCHAR(100)
+        </sql>
+    </changeSet>
+
 
 
 </databaseChangeLog>

@@ -154,6 +154,7 @@ const Tracking = (props) => {
       hivStatus: "",
       personId: props.patientObj.id,
       reasonForInterruption: "",
+      biometricStatus: "",
       statusDate: "",
       trackDate: "",
       trackOutcome: "",
@@ -667,8 +668,12 @@ const Tracking = (props) => {
         if (objValues.careInFacilityDiscountinued === "No") {
           objValues.statusTracker = null;
         }
-        setSaving(true);
 
+        if (objValues.biometricStatus !== null) {
+          objValues.statusTracker.biometricStatus = objValues.biometricStatus;
+        }
+        setSaving(true);
+        console.log("patient-tracker", objValues);
         axios
           .post(`${baseUrl}patient-tracker`, objValues, {
             headers: { Authorization: `Bearer ${token}` },
@@ -1339,36 +1344,40 @@ const Tracking = (props) => {
                       )}
                     </FormGroup>
                   </div>
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label for="">Biometric Status</Label>
-                      <Input
-                        type="select"
-                        name="biometricStatus"
-                        id="biometricStatus"
-                        onChange={handleInputChange}
-                        value={objValues.biometricStatus}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      >
-                        <option value="">Select</option>
-                        {currentBiometricStatus.map((value) => (
-                          <option key={value.code} value={value.display}>
-                            {value.display}
-                          </option>
-                        ))}
-                      </Input>
-                      {errors.biometricStatus !== "" ? (
-                        <span className={classes.error}>
-                          {errors.biometricStatus}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </FormGroup>
-                  </div>
+                  {objValues.reasonForDiscountinuation === "Others" ? (
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label for="">Biometric Status</Label>
+                        <Input
+                          type="select"
+                          name="biometricStatus"
+                          id="biometricStatus"
+                          onChange={handleInputChange}
+                          value={objValues.biometricStatus}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
+                        >
+                          <option value="">Select</option>
+                          {currentBiometricStatus.map((value) => (
+                            <option key={value.code} value={value.display}>
+                              {value.display}
+                            </option>
+                          ))}
+                        </Input>
+                        {errors.biometricStatus !== "" ? (
+                          <span className={classes.error}>
+                            {errors.biometricStatus}
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </FormGroup>
+                    </div>
+                  ) : (
+                    ""
+                  )}
                 </>
               )}
               {objValues.reasonForDiscountinuation === "Death" && (
