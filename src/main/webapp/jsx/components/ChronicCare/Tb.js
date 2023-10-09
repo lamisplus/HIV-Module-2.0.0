@@ -154,7 +154,7 @@ const TbScreening = (props) => {
         props.setTbObj({
           ...props.tbObj,
           ["outcome"]: "Presumptive",
-          ["status"]: "Presumptive TB and referred for evaluation",
+          ["status"]: "TB suspected and referred for evaluation",
         });
       }
     } else {
@@ -165,7 +165,7 @@ const TbScreening = (props) => {
         props.setTbObj({
           ...props.tbObj,
           ["outcome"]: "Not Presumptive",
-          ["status"]: "Currently on TB Treatment",
+          ["status"]: "Currently on TB treatment",
           ["activeTb"]: true,
         });
       }
@@ -235,7 +235,7 @@ const TbScreening = (props) => {
           props.setTbObj({
             ...props.tbObj,
             ["outcome"]: "Presumptive",
-            ["status"]: "Presumptive TB and referred for evaluation",
+            ["status"]: "TB suspected and referred for evaluation",
             ["eligibleForTPT"]: "No",
           });
         } else if (
@@ -259,7 +259,7 @@ const TbScreening = (props) => {
           props.setTbObj({
             ...props.tbObj,
             ["outcome"]: "Presumptive",
-            ["status"]: "Presumptive TB and referred for evaluation",
+            ["status"]: "TB suspected and referred for evaluation",
             ["eligibleForTPT"]: "No",
           });
         }
@@ -296,7 +296,7 @@ const TbScreening = (props) => {
           props.setTbObj({
             ...props.tbObj,
             ["outcome"]: "Presumptive",
-            ["status"]: "Presumptive TB and referred for evaluation",
+            ["status"]: "TB suspected and referred for evaluation",
             ["eligibleForTPT"]: "No",
           });
         }
