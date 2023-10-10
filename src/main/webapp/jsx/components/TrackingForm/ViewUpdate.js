@@ -565,6 +565,7 @@ const Tracking = (props) => {
           objValues.statusTracker.vaCauseOfDeath = objValues.vaCauseOfDeath;
           if (objValues.biometricStatus !== null) {
             objValues.statusTracker.biometricStatus = objValues.biometricStatus;
+            objValues.statusTracker.hivStatus = objValues.biometricStatus;
           }
         }
         if (objValues.careInFacilityDiscountinued === "No") {

@@ -671,6 +671,7 @@ const Tracking = (props) => {
 
         if (objValues.biometricStatus !== null) {
           objValues.statusTracker.biometricStatus = objValues.biometricStatus;
+          objValues.statusTracker.hivStatus = objValues.biometricStatus;
         }
         setSaving(true);
 
