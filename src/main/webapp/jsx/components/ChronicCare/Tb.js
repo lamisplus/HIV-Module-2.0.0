@@ -235,7 +235,7 @@ const TbScreening = (props) => {
           props.setTbObj({
             ...props.tbObj,
             ["outcome"]: "Presumptive",
-            ["status"]: "TB suspected and referred for evaluation",
+            ["status"]: "Presumptive TB and referred for evaluation",
             ["eligibleForTPT"]: "No",
           });
         } else if (
