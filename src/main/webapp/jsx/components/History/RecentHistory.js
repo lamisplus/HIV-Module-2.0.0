@@ -658,7 +658,7 @@ const RecentHistory = (props) => {
                                                 {activity.name ===
                                                 "Chronic Care"
                                                   ? "Care and Support"
-                                                  : row.name}
+                                                  : activity.name}
                                               </h5>
                                               <small className="d-block">
                                                 {activity.date}
