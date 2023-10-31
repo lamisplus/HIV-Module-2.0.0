@@ -588,7 +588,7 @@ const Tracking = (props) => {
     }
     //biometricStatus
     {
-      objValues.careInFacilityDiscountinued === "Yes" &&
+      objValues.reasonForDiscountinuation === "Others" &&
         (temp.biometricStatus = objValues.biometricStatus
           ? ""
           : "This field is required");
@@ -698,7 +698,7 @@ const Tracking = (props) => {
             }
           })
           .catch((error) => {
-            console.log("error", error);
+            //console.log("error", error);
             setSaving(false);
             if (error.response && error.response.data) {
               let errorMessage =

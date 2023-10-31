@@ -482,7 +482,12 @@ const Tracking = (props) => {
             ? ""
             : "This field is required");
     }
-
+    {
+      objValues.reasonForDiscountinuation === "Others" &&
+      (temp.biometricStatus = objValues.biometricStatus
+          ? ""
+          : "This field is required");
+    }
     setErrors({
       ...temp,
     });
