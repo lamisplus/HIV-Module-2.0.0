@@ -7,6 +7,7 @@ function SubMenu(props) {
   //const classes = useStyles();
   const [activeItem, setActiveItem] = useState("recent-history");
   const patientObj = props.patientObj;
+
   const patientCurrentStatus =
     props.patientObj && props.patientObj.currentStatus === "Died (Confirmed)"
       ? true
@@ -237,9 +238,9 @@ function SubMenu(props) {
                   </Menu.Item>
                 )}
               <Menu.Item
-                  onClick={() => loadChronicCare(patientObj)}
-                  name="chronic care"
-                  active={activeItem === "chronic-care"}
+                onClick={() => loadChronicCare(patientObj)}
+                name="chronic care"
+                active={activeItem === "chronic-care"}
               >
                 Care & Support
               </Menu.Item>
