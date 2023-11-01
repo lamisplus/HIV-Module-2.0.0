@@ -115,7 +115,7 @@ const UserRegistration = (props) => {
             id:"", uniqueId: "",dateOfRegistration:"",entryPointId:"", facilityName:"",statusAtRegistrationId:"",
             dateConfirmedHiv:"",sourceOfReferrerId:"",enrollmentSettingId:"",pregnancyStatusId:"",
             dateOfLpm:"",tbStatusId:"",targetGroupId:"",ovc_enrolled:"",ovcNumber:"",
-            houseHoldNumber:"", referredToOVCPartner:"", dateReferredToOVCPartner:"",
+            householdNumber:"", referredToOVCPartner:"", dateReferredToOVCPartner:"",
             referredFromOVCPartner:"", dateReferredFromOVCPartner:"",
             careEntryPointOther:"",
             personId:"",ovcUniqueId:"",lipName:""
@@ -362,7 +362,7 @@ const UserRegistration = (props) => {
         }else{
             objValues.ovc_enrolled=""
             objValues.ovcNumber=""
-            objValues.houseHoldNumber=""
+            objValues.householdNumber=""
             objValues.referredToOVCPartner=""
             objValues.dateReferredToOVCPartner=""
             objValues.referredFromOVCPartner=""
@@ -907,12 +907,12 @@ const UserRegistration = (props) => {
                                         <Label >Household Unique Number</Label>
                                         <Input
                                             type="text"
-                                            name="houseHoldNumber"
-                                            id="houseHoldNumber"
+                                            name="householdNumber"
+                                            id="householdNumber"
                                             required={ovcEnrolled}
                                             onChange={handleInputChange}
                                             style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
-                                            value={objValues.houseHoldNumber}
+                                            value={objValues.householdNumber}
                                             
                                         />
                                         </FormGroup>

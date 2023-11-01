@@ -89,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
 const ServiceForm = (props) => {
   const [saving, setSavings] = useState(false);
   const [currentRecord, SetCurrentRecord] = useState(null);
-console.log("service form", props.activeContent.enrollment.dateOfRegistration)
+
   const submitNewRecord = (values) => {
     const observation = {
       data: values,
@@ -199,17 +199,11 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
   });
 
   const setCustomDate = (e) => {
-    if (formik.values.artStartDate !== "") {
-      toast.warning("All other date values have been reset", {
-        position: "top-right",
-      });
-    }
-    // formik.setFieldValue("artStartDate", e.target.value);
     formik.setValues({
       ...formik.values,
       // artStartDate: e.target.value,
       //resetting all other date values as they are relative to artStartDate and date enrolled into OTZ
-      dateEnrolledIntoOtz: e.target.value,
+      dateEnrolledIntoOtz: e?.target?.value,
       dateDone: "",
       acMonth1EacDate1: "",
       acMonth1EacDate2: "",
@@ -256,6 +250,7 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
     });
   };
 
+  console.log(formik?.values?.acMonth1EacDate1);
   return (
     <>
       <ToastContainer autoClose={3000} hideProgressBar />
@@ -303,8 +298,9 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                         name="artStartDate"
                         id="artStartDate"
                         type="date"
-                      
-                        value={props?.activeContent?.enrollment?.dateOfRegistration}
+                        value={
+                          props?.activeContent?.enrollment?.dateOfRegistration
+                        }
                         // onChange={setCustomArtDate}
                         disabled
                         // onBlur={formik.handleBlur}
@@ -313,7 +309,13 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                           borderRadius: "0.25rem",
                         }}
                         readOnly
-                        {...{ max: moment(new Date(props?.activeContent?.enrollment?.dateOfRegistration)).format("YYYY-MM-DD") }}
+                        {...{
+                          max: moment(
+                            new Date(
+                              props?.activeContent?.enrollment?.dateOfRegistration
+                            )
+                          ).format("YYYY-MM-DD"),
+                        }}
                       />
                     </FormGroup>
                     {/* {formik.errors.artStartDate !== "" ? (
@@ -342,13 +344,13 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                         }}
                         {...{
                           min: moment(
-                            new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                            new Date(
+                              props?.activeContent?.enrollment?.dateOfRegistration
+                            )
                           ).format("YYYY-MM-DD"),
                         }}
                         {...{
-                          max: moment(
-                            Date.now()
-                          ).format("YYYY-MM-DD"),
+                          max: moment(Date.now()).format("YYYY-MM-DD"),
                         }}
                       />
                     </FormGroup>
@@ -441,8 +443,6 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
                         }}
-
-                        
                       />
                     </FormGroup>
                     {formik.errors.dateDone !== "" ? (
@@ -535,10 +535,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                 className="form-control"
                                 type="date"
                                 {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                  min: moment(
+                                    new Date(formik?.values?.dateEnrolledIntoOtz)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!formik?.values?.dateEnrolledIntoOtz}
                                 name="acMonth1EacDate1"
                                 id="acMonth1EacDate1"
                                 value={formik.values.acMonth1EacDate1}
@@ -569,10 +573,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                 className="form-control"
                                 type="date"
                                 {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                  min: moment(
+                                    new Date(formik?.values?.dateEnrolledIntoOtz)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!formik?.values?.dateEnrolledIntoOtz}
                                 name="acMonth1EacDate2"
                                 id="acMonth1EacDate2"
                                 value={formik.values.acMonth1EacDate2}
@@ -599,10 +607,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                               <Input
                                 type="date"
                                 {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                  min: moment(
+                                    new Date(formik?.values?.dateEnrolledIntoOtz)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!formik?.values?.dateEnrolledIntoOtz}
                                 className="form-control"
                                 name="acMonth1EacDate3"
                                 id="acMonth1EacDate3"
@@ -687,10 +699,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                 className="form-control"
                                 type="date"
                                 {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                  min: moment(
+                                    new Date(formik?.value?.dateEnrolledIntoOtz)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!formik?.values?.dateEnrolledIntoOtz}
                                 name="acMonth2EacDate1"
                                 id="acMonth2EacDate1"
                                 value={formik.values.acMonth2EacDate1}
@@ -721,10 +737,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                 className="form-control"
                                 type="date"
                                 {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                  min: moment(
+                                    new Date(formik?.values?.dateEnrolledIntoOtz)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!formik?.values?.dateEnrolledIntoOtz}
                                 name="acMonth2EacDate2"
                                 id="acMonth2EacDate2"
                                 value={formik.values.acMonth2EacDate2}
@@ -751,10 +771,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                               <Input
                                 type="date"
                                 {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                  min: moment(
+                                    new Date(formik?.values?.dateEnrolledIntoOtz)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!formik?.values?.dateEnrolledIntoOtz}
                                 className="form-control"
                                 name="acMonth2EacDate3"
                                 id="acMonth2EacDate3"
@@ -841,10 +865,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                 className="form-control"
                                 type="date"
                                 {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                  min: moment(
+                                    new Date(formik?.values?.dateEnrolledIntoOtz)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!formik?.values?.dateEnrolledIntoOtz}
                                 name="acMonth3EacDate1"
                                 id="acMonth3EacDate1"
                                 value={formik.values.acMonth3EacDate1}
@@ -875,10 +903,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                 className="form-control"
                                 type="date"
                                 {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                  min: moment(
+                                    new Date(formik?.values?.dateEnrolledIntoOtz)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!formik?.values?.dateEnrolledIntoOtz}
                                 name="acMonth3EacDate2"
                                 id="acMonth3EacDate2"
                                 value={formik.values.acMonth3EacDate2}
@@ -905,10 +937,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                               <Input
                                 type="date"
                                 {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                  min: moment(
+                                    new Date(formik?.values?.dateEnrolledIntoOtz)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!formik?.values?.dateEnrolledIntoOtz}
                                 className="form-control"
                                 name="acMonth3EacDate3"
                                 id="acMonth3EacDate3"
@@ -935,6 +971,11 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                   </div>
                 </div>
               </div>
+
+
+
+
+
 
               <div className="card">
                 <div
@@ -1051,10 +1092,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth1PositiveLivingDate"
                                   id="maMonth1PositiveLivingDate"
                                   value={
@@ -1130,10 +1175,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth1LiteracyTreatmentDate"
                                   id="maMonth1LiteracyTreatmentDate"
                                   value={
@@ -1215,10 +1264,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth1AdolescentsParticipationDate"
                                   id="maMonth1AdolescentsParticipationDate"
                                   value={
@@ -1299,10 +1352,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth1leadershipTrainingDate"
                                   id="maMonth1leadershipTrainingDate"
                                   value={
@@ -1374,10 +1431,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth1PeerToPeerDate"
                                   id="maMonth1PeerToPeerDate"
                                   value={formik.values.maMonth1PeerToPeerDate}
@@ -1443,10 +1504,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth1RoleOfOtzDate"
                                   id="maMonth1RoleOfOtzDate"
                                   value={formik.values.maMonth1RoleOfOtzDate}
@@ -1520,10 +1585,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth1OtzChampionOrientationChoice"
                                   id="maMonth1OtzChampionOrientationChoice"
                                   value={
@@ -1652,10 +1721,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth2PositiveLivingDate"
                                   id="maMonth2PositiveLivingDate"
                                   value={
@@ -1731,10 +1804,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth2LiteracyTreatmentDate"
                                   id="maMonth2LiteracyTreatmentDate"
                                   value={
@@ -1816,10 +1893,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth2AdolescentsParticipationDate"
                                   id="maMonth2AdolescentsParticipationDate"
                                   value={
@@ -1900,10 +1981,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth2leadershipTrainingDate"
                                   id="maMonth2leadershipTrainingDate"
                                   value={
@@ -1975,10 +2060,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth2PeerToPeerDate"
                                   id="maMonth2PeerToPeerDate"
                                   value={formik.values.maMonth2PeerToPeerDate}
@@ -2044,10 +2133,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth2RoleOfOtzDate"
                                   id="maMonth2RoleOfOtzDate"
                                   value={formik.values.maMonth2RoleOfOtzDate}
@@ -2121,10 +2214,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth2OtzChampionOrientationChoice"
                                   id="maMonth2OtzChampionOrientationChoice"
                                   value={
@@ -2255,10 +2352,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth3PositiveLivingDate"
                                   id="maMonth3PositiveLivingDate"
                                   value={
@@ -2334,10 +2435,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth3LiteracyTreatmentDate"
                                   id="maMonth3LiteracyTreatmentDate"
                                   value={
@@ -2419,10 +2524,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth3AdolescentsParticipationDate"
                                   id="maMonth3AdolescentsParticipationDate"
                                   value={
@@ -2503,10 +2612,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth3leadershipTrainingDate"
                                   id="maMonth3leadershipTrainingDate"
                                   value={
@@ -2578,10 +2691,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth3PeerToPeerDate"
                                   id="maMonth3PeerToPeerDate"
                                   value={formik.values.maMonth3PeerToPeerDate}
@@ -2647,10 +2764,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth3RoleOfOtzDate"
                                   id="maMonth3RoleOfOtzDate"
                                   value={formik.values.maMonth3RoleOfOtzDate}
@@ -2724,10 +2845,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                   className="form-control"
                                   type="date"
                                   {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth3OtzChampionOrientationChoice"
                                   id="maMonth3OtzChampionOrientationChoice"
                                   value={
@@ -2762,6 +2887,15 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                   </div>
                 </div>
               </div>
+
+
+
+
+
+
+
+
+
 
               <div className="card">
                 <div
@@ -2869,10 +3003,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                 className="form-control"
                                 type="date"
                                 {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                  min: moment(
+                                    new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                 name="sixMonthsDate"
                                 id="sixMonthsDate"
                                 value={formik.values.sixMonthsDate}
@@ -2983,10 +3121,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                 className="form-control"
                                 type="date"
                                 {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                  min: moment(
+                                    new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                 name="twelveMonthsDate"
                                 id="twelveMonthsDate"
                                 value={formik.values.twelveMonthsDate}
@@ -3097,10 +3239,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                 className="form-control"
                                 type="date"
                                 {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                  min: moment(
+                                    new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                 name="eighteenMonthsDate"
                                 id="eighteenMonthsDate"
                                 value={formik.values.eighteenMonthsDate}
@@ -3212,10 +3358,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                 className="form-control"
                                 type="date"
                                 {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                  min: moment(
+                                    new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                 name="twentyFourMonthsDate"
                                 id="twentyFourMonthsDate"
                                 value={formik.values.twentyFourMonthsDate}
@@ -3326,10 +3476,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                 className="form-control"
                                 type="date"
                                 {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                  min: moment(
+                                    new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                 name="thirtyMonthsDate"
                                 id="thirtyMonthsDate"
                                 value={formik.values.thirtyMonthsDate}
@@ -3441,10 +3595,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                                 className="form-control"
                                 type="date"
                                 {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                                  min: moment(
+                                    new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                 name="thirtySixMonthsDate"
                                 id="thirtySixMonthsDate"
                                 value={formik.values.thirtySixMonthsDate}
@@ -3639,10 +3797,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                           className="form-control"
                           type="date"
                           {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                            min: moment(
+                              new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                            ).format("YYYY-MM-DD"),
+                          }}
+                          {...{
+                            max: moment(new Date()).format("YYYY-MM-DD"),
+                          }}
+                          disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                           name="transitionDate"
                           id="transitionDate"
                           value={formik.values.transitionDate}
@@ -3702,10 +3864,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                           className="form-control"
                           type="date"
                           {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                            min: moment(
+                              new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                            ).format("YYYY-MM-DD"),
+                          }}
+                          {...{
+                            max: moment(new Date()).format("YYYY-MM-DD"),
+                          }}
+                          disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                           name="dateOfAssessmentDone"
                           id="dateOfAssessmentDone"
                           value={formik.values.dateOfAssessmentDone}
@@ -3794,10 +3960,14 @@ console.log("service form", props.activeContent.enrollment.dateOfRegistration)
                           className="form-control"
                           type="date"
                           {...{
-                          max: moment(
-                            new Date(formik.values.dateEnrolledIntoOtz)
-                          ).format("YYYY-MM-DD"),
-                        }}
+                            min: moment(
+                              new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                            ).format("YYYY-MM-DD"),
+                          }}
+                          {...{
+                            max: moment(new Date()).format("YYYY-MM-DD"),
+                          }}
+                          disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                           name="exitedByDate"
                           id="exitedByDate"
                           value={formik.values.exitedByDate}
