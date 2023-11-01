@@ -587,10 +587,10 @@ const Laboratory = (props) => {
                         (<>
                             <Col md={4} className="form-group mb-3">
                                 <FormGroup>
-                                    <Label for="priority">Result {tests.dateResultReceived!==""? (<span style={{ color:"red"}}> *</span> ) : "test" } </Label>
+                                    <Label for="priority">Result {tests.dateResultReceived!==""? (<span style={{ color:"red"}}> *</span> ) : "test" }</Label>
                                     <InputGroup>
                                     <Input
-                                        type={tests.labTestId===1 ? "number" : "text"}
+                                        type="text"
                                         name="result"
                                         id="result"
                                         value={tests.result}
