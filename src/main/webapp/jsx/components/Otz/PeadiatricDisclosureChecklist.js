@@ -255,7 +255,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                 </div>
 
                 <div className="row p-4">
-                  <div className="form-group mb-3 col-md-4">
+                  {/* <div className="form-group mb-3 col-md-4">
                     <FormGroup>
                       <Label>Facility Name</Label>
 
@@ -279,7 +279,9 @@ const PeadiatricDisclosureChecklist = (props) => {
                     ) : (
                       ""
                     )}
-                  </div>
+                  </div> */}
+
+
                   <div className="form-group mb-3 col-md-4">
                     <FormGroup>
                       <Label>Child's Name</Label>
@@ -897,7 +899,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
-                          marginTop: "40px",
+                          marginTop: "20px",
                         }}
                       >
                         <option value="">Select</option>

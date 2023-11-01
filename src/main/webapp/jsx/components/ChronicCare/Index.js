@@ -110,6 +110,7 @@ const ChronicCare = (props) => {
     const [showTb, setShowTb] = useState(false);//Tpt
     const [showTpt, setShowTpt] = useState(false);
     const [enrollDate, setEnrollDate] = useState("");
+    const [chronicDateExist, setChronicDateExist] = useState(null);
     //GenderBase Object
     const [genderBase, setGenderBase] = useState({partnerEverPhysically:"", haveBeenBeaten:"", partnerLivelihood:""});
     //Eligibility Object
@@ -197,6 +198,7 @@ const ChronicCare = (props) => {
     })
     useEffect(() => {
         GetChronicCare();
+        GetChronicCareData();
         PatientCurrentObject();
         if(props.activeContent.id && props.activeContent.id!=="" && props.activeContent.id!==null){
             setSisabledField(props.activeContent.actionType==='view'?true : false)
@@ -245,6 +247,23 @@ const ChronicCare = (props) => {
            });
        
     }
+    const GetChronicCareData =()=>{//function to get chronic care data check if record exist using date for validation 
+        axios
+           .get(`${baseUrl}observation/person/${patientObj.id}`,
+               { headers: {"Authorization" : `Bearer ${token}`} }
+           )
+           .then((response) => {  
+                const DateObj=response.data.filter((x)=> x.type==='Chronic Care')
+                if(response.data){
+                    setChronicDateExist(DateObj)
+                }
+
+           })
+           .catch((error) => {
+           //console.log(response.data.data);
+           });
+       
+    }
     const handleInputChange = e => {//Handle input fields changes
         //console.log(e.target.value)
         setErrors({...temp, [e.target.name]:""})
@@ -261,8 +280,9 @@ const ChronicCare = (props) => {
     }
 
     const handleSubmit = async (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
         setSaving(true);
+
         observation.personId =patientObj.id
         observationObj.eligibility=eligibility
         observationObj.nutrition=
@@ -274,6 +294,11 @@ const ChronicCare = (props) => {
         observationObj.tptMonitoring=tpt
         observation.data =observationObj        
         if(validate()){
+            //check for duplicate visit Date
+           if(chronicDateExist!==null &&  chronicDateExist.find((x)=> x.dateOfObservation===observation.dateOfObservation) ){
+            toast.error("Chronic Care visit date "+ observation.dateOfObservation + " already exist. " , {position: toast.POSITION.BOTTOM_CENTER})
+               setSaving(false);
+           }else{
             if(props.activeContent && props.activeContent.actionType==="update"){//Perform operation for updation action)
                 axios.put(`${baseUrl}observation/${props.activeContent.id}`,observation,
                 { headers: {"Authorization" : `Bearer ${token}`}},
@@ -317,6 +342,8 @@ const ChronicCare = (props) => {
                     }
                 });
             }
+           }
+
         }else{
             toast.error("All fields are required", {position: toast.POSITION.BOTTOM_CENTER})
             setSaving(false); 
@@ -359,7 +386,7 @@ const ChronicCare = (props) => {
         <ToastContainer autoClose={3000} hideProgressBar />
         <div className="row page-titles mx-0" style={{marginTop:"0px", marginBottom:"-10px"}}>
 			<ol className="breadcrumb">
-				<li className="breadcrumb-item active"><h2> Chronic Care</h2></li>
+				<li className="breadcrumb-item active"><h2> Care and Support</h2></li>
 			</ol>
 		  </div>
 

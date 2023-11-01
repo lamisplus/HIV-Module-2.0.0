@@ -3,15 +3,15 @@ import * as yup from "yup";
 
 export const useServiceFormValidationSchema = (onSubmit) => {
   const serviceFormInitialValues = {
-    facilityName: "",
-    lga: "",
-    state: "",
-    clientName: "",
-    patienttId: "",
-    sex: "",
-    artStartDate: "",
-    ageAtArtStart: "",
-    telephone: "",
+    // facilityName: "",
+    // lga: "",
+    // state: "",
+    // clientName: "",
+    // patienttId: "",
+    // sex: "",
+    // artStartDate: "",
+    // ageAtArtStart: "",
+    // telephone: "",
     dateEnrolledIntoOtz: "",
     OtzPlus: "",
     baselineViralLoadAtEnrollment: "",
@@ -103,108 +103,217 @@ export const useServiceFormValidationSchema = (onSubmit) => {
   };
 
   const ServiceFormValidationSchema = yup.object().shape({
-    facilityName: yup.string(),
-    lga: yup.string(),
-    state: yup.string(),
-    clientName: yup.string(),
-    patienttId: yup.string(),
-    sex: yup.string(),
-    artStartDate: yup.string(),
-    ageAtArtStart: yup.string(),
-    telephone: yup.string(),
-    dateEnrolledIntoOtz: yup.string(),
+    // facilityName: yup.string(),
+    // lga: yup.string(),
+    // state: yup.string(),
+    // clientName: yup.string(),
+    // patienttId: yup.string(),
+    // sex: yup.string(),
+    artStartDate: yup.date().when('question', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
+    // ageAtArtStart: yup.string(),
+    // telephone: yup.string(),
+    dateEnrolledIntoOtz: yup.date(),
     OtzPlus: yup.string(),
     baselineViralLoadAtEnrollment: yup.string(),
-    dateDone: yup.string(),
+    dateDone: yup.date(),
 
-    acMonth1EacDate1: yup.string(),
-    acMonth1EacDate2: yup.string(),
-    acMonth1EacDate3: yup.string(),
+    acMonth1EacDate1: yup.date(),
+    acMonth1EacDate2: yup.date(),
+    acMonth1EacDate3: yup.date(),
 
-    acMonth2EacDate1: yup.string(),
-    acMonth2EacDate2: yup.string(),
-    acMonth2EacDate3: yup.string(),
+    acMonth2EacDate1: yup.date(),
+    acMonth2EacDate2: yup.date(),
+    acMonth2EacDate3: yup.date(),
 
-    acMonth3EacDate1: yup.string(),
-    acMonth3EacDate2: yup.string(),
-    acMonth3EacDate3: yup.string(),
+    acMonth3EacDate1: yup.date(),
+    acMonth3EacDate2: yup.date(),
+    acMonth3EacDate3: yup.date(),
 
-    vlMonth1Date: yup.string(),
+    vlMonth1Date: yup.date(),
     vlMonth1Result: yup.string(),
-    vlMonth2Date: yup.string(),
+    vlMonth2Date: yup.date(),
     vlMonth2Result: yup.string(),
-    vlMonth3Date: yup.string(),
+    vlMonth3Date: yup.date(),
     vlMonth3Result: yup.string(),
 
     maMonth1PositiveLivingChoice: yup.string(),
-    maMonth1PositiveLivingDate: yup.string(),
+    maMonth1PositiveLivingDate: yup.date().when('maMonth1PositiveLivingChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
+
     maMonth1LiteracyTreatmentChoice: yup.string(),
-    maMonth1LiteracyTreatmentDate: yup.string(),
+    maMonth1LiteracyTreatmentDate: yup.date().when('maMonth1LiteracyTreatmentChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
+
     maMonth1AdolescentsParticipationChoice: yup.string(),
-    maMonth1AdolescentsParticipationDate: yup.string(),
+    maMonth1AdolescentsParticipationDate: yup.date().when('maMonth1AdolescentsParticipationChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
+
     maMonth1leadershipTrainingChoice: yup.string(),
-    maMonth1leadershipTrainingDate: yup.string(),
+    maMonth1leadershipTrainingDate: yup.date().when('maMonth1leadershipTrainingChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
+
     maMonth1PeerToPeerChoice: yup.string(),
-    maMonth1PeerToPeerDate: yup.string(),
+    maMonth1PeerToPeerDate: yup.date().when('maMonth1PeerToPeerChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
+
     maMonth1RoleOfOtzChoice: yup.string(),
-    maMonth1RoleOfOtzDate: yup.string(),
-    maMonth1OtzChampionOrientationDate: yup.string(),
+    maMonth1RoleOfOtzDate: yup.date().when('maMonth1RoleOfOtzChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
+
     maMonth1OtzChampionOrientationChoice: yup.string(),
+    maMonth1OtzChampionOrientationDate: yup.date().when('maMonth1OtzChampionOrientationChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
     
 
 
-    maMonth2PositiveLivingDate: yup.string(),
     maMonth2PositiveLivingChoice: yup.string(),
-    maMonth2LiteracyTreatmentDate: yup.string(),
+    maMonth2PositiveLivingDate: yup.date().when('maMonth2PositiveLivingChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
+    
     maMonth2LiteracyTreatmentChoice: yup.string(),
-    maMonth2AdolescentsParticipationDate: yup.string(),
-    maMonth2AdolescentsParticipationChoice: yup.string(),
-    maMonth2leadershipTrainingDate: yup.string(),
-    maMonth2leadershipTrainingChoice: yup.string(),
-    maMonth2PeerToPeerDate: yup.string(),
-    maMonth2PeerToPeerChoice: yup.string(),
-    maMonth2RoleOfOtzDate: yup.string(),
-    maMonth2RoleOfOtzChoice: yup.string(),
-    maMonth2OtzChampionOrientationDate: yup.string(),
-    maMonth2OtzChampionOrientationChoice: yup.string(),
+    maMonth2LiteracyTreatmentDate: yup.date().when('maMonth2LiteracyTreatmentChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
 
-    maMonth3PositiveLivingDate: yup.string(),
+    maMonth2AdolescentsParticipationChoice: yup.string(),
+    maMonth2AdolescentsParticipationDate: yup.date().when('maMonth2AdolescentsParticipationChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
+
+    maMonth2leadershipTrainingChoice: yup.string(),
+    maMonth2leadershipTrainingDate: yup.date().when('maMonth2leadershipTrainingChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
+
+    maMonth2PeerToPeerChoice: yup.string(),
+    maMonth2PeerToPeerDate: yup.date().when('maMonth2PeerToPeerChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
+
+    maMonth2RoleOfOtzChoice: yup.string(),
+    maMonth2RoleOfOtzDate: yup.date().when('maMonth2RoleOfOtzChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
+
+    maMonth2OtzChampionOrientationChoice: yup.string(),
+    maMonth2OtzChampionOrientationDate: yup.date().when('maMonth2OtzChampionOrientationChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
+
     maMonth3PositiveLivingChoice: yup.string(),
-    maMonth3LiteracyTreatmentDate: yup.string(),
+    maMonth3PositiveLivingDate: yup.date().when('maMonth3PositiveLivingChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
+
     maMonth3LiteracyTreatmentChoice: yup.string(),
-    maMonth3AdolescentsParticipationDate: yup.string(),
+    maMonth3LiteracyTreatmentDate: yup.date().when('maMonth3LiteracyTreatmentChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
+
     maMonth3AdolescentsParticipationChoice: yup.string(),
-    maMonth3leadershipTrainingDate: yup.string(),
+    maMonth3AdolescentsParticipationDate: yup.date().when('maMonth3AdolescentsParticipationChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
+
     maMonth3leadershipTrainingChoice: yup.string(),
-    maMonth3PeerToPeerDate: yup.string(),
+    maMonth3leadershipTrainingDate: yup.date().when('maMonth3leadershipTrainingChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
+
     maMonth3PeerToPeerChoice: yup.string(),
-    maMonth3RoleOfOtzDate: yup.string(),
+    maMonth3PeerToPeerDate: yup.date().when('questmaMonth3PeerToPeerChoiceion', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
+
+
     maMonth3RoleOfOtzChoice: yup.string(),
-    maMonth3OtzChampionOrientationDate: yup.string(),
+    maMonth3RoleOfOtzDate: yup.date().when('maMonth3RoleOfOtzChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
+
+
     maMonth3OtzChampionOrientationChoice: yup.string(),
+    maMonth3OtzChampionOrientationDate: yup.date().when('maMonth3OtzChampionOrientationChoice', {
+      is: "yes",
+      then: yup.date().required("Date is required")
+    }),
 
     sixMonthsResult: yup.string(),
-    sixMonthsDate: yup.string(),
+    sixMonthsDate: yup.date().when('sixMonthsResult', {
+      is: (sixMonthsResult) => sixMonthsResult && sixMonthsResult.trim() !== '',
+      then: yup.date().required("Date is required")
+    }),
+
     twelveMonthsResult: yup.string(),
-    twelveMonthsDate: yup.string(),
+    twelveMonthsDate: yup.date().when('twelveMonthsResult', {
+      is: (twelveMonthsDate) => twelveMonthsDate && twelveMonthsDate.trim() !== '',
+      then: yup.date().required("Date is required")
+    }),
+
     eighteenMonthsResult: yup.string(),
-    eighteenMonthsDate: yup.string(),
+    eighteenMonthsDate: yup.date().when('eighteenMonthsResult', {
+      is: (eighteenMonthsResult) => eighteenMonthsResult && eighteenMonthsResult.trim() !== '',
+      then: yup.date().required("Date is required")
+    }),
+
     twentyFourMonthsResult: yup.string(),
-    twentyFourMonthsDate: yup.string(),
+    twentyFourMonthsDate: yup.date().when('twentyFourMonthsResult', {
+      is: (twentyFourMonthsResult) => twentyFourMonthsResult && twentyFourMonthsResult.trim() !== '',
+      then: yup.date().required("Date is required")
+    }),
+
     thirtyMonthsResult: yup.string(),
-    thirtyMonthsDate: yup.string(),
+    thirtyMonthsDate: yup.date().when('thirtyMonthsResult', {
+      is: (thirtyMonthsResult) => thirtyMonthsResult && thirtyMonthsResult.trim() !== '',
+      then: yup.date().required("Date is required")
+    }),
+
     thirtySixMonthsResult: yup.string(),
-    thirtySixMonthsDate: yup.string(),
+    thirtySixMonthsDate: yup.date().when('thirtySixMonthsResult', {
+      is: (thirtySixMonthsResult) => thirtySixMonthsResult && thirtySixMonthsResult.trim() !== '',
+      then: yup.date().required("Date is required")
+    }),
 
     chooseOutcomes: yup.array(),
     exitedOtz: yup.string(),
-    transitionDate: yup.string(),
+    transitionDate: yup.date(),
 
     viralLoadOnOtzExit: yup.string(),
     dateOfAssessmentDone: yup.string(),
     exitedByName: yup.string(),
     exitedByDesignation: yup.string(),
-    exitedByDate: yup.string(),
+    exitedByDate: yup.date(),
     exitedBySignature: yup.string(),
   });
 

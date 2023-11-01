@@ -3,7 +3,7 @@ import * as yup from "yup";
 
 export const usePeadiatricFormValidationSchema = (onSubmit) => {
   const peadiatricFormIntialValues = {
-    facilityName: "",
+    // facilityName: "",
     childName: "",
     dob: "",
     caregiverName: "",
@@ -61,7 +61,7 @@ export const usePeadiatricFormValidationSchema = (onSubmit) => {
   };
 
   const PeadiatricFormInitialSchema = yup.object({
-    facilityName: yup.string(),
+    // facilityName: yup.string(),
     childName: yup.string(),
     dob: yup.string(),
     caregiverName: yup.string(),

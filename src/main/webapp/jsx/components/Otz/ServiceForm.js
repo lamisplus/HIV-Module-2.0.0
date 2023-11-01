@@ -87,8 +87,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ServiceForm = (props) => {
-  
   const [saving, setSavings] = useState(false);
+  const [currentRecord, SetCurrentRecord] = useState(null);
 
   const submitNewRecord = (values) => {
     const observation = {
@@ -161,22 +161,23 @@ const ServiceForm = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        const patientDTO = response.data.data
-        formik.setValues(patientDTO)
+        const patientDTO = response.data.data;
+        formik.setValues(patientDTO);
+        SetCurrentRecord(patientDTO);
       })
       .catch((error) => {
         console.log(error);
       });
-  }
+  };
 
   useEffect(() => {
     if (props.activeContent.id) {
-      getOldRecordIfExists()
+      getOldRecordIfExists();
     }
-  }, [])
-  
+  }, []);
+
   const classes = useStyles();
-  
+
   const [isDropdownsOpen, setIsDropdownsOpen] = useState({
     monthOneAdherenceCounselling: true,
     monthTwoAdherenceCounselling: true,
@@ -197,6 +198,59 @@ const ServiceForm = (props) => {
     thirtySixMonthsPEVLM: true,
   });
 
+  const setCustomDate = (e) => {
+    formik.setValues({
+      ...formik.values,
+      // artStartDate: e.target.value,
+      //resetting all other date values as they are relative to artStartDate and date enrolled into OTZ
+      dateEnrolledIntoOtz: e?.target?.value,
+      dateDone: "",
+      acMonth1EacDate1: "",
+      acMonth1EacDate2: "",
+      acMonth1EacDate3: "",
+      acMonth2EacDate1: "",
+      acMonth2EacDate2: "",
+      acMonth2EacDate3: "",
+      acMonth3EacDate1: "",
+      acMonth3EacDate2: "",
+      acMonth3EacDate3: "",
+      vlMonth1Date: "",
+      vlMonth2Date: "",
+      vlMonth3Date: "",
+      maMonth1PositiveLivingDate: "",
+      maMonth1LiteracyTreatmentDate: "",
+      maMonth1AdolescentsParticipationDate: "",
+      maMonth1leadershipTrainingDate: "",
+      maMonth1PeerToPeerDate: "",
+      maMonth1RoleOfOtzDate: "",
+      maMonth1OtzChampionOrientationDate: "",
+      maMonth2PositiveLivingDate: "",
+      maMonth2LiteracyTreatmentDate: "",
+      maMonth2AdolescentsParticipationDate: "",
+      maMonth2leadershipTrainingDate: "",
+      maMonth2PeerToPeerDate: "",
+      maMonth2RoleOfOtzDate: "",
+      maMonth2OtzChampionOrientationDate: "",
+      maMonth3PositiveLivingDate: "",
+      maMonth3LiteracyTreatmentDate: "",
+      maMonth3AdolescentsParticipationDate: "",
+      maMonth3leadershipTrainingDate: "",
+      maMonth3PeerToPeerDate: "",
+      maMonth3RoleOfOtzDate: "",
+      maMonth3OtzChampionOrientationDate: "",
+      sixMonthsDate: "",
+      twelveMonthsDate: "",
+      eighteenMonthsDate: "",
+      twentyFourMonthsDate: "",
+      thirtyMonthsDate: "",
+      thirtySixMonthsDate: "",
+      transitionDate: "",
+      dateOfAssessmentDone: "",
+      exitedByDate: "",
+    });
+  };
+
+  console.log(formik?.values?.acMonth1EacDate1);
   return (
     <>
       <ToastContainer autoClose={3000} hideProgressBar />
@@ -239,255 +293,38 @@ const ServiceForm = (props) => {
                 <div className="row p-4">
                   <div className="form-group mb-3 col-md-4">
                     <FormGroup>
-                      <Label>Facility Name</Label>
-
-                      <Input
-                        type="text"
-                        name="facilityName"
-                        id="facilityName"
-                        value={formik.values.facilityName}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.facilityName !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.facilityName}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>LGA</Label>
-
-                      <Input
-                        type="text"
-                        name="lga"
-                        id="lga"
-                        value={formik.values.lga}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.lga !== "" ? (
-                      <span className={classes.error}>{formik.errors.lga}</span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>State</Label>
-                      <Input
-                        name="state"
-                        id="state"
-                        type="text"
-                        value={formik.values.state}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.state !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.state}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>Client Name (Surname first)</Label>
-
-                      <Input
-                        type="text"
-                        name="clientName"
-                        id="clientName"
-                        value={formik.values.clientName}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.clientName !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.clientName}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>Patient ID</Label>
-                      <Input
-                        name="patientId"
-                        id="patientId"
-                        type="text"
-                        value={formik.values.patientId}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.patientId !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.patientId}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>Sex</Label>
-                      <Input
-                        name="sex"
-                        id="sex"
-                        type="select"
-                        value={formik.values.sex}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.sex !== "" ? (
-                      <span className={classes.error}>{formik.errors.sex}</span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
                       <Label>ART start date</Label>
                       <Input
                         name="artStartDate"
                         id="artStartDate"
                         type="date"
-                        value={formik.values.artStartDate}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
+                        value={
+                          props?.activeContent?.enrollment?.dateOfRegistration
+                        }
+                        // onChange={setCustomArtDate}
+                        disabled
+                        // onBlur={formik.handleBlur}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
                         }}
+                        readOnly
+                        {...{
+                          max: moment(
+                            new Date(
+                              props?.activeContent?.enrollment?.dateOfRegistration
+                            )
+                          ).format("YYYY-MM-DD"),
+                        }}
                       />
                     </FormGroup>
-                    {formik.errors.artStartDate !== "" ? (
+                    {/* {formik.errors.artStartDate !== "" ? (
                       <span className={classes.error}>
                         {formik.errors.artStartDate}
                       </span>
                     ) : (
                       ""
-                    )}
-                  </div>
-
-                  {/* <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>Age at ART start (In years)</Label>
-                      <Input
-                        name="ageAtArtStart"
-                        id="ageAtArtStart"
-                        type="date"
-                        value={formik.values.ageAtArtStart}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.ageAtArtStart !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.ageAtArtStart}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div> */}
-
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>Age at ART start (In years)</Label>
-                      <Input
-                        name="ageAtArtStart"
-                        id="ageAtArtStart"
-                        type="date"
-                        value={formik.values.ageAtArtStart}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.ageAtArtStart !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.ageAtArtStart}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>Telephone</Label>
-                      <Input
-                        name="telephone"
-                        id="telephone"
-                        type="text"
-                        value={formik.values.telephone}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.telephone !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.telephone}
-                      </span>
-                    ) : (
-                      ""
-                    )}
+                    )} */}
                   </div>
 
                   <div className="form-group mb-3 col-md-4">
@@ -498,13 +335,24 @@ const ServiceForm = (props) => {
                         id="dateEnrolledIntoOtz"
                         type="date"
                         value={formik.values.dateEnrolledIntoOtz}
-                        onChange={formik.handleChange}
+                        onChange={setCustomDate}
                         onBlur={formik.handleBlur}
+                        disabled={!!currentRecord?.dateEnrolledIntoOtz}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
                         }}
-                      ></Input>
+                        {...{
+                          min: moment(
+                            new Date(
+                              props?.activeContent?.enrollment?.dateOfRegistration
+                            )
+                          ).format("YYYY-MM-DD"),
+                        }}
+                        {...{
+                          max: moment(Date.now()).format("YYYY-MM-DD"),
+                        }}
+                      />
                     </FormGroup>
                     {formik.errors.dateEnrolledIntoOtz !== "" ? (
                       <span className={classes.error}>
@@ -522,6 +370,7 @@ const ServiceForm = (props) => {
                         name="OtzPlus"
                         id="OtzPlus"
                         type="select"
+                        disabled={!!currentRecord?.OtzPlus}
                         value={formik.values.OtzPlus}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -556,6 +405,9 @@ const ServiceForm = (props) => {
                         value={formik.values.baselineViralLoadAtEnrollment}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        disabled={
+                          !!currentRecord?.baselineViralLoadAtEnrollment
+                        }
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
@@ -578,14 +430,20 @@ const ServiceForm = (props) => {
                         name="dateDone"
                         id="dateDone"
                         type="date"
+                        {...{
+                          max: moment(
+                            new Date(formik.values.dateEnrolledIntoOtz)
+                          ).format("YYYY-MM-DD"),
+                        }}
                         value={formik.values.dateDone}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        disabled={!!currentRecord?.dateDone}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
                         }}
-                      ></Input>
+                      />
                     </FormGroup>
                     {formik.errors.dateDone !== "" ? (
                       <span className={classes.error}>
@@ -676,6 +534,15 @@ const ServiceForm = (props) => {
                               <input
                                 className="form-control"
                                 type="date"
+                                {...{
+                                  min: moment(
+                                    new Date(formik?.values?.dateEnrolledIntoOtz)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!formik?.values?.dateEnrolledIntoOtz}
                                 name="acMonth1EacDate1"
                                 id="acMonth1EacDate1"
                                 value={formik.values.acMonth1EacDate1}
@@ -705,6 +572,15 @@ const ServiceForm = (props) => {
                               <input
                                 className="form-control"
                                 type="date"
+                                {...{
+                                  min: moment(
+                                    new Date(formik?.values?.dateEnrolledIntoOtz)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!formik?.values?.dateEnrolledIntoOtz}
                                 name="acMonth1EacDate2"
                                 id="acMonth1EacDate2"
                                 value={formik.values.acMonth1EacDate2}
@@ -730,6 +606,15 @@ const ServiceForm = (props) => {
                               <Label for="acMonth1EacDate3">EAC 3 date</Label>
                               <Input
                                 type="date"
+                                {...{
+                                  min: moment(
+                                    new Date(formik?.values?.dateEnrolledIntoOtz)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!formik?.values?.dateEnrolledIntoOtz}
                                 className="form-control"
                                 name="acMonth1EacDate3"
                                 id="acMonth1EacDate3"
@@ -813,6 +698,15 @@ const ServiceForm = (props) => {
                               <input
                                 className="form-control"
                                 type="date"
+                                {...{
+                                  min: moment(
+                                    new Date(formik?.value?.dateEnrolledIntoOtz)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!formik?.values?.dateEnrolledIntoOtz}
                                 name="acMonth2EacDate1"
                                 id="acMonth2EacDate1"
                                 value={formik.values.acMonth2EacDate1}
@@ -842,6 +736,15 @@ const ServiceForm = (props) => {
                               <input
                                 className="form-control"
                                 type="date"
+                                {...{
+                                  min: moment(
+                                    new Date(formik?.values?.dateEnrolledIntoOtz)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!formik?.values?.dateEnrolledIntoOtz}
                                 name="acMonth2EacDate2"
                                 id="acMonth2EacDate2"
                                 value={formik.values.acMonth2EacDate2}
@@ -867,6 +770,15 @@ const ServiceForm = (props) => {
                               <Label for="acMonth2EacDate3">EAC 3 date</Label>
                               <Input
                                 type="date"
+                                {...{
+                                  min: moment(
+                                    new Date(formik?.values?.dateEnrolledIntoOtz)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!formik?.values?.dateEnrolledIntoOtz}
                                 className="form-control"
                                 name="acMonth2EacDate3"
                                 id="acMonth2EacDate3"
@@ -952,6 +864,15 @@ const ServiceForm = (props) => {
                               <input
                                 className="form-control"
                                 type="date"
+                                {...{
+                                  min: moment(
+                                    new Date(formik?.values?.dateEnrolledIntoOtz)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!formik?.values?.dateEnrolledIntoOtz}
                                 name="acMonth3EacDate1"
                                 id="acMonth3EacDate1"
                                 value={formik.values.acMonth3EacDate1}
@@ -981,6 +902,15 @@ const ServiceForm = (props) => {
                               <input
                                 className="form-control"
                                 type="date"
+                                {...{
+                                  min: moment(
+                                    new Date(formik?.values?.dateEnrolledIntoOtz)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!formik?.values?.dateEnrolledIntoOtz}
                                 name="acMonth3EacDate2"
                                 id="acMonth3EacDate2"
                                 value={formik.values.acMonth3EacDate2}
@@ -1006,6 +936,15 @@ const ServiceForm = (props) => {
                               <Label for="acMonth3EacDate3">EAC 3 date</Label>
                               <Input
                                 type="date"
+                                {...{
+                                  min: moment(
+                                    new Date(formik?.values?.dateEnrolledIntoOtz)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!formik?.values?.dateEnrolledIntoOtz}
                                 className="form-control"
                                 name="acMonth3EacDate3"
                                 id="acMonth3EacDate3"
@@ -1032,6 +971,11 @@ const ServiceForm = (props) => {
                   </div>
                 </div>
               </div>
+
+
+
+
+
 
               <div className="card">
                 <div
@@ -1147,6 +1091,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth1PositiveLivingDate"
                                   id="maMonth1PositiveLivingDate"
                                   value={
@@ -1221,6 +1174,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth1LiteracyTreatmentDate"
                                   id="maMonth1LiteracyTreatmentDate"
                                   value={
@@ -1301,6 +1263,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth1AdolescentsParticipationDate"
                                   id="maMonth1AdolescentsParticipationDate"
                                   value={
@@ -1380,6 +1351,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth1leadershipTrainingDate"
                                   id="maMonth1leadershipTrainingDate"
                                   value={
@@ -1450,6 +1430,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth1PeerToPeerDate"
                                   id="maMonth1PeerToPeerDate"
                                   value={formik.values.maMonth1PeerToPeerDate}
@@ -1514,6 +1503,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth1RoleOfOtzDate"
                                   id="maMonth1RoleOfOtzDate"
                                   value={formik.values.maMonth1RoleOfOtzDate}
@@ -1586,6 +1584,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth1OtzChampionOrientationChoice"
                                   id="maMonth1OtzChampionOrientationChoice"
                                   value={
@@ -1713,6 +1720,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth2PositiveLivingDate"
                                   id="maMonth2PositiveLivingDate"
                                   value={
@@ -1787,6 +1803,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth2LiteracyTreatmentDate"
                                   id="maMonth2LiteracyTreatmentDate"
                                   value={
@@ -1867,6 +1892,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth2AdolescentsParticipationDate"
                                   id="maMonth2AdolescentsParticipationDate"
                                   value={
@@ -1946,6 +1980,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth2leadershipTrainingDate"
                                   id="maMonth2leadershipTrainingDate"
                                   value={
@@ -2016,6 +2059,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth2PeerToPeerDate"
                                   id="maMonth2PeerToPeerDate"
                                   value={formik.values.maMonth2PeerToPeerDate}
@@ -2080,6 +2132,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth2RoleOfOtzDate"
                                   id="maMonth2RoleOfOtzDate"
                                   value={formik.values.maMonth2RoleOfOtzDate}
@@ -2152,6 +2213,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth2OtzChampionOrientationChoice"
                                   id="maMonth2OtzChampionOrientationChoice"
                                   value={
@@ -2281,6 +2351,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth3PositiveLivingDate"
                                   id="maMonth3PositiveLivingDate"
                                   value={
@@ -2355,6 +2434,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth3LiteracyTreatmentDate"
                                   id="maMonth3LiteracyTreatmentDate"
                                   value={
@@ -2435,6 +2523,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth3AdolescentsParticipationDate"
                                   id="maMonth3AdolescentsParticipationDate"
                                   value={
@@ -2514,6 +2611,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth3leadershipTrainingDate"
                                   id="maMonth3leadershipTrainingDate"
                                   value={
@@ -2584,6 +2690,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth3PeerToPeerDate"
                                   id="maMonth3PeerToPeerDate"
                                   value={formik.values.maMonth3PeerToPeerDate}
@@ -2648,6 +2763,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth3RoleOfOtzDate"
                                   id="maMonth3RoleOfOtzDate"
                                   value={formik.values.maMonth3RoleOfOtzDate}
@@ -2720,6 +2844,15 @@ const ServiceForm = (props) => {
                                 <input
                                   className="form-control"
                                   type="date"
+                                  {...{
+                                    min: moment(
+                                      new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                    ).format("YYYY-MM-DD"),
+                                  }}
+                                  {...{
+                                    max: moment(new Date()).format("YYYY-MM-DD"),
+                                  }}
+                                  disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                   name="maMonth3OtzChampionOrientationChoice"
                                   id="maMonth3OtzChampionOrientationChoice"
                                   value={
@@ -2754,6 +2887,15 @@ const ServiceForm = (props) => {
                   </div>
                 </div>
               </div>
+
+
+
+
+
+
+
+
+
 
               <div className="card">
                 <div
@@ -2860,6 +3002,15 @@ const ServiceForm = (props) => {
                               <input
                                 className="form-control"
                                 type="date"
+                                {...{
+                                  min: moment(
+                                    new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                 name="sixMonthsDate"
                                 id="sixMonthsDate"
                                 value={formik.values.sixMonthsDate}
@@ -2969,6 +3120,15 @@ const ServiceForm = (props) => {
                               <input
                                 className="form-control"
                                 type="date"
+                                {...{
+                                  min: moment(
+                                    new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                 name="twelveMonthsDate"
                                 id="twelveMonthsDate"
                                 value={formik.values.twelveMonthsDate}
@@ -3078,6 +3238,15 @@ const ServiceForm = (props) => {
                               <Input
                                 className="form-control"
                                 type="date"
+                                {...{
+                                  min: moment(
+                                    new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                 name="eighteenMonthsDate"
                                 id="eighteenMonthsDate"
                                 value={formik.values.eighteenMonthsDate}
@@ -3188,6 +3357,15 @@ const ServiceForm = (props) => {
                               <Input
                                 className="form-control"
                                 type="date"
+                                {...{
+                                  min: moment(
+                                    new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                 name="twentyFourMonthsDate"
                                 id="twentyFourMonthsDate"
                                 value={formik.values.twentyFourMonthsDate}
@@ -3297,6 +3475,15 @@ const ServiceForm = (props) => {
                               <Input
                                 className="form-control"
                                 type="date"
+                                {...{
+                                  min: moment(
+                                    new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                 name="thirtyMonthsDate"
                                 id="thirtyMonthsDate"
                                 value={formik.values.thirtyMonthsDate}
@@ -3406,7 +3593,16 @@ const ServiceForm = (props) => {
                               </Label>
                               <Input
                                 className="form-control"
-                                type="select"
+                                type="date"
+                                {...{
+                                  min: moment(
+                                    new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                                  ).format("YYYY-MM-DD"),
+                                }}
+                                {...{
+                                  max: moment(new Date()).format("YYYY-MM-DD"),
+                                }}
+                                disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                                 name="thirtySixMonthsDate"
                                 id="thirtySixMonthsDate"
                                 value={formik.values.thirtySixMonthsDate}
@@ -3600,6 +3796,15 @@ const ServiceForm = (props) => {
                         <Input
                           className="form-control"
                           type="date"
+                          {...{
+                            min: moment(
+                              new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                            ).format("YYYY-MM-DD"),
+                          }}
+                          {...{
+                            max: moment(new Date()).format("YYYY-MM-DD"),
+                          }}
+                          disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                           name="transitionDate"
                           id="transitionDate"
                           value={formik.values.transitionDate}
@@ -3658,6 +3863,15 @@ const ServiceForm = (props) => {
                         <Input
                           className="form-control"
                           type="date"
+                          {...{
+                            min: moment(
+                              new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                            ).format("YYYY-MM-DD"),
+                          }}
+                          {...{
+                            max: moment(new Date()).format("YYYY-MM-DD"),
+                          }}
+                          disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                           name="dateOfAssessmentDone"
                           id="dateOfAssessmentDone"
                           value={formik.values.dateOfAssessmentDone}
@@ -3745,6 +3959,15 @@ const ServiceForm = (props) => {
                         <Input
                           className="form-control"
                           type="date"
+                          {...{
+                            min: moment(
+                              new Date(props?.activeContent?.enrollment?.dateOfRegistration)
+                            ).format("YYYY-MM-DD"),
+                          }}
+                          {...{
+                            max: moment(new Date()).format("YYYY-MM-DD"),
+                          }}
+                          disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
                           name="exitedByDate"
                           id="exitedByDate"
                           value={formik.values.exitedByDate}
@@ -3829,3 +4052,158 @@ const ServiceForm = (props) => {
 };
 
 export default ServiceForm;
+
+{
+  /* <div className="form-group mb-3 col-md-4">
+                    <FormGroup>
+                      <Label>Facility Name</Label>
+
+                      <Input
+                        type="text"
+                        name="facilityName"
+                        id="facilityName"
+                        value={formik.values.facilityName}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        style={{
+                          border: "1px solid #014D88",
+                          borderRadius: "0.25rem",
+                        }}
+                      ></Input>
+                    </FormGroup>
+                    {formik.errors.facilityName !== "" ? (
+                      <span className={classes.error}>
+                        {formik.errors.facilityName}
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+
+                  <div className="form-group mb-3 col-md-4">
+                    <FormGroup>
+                      <Label>LGA</Label>
+
+                      <Input
+                        type="text"
+                        name="lga"
+                        id="lga"
+                        value={formik.values.lga}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        style={{
+                          border: "1px solid #014D88",
+                          borderRadius: "0.25rem",
+                        }}
+                      ></Input>
+                    </FormGroup>
+                    {formik.errors.lga !== "" ? (
+                      <span className={classes.error}>{formik.errors.lga}</span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+
+                  <div className="form-group mb-3 col-md-4">
+                    <FormGroup>
+                      <Label>State</Label>
+                      <Input
+                        name="state"
+                        id="state"
+                        type="text"
+                        value={formik.values.state}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        style={{
+                          border: "1px solid #014D88",
+                          borderRadius: "0.25rem",
+                        }}
+                      ></Input>
+                    </FormGroup>
+                    {formik.errors.state !== "" ? (
+                      <span className={classes.error}>
+                        {formik.errors.state}
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+
+                  <div className="form-group mb-3 col-md-4">
+                    <FormGroup>
+                      <Label>Client Name (Surname first)</Label>
+
+                      <Input
+                        type="text"
+                        name="clientName"
+                        id="clientName"
+                        value={formik.values.clientName}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        style={{
+                          border: "1px solid #014D88",
+                          borderRadius: "0.25rem",
+                        }}
+                      ></Input>
+                    </FormGroup>
+                    {formik.errors.clientName !== "" ? (
+                      <span className={classes.error}>
+                        {formik.errors.clientName}
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+
+                  <div className="form-group mb-3 col-md-4">
+                    <FormGroup>
+                      <Label>Patient ID</Label>
+                      <Input
+                        name="patientId"
+                        id="patientId"
+                        type="text"
+                        value={formik.values.patientId}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        style={{
+                          border: "1px solid #014D88",
+                          borderRadius: "0.25rem",
+                        }}
+                      ></Input>
+                    </FormGroup>
+                    {formik.errors.patientId !== "" ? (
+                      <span className={classes.error}>
+                        {formik.errors.patientId}
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+
+                  <div className="form-group mb-3 col-md-4">
+                    <FormGroup>
+                      <Label>Sex</Label>
+                      <Input
+                        name="sex"
+                        id="sex"
+                        type="select"
+                        value={formik.values.sex}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        style={{
+                          border: "1px solid #014D88",
+                          borderRadius: "0.25rem",
+                        }}
+                      >
+                        <option value="">Select</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                      </Input>
+                    </FormGroup>
+                    {formik.errors.sex !== "" ? (
+                      <span className={classes.error}>{formik.errors.sex}</span>
+                    ) : (
+                      ""
+                    )}
+                  </div> */
+}
