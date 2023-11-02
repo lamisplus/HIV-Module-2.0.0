@@ -457,10 +457,12 @@ const Pharmacy = (props) => {
     }
     function RegimenDrug(id) {        
         let drugId = id
+        //console.log("The regimen drug ID -- "+  drugId)
         async function getCharacters(drugId) {            
             try{
             const response = await axios.get(`${baseUrl}hiv/regimen/drugs/${id}`,
             { headers: {"Authorization" : `Bearer ${token}`} })
+                //console.log("The API to get Drug name "+ response.data)
             if(response.data.length >0){                   
                 setSelectedCombinedRegimen(response.data)         
                 const regimenName = regimenType.find((x) => { 
