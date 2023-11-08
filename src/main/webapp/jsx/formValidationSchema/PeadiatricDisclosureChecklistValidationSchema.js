@@ -9,7 +9,7 @@ export const usePeadiatricFormValidationSchema = (onSubmit) => {
     caregiverName: "",
     sex: "",
     cccNumber: "",
-
+    encounterDate:"",
     dateTask1Executed: "",
     task1HCW: "",
     task1Comments: "",
@@ -74,7 +74,7 @@ export const usePeadiatricFormValidationSchema = (onSubmit) => {
     task1ChildMetCriteria: yup.string(),
     task1ChildAndCaregiverKnowledgeable: yup.string(),
     task1CaregiverWilling: yup.string(),
-
+    encounterDate: yup.date(),
     dateTask2Executed: yup.date(),
     task2HCW: yup.string(),
     task2Comments: yup.string(),

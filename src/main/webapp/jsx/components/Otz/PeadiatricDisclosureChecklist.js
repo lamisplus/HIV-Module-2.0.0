@@ -88,11 +88,12 @@ const useStyles = makeStyles((theme) => ({
 
 const PeadiatricDisclosureChecklist = (props) => {
   const [saving, setSavings] = useState(false);
-
+  console.log(props)
+  const PatientObject= props.patientObj && props.patientObj ? props.patientObj : null
   const submitNewRecord = (values) => {
     const observation = {
       data: values,
-      dateOfObservation: moment(new Date()).format("YYYY-MM-DD"),
+      dateOfObservation: values.encounterDate===""?  moment(new Date()).format("YYYY-MM-DD") : values.encounterDate,
       facilityId: null,
       personId: props.patientObj.id,
       type: "Paediatric OTZ",
@@ -106,6 +107,7 @@ const PeadiatricDisclosureChecklist = (props) => {
         setSavings(false);
         // props.patientObj.mentalHealth = true;
         toast.success("Paediatric OTZ screening save successful.");
+        props.setActiveContent({...props.activeContent, route:'recent-history'})//Redirect to patient home page
       })
       .catch((error) => {
         setSavings(false);
@@ -120,7 +122,7 @@ const PeadiatricDisclosureChecklist = (props) => {
   const updateOldRecord = (values) => {
     const observation = {
       data: values,
-      dateOfObservation: moment(new Date()).format("YYYY-MM-DD"),
+      dateOfObservation: values.encounterDate===""?  moment(new Date()).format("YYYY-MM-DD") : values.encounterDate,
       facilityId: null,
       personId: props.patientObj.id,
       type: "Paediatric OTZ",
@@ -134,6 +136,7 @@ const PeadiatricDisclosureChecklist = (props) => {
         setSavings(false);
         // props.patientObj.mentalHealth = true;
         toast.success("Paediatric OTZ screening save successful.");
+        props.setActiveContent({...props.activeContent, route:'recent-history'})//Redirect to patient home page
       })
       .catch((error) => {
         setSavings(false);
@@ -181,7 +184,7 @@ const PeadiatricDisclosureChecklist = (props) => {
       .then((response) => {
         const patientDTO = response.data.data
         formik.setValues(patientDTO)
-        
+        //props.setActiveContent({...props.activeContent, route:'recent-history'})//Redirect to patient home page
       })
       .catch((error) => {
         console.log(error);
@@ -282,55 +285,79 @@ const PeadiatricDisclosureChecklist = (props) => {
                   </div> */}
 
 
+                  {/*<div className="form-group mb-3 col-md-4">*/}
+                  {/*  <FormGroup>*/}
+                  {/*    <Label>Child's Name</Label>*/}
+
+                  {/*    <Input*/}
+                  {/*      type="text"*/}
+                  {/*      name="childName"*/}
+                  {/*      id="childName"*/}
+                  {/*      value={PatientObject.firstName + " " + PatientObject.surname}*/}
+                  {/*      onChange={formik.handleChange}*/}
+                  {/*      onBlur={formik.handleBlur}*/}
+                  {/*      hidden*/}
+                  {/*      style={{*/}
+                  {/*        border: "1px solid #014D88",*/}
+                  {/*        borderRadius: "0.25rem",*/}
+                  {/*      }}*/}
+                  {/*    ></Input>*/}
+                  {/*  </FormGroup>*/}
+                  {/*  {formik.errors.childName !== "" ? (*/}
+                  {/*    <span className={classes.error}>*/}
+                  {/*      {formik.errors.childName}*/}
+                  {/*    </span>*/}
+                  {/*  ) : (*/}
+                  {/*    ""*/}
+                  {/*  )}*/}
+                  {/*</div>*/}
+                  {/*<div className="form-group mb-3 col-md-4">*/}
+                  {/*  <FormGroup>*/}
+                  {/*    <Label>Sex</Label>*/}
+                  {/*    <Input*/}
+                  {/*      name="sex"*/}
+                  {/*      id="sex"*/}
+                  {/*      type="select"*/}
+                  {/*      value={PatientObject.sex}*/}
+                  {/*      onChange={formik.handleChange}*/}
+                  {/*      onBlur={formik.handleBlur}*/}
+                  {/*      style={{*/}
+                  {/*        border: "1px solid #014D88",*/}
+                  {/*        borderRadius: "0.25rem",*/}
+                  {/*      }}*/}
+                  {/*    >*/}
+                  {/*      <option value="">Select</option>*/}
+                  {/*      <option value="Male">Male</option>*/}
+                  {/*      <option value="Female">Female</option>*/}
+                  {/*    </Input>*/}
+                  {/*  </FormGroup>*/}
+                  {/*  {formik.errors.sex !== "" ? (*/}
+                  {/*    <span className={classes.error}>{formik.errors.sex}</span>*/}
+                  {/*  ) : (*/}
+                  {/*    ""*/}
+                  {/*  )}*/}
+                  {/*</div>*/}
                   <div className="form-group mb-3 col-md-4">
                     <FormGroup>
-                      <Label>Child's Name</Label>
-
+                      <Label>Encounter Date</Label>
                       <Input
-                        type="text"
-                        name="childName"
-                        id="childName"
-                        value={formik.values.childName}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
+                          name="encounterDate"
+                          id="encounterDate"
+                          type="date"
+                          value={formik.values.encounterDate}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          max= {moment(new Date()).format("YYYY-MM-DD") }
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
                       ></Input>
                     </FormGroup>
-                    {formik.errors.childName !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.childName}
-                      </span>
+                    {formik.errors.encounterDate !== "" ? (
+                        <span className={classes.error}>{formik.errors.encounterDate}</span>
                     ) : (
-                      ""
-                    )}
-                  </div>
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>Sex</Label>
-                      <Input
-                        name="sex"
-                        id="sex"
-                        type="select"
-                        value={formik.values.sex}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.sex !== "" ? (
-                      <span className={classes.error}>{formik.errors.sex}</span>
-                    ) : (
-                      ""
+                        ""
                     )}
                   </div>
 
@@ -365,7 +392,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                       <Input
                         name="cccNumber"
                         id="cccNumber"
-                        type="text"
+                        type="number"
                         value={formik.values.cccNumber}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -384,28 +411,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                     )}
                   </div>
 
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>Date of birth</Label>
-                      <Input
-                        name="dob"
-                        id="dob"
-                        type="date"
-                        value={formik.values.dob}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.dob !== "" ? (
-                      <span className={classes.error}>{formik.errors.dob}</span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
+
                 </div>
               </div>
 
@@ -457,6 +463,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         value={formik.values.dateTask1Executed}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        max= {moment(new Date()).format("YYYY-MM-DD") }
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
@@ -669,6 +676,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         value={formik.values.dateTask2Executed}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        max= {moment(new Date()).format("YYYY-MM-DD") }
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
@@ -921,45 +929,45 @@ const PeadiatricDisclosureChecklist = (props) => {
                     )}
                   </div>
 
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>
-                        Assessed what the caregiver has communicated to the
-                        child
-                      </Label>
-                      <Input
-                        name="task2AssessedCaregiverCommunicatedToChild"
-                        id="task2AssessedCaregiverCommunicatedToChild"
-                        type="select"
-                        value={
-                          formik.values
-                            .task2AssessedCaregiverCommunicatedToChild
-                        }
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          marginTop: "20px",
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task2AssessedCaregiverCommunicatedToChild !==
-                    "" ? (
-                      <span className={classes.error}>
-                        {
-                          formik.errors
-                            .task2AssessedCaregiverCommunicatedToChild
-                        }
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
+                  {/*<div className="form-group mb-3 col-md-6">*/}
+                  {/*  <FormGroup>*/}
+                  {/*    <Label>*/}
+                  {/*      Assessed what the caregiver has communicated to the*/}
+                  {/*      child*/}
+                  {/*    </Label>*/}
+                  {/*    <Input*/}
+                  {/*      name="task2AssessedCaregiverCommunicatedToChild"*/}
+                  {/*      id="task2AssessedCaregiverCommunicatedToChild"*/}
+                  {/*      type="select"*/}
+                  {/*      value={*/}
+                  {/*        formik.values*/}
+                  {/*          .task2AssessedCaregiverCommunicatedToChild*/}
+                  {/*      }*/}
+                  {/*      onChange={formik.handleChange}*/}
+                  {/*      onBlur={formik.handleBlur}*/}
+                  {/*      style={{*/}
+                  {/*        border: "1px solid #014D88",*/}
+                  {/*        borderRadius: "0.25rem",*/}
+                  {/*        marginTop: "20px",*/}
+                  {/*      }}*/}
+                  {/*    >*/}
+                  {/*      <option value="">Select</option>*/}
+                  {/*      <option value="yes">Yes</option>*/}
+                  {/*      <option value="no">No</option>*/}
+                  {/*    </Input>*/}
+                  {/*  </FormGroup>*/}
+                  {/*  {formik.errors.task2AssessedCaregiverCommunicatedToChild !==*/}
+                  {/*  "" ? (*/}
+                  {/*    <span className={classes.error}>*/}
+                  {/*      {*/}
+                  {/*        formik.errors*/}
+                  {/*          .task2AssessedCaregiverCommunicatedToChild*/}
+                  {/*      }*/}
+                  {/*    </span>*/}
+                  {/*  ) : (*/}
+                  {/*    ""*/}
+                  {/*  )}*/}
+                  {/*</div>*/}
 
                   <div className="form-group mb-3 col-md-6">
                     <FormGroup>
@@ -1078,6 +1086,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         value={formik.values.dateTask3Executed}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        max= {moment(new Date()).format("YYYY-MM-DD") }
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
@@ -1317,45 +1326,45 @@ const PeadiatricDisclosureChecklist = (props) => {
                     )}
                   </div>
 
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>
-                        Assessed what the caregiver has communicated to the
-                        child
-                      </Label>
-                      <Input
-                        name="task2AssessedCaregiverCommunicatedToChild"
-                        id="task2AssessedCaregiverCommunicatedToChild"
-                        type="select"
-                        value={
-                          formik.values
-                            .task2AssessedCaregiverCommunicatedToChild
-                        }
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          // marginTop: "20px"
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task2AssessedCaregiverCommunicatedToChild !==
-                    "" ? (
-                      <span className={classes.error}>
-                        {
-                          formik.errors
-                            .task2AssessedCaregiverCommunicatedToChild
-                        }
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
+                  {/*<div className="form-group mb-3 col-md-6">*/}
+                  {/*  <FormGroup>*/}
+                  {/*    <Label>*/}
+                  {/*      Assessed what the caregiver has communicated to the*/}
+                  {/*      child*/}
+                  {/*    </Label>*/}
+                  {/*    <Input*/}
+                  {/*      name="task2AssessedCaregiverCommunicatedToChild"*/}
+                  {/*      id="task2AssessedCaregiverCommunicatedToChild"*/}
+                  {/*      type="select"*/}
+                  {/*      value={*/}
+                  {/*        formik.values*/}
+                  {/*          .task2AssessedCaregiverCommunicatedToChild*/}
+                  {/*      }*/}
+                  {/*      onChange={formik.handleChange}*/}
+                  {/*      onBlur={formik.handleBlur}*/}
+                  {/*      style={{*/}
+                  {/*        border: "1px solid #014D88",*/}
+                  {/*        borderRadius: "0.25rem",*/}
+                  {/*        // marginTop: "20px"*/}
+                  {/*      }}*/}
+                  {/*    >*/}
+                  {/*      <option value="">Select</option>*/}
+                  {/*      <option value="yes">Yes</option>*/}
+                  {/*      <option value="no">No</option>*/}
+                  {/*    </Input>*/}
+                  {/*  </FormGroup>*/}
+                  {/*  {formik.errors.task2AssessedCaregiverCommunicatedToChild !==*/}
+                  {/*  "" ? (*/}
+                  {/*    <span className={classes.error}>*/}
+                  {/*      {*/}
+                  {/*        formik.errors*/}
+                  {/*          .task2AssessedCaregiverCommunicatedToChild*/}
+                  {/*      }*/}
+                  {/*    </span>*/}
+                  {/*  ) : (*/}
+                  {/*    ""*/}
+                  {/*  )}*/}
+                  {/*</div>*/}
 
                   <div className="form-group mb-3 col-md-6">
                     <FormGroup>
@@ -1575,6 +1584,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         value={formik.values.dateTask4Executed}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        max= {moment(new Date()).format("YYYY-MM-DD") }
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
