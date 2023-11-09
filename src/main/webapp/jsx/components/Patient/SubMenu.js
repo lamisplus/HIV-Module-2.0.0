@@ -7,6 +7,7 @@ function SubMenu(props) {
   //const classes = useStyles();
   const [activeItem, setActiveItem] = useState("recent-history");
   const patientObj = props.patientObj;
+
   const patientCurrentStatus =
     props.patientObj && props.patientObj.currentStatus === "Died (Confirmed)"
       ? true
@@ -237,9 +238,9 @@ function SubMenu(props) {
                   </Menu.Item>
                 )}
               <Menu.Item
-                  onClick={() => loadChronicCare(patientObj)}
-                  name="chronic care"
-                  active={activeItem === "chronic-care"}
+                onClick={() => loadChronicCare(patientObj)}
+                name="chronic care"
+                active={activeItem === "chronic-care"}
               >
                 Care & Support
               </Menu.Item>
@@ -356,6 +357,7 @@ function SubMenu(props) {
                     >
                       OTZ Service Form
                     </Dropdown.Item>
+                    {patientObj.age <=17 && (
                     <Dropdown.Item
                       onClick={() => loadOtzCheckList(patientObj)}
                       name="Peadiatric Disclosure Checklist"
@@ -366,6 +368,7 @@ function SubMenu(props) {
                     >
                       Peadiatric Disclosure Checklist
                     </Dropdown.Item>
+                    )}
                   </Dropdown.Menu>
                 </Dropdown>
               </Menu.Menu>

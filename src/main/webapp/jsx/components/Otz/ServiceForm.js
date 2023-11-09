@@ -93,7 +93,7 @@ const ServiceForm = (props) => {
   const submitNewRecord = (values) => {
     const observation = {
       data: values,
-      dateOfObservation: moment(new Date()).format("YYYY-MM-DD"),
+      dateOfObservation: values.dateDone!="" ? values.dateDone : moment(new Date()).format("YYYY-MM-DD"),
       facilityId: null,
       personId: props.patientObj.id,
       type: "Service OTZ",
@@ -107,6 +107,7 @@ const ServiceForm = (props) => {
         setSavings(false);
         // props.patientObj.mentalHealth = true;
         toast.success("Service OTZ screening save successful.");
+        props.setActiveContent({...props.activeContent, route:'recent-history'})//Redirect to patient home page
       })
       .catch((error) => {
         setSavings(false);
@@ -121,7 +122,7 @@ const ServiceForm = (props) => {
   const updateOldRecord = (values) => {
     const observation = {
       data: values,
-      dateOfObservation: moment(new Date()).format("YYYY-MM-DD"),
+      dateOfObservation: values.dateDone!="" ? values.dateDone : moment(new Date()).format("YYYY-MM-DD"),
       facilityId: null,
       personId: props.patientObj.id,
       type: "Service OTZ",
@@ -134,6 +135,7 @@ const ServiceForm = (props) => {
       .then((response) => {
         setSavings(false);
         toast.success("Service OTZ screening save successful.");
+        props.setActiveContent({...props.activeContent, route:'recent-history'})//Redirect to patient home page
       })
       .catch((error) => {
         setSavings(false);
@@ -149,8 +151,10 @@ const ServiceForm = (props) => {
     if (props?.activeContent?.id) {
       updateOldRecord(values);
       return;
+    }else{
+      submitNewRecord(values);
     }
-    submitNewRecord(values);
+
   };
 
   const { formik } = useServiceFormValidationSchema(handleSubmit);
@@ -250,7 +254,8 @@ const ServiceForm = (props) => {
     });
   };
 
-  console.log(formik?.values?.acMonth1EacDate1);
+  //console.log(formik?.values?.acMonth1EacDate1);
+
   return (
     <>
       <ToastContainer autoClose={3000} hideProgressBar />
@@ -1345,7 +1350,7 @@ const ServiceForm = (props) => {
                             <div className="form-group mb-3 col-md-6">
                               <FormGroup>
                                 <Label for="maMonth1leadershipTrainingDate">
-                                  Date for adolescent participation
+                                  Date for Leadership participation
                                   <span style={{ color: "red" }}> *</span>{" "}
                                 </Label>
                                 <input
@@ -1974,7 +1979,7 @@ const ServiceForm = (props) => {
                             <div className="form-group mb-3 col-md-6">
                               <FormGroup>
                                 <Label for="maMonth2leadershipTrainingDate">
-                                  Date for adolescent participation
+                                  Date for Leadership participation
                                   <span style={{ color: "red" }}> *</span>{" "}
                                 </Label>
                                 <input
@@ -2605,7 +2610,7 @@ const ServiceForm = (props) => {
                             <div className="form-group mb-3 col-md-6">
                               <FormGroup>
                                 <Label for="maMonth3leadershipTrainingDate">
-                                  Date for adolescent participation
+                                  Date for Leadership participation
                                   <span style={{ color: "red" }}> *</span>{" "}
                                 </Label>
                                 <input
