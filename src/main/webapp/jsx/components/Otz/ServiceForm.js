@@ -4033,10 +4033,10 @@ const ServiceForm = (props) => {
                   className={classes.button}
                   style={{ backgroundColor: "#014d88" }}
                   startIcon={<SaveIcon />}
-                  disabled={saving}
+                  disabled={savings}
                   onClick={() => handleSubmit(formik.values)}
                 >
-                  {!saving ? (
+                  {!savings ? (
                     <span style={{ textTransform: "capitalize" }}>Submit</span>
                   ) : (
                     <span style={{ textTransform: "capitalize" }}>
@@ -4046,7 +4046,7 @@ const ServiceForm = (props) => {
                 </MatButton>
               </div>
 
-              {saving && <Spinner />}
+              {savings && <Spinner />}
               <br />
             </Form>
           </div>
