@@ -64,9 +64,9 @@ export const usePeadiatricFormValidationSchema = (onSubmit) => {
     // facilityName: yup.string(),
     childName: yup.string(),
     dob: yup.string(),
-    caregiverName: yup.string(),
+    caregiverName: yup.string().matches(/^[^0-9]*$/, 'Numbers are not allowed'),
     sex: yup.string(),
-    cccNumber: yup.string(),
+    cccNumber: yup.number(),
 
     dateTask1Executed: yup.date(),
     task1HCW: yup.string(),
@@ -87,7 +87,7 @@ export const usePeadiatricFormValidationSchema = (onSubmit) => {
     task2AssessedCaregiverCommunicatedToChild: yup.string(),
     task2DiscussedManagementOfConfidentiality: yup.string(),
 
-    dateTask3Executed: yup.string(),
+    dateTask3Executed: yup.date(),
     task3HCW: yup.string(),
     task3Comments: yup.string(),
     task3ReassuredTheCaregiverAndChild: yup.string(),
@@ -102,7 +102,7 @@ export const usePeadiatricFormValidationSchema = (onSubmit) => {
     task3ConcludedSessionWithReassurance: yup.string(),
 
 
-    dateTask4Executed:yup.string(),
+    dateTask4Executed:yup.date(),
     task4HCW:yup.string(),
     task4Comments:yup.string(),
     task4AssessedFunctionalSchoolEngagement: yup.string(),

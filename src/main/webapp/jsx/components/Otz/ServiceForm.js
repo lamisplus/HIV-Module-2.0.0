@@ -1540,18 +1540,18 @@ const ServiceForm = (props) => {
 
                           <div className="form-group mb-3 col-md-6">
                             <FormGroup>
-                              <Label for="maMonth1OtzChampionOrientationDate">
+                              <Label for="maMonth1OtzChampionOrientationChoice">
                                 OTZ champion orientation
                                 <span style={{ color: "red" }}> *</span>{" "}
                               </Label>
                               <Input
                                 className="form-control"
                                 type="select"
-                                name="maMonth1OtzChampionOrientationDate"
-                                id="maMonth1OtzChampionOrientationDate"
+                                name="maMonth1OtzChampionOrientationChoice"
+                                id="maMonth1OtzChampionOrientationChoice"
                                 value={
                                   formik.values
-                                    .maMonth1OtzChampionOrientationDate
+                                    .maMonth1OtzChampionOrientationChoice
                                 }
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -1565,11 +1565,11 @@ const ServiceForm = (props) => {
                                 <option value="no">No</option>
                               </Input>
                               {formik.errors
-                                .maMonth1OtzChampionOrientationDate !== "" ? (
+                                .maMonth1OtzChampionOrientationChoice !== "" ? (
                                 <span className={classes.error}>
                                   {
                                     formik.errors
-                                      .maMonth1OtzChampionOrientationDate
+                                      .maMonth1OtzChampionOrientationChoice
                                   }
                                 </span>
                               ) : (
@@ -1578,15 +1578,15 @@ const ServiceForm = (props) => {
                             </FormGroup>
                           </div>
 
-                          {formik.values.maMonth1OtzChampionOrientationDate ===
+                          {formik.values.maMonth1OtzChampionOrientationChoice ===
                             "yes" && (
                             <div className="form-group mb-3 col-md-6">
                               <FormGroup>
-                                <Label for="maMonth1OtzChampionOrientationChoice">
+                                <Label for="maMonth1OtzChampionOrientationDate">
                                   Date for OTZ Champion Orientation
                                   <span style={{ color: "red" }}> *</span>{" "}
                                 </Label>
-                                <input
+                                <Input
                                   className="form-control"
                                   type="date"
                                   {...{
@@ -1598,11 +1598,11 @@ const ServiceForm = (props) => {
                                     max: moment(new Date()).format("YYYY-MM-DD"),
                                   }}
                                   disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
-                                  name="maMonth1OtzChampionOrientationChoice"
-                                  id="maMonth1OtzChampionOrientationChoice"
+                                  name="maMonth1OtzChampionOrientationDate"
+                                  id="maMonth1OtzChampionOrientationDate"
                                   value={
                                     formik.values
-                                      .maMonth1OtzChampionOrientationChoice
+                                      .maMonth1OtzChampionOrientationDate
                                   }
                                   onChange={formik.handleChange}
                                   onBlur={formik.handleBlur}
@@ -1612,12 +1612,12 @@ const ServiceForm = (props) => {
                                   }}
                                 />
                                 {formik.errors
-                                  .maMonth1OtzChampionOrientationChoice !==
+                                  .maMonth1OtzChampionOrientationDate !==
                                 "" ? (
                                   <span className={classes.error}>
                                     {
                                       formik.errors
-                                        .maMonth1OtzChampionOrientationChoice
+                                        .maMonth1OtzChampionOrientationDate
                                     }
                                   </span>
                                 ) : (
@@ -2211,11 +2211,11 @@ const ServiceForm = (props) => {
                             .maMonth2OtzChampionOrientationChoice === "yes" && (
                             <div className="form-group mb-3 col-md-6">
                               <FormGroup>
-                                <Label for="maMonth2OtzChampionOrientationChoice">
+                                <Label for="maMonth2OtzChampionOrientationDate">
                                   Date for OTZ Champion Orientation
                                   <span style={{ color: "red" }}> *</span>{" "}
                                 </Label>
-                                <input
+                                <Input
                                   className="form-control"
                                   type="date"
                                   {...{
@@ -2227,11 +2227,11 @@ const ServiceForm = (props) => {
                                     max: moment(new Date()).format("YYYY-MM-DD"),
                                   }}
                                   disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
-                                  name="maMonth2OtzChampionOrientationChoice"
-                                  id="maMonth2OtzChampionOrientationChoice"
+                                  name="maMonth2OtzChampionOrientationDate"
+                                  id="maMonth2OtzChampionOrientationDate"
                                   value={
                                     formik.values
-                                      .maMonth2OtzChampionOrientationChoice
+                                      .maMonth2OtzChampionOrientationDate
                                   }
                                   onChange={formik.handleChange}
                                   onBlur={formik.handleBlur}
@@ -2241,12 +2241,12 @@ const ServiceForm = (props) => {
                                   }}
                                 />
                                 {formik.errors
-                                  .maMonth2OtzChampionOrientationChoice !==
+                                  .maMonth2OtzChampionOrientationDate !==
                                 "" ? (
                                   <span className={classes.error}>
                                     {
                                       formik.errors
-                                        .maMonth2OtzChampionOrientationChoice
+                                        .maMonth2OtzChampionOrientationDate
                                     }
                                   </span>
                                 ) : (
@@ -2842,7 +2842,7 @@ const ServiceForm = (props) => {
                             .maMonth3OtzChampionOrientationChoice === "yes" && (
                             <div className="form-group mb-3 col-md-6">
                               <FormGroup>
-                                <Label for="maMonth3OtzChampionOrientationChoice">
+                                <Label for="maMonth3OtzChampionOrientationDate">
                                   Date for OTZ Champion Orientation
                                   <span style={{ color: "red" }}> *</span>{" "}
                                 </Label>
@@ -2858,11 +2858,11 @@ const ServiceForm = (props) => {
                                     max: moment(new Date()).format("YYYY-MM-DD"),
                                   }}
                                   disabled={!props?.activeContent?.enrollment?.dateOfRegistration}
-                                  name="maMonth3OtzChampionOrientationChoice"
-                                  id="maMonth3OtzChampionOrientationChoice"
+                                  name="maMonth3OtzChampionOrientationDate"
+                                  id="maMonth3OtzChampionOrientationDate"
                                   value={
                                     formik.values
-                                      .maMonth3OtzChampionOrientationChoice
+                                      .maMonth3OtzChampionOrientationDate
                                   }
                                   onChange={formik.handleChange}
                                   onBlur={formik.handleBlur}
@@ -2872,12 +2872,12 @@ const ServiceForm = (props) => {
                                   }}
                                 />
                                 {formik.errors
-                                  .maMonth3OtzChampionOrientationChoice !==
+                                  .maMonth3OtzChampionOrientationDate !==
                                 "" ? (
                                   <span className={classes.error}>
                                     {
                                       formik.errors
-                                        .maMonth3OtzChampionOrientationChoice
+                                        .maMonth3OtzChampionOrientationDate
                                     }
                                   </span>
                                 ) : (
