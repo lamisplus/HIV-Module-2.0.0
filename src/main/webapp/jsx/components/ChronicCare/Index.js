@@ -110,6 +110,7 @@ const ChronicCare = (props) => {
   const [showTpt, setShowTpt] = useState(false);
   const [enrollDate, setEnrollDate] = useState("");
   const [chronicDateExist, setChronicDateExist] = useState(null);
+  const [lastDateOfObservation, setlastDateOfObservation] = useState(null)
   //GenderBase Object
   const [genderBase, setGenderBase] = useState({
     partnerEverPhysically: "",
@@ -282,6 +283,7 @@ const ChronicCare = (props) => {
           ...response.data.data.reproductive,
         });
         setTpt({ ...tpt, ...response.data.data.tptMonitoring });
+        setlastDateOfObservation(response.data.dateOfObservation);//set the date of onservation into this variable
       })
       .catch((error) => {
         //console.log(response.data.data);
@@ -341,28 +343,32 @@ const ChronicCare = (props) => {
       observationObj.tbIptScreening = tbObj;
       observationObj.tptMonitoring = tpt;
       observation.data = observationObj;
-      if (validate()) {
-        //check for duplicate visit Date
+      if (validate()) {//Validate function check
+          
         if (
-          chronicDateExist !== null &&
-          chronicDateExist.find(
-            (x) => x.dateOfObservation === observation.dateOfObservation
-          )
-        ) {
-          toast.error(
-            "Chronic Care visit date " +
-              observation.dateOfObservation +
-              " already exist. ",
-            { position: toast.POSITION.BOTTOM_CENTER }
-          );
-          setSaving(false);
-        } else {
-          if (
             props.activeContent &&
             props.activeContent.actionType === "update"
           ) {
             //Perform operation for updation action)
-            axios
+            const hasObservationDateChanged = lastDateOfObservation !== observation.dateOfObservation
+
+          //if(hasObservationDateChanged && chronicCaredate === observation.observationDate)
+            if(hasObservationDateChanged && chronicDateExist !== null &&
+              chronicDateExist.find(
+                (x) => x.dateOfObservation === observation.dateOfObservation
+              )
+            ) 
+              {
+                toast.error(
+                  "Chronic Care visit date " +
+                    observation.dateOfObservation +
+                    " already exist. ",
+                  { position: toast.POSITION.BOTTOM_CENTER }
+                );
+                setSaving(false);
+              }
+            else{
+              axios
               .put(
                 `${baseUrl}observation/${props.activeContent.id}`,
                 observation,
@@ -395,8 +401,25 @@ const ChronicCare = (props) => {
                   }
                 }
               });
-          } else {
-            axios
+            }
+            
+          } else {//SAVE FOR NEW Record
+             //check for duplicate visit Date
+            if (chronicDateExist !== null &&
+              chronicDateExist.find(
+                (x) => x.dateOfObservation === observation.dateOfObservation
+              )
+            ) 
+            {
+              toast.error(
+                "Chronic Care visit date " +
+                  observation.dateOfObservation +
+                  " already exist. ",
+                { position: toast.POSITION.BOTTOM_CENTER }
+              );
+              setSaving(false);
+            }else{
+              axios
               .post(`${baseUrl}observation`, observation, {
                 headers: { Authorization: `Bearer ${token}` },
               })
@@ -427,8 +450,11 @@ const ChronicCare = (props) => {
                   }
                 }
               });
-          }
-        }
+            } 
+            
+          }//End of save
+        
+      //End of the ecnounter date validation check
       } else {
         toast.error("All fields are required", {
           position: toast.POSITION.BOTTOM_CENTER,
