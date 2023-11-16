@@ -39,8 +39,8 @@ export default function App() {
           </Route>
 
           <Route path="/">
-            {/* <Home /> */}
-            <ServiceForm/>
+            <Home />
+            {/* <ServiceForm/> */}
           </Route>       
           
         </Switch>
