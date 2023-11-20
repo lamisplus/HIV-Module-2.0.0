@@ -14,6 +14,7 @@ import org.lamisplus.modules.hiv.domain.entity.Observation;
 import org.lamisplus.modules.hiv.repositories.ARTClinicalRepository;
 import org.lamisplus.modules.hiv.repositories.HivEnrollmentRepository;
 import org.lamisplus.modules.hiv.repositories.ObservationRepository;
+import org.lamisplus.modules.hiv.utility.Constants;
 import org.lamisplus.modules.patient.domain.dto.PersonResponseDto;
 import org.lamisplus.modules.patient.domain.entity.Person;
 import org.lamisplus.modules.patient.repository.PersonRepository;
@@ -347,7 +348,7 @@ public class HivPatientService {
 
     private void processAndSetObservationStatus(Person person, HivPatientDto hivPatientDto) {
         Long orgId = currentUserOrganizationService.getCurrentUserOrganization ();
-        List<Observation> observationList = observationRepository.getAllByPersonAndFacilityId (person, orgId);
+        List<Observation> observationList = observationRepository.getAllByPersonAndFacilityIdAndArchived(person, orgId, Constants.UNARCHIVED);
         if (!observationList.isEmpty ()) {
             observationList
                     .stream ()

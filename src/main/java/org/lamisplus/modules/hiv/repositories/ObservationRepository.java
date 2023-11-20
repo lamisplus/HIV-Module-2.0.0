@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface ObservationRepository extends JpaRepository<Observation, Long> {
     List<Observation> getAllByTypeAndPersonAndFacilityIdAndArchived(String type, Person person, Long facilityId, Integer archived);
-    List<Observation> getAllByPersonAndFacilityId(Person person, Long facilityId);
+    List<Observation> getAllByPersonAndFacilityIdAndArchived(Person person, Long facilityId, int archived);
     List<Observation> getAllByPersonAndArchived(Person person, Integer archived);
     @Query(value = "SELECT * from hiv_observation where (type = 'Clinical evaluation' \n" +
             "            OR type = 'Mental health' )\n" +

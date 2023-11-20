@@ -11,6 +11,7 @@ import org.lamisplus.modules.hiv.domain.entity.ArtPharmacy;
 import org.lamisplus.modules.hiv.domain.entity.Observation;
 import org.lamisplus.modules.hiv.repositories.ArtPharmacyRepository;
 import org.lamisplus.modules.hiv.repositories.ObservationRepository;
+import org.lamisplus.modules.hiv.utility.Constants;
 import org.lamisplus.modules.patient.domain.entity.Person;
 import org.lamisplus.modules.patient.domain.entity.Visit;
 import org.lamisplus.modules.patient.repository.PersonRepository;
@@ -33,6 +34,7 @@ public class ObservationService {
    private final HandleHIVVisitEncounter handleHIVisitEncounter;
    
    private final ArtPharmacyRepository pharmacyRepository;
+   private static final int UNARCHIVED = 0;
 
     public ObservationDto createAnObservation(ObservationDto observationDto) {
        try {
@@ -42,7 +44,7 @@ public class ObservationService {
            Long orgId = currentUserOrganizationService.getCurrentUserOrganization();
            boolean anExistingClinicalEvaluation = getAnExistingClinicalEvaluationType("Clinical evaluation", person, orgId).isEmpty();
            List<Observation> personObservations =
-                   observationRepository.getAllByPersonAndFacilityId(person, person.getFacilityId());
+                   observationRepository.getAllByPersonAndFacilityIdAndArchived(person, person.getFacilityId(), Constants.UNARCHIVED);
            if (!anExistingClinicalEvaluation && observationDto.getType().equals("Clinical evaluation")) {
                throw new RecordExistException(Observation.class, "type", observationDto.getType());
            }
@@ -159,11 +161,9 @@ public class ObservationService {
     public List<ObservationDto> getAllObservationByPerson(Long personId) {
         Person person = getPerson (personId);
         Long currentUserOrganization = currentUserOrganizationService.getCurrentUserOrganization ();
-        List<Observation> observations = observationRepository.getAllByPersonAndFacilityId (person, currentUserOrganization);
+        List<Observation> observations = observationRepository.getAllByPersonAndFacilityIdAndArchived(person, currentUserOrganization, Constants.UNARCHIVED);
         return observations.stream ()
-                .filter (observation -> observation.getArchived () == 0)
                 .map (this::convertObservationToDto).collect (Collectors.toList ());
-
 
     }
 
