@@ -133,4 +133,5 @@ public interface HivEnrollmentRepository extends JpaRepository<HivEnrollment, Lo
     List<HivEnrollment> getAllDueForServerUpload(LocalDateTime dateLastSync, Long facilityId);
 
     Optional<HivEnrollment> findByUuid(String uuid);
+    Optional<HivEnrollment> findByUniqueIdAndArchivedAndPersonUuidNot(String uniqueId, Integer archived, String personUuid);
 }
