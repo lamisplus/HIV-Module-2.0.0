@@ -99,7 +99,7 @@ export const useServiceFormValidationSchema = (onSubmit) => {
     thirtySixMonthsResult: "",
     thirtySixMonthsDate: "",
 
-    chooseOutcomes: null,
+    outcomes: null,
     exitedOtz: "",
     transitionDate: "",
 
@@ -124,10 +124,10 @@ export const useServiceFormValidationSchema = (onSubmit) => {
     }),
     // ageAtArtStart: yup.string(),
     // telephone: yup.string(),
-    dateEnrolledIntoOtz: yup.date(),
+    dateEnrolledIntoOtz: yup.date().required("This field is required"),
     OtzPlus: yup.string(),
-    baselineViralLoadAtEnrollment: yup.number(),
-    dateDone: yup.date(),
+    baselineViralLoadAtEnrollment: yup.number().required("This field is required"),
+    dateDone: yup.date().required("This field is required"),
 
     acMonth1EacDate1: yup.date(),
     acMonth1EacDate2: yup.date(),
@@ -354,7 +354,7 @@ export const useServiceFormValidationSchema = (onSubmit) => {
       then: yup.date().required("Date is required"),
     }),
 
-    chooseOutcomes: yup.array(),
+    outcomes: yup.number().required("This field is required"),
     exitedOtz: yup.string(),
     transitionDate: yup.date(),
 
