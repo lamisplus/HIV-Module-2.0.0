@@ -15,6 +15,7 @@ import org.lamisplus.modules.hiv.domain.entity.ARTClinical;
 import org.lamisplus.modules.hiv.domain.entity.HivEnrollment;
 import org.lamisplus.modules.hiv.repositories.ARTClinicalRepository;
 import org.lamisplus.modules.hiv.repositories.HivEnrollmentRepository;
+import org.lamisplus.modules.hiv.utility.Constants;
 import org.lamisplus.modules.patient.domain.dto.PersonResponseDto;
 import org.lamisplus.modules.patient.domain.entity.Person;
 import org.lamisplus.modules.patient.domain.entity.Visit;
@@ -172,6 +173,10 @@ public class HivEnrollmentService {
 	
 	public List<String> getOVCServicesByDomainId(Long domainId) {
 		return hivEnrollmentRepository.getOVCServiceByDomainId(domainId);
+	}
+
+	public Optional<HivEnrollment> uniqueIdExists(String personUuid, String uniqueId){
+		return hivEnrollmentRepository.findByUniqueIdAndArchivedAndPersonUuidNot(uniqueId, Constants.UNARCHIVED, personUuid);
 	}
 	
 	
