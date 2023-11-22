@@ -134,6 +134,14 @@ function SubMenu(props) {
       route: "otz-service-form",
     });
   };
+  const loadOtzEnrollmentForm = () => {
+    setActiveItem("otz-enrollment-form");
+    props.setActiveContent({
+      ...props.activeContent,
+      ...props.expandedPatientObj,
+      route: "otz-enrollment-form",
+    });
+  };
   const loadOtzCheckList = () => {
     setActiveItem("otz-peadiatric-disclosure-checklist");
     props.setActiveContent({
@@ -349,6 +357,17 @@ function SubMenu(props) {
                 </Dropdown>
                 <Dropdown item text="OTZ">
                   <Dropdown.Menu>
+
+                  <Dropdown.Item
+                      onClick={() => loadOtzEnrollmentForm(patientObj)}
+                      name="OTZ Enrollment Form"
+                      active={activeItem === "otz-enrollment-form"}
+                      title="Enrollment Form"
+                    >
+                      OTZ Enrollment Form
+                    </Dropdown.Item> 
+
+                    
                     <Dropdown.Item
                       onClick={() => loadOtzServiceForm(patientObj)}
                       name="OTZ Service Form"
@@ -357,6 +376,10 @@ function SubMenu(props) {
                     >
                       OTZ Service Form
                     </Dropdown.Item>
+
+                   
+
+
                     {patientObj.age <=17 && (
                     <Dropdown.Item
                       onClick={() => loadOtzCheckList(patientObj)}

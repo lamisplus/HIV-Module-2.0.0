@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Spinner,
-  Form,
-  FormGroup,
-  Label,
-  Input,
-} from "reactstrap";
+import { Spinner, Form, FormGroup, Label, Input } from "reactstrap";
 import { makeStyles } from "@material-ui/core/styles";
 import { Card, CardContent } from "@material-ui/core";
 import { ToastContainer, toast } from "react-toastify";
@@ -98,7 +92,7 @@ const ServiceForm = (props) => {
   const [currentRecord, SetCurrentRecord] = useState(null);
   const [otzOutcomesArray, setOtzOutcomes] = useState([]);
 
-  const submitNewRecord = (values) => {
+  const submitNewRecord = (values, param) => {
     const observation = {
       data: values,
       dateOfObservation:
@@ -115,12 +109,20 @@ const ServiceForm = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
+        getOldRecordIfExists();
         setSavings(false);
         // props.patientObj.mentalHealth = true;
-        toast.success("Service OTZ screening save successful.");
+        if (param?.monthOfData) {
+          toast.success(`Month ${param?.monthOfData} saved successful.`);
+        } else {
+          toast.success("Service OTZ screening save successful.");
+          getOldRecordIfExists();
+        }
         props.setActiveContent({
           ...props?.activeContent,
-          route: "recent-history",
+          route: param?.reroute
+            ? "recent-history"
+            : props?.activeContent?.route,
         }); //Redirect to patient home page
       })
       .catch((error) => {
@@ -143,7 +145,7 @@ const ServiceForm = (props) => {
       });
   };
 
-  const updateOldRecord = (values) => {
+  const updateOldRecord = (values, param) => {
     const observation = {
       data: values,
       dateOfObservation:
@@ -151,20 +153,33 @@ const ServiceForm = (props) => {
           ? values.dateDone
           : moment(new Date()).format("YYYY-MM-DD"),
       facilityId: null,
-      personId: props?.patientObj?.id,
+      personId: props?.activeContent?.id || currentRecord?.id,
       type: "Service OTZ",
       visitId: null,
     };
     axios
-      .put(`${baseUrl}observation/${props?.activeContent.id}`, observation, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      .put(
+        `${baseUrl}observation/${
+          props?.activeContent?.id || currentRecord?.id
+        }`,
+        observation,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
       .then((response) => {
         setSavings(false);
-        toast.success("Service OTZ screening save successful.");
+        getOldRecordIfExists();
+        if (param?.monthOfData) {
+          toast.success(`Month ${param?.monthOfData} update successful.`);
+        } else {
+          toast.success("Service OTZ screening update successful.");
+        }
         props.setActiveContent({
           ...props?.activeContent,
-          route: "recent-history",
+          route: param?.reroute
+            ? "recent-history"
+            : props?.activeContent?.route,
         }); //Redirect to patient home page
       })
       .catch((error) => {
@@ -177,12 +192,22 @@ const ServiceForm = (props) => {
       });
   };
 
-  const handleSubmit = (values) => {
-    if (props?.activeContent?.id) {
-      updateOldRecord(values);
+  const handleSubmit = (values, param) => {
+    if (currentRecord?.id || props?.activeContent?.id) {
+      updateOldRecord(values, param);
       return;
     } else {
-      submitNewRecord(values);
+      submitNewRecord(values, param);
+    }
+  };
+
+  const handleSubmitAdherence = (values, param) => {
+    console.log(currentRecord, props?.activeContent?.id);
+    if (currentRecord?.id || props?.activeContent?.id) {
+      updateOldRecord(values, param);
+      return;
+    } else {
+      submitNewRecord(values, param);
     }
   };
 
@@ -220,9 +245,8 @@ const ServiceForm = (props) => {
   };
 
   useEffect(() => {
-    if (props?.activeContent?.id) {
-      getOldRecordIfExists();
-    }
+    getOldRecordIfExists();
+
     getOtzOutomes();
   }, []);
 
@@ -251,8 +275,6 @@ const ServiceForm = (props) => {
   const setCustomDate = (e) => {
     formik.setValues({
       ...formik.values,
-      // artStartDate: e.target.value,
-      //resetting all other date values as they are relative to artStartDate and date enrolled into OTZ
       dateEnrolledIntoOtz: e?.target?.value,
       dateDone: "",
       acMonth1EacDate1: "",
@@ -300,6 +322,12 @@ const ServiceForm = (props) => {
     });
   };
 
+  const handleFilterNumber = (e, setFieldValue) => {
+    // Apply your regex to filter out numbers
+    const newValue = e.target.value.replace(/\d/g, "");
+    setFieldValue(e.target.name, newValue);
+  };
+
   return (
     <>
       <ToastContainer autoClose={3000} hideProgressBar />
@@ -343,12 +371,9 @@ const ServiceForm = (props) => {
                   <h5 className="p-2 card-title" style={{ color: "#014d88" }}>
                     Enrollment
                   </h5>
-                  
+
                   <div className="form-group mb-3 col-md-4">
-                    <CustomFormGroup
-                    formik={formik}
-                    name="artStartDate"
-                    >
+                    <CustomFormGroup formik={formik} name="artStartDate">
                       <Label>ART start date</Label>
                       <Input
                         name="artStartDate"
@@ -370,25 +395,17 @@ const ServiceForm = (props) => {
                         }}
                       />
                     </CustomFormGroup>
-                    {/* {formik.errors.artStartDate !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.artStartDate}
-                      </span>
-                    ) : (
-                      ""
-                    )} */}
+                   
                   </div>
 
                   <div className="form-group mb-3 col-md-4">
-                    <CustomFormGroup
-                    formik={formik}
-                    name="dateEnrolledIntoOtz"
-                    >
+                    <CustomFormGroup formik={formik} name="dateEnrolledIntoOtz">
                       <Label>Date enrolled into OTZ</Label>
                       <Input
                         name="dateEnrolledIntoOtz"
                         id="dateEnrolledIntoOtz"
                         type="date"
+                        disabled
                         value={formik.values.dateEnrolledIntoOtz}
                         onChange={setCustomDate}
                         onBlur={formik.handleBlur}
@@ -409,9 +426,10 @@ const ServiceForm = (props) => {
                         }}
                       />
                     </CustomFormGroup>
-                    {formik?.errors?.dateEnrolledIntoOtz !== "" ? (
+                    {formik?.touched?.dateEnrolledIntoOtz &&
+                    formik?.errors?.dateEnrolledIntoOtz !== "" ? (
                       <span className={classes.error}>
-                        {formik.errors.dateEnrolledIntoOtz}
+                        {formik?.errors?.dateEnrolledIntoOtz}
                       </span>
                     ) : (
                       ""
@@ -420,16 +438,13 @@ const ServiceForm = (props) => {
                   {props?.activeContent?.enrollment?.pregnancyStatusId === 73 ||
                   props?.activeContent?.enrollment?.pregnancyStatusId === 75 ? (
                     <div className="form-group mb-3 col-md-4">
-                      <CustomFormGroup
-                      formik={formik}
-                      name="OtzPlus"
-                      >
+                      <CustomFormGroup formik={formik} name="OtzPlus">
                         <Label>OTZ plus</Label>
                         <Input
                           name="OtzPlus"
                           id="OtzPlus"
                           type="select"
-                          disabled={!!currentRecord?.OtzPlus}
+                          disabled
                           value={formik.values.OtzPlus}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
@@ -443,9 +458,10 @@ const ServiceForm = (props) => {
                           <option value="no">No</option>
                         </Input>
                       </CustomFormGroup>
-                      {formik.errors.OtzPlus !== "" ? (
+                      {formik?.touched?.OtzPlus &&
+                      formik.errors.OtzPlus !== "" ? (
                         <span className={classes.error}>
-                          {formik.errors.OtzPlus}
+                          {formik?.errors?.OtzPlus}
                         </span>
                       ) : (
                         ""
@@ -455,8 +471,8 @@ const ServiceForm = (props) => {
 
                   <div className="form-group mb-3 col-md-4">
                     <CustomFormGroup
-                    formik={formik}
-                    name="baselineViralLoadAtEnrollment"
+                      formik={formik}
+                      name="baselineViralLoadAtEnrollment"
                     >
                       <Label>
                         Baseline Viral Load At Enrollment into OTZ (copies/ml)
@@ -468,14 +484,15 @@ const ServiceForm = (props) => {
                         value={formik.values.baselineViralLoadAtEnrollment}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        disabled={!formik.values?.dateEnrolledIntoOtz}
+                        disabled
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
                         }}
                       ></Input>
                     </CustomFormGroup>
-                    {formik.errors.baselineViralLoadAtEnrollment !== "" ? (
+                    {formik?.touched?.baselineViralLoadAtEnrollment &&
+                    formik.errors.baselineViralLoadAtEnrollment !== "" ? (
                       <span className={classes.error}>
                         {formik.errors.baselineViralLoadAtEnrollment}
                       </span>
@@ -485,10 +502,7 @@ const ServiceForm = (props) => {
                   </div>
 
                   <div className="form-group mb-3 col-md-6">
-                    <CustomFormGroup
-                    formik={formik}
-                    name="dateDone"
-                    >
+                    <CustomFormGroup formik={formik} name="dateDone">
                       <Label>Date Done</Label>
                       <Input
                         name="dateDone"
@@ -507,14 +521,15 @@ const ServiceForm = (props) => {
                         value={formik.values.dateDone}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        disabled={!formik?.values?.dateEnrolledIntoOtz}
+                        disabled
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
                         }}
                       />
                     </CustomFormGroup>
-                    {formik.errors.dateDone !== "" ? (
+                    {formik?.touched?.dateDone &&
+                    formik.errors.dateDone !== "" ? (
                       <span className={classes.error}>
                         {formik.errors.dateDone}
                       </span>
@@ -548,111 +563,81 @@ const ServiceForm = (props) => {
                     </>
                   </div>
 
-                  <div>
-                    <div
+                  <div
+                    className="card"
+                    style={{
+                      margin: "20px",
+                    }}
+                  >
+                    <h5
                       style={{
-                        backgroundColor: "#d8f6ff",
-                        width: "95%",
-                        margin: "auto",
-                        marginTop: "5rem",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
+                        color: "black",
+                        fontSize: "20px",
+                        fontWeight: "600",
+                        marginLeft: "10px",
+                        marginTop: "10px",
                       }}
                     >
-                      <p
+                      Month 1
+                    </h5>
+
+                    <div>
+                      <div
                         style={{
-                          color: "black",
-                          fontSize: "15px",
-                          fontWeight: "600",
-                          marginLeft: "10px",
-                          marginTop: "10px",
+                          backgroundColor: "#d8f6ff",
+                          width: "95%",
+                          margin: "auto",
+                          marginTop: "5rem",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
                         }}
                       >
-                        Adherence Counselling Month 1
-                      </p>
-                      <IconButton
-                        onClick={() =>
-                          setIsDropdownsOpen((prevState) => {
-                            return {
-                              ...prevState,
-                              monthOneAdherenceCounselling:
-                                !prevState.monthOneAdherenceCounselling,
-                            };
-                          })
-                        }
-                        aria-expanded={
-                          isDropdownsOpen.monthOneAdherenceCounselling
-                        }
-                        aria-label="Expand"
-                      >
-                        <ExpandMoreIcon />
-                      </IconButton>
-                    </div>
-                    <div className="card-body">
-                      <Collapse
-                        in={isDropdownsOpen.monthOneAdherenceCounselling}
-                      >
-                        <div
-                          className="basic-form"
-                          style={{ padding: "0 50px 0 50px" }}
+                        <p
+                          style={{
+                            color: "black",
+                            fontSize: "15px",
+                            fontWeight: "600",
+                            marginLeft: "10px",
+                            marginTop: "10px",
+                          }}
                         >
-                          <div className="row">
-                            <div className="form-group mb-3 col-md-4">
-                              <CustomFormGroup
-                              formik={formik}
-                              name="acMonth1EacDate1"
-                              >
-                                <Label for="acMonth1EacDate1">
-                                  EAC 1 date
-                                  <span style={{ color: "red" }}> *</span>{" "}
-                                </Label>
-                                <Input
-                                  className="form-control"
-                                  type="date"
-                                  {...{
-                                    min: moment(
-                                      new Date(
-                                        formik?.values?.dateEnrolledIntoOtz
-                                      )
-                                    ).format("YYYY-MM-DD"),
-                                  }}
-                                  {...{
-                                    max: moment(new Date()).format(
-                                      "YYYY-MM-DD"
-                                    ),
-                                  }}
-                                  disabled={
-                                    !formik?.values?.dateEnrolledIntoOtz
-                                  }
-                                  name="acMonth1EacDate1"
-                                  id="acMonth1EacDate1"
-                                  value={formik?.values?.acMonth1EacDate1}
-                                  onChange={formik.handleChange}
-                                  onBlur={formik.handleBlur}
-                                  style={{
-                                    border: "1px solid #014D88",
-                                    borderRadius: "0.2rem",
-                                  }}
-                                />
-                                {formik.errors.acMonth1EacDate1 !== "" ? (
-                                  <span className={classes.error}>
-                                    {formik.errors.acMonth1EacDate1}
-                                  </span>
-                                ) : (
-                                  ""
-                                )}
-                              </CustomFormGroup>
-                            </div>
-
-                            {formik?.values?.acMonth1EacDate1 !== "" && (
+                          Adherence Counselling
+                        </p>
+                        <IconButton
+                          onClick={() =>
+                            setIsDropdownsOpen((prevState) => {
+                              return {
+                                ...prevState,
+                                monthOneAdherenceCounselling:
+                                  !prevState.monthOneAdherenceCounselling,
+                              };
+                            })
+                          }
+                          aria-expanded={
+                            isDropdownsOpen.monthOneAdherenceCounselling
+                          }
+                          aria-label="Expand"
+                        >
+                          <ExpandMoreIcon />
+                        </IconButton>
+                      </div>
+                      <div className="card-body">
+                        <Collapse
+                          in={isDropdownsOpen.monthOneAdherenceCounselling}
+                        >
+                          <div
+                            className="basic-form"
+                            style={{ padding: "0 50px 0 50px" }}
+                          >
+                            <div className="row">
                               <div className="form-group mb-3 col-md-4">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="acMonth1EacDate2"
+                                  formik={formik}
+                                  name="acMonth1EacDate1"
                                 >
-                                  <Label for="acMonth1EacDate2">
-                                    EAC 2 date
+                                  <Label for="acMonth1EacDate1">
+                                    EAC 1 date
                                     <span style={{ color: "red" }}>
                                       {" "}
                                       *
@@ -676,9 +661,9 @@ const ServiceForm = (props) => {
                                     disabled={
                                       !formik?.values?.dateEnrolledIntoOtz
                                     }
-                                    name="acMonth1EacDate2"
-                                    id="acMonth1EacDate2"
-                                    value={formik.values.acMonth1EacDate2}
+                                    name="acMonth1EacDate1"
+                                    id="acMonth1EacDate1"
+                                    value={formik?.values?.acMonth1EacDate1}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     style={{
@@ -686,28 +671,32 @@ const ServiceForm = (props) => {
                                       borderRadius: "0.2rem",
                                     }}
                                   />
-                                  {formik.errors.acMonth1EacDate2 !== "" ? (
+                                  {formik?.touched?.acMonth1EacDate1 &&
+                                  formik.errors.acMonth1EacDate1 !== "" ? (
                                     <span className={classes.error}>
-                                      {formik.errors.acMonth1EacDate2}
+                                      {formik?.errors?.acMonth1EacDate1}
                                     </span>
                                   ) : (
                                     ""
                                   )}
                                 </CustomFormGroup>
                               </div>
-                            )}
 
-                            {formik?.values?.acMonth1EacDate1 !== "" &&
-                              formik?.values?.acMonth1EacDate2 !== "" && (
+                              {formik?.values?.acMonth1EacDate1 !== "" && (
                                 <div className="form-group mb-3 col-md-4">
                                   <CustomFormGroup
-                                  formik={formik}
-                                  name="acMonth1EacDate3"
+                                    formik={formik}
+                                    name="acMonth1EacDate2"
                                   >
-                                    <Label for="acMonth1EacDate3">
-                                      EAC 3 date
+                                    <Label for="acMonth1EacDate2">
+                                      EAC 2 date
+                                      <span style={{ color: "red" }}>
+                                        {" "}
+                                        *
+                                      </span>{" "}
                                     </Label>
                                     <Input
+                                      className="form-control"
                                       type="date"
                                       {...{
                                         min: moment(
@@ -724,20 +713,20 @@ const ServiceForm = (props) => {
                                       disabled={
                                         !formik?.values?.dateEnrolledIntoOtz
                                       }
-                                      className="form-control"
-                                      name="acMonth1EacDate3"
-                                      id="acMonth1EacDate3"
-                                      value={formik.values.acMonth1EacDate3}
+                                      name="acMonth1EacDate2"
+                                      id="acMonth1EacDate2"
+                                      value={formik.values.acMonth1EacDate2}
                                       onChange={formik.handleChange}
                                       onBlur={formik.handleBlur}
                                       style={{
                                         border: "1px solid #014D88",
                                         borderRadius: "0.2rem",
                                       }}
-                                    ></Input>
-                                    {formik.errors.acMonth1EacDate3 !== "" ? (
+                                    />
+                                    {formik?.touched?.acMonth1EacDate2 &&
+                                    formik.errors.acMonth1EacDate2 !== "" ? (
                                       <span className={classes.error}>
-                                        {formik.errors.acMonth1EacDate3}
+                                        {formik?.errors?.acMonth1EacDate2}
                                       </span>
                                     ) : (
                                       ""
@@ -745,206 +734,221 @@ const ServiceForm = (props) => {
                                   </CustomFormGroup>
                                 </div>
                               )}
-                          </div>
 
-                          <div className="row">
-                            {formik?.values?.acMonth1EacDate3 !== "" && (
-                              <>
-                                <div className="form-group mb-3 col-md-4">
-                                  <CustomFormGroup
-                                  formik={formik}
-                                  name="dateViralLoadAssesmentMonth1"
-                                  >
-                                    <Label for="dateViralLoadAssesmentMonth1">
-                                      Date of viral load assessment
-                                      <span style={{ color: "red" }}>
-                                        {" "}
-                                        *
-                                      </span>{" "}
-                                    </Label>
-                                    <Input
-                                      className="form-control"
-                                      type="date"
-                                      {...{
-                                        min: moment(
-                                          new Date(
-                                            formik?.values?.dateEnrolledIntoOtz
-                                          )
-                                        ).format("YYYY-MM-DD"),
-                                      }}
-                                      {...{
-                                        max: moment(new Date()).format(
-                                          "YYYY-MM-DD"
-                                        ),
-                                      }}
-                                      disabled={
-                                        !formik?.values?.dateEnrolledIntoOtz
-                                      }
-                                      name="dateViralLoadAssesmentMonth1"
-                                      id="dateViralLoadAssesmentMonth1"
-                                      value={
-                                        formik?.values
-                                          ?.dateViralLoadAssesmentMonth1
-                                      }
-                                      onChange={formik.handleChange}
-                                      onBlur={formik.handleBlur}
-                                      style={{
-                                        border: "1px solid #014D88",
-                                        borderRadius: "0.2rem",
-                                      }}
-                                    />
-                                    {formik.errors
-                                      .dateViralLoadAssesmentMonth1 !== "" ? (
-                                      <span className={classes.error}>
-                                        {
-                                          formik.errors
-                                            .dateViralLoadAssesmentMonth1
+                              {formik?.values?.acMonth1EacDate1 !== "" &&
+                                formik?.values?.acMonth1EacDate2 !== "" && (
+                                  <div className="form-group mb-3 col-md-4">
+                                    <CustomFormGroup
+                                      formik={formik}
+                                      name="acMonth1EacDate3"
+                                    >
+                                      <Label for="acMonth1EacDate3">
+                                        EAC 3 date
+                                      </Label>
+                                      <Input
+                                        type="date"
+                                        {...{
+                                          min: moment(
+                                            new Date(
+                                              formik?.values?.dateEnrolledIntoOtz
+                                            )
+                                          ).format("YYYY-MM-DD"),
+                                        }}
+                                        {...{
+                                          max: moment(new Date()).format(
+                                            "YYYY-MM-DD"
+                                          ),
+                                        }}
+                                        disabled={
+                                          !formik?.values?.dateEnrolledIntoOtz
                                         }
-                                      </span>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </CustomFormGroup>
-                                </div>
+                                        className="form-control"
+                                        name="acMonth1EacDate3"
+                                        id="acMonth1EacDate3"
+                                        value={formik.values.acMonth1EacDate3}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        style={{
+                                          border: "1px solid #014D88",
+                                          borderRadius: "0.2rem",
+                                        }}
+                                      ></Input>
+                                      {formik?.touched?.acMonth1EacDate3 &&
+                                      formik.errors.acMonth1EacDate3 !== "" ? (
+                                        <span className={classes.error}>
+                                          {formik?.errors?.acMonth1EacDate3}
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </CustomFormGroup>
+                                  </div>
+                                )}
+                            </div>
 
-                                <div className="form-group mb-3 col-md-4">
-                                  <CustomFormGroup
-                                  formik={formik}
-                                  name="viralLoadMonth1"
-                                  >
-                                    <Label for="viralLoadMonth1">
-                                      Viral load
-                                      <span style={{ color: "red" }}>
-                                        {" "}
-                                        *
-                                      </span>{" "}
-                                    </Label>
-                                    <Input
-                                      className="form-control"
-                                      type="number"
+                            <div className="row">
+                              {formik?.values?.acMonth1EacDate3 !== "" && (
+                                <>
+                                  <div className="form-group mb-3 col-md-4">
+                                    <CustomFormGroup
+                                      formik={formik}
+                                      name="dateViralLoadAssesmentMonth1"
+                                    >
+                                      <Label for="dateViralLoadAssesmentMonth1">
+                                        Date of viral load assessment
+                                        <span style={{ color: "red" }}>
+                                          {" "}
+                                          *
+                                        </span>{" "}
+                                      </Label>
+                                      <Input
+                                        className="form-control"
+                                        type="date"
+                                        {...{
+                                          min: moment(
+                                            new Date(
+                                              formik?.values?.dateEnrolledIntoOtz
+                                            )
+                                          ).format("YYYY-MM-DD"),
+                                        }}
+                                        {...{
+                                          max: moment(new Date()).format(
+                                            "YYYY-MM-DD"
+                                          ),
+                                        }}
+                                        disabled={
+                                          !formik?.values?.dateEnrolledIntoOtz
+                                        }
+                                        name="dateViralLoadAssesmentMonth1"
+                                        id="dateViralLoadAssesmentMonth1"
+                                        value={
+                                          formik?.values
+                                            ?.dateViralLoadAssesmentMonth1
+                                        }
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        style={{
+                                          border: "1px solid #014D88",
+                                          borderRadius: "0.2rem",
+                                        }}
+                                      />
+                                      {formik?.touched
+                                        ?.dateViralLoadAssesmentMonth1 &&
+                                      formik.errors
+                                        .dateViralLoadAssesmentMonth1 !== "" ? (
+                                        <span className={classes.error}>
+                                          {
+                                            formik?.errors
+                                              ?.dateViralLoadAssesmentMonth1
+                                          }
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </CustomFormGroup>
+                                  </div>
+
+                                  <div className="form-group mb-3 col-md-4">
+                                    <CustomFormGroup
+                                      formik={formik}
                                       name="viralLoadMonth1"
-                                      id="viralLoadMonth1"
-                                      value={formik?.values?.viralLoadMonth1}
-                                      onChange={formik.handleChange}
-                                      onBlur={formik.handleBlur}
-                                      style={{
-                                        border: "1px solid #014D88",
-                                        borderRadius: "0.2rem",
-                                      }}
-                                    />
-                                    {formik.errors.viralLoadMonth1 !== "" ? (
-                                      <span className={classes.error}>
-                                        {formik.errors.viralLoadMonth1}
-                                      </span>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </CustomFormGroup>
-                                </div>
-                              </>
-                            )}
+                                    >
+                                      <Label for="viralLoadMonth1">
+                                        Viral load
+                                        <span style={{ color: "red" }}>
+                                          {" "}
+                                          *
+                                        </span>{" "}
+                                      </Label>
+                                      <Input
+                                        className="form-control"
+                                        type="number"
+                                        name="viralLoadMonth1"
+                                        id="viralLoadMonth1"
+                                        value={formik?.values?.viralLoadMonth1}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        style={{
+                                          border: "1px solid #014D88",
+                                          borderRadius: "0.2rem",
+                                        }}
+                                      />
+                                      {formik?.touched?.viralLoadMonth1 &&
+                                      formik.errors.viralLoadMonth1 !== "" ? (
+                                        <span className={classes.error}>
+                                          {formik.errors.viralLoadMonth1}
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </CustomFormGroup>
+                                  </div>
+                                </>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </Collapse>
+                        </Collapse>
+                      </div>
                     </div>
-                  </div>
 
-                  <div>
-                    <div
-                      style={{
-                        backgroundColor: "#d8f6ff",
-                        width: "95%",
-                        margin: "auto",
-                        marginTop: "5rem",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
-                      <p
+                    <div>
+                      <div
                         style={{
-                          color: "black",
-                          fontSize: "15px",
-                          fontWeight: "600",
-                          marginLeft: "10px",
-                          marginTop: "10px",
+                          backgroundColor: "#d8f6ff",
+                          width: "95%",
+                          margin: "auto",
+                          marginTop: "5rem",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
                         }}
                       >
-                        Modules activity/date of completion Month 1
-                      </p>
-                      <IconButton
-                        onClick={() =>
-                          setIsDropdownsOpen((prevState) => {
-                            return {
-                              ...prevState,
-                              monthOneModulesActivities:
-                                !prevState.monthOneModulesActivities,
-                            };
-                          })
-                        }
-                        aria-expanded={
-                          isDropdownsOpen.monthOneModulesActivities
-                        }
-                        aria-label="Expand"
-                      >
-                        <ExpandMoreIcon />
-                      </IconButton>
-                    </div>
-
-                    <div className="card-body">
-                      <Collapse in={isDropdownsOpen.monthOneModulesActivities}>
-                        <div
-                          className="basic-form"
-                          style={{ padding: "0 50px 0 50px" }}
+                        <p
+                          style={{
+                            color: "black",
+                            fontSize: "15px",
+                            fontWeight: "600",
+                            marginLeft: "10px",
+                            marginTop: "10px",
+                          }}
                         >
-                          <div className="row">
-                            <div className="form-group mb-3 col-md-6">
-                              <CustomFormGroup
-                              formik={formik}
-                              name="maMonth1PositiveLivingChoice"
-                              >
-                                <Label for="maMonth1PositiveLivingChoice">
-                                  Positive Living
-                                  <span style={{ color: "red" }}> *</span>{" "}
-                                </Label>
-                                <Input
-                                  className="form-control"
-                                  type="select"
-                                  name="maMonth1PositiveLivingChoice"
-                                  id="maMonth1PositiveLivingChoice"
-                                  value={
-                                    formik.values.maMonth1PositiveLivingChoice
-                                  }
-                                  onChange={formik.handleChange}
-                                  onBlur={formik.handleBlur}
-                                  style={{
-                                    border: "1px solid #014D88",
-                                    borderRadius: "0.2rem",
-                                  }}
-                                >
-                                  <option value="">Select</option>
-                                  <option value="yes">Yes</option>
-                                  <option value="no">No</option>
-                                </Input>
-                                {formik.errors.maMonth1PositiveLivingChoice !==
-                                "" ? (
-                                  <span className={classes.error}>
-                                    {formik.errors.maMonth1PositiveLivingChoice}
-                                  </span>
-                                ) : (
-                                  ""
-                                )}
-                              </CustomFormGroup>
-                            </div>
-                            {formik.values.maMonth1PositiveLivingChoice ===
-                              "yes" && (
+                          Modules activity/date of completion
+                        </p>
+                        <IconButton
+                          onClick={() =>
+                            setIsDropdownsOpen((prevState) => {
+                              return {
+                                ...prevState,
+                                monthOneModulesActivities:
+                                  !prevState.monthOneModulesActivities,
+                              };
+                            })
+                          }
+                          aria-expanded={
+                            isDropdownsOpen.monthOneModulesActivities
+                          }
+                          aria-label="Expand"
+                        >
+                          <ExpandMoreIcon />
+                        </IconButton>
+                      </div>
+
+                      <div className="card-body">
+                        <Collapse
+                          in={isDropdownsOpen.monthOneModulesActivities}
+                        >
+                          <div
+                            className="basic-form"
+                            style={{ padding: "0 50px 0 50px" }}
+                          >
+                            <div className="row">
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="maMonth1PositiveLivingDate"
+                                  formik={formik}
+                                  name="maMonth1PositiveLivingChoice"
                                 >
-                                  <Label for="maMonth1PositiveLivingDate">
-                                    Date for positive living
+                                  <Label for="maMonth1PositiveLivingChoice">
+                                    Positive Living
                                     <span style={{ color: "red" }}>
                                       {" "}
                                       *
@@ -952,27 +956,11 @@ const ServiceForm = (props) => {
                                   </Label>
                                   <Input
                                     className="form-control"
-                                    type="date"
-                                    {...{
-                                      min: moment(
-                                        new Date(
-                                          props?.activeContent?.artCommence?.visitDate
-                                        )
-                                      ).format("YYYY-MM-DD"),
-                                    }}
-                                    {...{
-                                      max: moment(new Date()).format(
-                                        "YYYY-MM-DD"
-                                      ),
-                                    }}
-                                    disabled={
-                                      !props?.activeContent?.enrollment
-                                        ?.dateOfRegistration
-                                    }
-                                    name="maMonth1PositiveLivingDate"
-                                    id="maMonth1PositiveLivingDate"
+                                    type="select"
+                                    name="maMonth1PositiveLivingChoice"
+                                    id="maMonth1PositiveLivingChoice"
                                     value={
-                                      formik.values.maMonth1PositiveLivingDate
+                                      formik.values.maMonth1PositiveLivingChoice
                                     }
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
@@ -980,380 +968,433 @@ const ServiceForm = (props) => {
                                       border: "1px solid #014D88",
                                       borderRadius: "0.2rem",
                                     }}
-                                  />
-                                  {formik.errors.maMonth1PositiveLivingDate !==
-                                  "" ? (
+                                  >
+                                    <option value="">Select</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                  </Input>
+                                  {formik?.touched
+                                    ?.maMonth1PositiveLivingChoice &&
+                                  formik.errors.maMonth1PositiveLivingChoice !==
+                                    "" ? (
                                     <span className={classes.error}>
-                                      {formik.errors.maMonth1PositiveLivingDate}
+                                      {
+                                        formik?.errors
+                                          ?.maMonth1PositiveLivingChoice
+                                      }
                                     </span>
                                   ) : (
                                     ""
                                   )}
                                 </CustomFormGroup>
                               </div>
-                            )}
+                              {formik.values.maMonth1PositiveLivingChoice ===
+                                "yes" && (
+                                <div className="form-group mb-3 col-md-6">
+                                  <CustomFormGroup
+                                    formik={formik}
+                                    name="maMonth1PositiveLivingDate"
+                                  >
+                                    <Label for="maMonth1PositiveLivingDate">
+                                      Date for positive living
+                                      <span style={{ color: "red" }}>
+                                        {" "}
+                                        *
+                                      </span>{" "}
+                                    </Label>
+                                    <Input
+                                      className="form-control"
+                                      type="date"
+                                      {...{
+                                        min: moment(
+                                          new Date(
+                                            props?.activeContent?.artCommence?.visitDate
+                                          )
+                                        ).format("YYYY-MM-DD"),
+                                      }}
+                                      {...{
+                                        max: moment(new Date()).format(
+                                          "YYYY-MM-DD"
+                                        ),
+                                      }}
+                                      disabled={
+                                        !props?.activeContent?.enrollment
+                                          ?.dateOfRegistration
+                                      }
+                                      name="maMonth1PositiveLivingDate"
+                                      id="maMonth1PositiveLivingDate"
+                                      value={
+                                        formik.values.maMonth1PositiveLivingDate
+                                      }
+                                      onChange={formik.handleChange}
+                                      onBlur={formik.handleBlur}
+                                      style={{
+                                        border: "1px solid #014D88",
+                                        borderRadius: "0.2rem",
+                                      }}
+                                    />
+                                    {formik?.touched
+                                      ?.maMonth1PositiveLivingDate &&
+                                    formik.errors.maMonth1PositiveLivingDate !==
+                                      "" ? (
+                                      <span className={classes.error}>
+                                        {
+                                          formik?.errors
+                                            ?.maMonth1PositiveLivingDate
+                                        }
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )}
+                                  </CustomFormGroup>
+                                </div>
+                              )}
 
-                            <div className="form-group mb-3 col-md-6">
-                              <CustomFormGroup
-                              formik={formik}
-                              name="maMonth1LiteracyTreatmentChoice"
-                              >
-                                <Label for="maMonth1LiteracyTreatmentChoice">
-                                  Literacy Treatment
-                                  <span style={{ color: "red" }}> *</span>{" "}
-                                </Label>
-                                <Input
-                                  className="form-control"
-                                  type="select"
+                              <div className="form-group mb-3 col-md-6">
+                                <CustomFormGroup
+                                  formik={formik}
                                   name="maMonth1LiteracyTreatmentChoice"
-                                  id="maMonth1LiteracyTreatmentChoice"
-                                  value={
-                                    formik.values
-                                      .maMonth1LiteracyTreatmentChoice
-                                  }
-                                  onChange={formik.handleChange}
-                                  onBlur={formik.handleBlur}
-                                  style={{
-                                    border: "1px solid #014D88",
-                                    borderRadius: "0.2rem",
-                                  }}
                                 >
-                                  <option value="">Select</option>
-                                  <option value="yes">Yes</option>
-                                  <option value="no">No</option>
-                                </Input>
-                                {formik.errors
-                                  .maMonth1LiteracyTreatmentChoice !== "" ? (
-                                  <span className={classes.error}>
-                                    {
-                                      formik.errors
+                                  <Label for="maMonth1LiteracyTreatmentChoice">
+                                    Literacy Treatment
+                                    <span style={{ color: "red" }}>
+                                      {" "}
+                                      *
+                                    </span>{" "}
+                                  </Label>
+                                  <Input
+                                    className="form-control"
+                                    type="select"
+                                    name="maMonth1LiteracyTreatmentChoice"
+                                    id="maMonth1LiteracyTreatmentChoice"
+                                    value={
+                                      formik.values
                                         .maMonth1LiteracyTreatmentChoice
                                     }
-                                  </span>
-                                ) : (
-                                  ""
-                                )}
-                              </CustomFormGroup>
-                            </div>
-
-                            {formik.values.maMonth1LiteracyTreatmentChoice ===
-                              "yes" && (
-                              <div className="form-group mb-3 col-md-6">
-                                <CustomFormGroup
-                                formik={formik}
-                                name="maMonth1LiteracyTreatmentDate"
-                                >
-                                  <Label for="maMonth1LiteracyTreatmentDate">
-                                    Date for literacy training
-                                    <span style={{ color: "red" }}>
-                                      {" "}
-                                      *
-                                    </span>{" "}
-                                  </Label>
-                                  <Input
-                                    className="form-control"
-                                    type="date"
-                                    {...{
-                                      min: moment(
-                                        new Date(
-                                          props?.activeContent?.artCommence?.visitDate
-                                        )
-                                      ).format("YYYY-MM-DD"),
-                                    }}
-                                    {...{
-                                      max: moment(new Date()).format(
-                                        "YYYY-MM-DD"
-                                      ),
-                                    }}
-                                    disabled={
-                                      !props?.activeContent?.enrollment
-                                        ?.dateOfRegistration
-                                    }
-                                    name="maMonth1LiteracyTreatmentDate"
-                                    id="maMonth1LiteracyTreatmentDate"
-                                    value={
-                                      formik.values
-                                        .maMonth1LiteracyTreatmentDate
-                                    }
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     style={{
                                       border: "1px solid #014D88",
                                       borderRadius: "0.2rem",
                                     }}
-                                  />
-                                  {formik.errors
-                                    .maMonth1LiteracyTreatmentDate !== "" ? (
+                                  >
+                                    <option value="">Select</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                  </Input>
+                                  {formik?.touched
+                                    ?.maMonth1LiteracyTreatmentChoice &&
+                                  formik.errors
+                                    .maMonth1LiteracyTreatmentChoice !== "" ? (
                                     <span className={classes.error}>
                                       {
-                                        formik.errors
+                                        formik?.errors
+                                          ?.maMonth1LiteracyTreatmentChoice
+                                      }
+                                    </span>
+                                  ) : (
+                                    ""
+                                  )}
+                                </CustomFormGroup>
+                              </div>
+
+                              {formik.values.maMonth1LiteracyTreatmentChoice ===
+                                "yes" && (
+                                <div className="form-group mb-3 col-md-6">
+                                  <CustomFormGroup
+                                    formik={formik}
+                                    name="maMonth1LiteracyTreatmentDate"
+                                  >
+                                    <Label for="maMonth1LiteracyTreatmentDate">
+                                      Date for literacy training
+                                      <span style={{ color: "red" }}>
+                                        {" "}
+                                        *
+                                      </span>{" "}
+                                    </Label>
+                                    <Input
+                                      className="form-control"
+                                      type="date"
+                                      {...{
+                                        min: moment(
+                                          new Date(
+                                            props?.activeContent?.artCommence?.visitDate
+                                          )
+                                        ).format("YYYY-MM-DD"),
+                                      }}
+                                      {...{
+                                        max: moment(new Date()).format(
+                                          "YYYY-MM-DD"
+                                        ),
+                                      }}
+                                      disabled={
+                                        !props?.activeContent?.enrollment
+                                          ?.dateOfRegistration
+                                      }
+                                      name="maMonth1LiteracyTreatmentDate"
+                                      id="maMonth1LiteracyTreatmentDate"
+                                      value={
+                                        formik.values
                                           .maMonth1LiteracyTreatmentDate
                                       }
-                                    </span>
-                                  ) : (
-                                    ""
-                                  )}
-                                </CustomFormGroup>
-                              </div>
-                            )}
+                                      onChange={formik.handleChange}
+                                      onBlur={formik.handleBlur}
+                                      style={{
+                                        border: "1px solid #014D88",
+                                        borderRadius: "0.2rem",
+                                      }}
+                                    />
+                                    {formik?.touched
+                                      ?.maMonth1LiteracyTreatmentDate &&
+                                    formik.errors
+                                      .maMonth1LiteracyTreatmentDate !== "" ? (
+                                      <span className={classes.error}>
+                                        {
+                                          formik?.errors
+                                            ?.maMonth1LiteracyTreatmentDate
+                                        }
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )}
+                                  </CustomFormGroup>
+                                </div>
+                              )}
 
-                            <div className="form-group mb-3 col-md-6">
-                              <CustomFormGroup
-                              formik={formik}
-                              name="maMonth1AdolescentsParticipationChoice"
-                              >
-                                <Label for="maMonth1AdolescentsParticipationChoice">
-                                  Adolescents Participation
-                                  <span style={{ color: "red" }}> *</span>{" "}
-                                </Label>
-                                <Input
-                                  className="form-control"
-                                  type="select"
+                              <div className="form-group mb-3 col-md-6">
+                                <CustomFormGroup
+                                  formik={formik}
                                   name="maMonth1AdolescentsParticipationChoice"
-                                  id="maMonth1AdolescentsParticipationChoice"
-                                  value={
-                                    formik.values
-                                      .maMonth1AdolescentsParticipationChoice
-                                  }
-                                  onChange={formik.handleChange}
-                                  onBlur={formik.handleBlur}
-                                  style={{
-                                    border: "1px solid #014D88",
-                                    borderRadius: "0.2rem",
-                                  }}
                                 >
-                                  <option value="">Select</option>
-                                  <option value="yes">Yes</option>
-                                  <option value="no">No</option>
-                                </Input>
-                                {formik.errors
-                                  .maMonth1AdolescentsParticipationChoice !==
-                                "" ? (
-                                  <span className={classes.error}>
-                                    {
-                                      formik.errors
+                                  <Label for="maMonth1AdolescentsParticipationChoice">
+                                    Adolescents Participation
+                                    <span style={{ color: "red" }}>
+                                      {" "}
+                                      *
+                                    </span>{" "}
+                                  </Label>
+                                  <Input
+                                    className="form-control"
+                                    type="select"
+                                    name="maMonth1AdolescentsParticipationChoice"
+                                    id="maMonth1AdolescentsParticipationChoice"
+                                    value={
+                                      formik.values
                                         .maMonth1AdolescentsParticipationChoice
                                     }
-                                  </span>
-                                ) : (
-                                  ""
-                                )}
-                              </CustomFormGroup>
-                            </div>
-
-                            {formik.values
-                              .maMonth1AdolescentsParticipationChoice ===
-                              "yes" && (
-                              <div className="form-group mb-3 col-md-6">
-                                <CustomFormGroup
-                                formik={formik}
-                                name="maMonth1AdolescentsParticipationDate"
-                                >
-                                  <Label for="maMonth1AdolescentsParticipationDate">
-                                    Date for adolescent participation
-                                    <span style={{ color: "red" }}>
-                                      {" "}
-                                      *
-                                    </span>{" "}
-                                  </Label>
-                                  <Input
-                                    className="form-control"
-                                    type="date"
-                                    {...{
-                                      min: moment(
-                                        new Date(
-                                          props?.activeContent?.artCommence?.visitDate
-                                        )
-                                      ).format("YYYY-MM-DD"),
-                                    }}
-                                    {...{
-                                      max: moment(new Date()).format(
-                                        "YYYY-MM-DD"
-                                      ),
-                                    }}
-                                    disabled={
-                                      !props?.activeContent?.enrollment
-                                        ?.dateOfRegistration
-                                    }
-                                    name="maMonth1AdolescentsParticipationDate"
-                                    id="maMonth1AdolescentsParticipationDate"
-                                    value={
-                                      formik.values
-                                        .maMonth1AdolescentsParticipationDate
-                                    }
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     style={{
                                       border: "1px solid #014D88",
                                       borderRadius: "0.2rem",
                                     }}
-                                  />
-                                  {formik.errors
-                                    .maMonth1AdolescentsParticipationDate !==
-                                  "" ? (
+                                  >
+                                    <option value="">Select</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                  </Input>
+                                  {formik?.touched
+                                    ?.maMonth1AdolescentsParticipationChoice &&
+                                  formik?.errors
+                                    ?.maMonth1AdolescentsParticipationChoice !==
+                                    "" ? (
                                     <span className={classes.error}>
                                       {
-                                        formik.errors
+                                        formik?.errors
+                                          ?.maMonth1AdolescentsParticipationChoice
+                                      }
+                                    </span>
+                                  ) : (
+                                    ""
+                                  )}
+                                </CustomFormGroup>
+                              </div>
+
+                              {formik.values
+                                .maMonth1AdolescentsParticipationChoice ===
+                                "yes" && (
+                                <div className="form-group mb-3 col-md-6">
+                                  <CustomFormGroup
+                                    formik={formik}
+                                    name="maMonth1AdolescentsParticipationDate"
+                                  >
+                                    <Label for="maMonth1AdolescentsParticipationDate">
+                                      Date for adolescent participation
+                                      <span style={{ color: "red" }}>
+                                        {" "}
+                                        *
+                                      </span>{" "}
+                                    </Label>
+                                    <Input
+                                      className="form-control"
+                                      type="date"
+                                      {...{
+                                        min: moment(
+                                          new Date(
+                                            props?.activeContent?.artCommence?.visitDate
+                                          )
+                                        ).format("YYYY-MM-DD"),
+                                      }}
+                                      {...{
+                                        max: moment(new Date()).format(
+                                          "YYYY-MM-DD"
+                                        ),
+                                      }}
+                                      disabled={
+                                        !props?.activeContent?.enrollment
+                                          ?.dateOfRegistration
+                                      }
+                                      name="maMonth1AdolescentsParticipationDate"
+                                      id="maMonth1AdolescentsParticipationDate"
+                                      value={
+                                        formik.values
                                           .maMonth1AdolescentsParticipationDate
                                       }
-                                    </span>
-                                  ) : (
-                                    ""
-                                  )}
-                                </CustomFormGroup>
-                              </div>
-                            )}
+                                      onChange={formik.handleChange}
+                                      onBlur={formik.handleBlur}
+                                      style={{
+                                        border: "1px solid #014D88",
+                                        borderRadius: "0.2rem",
+                                      }}
+                                    />
+                                    {formik?.touched
+                                      ?.maMonth1AdolescentsParticipationDate &&
+                                    formik.errors
+                                      .maMonth1AdolescentsParticipationDate !==
+                                      "" ? (
+                                      <span className={classes.error}>
+                                        {
+                                          formik?.errors
+                                            ?.maMonth1AdolescentsParticipationDate
+                                        }
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )}
+                                  </CustomFormGroup>
+                                </div>
+                              )}
 
-                            <div className="form-group mb-3 col-md-6">
-                              <CustomFormGroup
-                              formik={formik}
-                              name="maMonth1leadershipTrainingChoice"
-                              >
-                                <Label for="maMonth1leadershipTrainingChoice">
-                                  Leadership participation
-                                  <span style={{ color: "red" }}> *</span>{" "}
-                                </Label>
-                                <Input
-                                  className="form-control"
-                                  type="select"
+                              <div className="form-group mb-3 col-md-6">
+                                <CustomFormGroup
+                                  formik={formik}
                                   name="maMonth1leadershipTrainingChoice"
-                                  id="maMonth1leadershipTrainingChoice"
-                                  value={
-                                    formik.values
-                                      .maMonth1leadershipTrainingChoice
-                                  }
-                                  onChange={formik.handleChange}
-                                  onBlur={formik.handleBlur}
-                                  style={{
-                                    border: "1px solid #014D88",
-                                    borderRadius: "0.2rem",
-                                  }}
                                 >
-                                  <option value="">Select</option>
-                                  <option value="yes">Yes</option>
-                                  <option value="no">No</option>
-                                </Input>
-                                {formik.errors
-                                  .maMonth1leadershipTrainingChoice !== "" ? (
-                                  <span className={classes.error}>
-                                    {
-                                      formik.errors
+                                  <Label for="maMonth1leadershipTrainingChoice">
+                                    Leadership participation
+                                    <span style={{ color: "red" }}>
+                                      {" "}
+                                      *
+                                    </span>{" "}
+                                  </Label>
+                                  <Input
+                                    className="form-control"
+                                    type="select"
+                                    name="maMonth1leadershipTrainingChoice"
+                                    id="maMonth1leadershipTrainingChoice"
+                                    value={
+                                      formik.values
                                         .maMonth1leadershipTrainingChoice
                                     }
-                                  </span>
-                                ) : (
-                                  ""
-                                )}
-                              </CustomFormGroup>
-                            </div>
-
-                            {formik.values.maMonth1leadershipTrainingChoice ===
-                              "yes" && (
-                              <div className="form-group mb-3 col-md-6">
-                                <CustomFormGroup
-                                formik={formik}
-                                name="maMonth1leadershipTrainingDate"
-                                >
-                                  <Label for="maMonth1leadershipTrainingDate">
-                                    Date for Leadership participation
-                                    <span style={{ color: "red" }}>
-                                      {" "}
-                                      *
-                                    </span>{" "}
-                                  </Label>
-                                  <Input
-                                    className="form-control"
-                                    type="date"
-                                    {...{
-                                      min: moment(
-                                        new Date(
-                                          props?.activeContent?.artCommence?.visitDate
-                                        )
-                                      ).format("YYYY-MM-DD"),
-                                    }}
-                                    {...{
-                                      max: moment(new Date()).format(
-                                        "YYYY-MM-DD"
-                                      ),
-                                    }}
-                                    disabled={
-                                      !props?.activeContent?.enrollment
-                                        ?.dateOfRegistration
-                                    }
-                                    name="maMonth1leadershipTrainingDate"
-                                    id="maMonth1leadershipTrainingDate"
-                                    value={
-                                      formik.values
-                                        .maMonth1leadershipTrainingDate
-                                    }
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     style={{
                                       border: "1px solid #014D88",
                                       borderRadius: "0.2rem",
                                     }}
-                                  />
-                                  {formik.errors
-                                    .maMonth1leadershipTrainingDate !== "" ? (
+                                  >
+                                    <option value="">Select</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                  </Input>
+                                  {formik?.touched
+                                    ?.maMonth1leadershipTrainingChoice &&
+                                  formik?.errors
+                                    ?.maMonth1leadershipTrainingChoice !==
+                                    "" ? (
                                     <span className={classes.error}>
                                       {
-                                        formik.errors
+                                        formik?.errors
+                                          ?.maMonth1leadershipTrainingChoice
+                                      }
+                                    </span>
+                                  ) : (
+                                    ""
+                                  )}
+                                </CustomFormGroup>
+                              </div>
+
+                              {formik.values
+                                .maMonth1leadershipTrainingChoice === "yes" && (
+                                <div className="form-group mb-3 col-md-6">
+                                  <CustomFormGroup
+                                    formik={formik}
+                                    name="maMonth1leadershipTrainingDate"
+                                  >
+                                    <Label for="maMonth1leadershipTrainingDate">
+                                      Date for Leadership participation
+                                      <span style={{ color: "red" }}>
+                                        {" "}
+                                        *
+                                      </span>{" "}
+                                    </Label>
+                                    <Input
+                                      className="form-control"
+                                      type="date"
+                                      {...{
+                                        min: moment(
+                                          new Date(
+                                            props?.activeContent?.artCommence?.visitDate
+                                          )
+                                        ).format("YYYY-MM-DD"),
+                                      }}
+                                      {...{
+                                        max: moment(new Date()).format(
+                                          "YYYY-MM-DD"
+                                        ),
+                                      }}
+                                      disabled={
+                                        !props?.activeContent?.enrollment
+                                          ?.dateOfRegistration
+                                      }
+                                      name="maMonth1leadershipTrainingDate"
+                                      id="maMonth1leadershipTrainingDate"
+                                      value={
+                                        formik.values
                                           .maMonth1leadershipTrainingDate
                                       }
-                                    </span>
-                                  ) : (
-                                    ""
-                                  )}
-                                </CustomFormGroup>
-                              </div>
-                            )}
+                                      onChange={formik.handleChange}
+                                      onBlur={formik.handleBlur}
+                                      style={{
+                                        border: "1px solid #014D88",
+                                        borderRadius: "0.2rem",
+                                      }}
+                                    />
+                                    {formik?.touched
+                                      ?.maMonth1leadershipTrainingDate &&
+                                    formik?.errors
+                                      ?.maMonth1leadershipTrainingDate !==
+                                      "" ? (
+                                      <span className={classes.error}>
+                                        {
+                                          formik?.errors
+                                            ?.maMonth1leadershipTrainingDate
+                                        }
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )}
+                                  </CustomFormGroup>
+                                </div>
+                              )}
 
-                            <div className="form-group mb-3 col-md-6">
-                              <CustomFormGroup
-                              formik={formik}
-                              name="maMonth1PeerToPeerChoice"
-                              >
-                                <Label for="maMonth1PeerToPeerChoice">
-                                  Peer to Peer Mentorship
-                                  <span style={{ color: "red" }}> *</span>{" "}
-                                </Label>
-                                <Input
-                                  className="form-control"
-                                  type="select"
+                              <div className="form-group mb-3 col-md-6">
+                                <CustomFormGroup
+                                  formik={formik}
                                   name="maMonth1PeerToPeerChoice"
-                                  id="maMonth1PeerToPeerChoice"
-                                  value={formik.values.maMonth1PeerToPeerChoice}
-                                  onChange={formik.handleChange}
-                                  onBlur={formik.handleBlur}
-                                  style={{
-                                    border: "1px solid #014D88",
-                                    borderRadius: "0.2rem",
-                                  }}
                                 >
-                                  <option value="">Select</option>
-                                  <option value="yes">Yes</option>
-                                  <option value="no">No</option>
-                                </Input>
-                                {formik.errors.maMonth1PeerToPeerChoice !==
-                                "" ? (
-                                  <span className={classes.error}>
-                                    {formik.errors.maMonth1PeerToPeerChoice}
-                                  </span>
-                                ) : (
-                                  ""
-                                )}
-                              </CustomFormGroup>
-                            </div>
-
-                            {formik.values.maMonth1PeerToPeerChoice ===
-                              "yes" && (
-                              <div className="form-group mb-3 col-md-6">
-                                <CustomFormGroup
-                                formik={formik}
-                                name="maMonth1PeerToPeerDate"
-                                >
-                                  <Label for="maMonth1PeerToPeerDate">
-                                    Date for peer to peer mentorship
+                                  <Label for="maMonth1PeerToPeerChoice">
+                                    Peer to Peer Mentorship
                                     <span style={{ color: "red" }}>
                                       {" "}
                                       *
@@ -1361,91 +1402,100 @@ const ServiceForm = (props) => {
                                   </Label>
                                   <Input
                                     className="form-control"
-                                    type="date"
-                                    {...{
-                                      min: moment(
-                                        new Date(
-                                          props?.activeContent?.artCommence?.visitDate
-                                        )
-                                      ).format("YYYY-MM-DD"),
-                                    }}
-                                    {...{
-                                      max: moment(new Date()).format(
-                                        "YYYY-MM-DD"
-                                      ),
-                                    }}
-                                    disabled={
-                                      !props?.activeContent?.enrollment
-                                        ?.dateOfRegistration
+                                    type="select"
+                                    name="maMonth1PeerToPeerChoice"
+                                    id="maMonth1PeerToPeerChoice"
+                                    value={
+                                      formik.values.maMonth1PeerToPeerChoice
                                     }
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    style={{
+                                      border: "1px solid #014D88",
+                                      borderRadius: "0.2rem",
+                                    }}
+                                  >
+                                    <option value="">Select</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                  </Input>
+                                  {formik?.touched?.maMonth1PeerToPeerChoice &&
+                                  formik?.errors?.maMonth1PeerToPeerChoice !==
+                                    "" ? (
+                                    <span className={classes.error}>
+                                      {formik?.errors?.maMonth1PeerToPeerChoice}
+                                    </span>
+                                  ) : (
+                                    ""
+                                  )}
+                                </CustomFormGroup>
+                              </div>
+
+                              {formik.values.maMonth1PeerToPeerChoice ===
+                                "yes" && (
+                                <div className="form-group mb-3 col-md-6">
+                                  <CustomFormGroup
+                                    formik={formik}
                                     name="maMonth1PeerToPeerDate"
-                                    id="maMonth1PeerToPeerDate"
-                                    value={formik.values.maMonth1PeerToPeerDate}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    style={{
-                                      border: "1px solid #014D88",
-                                      borderRadius: "0.2rem",
-                                    }}
-                                  />
-                                  {formik.errors.maMonth1PeerToPeerDate !==
-                                  "" ? (
-                                    <span className={classes.error}>
-                                      {formik.errors.maMonth1PeerToPeerDate}
-                                    </span>
-                                  ) : (
-                                    ""
-                                  )}
-                                </CustomFormGroup>
-                              </div>
-                            )}
+                                  >
+                                    <Label for="maMonth1PeerToPeerDate">
+                                      Date for peer to peer mentorship
+                                      <span style={{ color: "red" }}>
+                                        {" "}
+                                        *
+                                      </span>{" "}
+                                    </Label>
+                                    <Input
+                                      className="form-control"
+                                      type="date"
+                                      {...{
+                                        min: moment(
+                                          new Date(
+                                            props?.activeContent?.artCommence?.visitDate
+                                          )
+                                        ).format("YYYY-MM-DD"),
+                                      }}
+                                      {...{
+                                        max: moment(new Date()).format(
+                                          "YYYY-MM-DD"
+                                        ),
+                                      }}
+                                      disabled={
+                                        !props?.activeContent?.enrollment
+                                          ?.dateOfRegistration
+                                      }
+                                      name="maMonth1PeerToPeerDate"
+                                      id="maMonth1PeerToPeerDate"
+                                      value={
+                                        formik.values.maMonth1PeerToPeerDate
+                                      }
+                                      onChange={formik.handleChange}
+                                      onBlur={formik.handleBlur}
+                                      style={{
+                                        border: "1px solid #014D88",
+                                        borderRadius: "0.2rem",
+                                      }}
+                                    />
+                                    {formik?.touched?.maMonth1PeerToPeerDate &&
+                                    formik.errors.maMonth1PeerToPeerDate !==
+                                      "" ? (
+                                      <span className={classes.error}>
+                                        {formik?.errors?.maMonth1PeerToPeerDate}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )}
+                                  </CustomFormGroup>
+                                </div>
+                              )}
 
-                            <div className="form-group mb-3 col-md-6">
-                              <CustomFormGroup
-                              formik={formik}
-                              name="maMonth1RoleOfOtzChoice"
-                              >
-                                <Label for="maMonth1RoleOfOtzChoice">
-                                  Role of OTZ in 95-95-95
-                                  <span style={{ color: "red" }}> *</span>{" "}
-                                </Label>
-                                <Input
-                                  className="form-control"
-                                  type="select"
+                              <div className="form-group mb-3 col-md-6">
+                                <CustomFormGroup
+                                  formik={formik}
                                   name="maMonth1RoleOfOtzChoice"
-                                  id="maMonth1RoleOfOtzChoice"
-                                  value={formik.values.maMonth1RoleOfOtzChoice}
-                                  onChange={formik.handleChange}
-                                  onBlur={formik.handleBlur}
-                                  style={{
-                                    border: "1px solid #014D88",
-                                    borderRadius: "0.2rem",
-                                  }}
                                 >
-                                  <option value="">Select</option>
-                                  <option value="yes">Yes</option>
-                                  <option value="no">No</option>
-                                </Input>
-                                {formik.errors.maMonth1RoleOfOtzChoice !==
-                                "" ? (
-                                  <span className={classes.error}>
-                                    {formik.errors.maMonth1RoleOfOtzChoice}
-                                  </span>
-                                ) : (
-                                  ""
-                                )}
-                              </CustomFormGroup>
-                            </div>
-
-                            {formik.values.maMonth1RoleOfOtzChoice ===
-                              "yes" && (
-                              <div className="form-group mb-3 col-md-6">
-                                <CustomFormGroup
-                                formik={formik}
-                                name="maMonth1RoleOfOtzDate"
-                                >
-                                  <Label for="maMonth1RoleOfOtzDate">
-                                    Date for role of OTZ in 95-95-95
+                                  <Label for="maMonth1RoleOfOtzChoice">
+                                    Role of OTZ in 95-95-95
                                     <span style={{ color: "red" }}>
                                       {" "}
                                       *
@@ -1453,99 +1503,100 @@ const ServiceForm = (props) => {
                                   </Label>
                                   <Input
                                     className="form-control"
-                                    type="date"
-                                    {...{
-                                      min: moment(
-                                        new Date(
-                                          props?.activeContent?.artCommence?.visitDate
-                                        )
-                                      ).format("YYYY-MM-DD"),
-                                    }}
-                                    {...{
-                                      max: moment(new Date()).format(
-                                        "YYYY-MM-DD"
-                                      ),
-                                    }}
-                                    disabled={
-                                      !props?.activeContent?.enrollment
-                                        ?.dateOfRegistration
+                                    type="select"
+                                    name="maMonth1RoleOfOtzChoice"
+                                    id="maMonth1RoleOfOtzChoice"
+                                    value={
+                                      formik.values.maMonth1RoleOfOtzChoice
                                     }
-                                    name="maMonth1RoleOfOtzDate"
-                                    id="maMonth1RoleOfOtzDate"
-                                    value={formik.values.maMonth1RoleOfOtzDate}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     style={{
                                       border: "1px solid #014D88",
                                       borderRadius: "0.2rem",
                                     }}
-                                  />
-                                  {formik.errors.maMonth1RoleOfOtzDate !==
-                                  "" ? (
+                                  >
+                                    <option value="">Select</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                  </Input>
+                                  {formik?.touched?.maMonth1RoleOfOtzChoice &&
+                                  formik?.errors?.maMonth1RoleOfOtzChoice !==
+                                    "" ? (
                                     <span className={classes.error}>
-                                      {formik.errors.maMonth1RoleOfOtzDate}
+                                      {formik?.errors?.maMonth1RoleOfOtzChoice}
                                     </span>
                                   ) : (
                                     ""
                                   )}
                                 </CustomFormGroup>
                               </div>
-                            )}
 
-                            <div className="form-group mb-3 col-md-6">
-                              <CustomFormGroup
-                              formik={formik}
-                              name="maMonth1OtzChampionOrientationChoice"
-                              >
-                                <Label for="maMonth1OtzChampionOrientationChoice">
-                                  OTZ champion orientation
-                                  <span style={{ color: "red" }}> *</span>{" "}
-                                </Label>
-                                <Input
-                                  className="form-control"
-                                  type="select"
-                                  name="maMonth1OtzChampionOrientationChoice"
-                                  id="maMonth1OtzChampionOrientationChoice"
-                                  value={
-                                    formik.values
-                                      .maMonth1OtzChampionOrientationChoice
-                                  }
-                                  onChange={formik.handleChange}
-                                  onBlur={formik.handleBlur}
-                                  style={{
-                                    border: "1px solid #014D88",
-                                    borderRadius: "0.2rem",
-                                  }}
-                                >
-                                  <option value="">Select</option>
-                                  <option value="yes">Yes</option>
-                                  <option value="no">No</option>
-                                </Input>
-                                {formik.errors
-                                  .maMonth1OtzChampionOrientationChoice !==
-                                "" ? (
-                                  <span className={classes.error}>
-                                    {
-                                      formik.errors
-                                        .maMonth1OtzChampionOrientationChoice
-                                    }
-                                  </span>
-                                ) : (
-                                  ""
-                                )}
-                              </CustomFormGroup>
-                            </div>
+                              {formik.values.maMonth1RoleOfOtzChoice ===
+                                "yes" && (
+                                <div className="form-group mb-3 col-md-6">
+                                  <CustomFormGroup
+                                    formik={formik}
+                                    name="maMonth1RoleOfOtzDate"
+                                  >
+                                    <Label for="maMonth1RoleOfOtzDate">
+                                      Date for role of OTZ in 95-95-95
+                                      <span style={{ color: "red" }}>
+                                        {" "}
+                                        *
+                                      </span>{" "}
+                                    </Label>
+                                    <Input
+                                      className="form-control"
+                                      type="date"
+                                      {...{
+                                        min: moment(
+                                          new Date(
+                                            props?.activeContent?.artCommence?.visitDate
+                                          )
+                                        ).format("YYYY-MM-DD"),
+                                      }}
+                                      {...{
+                                        max: moment(new Date()).format(
+                                          "YYYY-MM-DD"
+                                        ),
+                                      }}
+                                      disabled={
+                                        !props?.activeContent?.enrollment
+                                          ?.dateOfRegistration
+                                      }
+                                      name="maMonth1RoleOfOtzDate"
+                                      id="maMonth1RoleOfOtzDate"
+                                      value={
+                                        formik.values.maMonth1RoleOfOtzDate
+                                      }
+                                      onChange={formik.handleChange}
+                                      onBlur={formik.handleBlur}
+                                      style={{
+                                        border: "1px solid #014D88",
+                                        borderRadius: "0.2rem",
+                                      }}
+                                    />
+                                    {formik?.touched?.maMonth1RoleOfOtzDate &&
+                                    formik?.errors?.maMonth1RoleOfOtzDate !==
+                                      "" ? (
+                                      <span className={classes.error}>
+                                        {formik?.errors?.maMonth1RoleOfOtzDate}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )}
+                                  </CustomFormGroup>
+                                </div>
+                              )}
 
-                            {formik.values
-                              .maMonth1OtzChampionOrientationChoice ===
-                              "yes" && (
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="maMonth1OtzChampionOrientationDate"
+                                  formik={formik}
+                                  name="maMonth1OtzChampionOrientationChoice"
                                 >
-                                  <Label for="maMonth1OtzChampionOrientationDate">
-                                    Date for OTZ Champion Orientation
+                                  <Label for="maMonth1OtzChampionOrientationChoice">
+                                    OTZ champion orientation
                                     <span style={{ color: "red" }}>
                                       {" "}
                                       *
@@ -1553,28 +1604,12 @@ const ServiceForm = (props) => {
                                   </Label>
                                   <Input
                                     className="form-control"
-                                    type="date"
-                                    {...{
-                                      min: moment(
-                                        new Date(
-                                          props?.activeContent?.artCommence?.visitDate
-                                        )
-                                      ).format("YYYY-MM-DD"),
-                                    }}
-                                    {...{
-                                      max: moment(new Date()).format(
-                                        "YYYY-MM-DD"
-                                      ),
-                                    }}
-                                    disabled={
-                                      !props?.activeContent?.enrollment
-                                        ?.dateOfRegistration
-                                    }
-                                    name="maMonth1OtzChampionOrientationDate"
-                                    id="maMonth1OtzChampionOrientationDate"
+                                    type="select"
+                                    name="maMonth1OtzChampionOrientationChoice"
+                                    id="maMonth1OtzChampionOrientationChoice"
                                     value={
                                       formik.values
-                                        .maMonth1OtzChampionOrientationDate
+                                        .maMonth1OtzChampionOrientationChoice
                                     }
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
@@ -1582,14 +1617,20 @@ const ServiceForm = (props) => {
                                       border: "1px solid #014D88",
                                       borderRadius: "0.2rem",
                                     }}
-                                  />
-                                  {formik.errors
-                                    .maMonth1OtzChampionOrientationDate !==
-                                  "" ? (
+                                  >
+                                    <option value="">Select</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                  </Input>
+                                  {formik?.touched
+                                    ?.maMonth1OtzChampionOrientationChoice &&
+                                  formik?.errors
+                                    ?.maMonth1OtzChampionOrientationChoice !==
+                                    "" ? (
                                     <span className={classes.error}>
                                       {
-                                        formik.errors
-                                          .maMonth1OtzChampionOrientationDate
+                                        formik?.errors
+                                          ?.maMonth1OtzChampionOrientationChoice
                                       }
                                     </span>
                                   ) : (
@@ -1597,123 +1638,183 @@ const ServiceForm = (props) => {
                                   )}
                                 </CustomFormGroup>
                               </div>
-                            )}
+
+                              {formik.values
+                                .maMonth1OtzChampionOrientationChoice ===
+                                "yes" && (
+                                <div className="form-group mb-3 col-md-6">
+                                  <CustomFormGroup
+                                    formik={formik}
+                                    name="maMonth1OtzChampionOrientationDate"
+                                  >
+                                    <Label for="maMonth1OtzChampionOrientationDate">
+                                      Date for OTZ Champion Orientation
+                                      <span style={{ color: "red" }}>
+                                        {" "}
+                                        *
+                                      </span>{" "}
+                                    </Label>
+                                    <Input
+                                      className="form-control"
+                                      type="date"
+                                      {...{
+                                        min: moment(
+                                          new Date(
+                                            props?.activeContent?.artCommence?.visitDate
+                                          )
+                                        ).format("YYYY-MM-DD"),
+                                      }}
+                                      {...{
+                                        max: moment(new Date()).format(
+                                          "YYYY-MM-DD"
+                                        ),
+                                      }}
+                                      disabled={
+                                        !props?.activeContent?.enrollment
+                                          ?.dateOfRegistration
+                                      }
+                                      name="maMonth1OtzChampionOrientationDate"
+                                      id="maMonth1OtzChampionOrientationDate"
+                                      value={
+                                        formik.values
+                                          .maMonth1OtzChampionOrientationDate
+                                      }
+                                      onChange={formik.handleChange}
+                                      onBlur={formik.handleBlur}
+                                      style={{
+                                        border: "1px solid #014D88",
+                                        borderRadius: "0.2rem",
+                                      }}
+                                    />
+                                    {formik?.touched
+                                      ?.maMonth1OtzChampionOrientationDate &&
+                                    formik?.errors
+                                      ?.maMonth1OtzChampionOrientationDate !==
+                                      "" ? (
+                                      <span className={classes.error}>
+                                        {
+                                          formik?.errors
+                                            ?.maMonth1OtzChampionOrientationDate
+                                        }
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )}
+                                  </CustomFormGroup>
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </Collapse>
+                        </Collapse>
+                      </div>
+                    </div>
+
+                    <div className="d-flex justify-content-end">
+                      <MatButton
+                        type="button"
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                        style={{ backgroundColor: "#014d88" }}
+                        startIcon={<SaveIcon />}
+                        disabled={saving}
+                        onClick={() =>
+                          handleSubmitAdherence(formik.values, {
+                            reroute: false,
+                            monthOfData: 1,
+                          })
+                        }
+                      >
+                        {!saving ? (
+                          <span style={{ textTransform: "capitalize" }}>
+                            Submit month 1
+                          </span>
+                        ) : (
+                          <span style={{ textTransform: "capitalize" }}>
+                            Submitting...
+                          </span>
+                        )}
+                      </MatButton>
                     </div>
                   </div>
 
-                  {formik?.values?.acMonth1EacDate1 !== "" &&
-                    formik?.values?.acMonth1EacDate2 !== "" &&
-                    formik?.values?.acMonth1EacDate3 !== "" && (
-                      <div>
-                        <div
-                          style={{
-                            backgroundColor: "#d8f6ff",
-                            width: "95%",
-                            margin: "auto",
-                            marginTop: "5rem",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                          }}
-                        >
-                          <p
+                  <div
+                    className="card"
+                    style={{
+                      margin: "20px",
+                    }}
+                  >
+                    <h5
+                      style={{
+                        color: "black",
+                        fontSize: "20px",
+                        fontWeight: "600",
+                        marginLeft: "10px",
+                        marginTop: "10px",
+                      }}
+                    >
+                      Month 2
+                    </h5>
+                    {formik?.values?.acMonth1EacDate1 !== "" &&
+                      formik?.values?.acMonth1EacDate2 !== "" &&
+                      formik?.values?.acMonth1EacDate3 !== "" && (
+                        <div>
+                          <div
                             style={{
-                              color: "black",
-                              fontSize: "15px",
-                              fontWeight: "600",
-                              marginLeft: "10px",
-                              marginTop: "10px",
+                              backgroundColor: "#d8f6ff",
+                              width: "95%",
+                              margin: "auto",
+                              marginTop: "5rem",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
                             }}
                           >
-                            Adherence Counselling Month 2
-                          </p>
-                          <IconButton
-                            onClick={() =>
-                              setIsDropdownsOpen((prevState) => {
-                                return {
-                                  ...prevState,
-                                  monthTwoAdherenceCounselling:
-                                    !prevState.monthTwoAdherenceCounselling,
-                                };
-                              })
-                            }
-                            aria-expanded={
-                              isDropdownsOpen.monthTwoAdherenceCounselling
-                            }
-                            aria-label="Expand"
-                          >
-                            <ExpandMoreIcon />
-                          </IconButton>
-                        </div>
-                        <div className="card-body">
-                          <Collapse
-                            in={isDropdownsOpen.monthTwoAdherenceCounselling}
-                          >
-                            <div
-                              className="basic-form"
-                              style={{ padding: "0 50px 0 50px" }}
+                            <p
+                              style={{
+                                color: "black",
+                                fontSize: "15px",
+                                fontWeight: "600",
+                                marginLeft: "10px",
+                                marginTop: "10px",
+                              }}
                             >
-                              <div className="row">
-                                <div className="form-group mb-3 col-md-4">
-                                  <CustomFormGroup
-                                  formik={formik}
-                                  name="acMonth2EacDate1"
-                                  >
-                                    <Label for="acMonth2EacDate1">
-                                      EAC 1 date
-                                      <span style={{ color: "red" }}>
-                                        {" "}
-                                        *
-                                      </span>{" "}
-                                    </Label>
-                                    <Input
-                                      className="form-control"
-                                      type="date"
-                                      {...{
-                                        min: moment(
-                                          new Date(
-                                            formik?.values?.dateEnrolledIntoOtz
-                                          )
-                                        ).format("YYYY-MM-DD"),
-                                      }}
-                                      {...{
-                                        max: moment(new Date()).format(
-                                          "YYYY-MM-DD"
-                                        ),
-                                      }}
-                                      disabled={
-                                        !formik?.values?.dateEnrolledIntoOtz
-                                      }
-                                      name="acMonth2EacDate1"
-                                      id="acMonth2EacDate1"
-                                      value={formik.values.acMonth2EacDate1}
-                                      onChange={formik.handleChange}
-                                      onBlur={formik.handleBlur}
-                                      style={{
-                                        border: "1px solid #014D88",
-                                        borderRadius: "0.2rem",
-                                      }}
-                                    />
-                                    {formik.errors.acMonth2EacDate1 !== "" ? (
-                                      <span className={classes.error}>
-                                        {formik.errors.acMonth2EacDate1}
-                                      </span>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </CustomFormGroup>
-                                </div>
-                                {formik?.values?.acMonth2EacDate1 !== "" && (
+                              Adherence Counselling
+                            </p>
+                            <IconButton
+                              onClick={() =>
+                                setIsDropdownsOpen((prevState) => {
+                                  return {
+                                    ...prevState,
+                                    monthTwoAdherenceCounselling:
+                                      !prevState.monthTwoAdherenceCounselling,
+                                  };
+                                })
+                              }
+                              aria-expanded={
+                                isDropdownsOpen.monthTwoAdherenceCounselling
+                              }
+                              aria-label="Expand"
+                            >
+                              <ExpandMoreIcon />
+                            </IconButton>
+                          </div>
+                          <div className="card-body">
+                            <Collapse
+                              in={isDropdownsOpen.monthTwoAdherenceCounselling}
+                            >
+                              <div
+                                className="basic-form"
+                                style={{ padding: "0 50px 0 50px" }}
+                              >
+                                <div className="row">
                                   <div className="form-group mb-3 col-md-4">
                                     <CustomFormGroup
-                                    formik={formik}
-                                    name="acMonth2EacDate2"
+                                      formik={formik}
+                                      name="acMonth2EacDate1"
                                     >
-                                      <Label for="acMonth2EacDate2">
-                                        EAC 2 date
+                                      <Label for="acMonth2EacDate1">
+                                        EAC 1 date
                                         <span style={{ color: "red" }}>
                                           {" "}
                                           *
@@ -1737,9 +1838,9 @@ const ServiceForm = (props) => {
                                         disabled={
                                           !formik?.values?.dateEnrolledIntoOtz
                                         }
-                                        name="acMonth2EacDate2"
-                                        id="acMonth2EacDate2"
-                                        value={formik.values.acMonth2EacDate2}
+                                        name="acMonth2EacDate1"
+                                        id="acMonth2EacDate1"
+                                        value={formik.values.acMonth2EacDate1}
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         style={{
@@ -1747,74 +1848,24 @@ const ServiceForm = (props) => {
                                           borderRadius: "0.2rem",
                                         }}
                                       />
-                                      {formik.errors.acMonth2EacDate2 !== "" ? (
+                                      {formik?.touched?.acMonth2EacDate1 &&
+                                      formik.errors.acMonth2EacDate1 !== "" ? (
                                         <span className={classes.error}>
-                                          {formik.errors.acMonth2EacDate2}
+                                          {formik?.errors?.acMonth2EacDate1}
                                         </span>
                                       ) : (
                                         ""
                                       )}
                                     </CustomFormGroup>
                                   </div>
-                                )}
-
-                                {formik?.values?.acMonth2EacDate2 !== "" && (
-                                  <div className="form-group mb-3 col-md-4">
-                                    <CustomFormGroup
-                                    formik={formik}
-                                    name="acMonth2EacDate3"
-                                    >
-                                      <Label for="acMonth2EacDate3">
-                                        EAC 3 date
-                                      </Label>
-                                      <Input
-                                        type="date"
-                                        {...{
-                                          min: moment(
-                                            new Date(
-                                              formik?.values?.dateEnrolledIntoOtz
-                                            )
-                                          ).format("YYYY-MM-DD"),
-                                        }}
-                                        {...{
-                                          max: moment(new Date()).format(
-                                            "YYYY-MM-DD"
-                                          ),
-                                        }}
-                                        disabled={
-                                          !formik?.values?.dateEnrolledIntoOtz
-                                        }
-                                        className="form-control"
-                                        name="acMonth2EacDate3"
-                                        id="acMonth2EacDate3"
-                                        value={formik.values.acMonth2EacDate3}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        style={{
-                                          border: "1px solid #014D88",
-                                          borderRadius: "0.2rem",
-                                        }}
-                                      ></Input>
-                                      {formik.errors.acMonth2EacDate3 !== "" ? (
-                                        <span className={classes.error}>
-                                          {formik.errors.acMonth2EacDate3}
-                                        </span>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </CustomFormGroup>
-                                  </div>
-                                )}
-
-                                {formik?.values?.acMonth2EacDate3 !== "" && (
-                                  <>
+                                  {formik?.values?.acMonth2EacDate1 !== "" && (
                                     <div className="form-group mb-3 col-md-4">
                                       <CustomFormGroup
-                                      formik={formik}
-                                      name="dateViralLoadAssesmentMonth2"
+                                        formik={formik}
+                                        name="acMonth2EacDate2"
                                       >
-                                        <Label for="dateViralLoadAssesmentMonth2">
-                                          Date of viral load assessment
+                                        <Label for="acMonth2EacDate2">
+                                          EAC 2 date
                                           <span style={{ color: "red" }}>
                                             {" "}
                                             *
@@ -1838,640 +1889,722 @@ const ServiceForm = (props) => {
                                           disabled={
                                             !formik?.values?.dateEnrolledIntoOtz
                                           }
-                                          name="dateViralLoadAssesmentMonth2"
-                                          id="dateViralLoadAssesmentMonth2"
-                                          value={
-                                            formik?.values
-                                              ?.dateViralLoadAssesmentMonth2
-                                          }
+                                          name="acMonth2EacDate2"
+                                          id="acMonth2EacDate2"
+                                          value={formik.values.acMonth2EacDate2}
                                           onChange={formik.handleChange}
                                           onBlur={formik.handleBlur}
                                           style={{
                                             border: "1px solid #014D88",
                                             borderRadius: "0.2rem",
                                           }}
-                                          Date
-                                          enrolled
-                                          into
-                                          OTZ
                                         />
-                                        {formik.errors
-                                          .dateViralLoadAssesmentMonth2 !==
-                                        "" ? (
+                                        {formik?.touched?.acMonth2EacDate2 &&
+                                        formik?.errors?.acMonth2EacDate2 !==
+                                          "" ? (
                                           <span className={classes.error}>
-                                            {
-                                              formik.errors
-                                                .dateViralLoadAssesmentMonth2
-                                            }
+                                            {formik?.errors?.acMonth2EacDate2}
                                           </span>
                                         ) : (
                                           ""
                                         )}
                                       </CustomFormGroup>
                                     </div>
+                                  )}
 
+                                  {formik?.values?.acMonth2EacDate2 !== "" && (
                                     <div className="form-group mb-3 col-md-4">
                                       <CustomFormGroup
-                                      formik={formik}
-                                      name="viralLoadMonth2"
+                                        formik={formik}
+                                        name="acMonth2EacDate3"
                                       >
-                                        <Label for="viralLoadMonth2">
-                                          Viral load
-                                          <span style={{ color: "red" }}>
-                                            {" "}
-                                            *
-                                          </span>{" "}
+                                        <Label for="acMonth2EacDate3">
+                                          EAC 3 date
                                         </Label>
                                         <Input
-                                          className="form-control"
-                                          type="number"
-                                          name="viralLoadMonth2"
-                                          id="viralLoadMonth2"
-                                          value={
-                                            formik?.values?.viralLoadMonth2
+                                          type="date"
+                                          {...{
+                                            min: moment(
+                                              new Date(
+                                                formik?.values?.dateEnrolledIntoOtz
+                                              )
+                                            ).format("YYYY-MM-DD"),
+                                          }}
+                                          {...{
+                                            max: moment(new Date()).format(
+                                              "YYYY-MM-DD"
+                                            ),
+                                          }}
+                                          disabled={
+                                            !formik?.values?.dateEnrolledIntoOtz
                                           }
+                                          className="form-control"
+                                          name="acMonth2EacDate3"
+                                          id="acMonth2EacDate3"
+                                          value={formik.values.acMonth2EacDate3}
                                           onChange={formik.handleChange}
                                           onBlur={formik.handleBlur}
                                           style={{
                                             border: "1px solid #014D88",
                                             borderRadius: "0.2rem",
                                           }}
-                                        />
-                                        {formik.errors.viralLoadMonth2 !==
-                                        "" ? (
+                                        ></Input>
+                                        {formik?.touched?.acMonth2EacDate3 &&
+                                        formik?.errors?.acMonth2EacDate3 !==
+                                          "" ? (
                                           <span className={classes.error}>
-                                            {formik.errors.viralLoadMonth2}
+                                            {formik.errors.acMonth2EacDate3}
                                           </span>
                                         ) : (
                                           ""
                                         )}
                                       </CustomFormGroup>
                                     </div>
-                                  </>
-                                )}
-                              </div>
-                            </div>
-                          </Collapse>
-                        </div>
-                      </div>
-                    )}
+                                  )}
 
-                  {formik?.values?.maMonth1PositiveLivingChoice !== "" &&
-                    formik?.values?.maMonth1PositiveLivingDate !== "" &&
-                    formik?.values?.maMonth1LiteracyTreatmentChoice !== "" &&
-                    formik?.values?.maMonth1LiteracyTreatmentDate !== "" &&
-                    formik?.values?.maMonth1AdolescentsParticipationChoice !==
-                      "" &&
-                    formik?.values?.maMonth1AdolescentsParticipationDate !==
-                      "" &&
-                    formik?.values?.maMonth1leadershipTrainingChoice !== "" &&
-                    formik?.values?.maMonth1leadershipTrainingDate !== "" &&
-                    formik?.values?.maMonth1PeerToPeerChoice !== "" &&
-                    formik?.values?.maMonth1PeerToPeerDate !== "" &&
-                    formik?.values?.maMonth1RoleOfOtzChoice !== "" &&
-                    formik?.values?.maMonth1RoleOfOtzDate !== "" &&
-                    formik?.values?.maMonth1OtzChampionOrientationChoice !==
-                      "" &&
-                    formik?.values?.maMonth1OtzChampionOrientationDate !==
-                      "" && (
-                      <div>
-                        <div
-                          style={{
-                            backgroundColor: "#d8f6ff",
-                            width: "95%",
-                            margin: "auto",
-                            marginTop: "5rem",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                          }}
-                        >
-                          <p
+                                  {formik?.values?.acMonth2EacDate3 !== "" && (
+                                    <>
+                                      <div className="form-group mb-3 col-md-4">
+                                        <CustomFormGroup
+                                          formik={formik}
+                                          name="dateViralLoadAssesmentMonth2"
+                                        >
+                                          <Label for="dateViralLoadAssesmentMonth2">
+                                            Date of viral load assessment
+                                            <span style={{ color: "red" }}>
+                                              {" "}
+                                              *
+                                            </span>{" "}
+                                          </Label>
+                                          <Input
+                                            className="form-control"
+                                            type="date"
+                                            {...{
+                                              min: moment(
+                                                new Date(
+                                                  formik?.values?.dateEnrolledIntoOtz
+                                                )
+                                              ).format("YYYY-MM-DD"),
+                                            }}
+                                            {...{
+                                              max: moment(new Date()).format(
+                                                "YYYY-MM-DD"
+                                              ),
+                                            }}
+                                            disabled={
+                                              !formik?.values
+                                                ?.dateEnrolledIntoOtz
+                                            }
+                                            name="dateViralLoadAssesmentMonth2"
+                                            id="dateViralLoadAssesmentMonth2"
+                                            value={
+                                              formik?.values
+                                                ?.dateViralLoadAssesmentMonth2
+                                            }
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            style={{
+                                              border: "1px solid #014D88",
+                                              borderRadius: "0.2rem",
+                                            }}
+                                            Date
+                                            enrolled
+                                            into
+                                            OTZ
+                                          />
+                                          {formik?.touched
+                                            ?.dateViralLoadAssesmentMonth2 &&
+                                          formik.errors
+                                            .dateViralLoadAssesmentMonth2 !==
+                                            "" ? (
+                                            <span className={classes.error}>
+                                              {
+                                                formik?.errors
+                                                  ?.dateViralLoadAssesmentMonth2
+                                              }
+                                            </span>
+                                          ) : (
+                                            ""
+                                          )}
+                                        </CustomFormGroup>
+                                      </div>
+
+                                      <div className="form-group mb-3 col-md-4">
+                                        <CustomFormGroup
+                                          formik={formik}
+                                          name="viralLoadMonth2"
+                                        >
+                                          <Label for="viralLoadMonth2">
+                                            Viral load
+                                            <span style={{ color: "red" }}>
+                                              {" "}
+                                              *
+                                            </span>{" "}
+                                          </Label>
+                                          <Input
+                                            className="form-control"
+                                            type="number"
+                                            name="viralLoadMonth2"
+                                            id="viralLoadMonth2"
+                                            value={
+                                              formik?.values?.viralLoadMonth2
+                                            }
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            style={{
+                                              border: "1px solid #014D88",
+                                              borderRadius: "0.2rem",
+                                            }}
+                                          />
+                                          {formik?.touched?.viralLoadMonth2 &&
+                                          formik.errors.viralLoadMonth2 !==
+                                            "" ? (
+                                            <span className={classes.error}>
+                                              {formik?.errors?.viralLoadMonth2}
+                                            </span>
+                                          ) : (
+                                            ""
+                                          )}
+                                        </CustomFormGroup>
+                                      </div>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            </Collapse>
+                          </div>
+                        </div>
+                      )}
+
+                    {formik?.values?.maMonth1PositiveLivingChoice !== "" &&
+                      formik?.values?.maMonth1PositiveLivingDate !== "" &&
+                      formik?.values?.maMonth1LiteracyTreatmentChoice !== "" &&
+                      formik?.values?.maMonth1LiteracyTreatmentDate !== "" &&
+                      formik?.values?.maMonth1AdolescentsParticipationChoice !==
+                        "" &&
+                      formik?.values?.maMonth1AdolescentsParticipationDate !==
+                        "" &&
+                      formik?.values?.maMonth1leadershipTrainingChoice !== "" &&
+                      formik?.values?.maMonth1leadershipTrainingDate !== "" &&
+                      formik?.values?.maMonth1PeerToPeerChoice !== "" &&
+                      formik?.values?.maMonth1PeerToPeerDate !== "" &&
+                      formik?.values?.maMonth1RoleOfOtzChoice !== "" &&
+                      formik?.values?.maMonth1RoleOfOtzDate !== "" &&
+                      formik?.values?.maMonth1OtzChampionOrientationChoice !==
+                        "" &&
+                      formik?.values?.maMonth1OtzChampionOrientationDate !==
+                        "" && (
+                        <div>
+                          <div
                             style={{
-                              color: "black",
-                              fontSize: "15px",
-                              fontWeight: "600",
-                              marginLeft: "10px",
-                              marginTop: "10px",
+                              backgroundColor: "#d8f6ff",
+                              width: "95%",
+                              margin: "auto",
+                              marginTop: "5rem",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
                             }}
                           >
-                            Modules activity/date of completion Month 2
-                          </p>
-                          <IconButton
-                            onClick={() =>
-                              setIsDropdownsOpen((prevState) => {
-                                return {
-                                  ...prevState,
-                                  monthTwoModulesActivities:
-                                    !prevState.monthTwoModulesActivities,
-                                };
-                              })
-                            }
-                            aria-expanded={
-                              isDropdownsOpen.monthTwoModulesActivities
-                            }
-                            aria-label="Expand"
-                          >
-                            <ExpandMoreIcon />
-                          </IconButton>
-                        </div>
-
-                        <div className="card-body">
-                          <Collapse
-                            in={isDropdownsOpen.monthTwoModulesActivities}
-                          >
-                            <div
-                              className="basic-form"
-                              style={{ padding: "0 50px 0 50px" }}
+                            <p
+                              style={{
+                                color: "black",
+                                fontSize: "15px",
+                                fontWeight: "600",
+                                marginLeft: "10px",
+                                marginTop: "10px",
+                              }}
                             >
-                              <div className="row">
-                                <div className="form-group mb-3 col-md-6">
-                                  <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth2PositiveLivingChoice"
-                                  >
-                                    <Label for="maMonth2PositiveLivingChoice">
-                                      Positive Living
-                                      <span style={{ color: "red" }}>
-                                        {" "}
-                                        *
-                                      </span>{" "}
-                                    </Label>
-                                    <Input
-                                      className="form-control"
-                                      type="select"
+                              Modules activity/date of completion
+                            </p>
+                            <IconButton
+                              onClick={() =>
+                                setIsDropdownsOpen((prevState) => {
+                                  return {
+                                    ...prevState,
+                                    monthTwoModulesActivities:
+                                      !prevState.monthTwoModulesActivities,
+                                  };
+                                })
+                              }
+                              aria-expanded={
+                                isDropdownsOpen.monthTwoModulesActivities
+                              }
+                              aria-label="Expand"
+                            >
+                              <ExpandMoreIcon />
+                            </IconButton>
+                          </div>
+
+                          <div className="card-body">
+                            <Collapse
+                              in={isDropdownsOpen.monthTwoModulesActivities}
+                            >
+                              <div
+                                className="basic-form"
+                                style={{ padding: "0 50px 0 50px" }}
+                              >
+                                <div className="row">
+                                  <div className="form-group mb-3 col-md-6">
+                                    <CustomFormGroup
+                                      formik={formik}
                                       name="maMonth2PositiveLivingChoice"
-                                      id="maMonth2PositiveLivingChoice"
-                                      value={
-                                        formik.values
-                                          .maMonth2PositiveLivingChoice
-                                      }
-                                      onChange={formik.handleChange}
-                                      onBlur={formik.handleBlur}
-                                      style={{
-                                        border: "1px solid #014D88",
-                                        borderRadius: "0.2rem",
-                                      }}
                                     >
-                                      <option value="">Select</option>
-                                      <option value="yes">Yes</option>
-                                      <option value="no">No</option>
-                                    </Input>
-                                    {formik.errors
-                                      .maMonth2PositiveLivingChoice !== "" ? (
-                                      <span className={classes.error}>
-                                        {
-                                          formik.errors
+                                      <Label for="maMonth2PositiveLivingChoice">
+                                        Positive Living
+                                        <span style={{ color: "red" }}>
+                                          {" "}
+                                          *
+                                        </span>{" "}
+                                      </Label>
+                                      <Input
+                                        className="form-control"
+                                        type="select"
+                                        name="maMonth2PositiveLivingChoice"
+                                        id="maMonth2PositiveLivingChoice"
+                                        value={
+                                          formik.values
                                             .maMonth2PositiveLivingChoice
                                         }
-                                      </span>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </CustomFormGroup>
-                                </div>
-                                {formik.values.maMonth2PositiveLivingChoice ===
-                                  "yes" && (
-                                  <div className="form-group mb-3 col-md-6">
-                                    <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth2PositiveLivingDate"
-                                    >
-                                      <Label for="maMonth2PositiveLivingDate">
-                                        Date for positive living
-                                        <span style={{ color: "red" }}>
-                                          {" "}
-                                          *
-                                        </span>{" "}
-                                      </Label>
-                                      <Input
-                                        className="form-control"
-                                        type="date"
-                                        {...{
-                                          min: moment(
-                                            new Date(
-                                              props?.activeContent?.artCommence?.visitDate
-                                            )
-                                          ).format("YYYY-MM-DD"),
-                                        }}
-                                        {...{
-                                          max: moment(new Date()).format(
-                                            "YYYY-MM-DD"
-                                          ),
-                                        }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
-                                        name="maMonth2PositiveLivingDate"
-                                        id="maMonth2PositiveLivingDate"
-                                        value={
-                                          formik.values
-                                            .maMonth2PositiveLivingDate
-                                        }
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         style={{
                                           border: "1px solid #014D88",
                                           borderRadius: "0.2rem",
                                         }}
-                                      />
-                                      {formik.errors
-                                        .maMonth2PositiveLivingDate !== "" ? (
+                                      >
+                                        <option value="">Select</option>
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                      </Input>
+                                      {formik?.touched
+                                        ?.maMonth2PositiveLivingChoice &&
+                                      formik?.errors
+                                        ?.maMonth2PositiveLivingChoice !==
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
-                                            formik.errors
+                                            formik?.errors
+                                              ?.maMonth2PositiveLivingChoice
+                                          }
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </CustomFormGroup>
+                                  </div>
+                                  {formik.values
+                                    .maMonth2PositiveLivingChoice === "yes" && (
+                                    <div className="form-group mb-3 col-md-6">
+                                      <CustomFormGroup
+                                        formik={formik}
+                                        name="maMonth2PositiveLivingDate"
+                                      >
+                                        <Label for="maMonth2PositiveLivingDate">
+                                          Date for positive living
+                                          <span style={{ color: "red" }}>
+                                            {" "}
+                                            *
+                                          </span>{" "}
+                                        </Label>
+                                        <Input
+                                          className="form-control"
+                                          type="date"
+                                          {...{
+                                            min: moment(
+                                              new Date(
+                                                props?.activeContent?.artCommence?.visitDate
+                                              )
+                                            ).format("YYYY-MM-DD"),
+                                          }}
+                                          {...{
+                                            max: moment(new Date()).format(
+                                              "YYYY-MM-DD"
+                                            ),
+                                          }}
+                                          disabled={
+                                            !props?.activeContent?.enrollment
+                                              ?.dateOfRegistration
+                                          }
+                                          name="maMonth2PositiveLivingDate"
+                                          id="maMonth2PositiveLivingDate"
+                                          value={
+                                            formik.values
                                               .maMonth2PositiveLivingDate
                                           }
-                                        </span>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </CustomFormGroup>
-                                  </div>
-                                )}
+                                          onChange={formik.handleChange}
+                                          onBlur={formik.handleBlur}
+                                          style={{
+                                            border: "1px solid #014D88",
+                                            borderRadius: "0.2rem",
+                                          }}
+                                        />
+                                        {formik?.touched
+                                          ?.maMonth2PositiveLivingDate &&
+                                        formik.errors
+                                          .maMonth2PositiveLivingDate !== "" ? (
+                                          <span className={classes.error}>
+                                            {
+                                              formik.errors
+                                                .maMonth2PositiveLivingDate
+                                            }
+                                          </span>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </CustomFormGroup>
+                                    </div>
+                                  )}
 
-                                <div className="form-group mb-3 col-md-6">
-                                  <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth2LiteracyTreatmentChoice"
-                                  >
-                                    <Label for="maMonth2LiteracyTreatmentChoice">
-                                      Literacy Treatment
-                                      <span style={{ color: "red" }}>
-                                        {" "}
-                                        *
-                                      </span>{" "}
-                                    </Label>
-                                    <Input
-                                      className="form-control"
-                                      type="select"
+                                  <div className="form-group mb-3 col-md-6">
+                                    <CustomFormGroup
+                                      formik={formik}
                                       name="maMonth2LiteracyTreatmentChoice"
-                                      id="maMonth2LiteracyTreatmentChoice"
-                                      value={
-                                        formik.values
-                                          .maMonth2LiteracyTreatmentChoice
-                                      }
-                                      onChange={formik.handleChange}
-                                      onBlur={formik.handleBlur}
-                                      style={{
-                                        border: "1px solid #014D88",
-                                        borderRadius: "0.2rem",
-                                      }}
                                     >
-                                      <option value="">Select</option>
-                                      <option value="yes">Yes</option>
-                                      <option value="no">No</option>
-                                    </Input>
-                                    {formik.errors
-                                      .maMonth2LiteracyTreatmentChoice !==
-                                    "" ? (
-                                      <span className={classes.error}>
-                                        {
-                                          formik.errors
+                                      <Label for="maMonth2LiteracyTreatmentChoice">
+                                        Literacy Treatment
+                                        <span style={{ color: "red" }}>
+                                          {" "}
+                                          *
+                                        </span>{" "}
+                                      </Label>
+                                      <Input
+                                        className="form-control"
+                                        type="select"
+                                        name="maMonth2LiteracyTreatmentChoice"
+                                        id="maMonth2LiteracyTreatmentChoice"
+                                        value={
+                                          formik.values
                                             .maMonth2LiteracyTreatmentChoice
                                         }
-                                      </span>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </CustomFormGroup>
-                                </div>
-
-                                {formik.values
-                                  .maMonth2LiteracyTreatmentChoice ===
-                                  "yes" && (
-                                  <div className="form-group mb-3 col-md-6">
-                                    <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth2LiteracyTreatmentDate"
-                                    >
-                                      <Label for="maMonth2LiteracyTreatmentDate">
-                                        Date for literacy training
-                                        <span style={{ color: "red" }}>
-                                          {" "}
-                                          *
-                                        </span>{" "}
-                                      </Label>
-                                      <Input
-                                        className="form-control"
-                                        type="date"
-                                        {...{
-                                          min: moment(
-                                            new Date(
-                                              props?.activeContent?.artCommence?.visitDate
-                                            )
-                                          ).format("YYYY-MM-DD"),
-                                        }}
-                                        {...{
-                                          max: moment(new Date()).format(
-                                            "YYYY-MM-DD"
-                                          ),
-                                        }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
-                                        name="maMonth2LiteracyTreatmentDate"
-                                        id="maMonth2LiteracyTreatmentDate"
-                                        value={
-                                          formik.values
-                                            .maMonth2LiteracyTreatmentDate
-                                        }
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         style={{
                                           border: "1px solid #014D88",
                                           borderRadius: "0.2rem",
                                         }}
-                                      />
-                                      {formik.errors
-                                        .maMonth2LiteracyTreatmentDate !==
-                                      "" ? (
+                                      >
+                                        <option value="">Select</option>
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                      </Input>
+                                      {formik?.touched
+                                        ?.maMonth2LiteracyTreatmentChoice &&
+                                      formik.errors
+                                        .maMonth2LiteracyTreatmentChoice !==
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
-                                            formik.errors
+                                            formik?.errors
+                                              ?.maMonth2LiteracyTreatmentChoice
+                                          }
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </CustomFormGroup>
+                                  </div>
+
+                                  {formik.values
+                                    .maMonth2LiteracyTreatmentChoice ===
+                                    "yes" && (
+                                    <div className="form-group mb-3 col-md-6">
+                                      <CustomFormGroup
+                                        formik={formik}
+                                        name="maMonth2LiteracyTreatmentDate"
+                                      >
+                                        <Label for="maMonth2LiteracyTreatmentDate">
+                                          Date for literacy training
+                                          <span style={{ color: "red" }}>
+                                            {" "}
+                                            *
+                                          </span>{" "}
+                                        </Label>
+                                        <Input
+                                          className="form-control"
+                                          type="date"
+                                          {...{
+                                            min: moment(
+                                              new Date(
+                                                props?.activeContent?.artCommence?.visitDate
+                                              )
+                                            ).format("YYYY-MM-DD"),
+                                          }}
+                                          {...{
+                                            max: moment(new Date()).format(
+                                              "YYYY-MM-DD"
+                                            ),
+                                          }}
+                                          disabled={
+                                            !props?.activeContent?.enrollment
+                                              ?.dateOfRegistration
+                                          }
+                                          name="maMonth2LiteracyTreatmentDate"
+                                          id="maMonth2LiteracyTreatmentDate"
+                                          value={
+                                            formik.values
                                               .maMonth2LiteracyTreatmentDate
                                           }
-                                        </span>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </CustomFormGroup>
-                                  </div>
-                                )}
+                                          onChange={formik.handleChange}
+                                          onBlur={formik.handleBlur}
+                                          style={{
+                                            border: "1px solid #014D88",
+                                            borderRadius: "0.2rem",
+                                          }}
+                                        />
+                                        {formik?.touched
+                                          ?.maMonth2LiteracyTreatmentDate &&
+                                        formik?.errors
+                                          ?.maMonth2LiteracyTreatmentDate !==
+                                          "" ? (
+                                          <span className={classes.error}>
+                                            {
+                                              formik?.errors
+                                                ?.maMonth2LiteracyTreatmentDate
+                                            }
+                                          </span>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </CustomFormGroup>
+                                    </div>
+                                  )}
 
-                                <div className="form-group mb-3 col-md-6">
-                                  <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth2AdolescentsParticipationChoice"
-                                  >
-                                    <Label for="maMonth2AdolescentsParticipationChoice">
-                                      Adolescents Participation
-                                      <span style={{ color: "red" }}>
-                                        {" "}
-                                        *
-                                      </span>{" "}
-                                    </Label>
-                                    <Input
-                                      className="form-control"
-                                      type="select"
+                                  <div className="form-group mb-3 col-md-6">
+                                    <CustomFormGroup
+                                      formik={formik}
                                       name="maMonth2AdolescentsParticipationChoice"
-                                      id="maMonth2AdolescentsParticipationChoice"
-                                      value={
-                                        formik.values
-                                          .maMonth2AdolescentsParticipationChoice
-                                      }
-                                      onChange={formik.handleChange}
-                                      onBlur={formik.handleBlur}
-                                      style={{
-                                        border: "1px solid #014D88",
-                                        borderRadius: "0.2rem",
-                                      }}
                                     >
-                                      <option value="">Select</option>
-                                      <option value="yes">Yes</option>
-                                      <option value="no">No</option>
-                                    </Input>
-                                    {formik.errors
-                                      .maMonth2AdolescentsParticipationChoice !==
-                                    "" ? (
-                                      <span className={classes.error}>
-                                        {
-                                          formik.errors
+                                      <Label for="maMonth2AdolescentsParticipationChoice">
+                                        Adolescents Participation
+                                        <span style={{ color: "red" }}>
+                                          {" "}
+                                          *
+                                        </span>{" "}
+                                      </Label>
+                                      <Input
+                                        className="form-control"
+                                        type="select"
+                                        name="maMonth2AdolescentsParticipationChoice"
+                                        id="maMonth2AdolescentsParticipationChoice"
+                                        value={
+                                          formik.values
                                             .maMonth2AdolescentsParticipationChoice
                                         }
-                                      </span>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </CustomFormGroup>
-                                </div>
-
-                                {formik.values
-                                  .maMonth2AdolescentsParticipationChoice ===
-                                  "yes" && (
-                                  <div className="form-group mb-3 col-md-6">
-                                    <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth2AdolescentsParticipationDate"
-                                    >
-                                      <Label for="maMonth2AdolescentsParticipationDate">
-                                        Date for adolescent participation
-                                        <span style={{ color: "red" }}>
-                                          {" "}
-                                          *
-                                        </span>{" "}
-                                      </Label>
-                                      <Input
-                                        className="form-control"
-                                        type="date"
-                                        {...{
-                                          min: moment(
-                                            new Date(
-                                              props?.activeContent?.artCommence?.visitDate
-                                            )
-                                          ).format("YYYY-MM-DD"),
-                                        }}
-                                        {...{
-                                          max: moment(new Date()).format(
-                                            "YYYY-MM-DD"
-                                          ),
-                                        }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
-                                        name="maMonth2AdolescentsParticipationDate"
-                                        id="maMonth2AdolescentsParticipationDate"
-                                        value={
-                                          formik.values
-                                            .maMonth2AdolescentsParticipationDate
-                                        }
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         style={{
                                           border: "1px solid #014D88",
                                           borderRadius: "0.2rem",
                                         }}
-                                      />
-                                      {formik.errors
-                                        .maMonth2AdolescentsParticipationDate !==
-                                      "" ? (
+                                      >
+                                        <option value="">Select</option>
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                      </Input>
+                                      {formik?.touched
+                                        ?.maMonth2AdolescentsParticipationChoice &&
+                                      formik.errors
+                                        .maMonth2AdolescentsParticipationChoice !==
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
                                             formik.errors
+                                              .maMonth2AdolescentsParticipationChoice
+                                          }
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </CustomFormGroup>
+                                  </div>
+
+                                  {formik.values
+                                    .maMonth2AdolescentsParticipationChoice ===
+                                    "yes" && (
+                                    <div className="form-group mb-3 col-md-6">
+                                      <CustomFormGroup
+                                        formik={formik}
+                                        name="maMonth2AdolescentsParticipationDate"
+                                      >
+                                        <Label for="maMonth2AdolescentsParticipationDate">
+                                          Date for adolescent participation
+                                          <span style={{ color: "red" }}>
+                                            {" "}
+                                            *
+                                          </span>{" "}
+                                        </Label>
+                                        <Input
+                                          className="form-control"
+                                          type="date"
+                                          {...{
+                                            min: moment(
+                                              new Date(
+                                                props?.activeContent?.artCommence?.visitDate
+                                              )
+                                            ).format("YYYY-MM-DD"),
+                                          }}
+                                          {...{
+                                            max: moment(new Date()).format(
+                                              "YYYY-MM-DD"
+                                            ),
+                                          }}
+                                          disabled={
+                                            !props?.activeContent?.enrollment
+                                              ?.dateOfRegistration
+                                          }
+                                          name="maMonth2AdolescentsParticipationDate"
+                                          id="maMonth2AdolescentsParticipationDate"
+                                          value={
+                                            formik.values
                                               .maMonth2AdolescentsParticipationDate
                                           }
-                                        </span>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </CustomFormGroup>
-                                  </div>
-                                )}
+                                          onChange={formik.handleChange}
+                                          onBlur={formik.handleBlur}
+                                          style={{
+                                            border: "1px solid #014D88",
+                                            borderRadius: "0.2rem",
+                                          }}
+                                        />
+                                        {formik?.touched
+                                          ?.maMonth2AdolescentsParticipationDate &&
+                                        formik.errors
+                                          .maMonth2AdolescentsParticipationDate !==
+                                          "" ? (
+                                          <span className={classes.error}>
+                                            {
+                                              formik?.errors
+                                                ?.maMonth2AdolescentsParticipationDate
+                                            }
+                                          </span>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </CustomFormGroup>
+                                    </div>
+                                  )}
 
-                                <div className="form-group mb-3 col-md-6">
-                                  <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth2leadershipTrainingChoice"
-                                  >
-                                    <Label for="maMonth2leadershipTrainingChoice">
-                                      Leadership participation
-                                      <span style={{ color: "red" }}>
-                                        {" "}
-                                        *
-                                      </span>{" "}
-                                    </Label>
-                                    <Input
-                                      className="form-control"
-                                      type="select"
+                                  <div className="form-group mb-3 col-md-6">
+                                    <CustomFormGroup
+                                      formik={formik}
                                       name="maMonth2leadershipTrainingChoice"
-                                      id="maMonth2leadershipTrainingChoice"
-                                      value={
-                                        formik.values
-                                          .maMonth2leadershipTrainingChoice
-                                      }
-                                      onChange={formik.handleChange}
-                                      onBlur={formik.handleBlur}
-                                      style={{
-                                        border: "1px solid #014D88",
-                                        borderRadius: "0.2rem",
-                                      }}
                                     >
-                                      <option value="">Select</option>
-                                      <option value="yes">Yes</option>
-                                      <option value="no">No</option>
-                                    </Input>
-                                    {formik.errors
-                                      .maMonth2leadershipTrainingChoice !==
-                                    "" ? (
-                                      <span className={classes.error}>
-                                        {
-                                          formik.errors
+                                      <Label for="maMonth2leadershipTrainingChoice">
+                                        Leadership participation
+                                        <span style={{ color: "red" }}>
+                                          {" "}
+                                          *
+                                        </span>{" "}
+                                      </Label>
+                                      <Input
+                                        className="form-control"
+                                        type="select"
+                                        name="maMonth2leadershipTrainingChoice"
+                                        id="maMonth2leadershipTrainingChoice"
+                                        value={
+                                          formik.values
                                             .maMonth2leadershipTrainingChoice
                                         }
-                                      </span>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </CustomFormGroup>
-                                </div>
-
-                                {formik.values
-                                  .maMonth2leadershipTrainingChoice ===
-                                  "yes" && (
-                                  <div className="form-group mb-3 col-md-6">
-                                    <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth2leadershipTrainingDate"
-                                    >
-                                      <Label for="maMonth2leadershipTrainingDate">
-                                        Date for Leadership participation
-                                        <span style={{ color: "red" }}>
-                                          {" "}
-                                          *
-                                        </span>{" "}
-                                      </Label>
-                                      <Input
-                                        className="form-control"
-                                        type="date"
-                                        {...{
-                                          min: moment(
-                                            new Date(
-                                              props?.activeContent?.artCommence?.visitDate
-                                            )
-                                          ).format("YYYY-MM-DD"),
-                                        }}
-                                        {...{
-                                          max: moment(new Date()).format(
-                                            "YYYY-MM-DD"
-                                          ),
-                                        }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
-                                        name="maMonth2leadershipTrainingDate"
-                                        id="maMonth2leadershipTrainingDate"
-                                        value={
-                                          formik.values
-                                            .maMonth2leadershipTrainingDate
-                                        }
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         style={{
                                           border: "1px solid #014D88",
                                           borderRadius: "0.2rem",
                                         }}
-                                      />
-                                      {formik.errors
-                                        .maMonth2leadershipTrainingDate !==
-                                      "" ? (
+                                      >
+                                        <option value="">Select</option>
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                      </Input>
+                                      {formik?.touched
+                                        ?.maMonth2leadershipTrainingChoice &&
+                                      formik?.errors
+                                        ?.maMonth2leadershipTrainingChoice !==
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
-                                            formik.errors
+                                            formik?.errors
+                                              ?.maMonth2leadershipTrainingChoice
+                                          }
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </CustomFormGroup>
+                                  </div>
+
+                                  {formik.values
+                                    .maMonth2leadershipTrainingChoice ===
+                                    "yes" && (
+                                    <div className="form-group mb-3 col-md-6">
+                                      <CustomFormGroup
+                                        formik={formik}
+                                        name="maMonth2leadershipTrainingDate"
+                                      >
+                                        <Label for="maMonth2leadershipTrainingDate">
+                                          Date for Leadership participation
+                                          <span style={{ color: "red" }}>
+                                            {" "}
+                                            *
+                                          </span>{" "}
+                                        </Label>
+                                        <Input
+                                          className="form-control"
+                                          type="date"
+                                          {...{
+                                            min: moment(
+                                              new Date(
+                                                props?.activeContent?.artCommence?.visitDate
+                                              )
+                                            ).format("YYYY-MM-DD"),
+                                          }}
+                                          {...{
+                                            max: moment(new Date()).format(
+                                              "YYYY-MM-DD"
+                                            ),
+                                          }}
+                                          disabled={
+                                            !props?.activeContent?.enrollment
+                                              ?.dateOfRegistration
+                                          }
+                                          name="maMonth2leadershipTrainingDate"
+                                          id="maMonth2leadershipTrainingDate"
+                                          value={
+                                            formik.values
                                               .maMonth2leadershipTrainingDate
                                           }
-                                        </span>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </CustomFormGroup>
-                                  </div>
-                                )}
+                                          onChange={formik.handleChange}
+                                          onBlur={formik.handleBlur}
+                                          style={{
+                                            border: "1px solid #014D88",
+                                            borderRadius: "0.2rem",
+                                          }}
+                                        />
+                                        {formik?.touched
+                                          ?.maMonth2leadershipTrainingDate &&
+                                        formik.errors
+                                          .maMonth2leadershipTrainingDate !==
+                                          "" ? (
+                                          <span className={classes.error}>
+                                            {
+                                              formik?.errors
+                                                ?.maMonth2leadershipTrainingDate
+                                            }
+                                          </span>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </CustomFormGroup>
+                                    </div>
+                                  )}
 
-                                <div className="form-group mb-3 col-md-6">
-                                  <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth2PeerToPeerChoice"
-                                  >
-                                    <Label for="maMonth2PeerToPeerChoice">
-                                      Peer to Peer Mentorship
-                                      <span style={{ color: "red" }}>
-                                        {" "}
-                                        *
-                                      </span>{" "}
-                                    </Label>
-                                    <Input
-                                      className="form-control"
-                                      type="select"
+                                  <div className="form-group mb-3 col-md-6">
+                                    <CustomFormGroup
+                                      formik={formik}
                                       name="maMonth2PeerToPeerChoice"
-                                      id="maMonth2PeerToPeerChoice"
-                                      value={
-                                        formik.values.maMonth2PeerToPeerChoice
-                                      }
-                                      onChange={formik.handleChange}
-                                      onBlur={formik.handleBlur}
-                                      style={{
-                                        border: "1px solid #014D88",
-                                        borderRadius: "0.2rem",
-                                      }}
                                     >
-                                      <option value="">Select</option>
-                                      <option value="yes">Yes</option>
-                                      <option value="no">No</option>
-                                    </Input>
-                                    {formik.errors.maMonth2PeerToPeerChoice !==
-                                    "" ? (
-                                      <span className={classes.error}>
-                                        {formik.errors.maMonth2PeerToPeerChoice}
-                                      </span>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </CustomFormGroup>
-                                </div>
-
-                                {formik.values.maMonth2PeerToPeerChoice ===
-                                  "yes" && (
-                                  <div className="form-group mb-3 col-md-6">
-                                    <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth2PeerToPeerDate"
-                                    >
-                                      <Label for="maMonth2PeerToPeerDate">
-                                        Date for peer to peer mentorship
+                                      <Label for="maMonth2PeerToPeerChoice">
+                                        Peer to Peer Mentorship
                                         <span style={{ color: "red" }}>
                                           {" "}
                                           *
@@ -2479,27 +2612,11 @@ const ServiceForm = (props) => {
                                       </Label>
                                       <Input
                                         className="form-control"
-                                        type="date"
-                                        {...{
-                                          min: moment(
-                                            new Date(
-                                              props?.activeContent?.artCommence?.visitDate
-                                            )
-                                          ).format("YYYY-MM-DD"),
-                                        }}
-                                        {...{
-                                          max: moment(new Date()).format(
-                                            "YYYY-MM-DD"
-                                          ),
-                                        }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
-                                        name="maMonth2PeerToPeerDate"
-                                        id="maMonth2PeerToPeerDate"
+                                        type="select"
+                                        name="maMonth2PeerToPeerChoice"
+                                        id="maMonth2PeerToPeerChoice"
                                         value={
-                                          formik.values.maMonth2PeerToPeerDate
+                                          formik.values.maMonth2PeerToPeerChoice
                                         }
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
@@ -2507,219 +2624,19 @@ const ServiceForm = (props) => {
                                           border: "1px solid #014D88",
                                           borderRadius: "0.2rem",
                                         }}
-                                      />
-                                      {formik.errors.maMonth2PeerToPeerDate !==
-                                      "" ? (
-                                        <span className={classes.error}>
-                                          {formik.errors.maMonth2PeerToPeerDate}
-                                        </span>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </CustomFormGroup>
-                                  </div>
-                                )}
-
-                                <div className="form-group mb-3 col-md-6">
-                                  <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth2RoleOfOtzChoice"
-                                  >
-                                    <Label for="maMonth2RoleOfOtzChoice">
-                                      Role of OTZ in 95-95-95
-                                      <span style={{ color: "red" }}>
-                                        {" "}
-                                        *
-                                      </span>{" "}
-                                    </Label>
-                                    <Input
-                                      className="form-control"
-                                      type="select"
-                                      name="maMonth2RoleOfOtzChoice"
-                                      id="maMonth2RoleOfOtzChoice"
-                                      value={
-                                        formik.values.maMonth2RoleOfOtzChoice
-                                      }
-                                      onChange={formik.handleChange}
-                                      onBlur={formik.handleBlur}
-                                      style={{
-                                        border: "1px solid #014D88",
-                                        borderRadius: "0.2rem",
-                                      }}
-                                    >
-                                      <option value="">Select</option>
-                                      <option value="yes">Yes</option>
-                                      <option value="no">No</option>
-                                    </Input>
-                                    {formik.errors.maMonth2RoleOfOtzChoice !==
-                                    "" ? (
-                                      <span className={classes.error}>
-                                        {formik.errors.maMonth2RoleOfOtzChoice}
-                                      </span>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </CustomFormGroup>
-                                </div>
-
-                                {formik.values.maMonth2RoleOfOtzChoice ===
-                                  "yes" && (
-                                  <div className="form-group mb-3 col-md-6">
-                                    <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth2RoleOfOtzDate"
-                                    >
-                                      <Label for="maMonth2RoleOfOtzDate">
-                                        Date for role of OTZ in 95-95-95
-                                        <span style={{ color: "red" }}>
-                                          {" "}
-                                          *
-                                        </span>{" "}
-                                      </Label>
-                                      <Input
-                                        className="form-control"
-                                        type="date"
-                                        {...{
-                                          min: moment(
-                                            new Date(
-                                              props?.activeContent?.artCommence?.visitDate
-                                            )
-                                          ).format("YYYY-MM-DD"),
-                                        }}
-                                        {...{
-                                          max: moment(new Date()).format(
-                                            "YYYY-MM-DD"
-                                          ),
-                                        }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
-                                        name="maMonth2RoleOfOtzDate"
-                                        id="maMonth2RoleOfOtzDate"
-                                        value={
-                                          formik.values.maMonth2RoleOfOtzDate
-                                        }
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        style={{
-                                          border: "1px solid #014D88",
-                                          borderRadius: "0.2rem",
-                                        }}
-                                      />
-                                      {formik.errors.maMonth2RoleOfOtzDate !==
-                                      "" ? (
-                                        <span className={classes.error}>
-                                          {formik.errors.maMonth2RoleOfOtzDate}
-                                        </span>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </CustomFormGroup>
-                                  </div>
-                                )}
-
-                                <div className="form-group mb-3 col-md-6">
-                                  <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth2OtzChampionOrientationChoice"
-                                  >
-                                    <Label for="maMonth2OtzChampionOrientationChoice">
-                                      OTZ champion orientation
-                                      <span style={{ color: "red" }}>
-                                        {" "}
-                                        *
-                                      </span>{" "}
-                                    </Label>
-                                    <Input
-                                      className="form-control"
-                                      type="select"
-                                      name="maMonth2OtzChampionOrientationChoice"
-                                      id="maMonth2OtzChampionOrientationChoice"
-                                      value={
-                                        formik.values
-                                          .maMonth2OtzChampionOrientationChoice
-                                      }
-                                      onChange={formik.handleChange}
-                                      onBlur={formik.handleBlur}
-                                      style={{
-                                        border: "1px solid #014D88",
-                                        borderRadius: "0.2rem",
-                                      }}
-                                    >
-                                      <option value="">Select</option>
-                                      <option value="yes">Yes</option>
-                                      <option value="no">No</option>
-                                    </Input>
-                                    {formik.errors
-                                      .maMonth2OtzChampionOrientationChoice !==
-                                    "" ? (
-                                      <span className={classes.error}>
-                                        {
-                                          formik.errors
-                                            .maMonth2OtzChampionOrientationChoice
-                                        }
-                                      </span>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </CustomFormGroup>
-                                </div>
-
-                                {formik.values
-                                  .maMonth2OtzChampionOrientationChoice ===
-                                  "yes" && (
-                                  <div className="form-group mb-3 col-md-6">
-                                    <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth2OtzChampionOrientationDate"
-                                    >
-                                      <Label for="maMonth2OtzChampionOrientationDate">
-                                        Date for OTZ Champion Orientation
-                                        <span style={{ color: "red" }}>
-                                          {" "}
-                                          *
-                                        </span>{" "}
-                                      </Label>
-                                      <Input
-                                        className="form-control"
-                                        type="date"
-                                        {...{
-                                          min: moment(
-                                            new Date(
-                                              props?.activeContent?.artCommence?.visitDate
-                                            )
-                                          ).format("YYYY-MM-DD"),
-                                        }}
-                                        {...{
-                                          max: moment(new Date()).format(
-                                            "YYYY-MM-DD"
-                                          ),
-                                        }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
-                                        name="maMonth2OtzChampionOrientationDate"
-                                        id="maMonth2OtzChampionOrientationDate"
-                                        value={
-                                          formik.values
-                                            .maMonth2OtzChampionOrientationDate
-                                        }
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        style={{
-                                          border: "1px solid #014D88",
-                                          borderRadius: "0.2rem",
-                                        }}
-                                      />
-                                      {formik.errors
-                                        .maMonth2OtzChampionOrientationDate !==
-                                      "" ? (
+                                      >
+                                        <option value="">Select</option>
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                      </Input>
+                                      {formik?.touched
+                                        ?.maMonth2PeerToPeerChoice &&
+                                      formik?.errors
+                                        ?.maMonth2PeerToPeerChoice !== "" ? (
                                         <span className={classes.error}>
                                           {
-                                            formik.errors
-                                              .maMonth2OtzChampionOrientationDate
+                                            formik?.errors
+                                              ?.maMonth2PeerToPeerChoice
                                           }
                                         </span>
                                       ) : (
@@ -2727,125 +2644,407 @@ const ServiceForm = (props) => {
                                       )}
                                     </CustomFormGroup>
                                   </div>
-                                )}
-                              </div>
-                            </div>
-                          </Collapse>
-                        </div>
-                      </div>
-                    )}
 
-                  {formik?.values?.acMonth2EacDate1 !== "" &&
-                    formik?.values?.acMonth2EacDate2 !== "" &&
-                    formik?.values?.acMonth2EacDate3 !== "" && (
-                      <div>
-                        <div
-                          style={{
-                            backgroundColor: "#d8f6ff",
-                            width: "95%",
-                            margin: "auto",
-                            marginTop: "5rem",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                          }}
-                        >
-                          <p
+                                  {formik.values.maMonth2PeerToPeerChoice ===
+                                    "yes" && (
+                                    <div className="form-group mb-3 col-md-6">
+                                      <CustomFormGroup
+                                        formik={formik}
+                                        name="maMonth2PeerToPeerDate"
+                                      >
+                                        <Label for="maMonth2PeerToPeerDate">
+                                          Date for peer to peer mentorship
+                                          <span style={{ color: "red" }}>
+                                            {" "}
+                                            *
+                                          </span>{" "}
+                                        </Label>
+                                        <Input
+                                          className="form-control"
+                                          type="date"
+                                          {...{
+                                            min: moment(
+                                              new Date(
+                                                props?.activeContent?.artCommence?.visitDate
+                                              )
+                                            ).format("YYYY-MM-DD"),
+                                          }}
+                                          {...{
+                                            max: moment(new Date()).format(
+                                              "YYYY-MM-DD"
+                                            ),
+                                          }}
+                                          disabled={
+                                            !props?.activeContent?.enrollment
+                                              ?.dateOfRegistration
+                                          }
+                                          name="maMonth2PeerToPeerDate"
+                                          id="maMonth2PeerToPeerDate"
+                                          value={
+                                            formik.values.maMonth2PeerToPeerDate
+                                          }
+                                          onChange={formik.handleChange}
+                                          onBlur={formik.handleBlur}
+                                          style={{
+                                            border: "1px solid #014D88",
+                                            borderRadius: "0.2rem",
+                                          }}
+                                        />
+                                        {formik?.touched
+                                          ?.maMonth2PeerToPeerDate &&
+                                        formik?.errors
+                                          ?.maMonth2PeerToPeerDate !== "" ? (
+                                          <span className={classes.error}>
+                                            {
+                                              formik?.errors
+                                                ?.maMonth2PeerToPeerDate
+                                            }
+                                          </span>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </CustomFormGroup>
+                                    </div>
+                                  )}
+
+                                  <div className="form-group mb-3 col-md-6">
+                                    <CustomFormGroup
+                                      formik={formik}
+                                      name="maMonth2RoleOfOtzChoice"
+                                    >
+                                      <Label for="maMonth2RoleOfOtzChoice">
+                                        Role of OTZ in 95-95-95
+                                        <span style={{ color: "red" }}>
+                                          {" "}
+                                          *
+                                        </span>{" "}
+                                      </Label>
+                                      <Input
+                                        className="form-control"
+                                        type="select"
+                                        name="maMonth2RoleOfOtzChoice"
+                                        id="maMonth2RoleOfOtzChoice"
+                                        value={
+                                          formik.values.maMonth2RoleOfOtzChoice
+                                        }
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        style={{
+                                          border: "1px solid #014D88",
+                                          borderRadius: "0.2rem",
+                                        }}
+                                      >
+                                        <option value="">Select</option>
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                      </Input>
+                                      {formik?.touched
+                                        ?.maMonth2RoleOfOtzChoice &&
+                                      formik?.errors
+                                        ?.maMonth2RoleOfOtzChoice !== "" ? (
+                                        <span className={classes.error}>
+                                          {
+                                            formik?.errors
+                                              ?.maMonth2RoleOfOtzChoice
+                                          }
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </CustomFormGroup>
+                                  </div>
+
+                                  {formik.values.maMonth2RoleOfOtzChoice ===
+                                    "yes" && (
+                                    <div className="form-group mb-3 col-md-6">
+                                      <CustomFormGroup
+                                        formik={formik}
+                                        name="maMonth2RoleOfOtzDate"
+                                      >
+                                        <Label for="maMonth2RoleOfOtzDate">
+                                          Date for role of OTZ in 95-95-95
+                                          <span style={{ color: "red" }}>
+                                            {" "}
+                                            *
+                                          </span>{" "}
+                                        </Label>
+                                        <Input
+                                          className="form-control"
+                                          type="date"
+                                          {...{
+                                            min: moment(
+                                              new Date(
+                                                props?.activeContent?.artCommence?.visitDate
+                                              )
+                                            ).format("YYYY-MM-DD"),
+                                          }}
+                                          {...{
+                                            max: moment(new Date()).format(
+                                              "YYYY-MM-DD"
+                                            ),
+                                          }}
+                                          disabled={
+                                            !props?.activeContent?.enrollment
+                                              ?.dateOfRegistration
+                                          }
+                                          name="maMonth2RoleOfOtzDate"
+                                          id="maMonth2RoleOfOtzDate"
+                                          value={
+                                            formik.values.maMonth2RoleOfOtzDate
+                                          }
+                                          onChange={formik.handleChange}
+                                          onBlur={formik.handleBlur}
+                                          style={{
+                                            border: "1px solid #014D88",
+                                            borderRadius: "0.2rem",
+                                          }}
+                                        />
+                                        {formik?.touched
+                                          ?.maMonth2RoleOfOtzDate &&
+                                        formik?.errors
+                                          ?.maMonth2RoleOfOtzDate !== "" ? (
+                                          <span className={classes.error}>
+                                            {
+                                              formik?.errors
+                                                ?.maMonth2RoleOfOtzDate
+                                            }
+                                          </span>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </CustomFormGroup>
+                                    </div>
+                                  )}
+
+                                  <div className="form-group mb-3 col-md-6">
+                                    <CustomFormGroup
+                                      formik={formik}
+                                      name="maMonth2OtzChampionOrientationChoice"
+                                    >
+                                      <Label for="maMonth2OtzChampionOrientationChoice">
+                                        OTZ champion orientation
+                                        <span style={{ color: "red" }}>
+                                          {" "}
+                                          *
+                                        </span>{" "}
+                                      </Label>
+                                      <Input
+                                        className="form-control"
+                                        type="select"
+                                        name="maMonth2OtzChampionOrientationChoice"
+                                        id="maMonth2OtzChampionOrientationChoice"
+                                        value={
+                                          formik.values
+                                            .maMonth2OtzChampionOrientationChoice
+                                        }
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        style={{
+                                          border: "1px solid #014D88",
+                                          borderRadius: "0.2rem",
+                                        }}
+                                      >
+                                        <option value="">Select</option>
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                      </Input>
+                                      {formik?.touched
+                                        ?.maMonth2OtzChampionOrientationChoice &&
+                                      formik?.errors
+                                        ?.maMonth2OtzChampionOrientationChoice !==
+                                        "" ? (
+                                        <span className={classes.error}>
+                                          {
+                                            formik?.errors
+                                              ?.maMonth2OtzChampionOrientationChoice
+                                          }
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </CustomFormGroup>
+                                  </div>
+
+                                  {formik.values
+                                    .maMonth2OtzChampionOrientationChoice ===
+                                    "yes" && (
+                                    <div className="form-group mb-3 col-md-6">
+                                      <CustomFormGroup
+                                        formik={formik}
+                                        name="maMonth2OtzChampionOrientationDate"
+                                      >
+                                        <Label for="maMonth2OtzChampionOrientationDate">
+                                          Date for OTZ Champion Orientation
+                                          <span style={{ color: "red" }}>
+                                            {" "}
+                                            *
+                                          </span>{" "}
+                                        </Label>
+                                        <Input
+                                          className="form-control"
+                                          type="date"
+                                          {...{
+                                            min: moment(
+                                              new Date(
+                                                props?.activeContent?.artCommence?.visitDate
+                                              )
+                                            ).format("YYYY-MM-DD"),
+                                          }}
+                                          {...{
+                                            max: moment(new Date()).format(
+                                              "YYYY-MM-DD"
+                                            ),
+                                          }}
+                                          disabled={
+                                            !props?.activeContent?.enrollment
+                                              ?.dateOfRegistration
+                                          }
+                                          name="maMonth2OtzChampionOrientationDate"
+                                          id="maMonth2OtzChampionOrientationDate"
+                                          value={
+                                            formik.values
+                                              .maMonth2OtzChampionOrientationDate
+                                          }
+                                          onChange={formik.handleChange}
+                                          onBlur={formik.handleBlur}
+                                          style={{
+                                            border: "1px solid #014D88",
+                                            borderRadius: "0.2rem",
+                                          }}
+                                        />
+                                        {formik?.touched
+                                          ?.maMonth2OtzChampionOrientationDate &&
+                                        formik.errors
+                                          .maMonth2OtzChampionOrientationDate !==
+                                          "" ? (
+                                          <span className={classes.error}>
+                                            {
+                                              formik?.errors
+                                                ?.maMonth2OtzChampionOrientationDate
+                                            }
+                                          </span>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </CustomFormGroup>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </Collapse>
+                          </div>
+                        </div>
+                      )}
+
+                    <div className="d-flex justify-content-end">
+                      <MatButton
+                        type="button"
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                        style={{ backgroundColor: "#014d88" }}
+                        startIcon={<SaveIcon />}
+                        disabled={saving}
+                        onClick={() =>
+                          handleSubmitAdherence(formik.values, {
+                            reroute: false,
+                            monthOfData: 2,
+                          })
+                        }
+                      >
+                        {!saving ? (
+                          <span style={{ textTransform: "capitalize" }}>
+                            Submit month 2
+                          </span>
+                        ) : (
+                          <span style={{ textTransform: "capitalize" }}>
+                            Submitting...
+                          </span>
+                        )}
+                      </MatButton>
+                    </div>
+                  </div>
+
+                  <div
+                    className="card"
+                    style={{
+                      margin: "20px",
+                    }}
+                  >
+                    <h5
+                      style={{
+                        color: "black",
+                        fontSize: "20px",
+                        fontWeight: "600",
+                        marginLeft: "10px",
+                        marginTop: "10px",
+                      }}
+                    >
+                      Month 3
+                    </h5>
+
+                    {formik?.values?.acMonth2EacDate1 !== "" &&
+                      formik?.values?.acMonth2EacDate2 !== "" &&
+                      formik?.values?.acMonth2EacDate3 !== "" && (
+                        <div>
+                          <div
                             style={{
-                              color: "black",
-                              fontSize: "15px",
-                              fontWeight: "600",
-                              marginLeft: "10px",
-                              marginTop: "10px",
+                              backgroundColor: "#d8f6ff",
+                              width: "95%",
+                              margin: "auto",
+                              marginTop: "5rem",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
                             }}
                           >
-                            Adherence Counselling Month 3
-                          </p>
-                          <IconButton
-                            onClick={() =>
-                              setIsDropdownsOpen((prevState) => {
-                                return {
-                                  ...prevState,
-                                  monthThreeAdherenceCounselling:
-                                    !prevState.monthThreeAdherenceCounselling,
-                                };
-                              })
-                            }
-                            aria-expanded={
-                              isDropdownsOpen.monthThreeAdherenceCounselling
-                            }
-                            aria-label="Expand"
-                          >
-                            <ExpandMoreIcon />
-                          </IconButton>
-                        </div>
-                        <div className="card-body">
-                          <Collapse
-                            in={isDropdownsOpen.monthThreeAdherenceCounselling}
-                          >
-                            <div
-                              className="basic-form"
-                              style={{ padding: "0 50px 0 50px" }}
+                            <p
+                              style={{
+                                color: "black",
+                                fontSize: "15px",
+                                fontWeight: "600",
+                                marginLeft: "10px",
+                                marginTop: "10px",
+                              }}
                             >
-                              <div className="row">
-                                <div className="form-group mb-3 col-md-4">
-                                  <CustomFormGroup
-                                  formik={formik}
-                                  name="acMonth3EacDate1"
-                                  >
-                                    <Label for="acMonth3EacDate1">
-                                      EAC 1 date
-                                      <span style={{ color: "red" }}>
-                                        {" "}
-                                        *
-                                      </span>{" "}
-                                    </Label>
-                                    <Input
-                                      className="form-control"
-                                      type="date"
-                                      {...{
-                                        min: moment(
-                                          new Date(
-                                            formik?.values?.dateEnrolledIntoOtz
-                                          )
-                                        ).format("YYYY-MM-DD"),
-                                      }}
-                                      {...{
-                                        max: moment(new Date()).format(
-                                          "YYYY-MM-DD"
-                                        ),
-                                      }}
-                                      disabled={
-                                        !formik?.values?.dateEnrolledIntoOtz
-                                      }
-                                      name="acMonth3EacDate1"
-                                      id="acMonth3EacDate1"
-                                      value={formik.values.acMonth3EacDate1}
-                                      onChange={formik.handleChange}
-                                      onBlur={formik.handleBlur}
-                                      style={{
-                                        border: "1px solid #014D88",
-                                        borderRadius: "0.2rem",
-                                      }}
-                                    />
-                                    {formik.errors.acMonth3EacDate1 !== "" ? (
-                                      <span className={classes.error}>
-                                        {formik.errors.acMonth3EacDate1}
-                                      </span>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </CustomFormGroup>
-                                </div>
-
-                                {formik?.values?.acMonth3EacDate1 !== "" && (
+                              Adherence Counselling
+                            </p>
+                            <IconButton
+                              onClick={() =>
+                                setIsDropdownsOpen((prevState) => {
+                                  return {
+                                    ...prevState,
+                                    monthThreeAdherenceCounselling:
+                                      !prevState.monthThreeAdherenceCounselling,
+                                  };
+                                })
+                              }
+                              aria-expanded={
+                                isDropdownsOpen.monthThreeAdherenceCounselling
+                              }
+                              aria-label="Expand"
+                            >
+                              <ExpandMoreIcon />
+                            </IconButton>
+                          </div>
+                          <div className="card-body">
+                            <Collapse
+                              in={
+                                isDropdownsOpen.monthThreeAdherenceCounselling
+                              }
+                            >
+                              <div
+                                className="basic-form"
+                                style={{ padding: "0 50px 0 50px" }}
+                              >
+                                <div className="row">
                                   <div className="form-group mb-3 col-md-4">
                                     <CustomFormGroup
-                                    formik={formik}
-                                    name="acMonth3EacDate2"
+                                      formik={formik}
+                                      name="acMonth3EacDate1"
                                     >
-                                      <Label for="acMonth3EacDate2">
-                                        EAC 2 date
+                                      <Label for="acMonth3EacDate1">
+                                        EAC 1 date
                                         <span style={{ color: "red" }}>
                                           {" "}
                                           *
@@ -2869,9 +3068,9 @@ const ServiceForm = (props) => {
                                         disabled={
                                           !formik?.values?.dateEnrolledIntoOtz
                                         }
-                                        name="acMonth3EacDate2"
-                                        id="acMonth3EacDate2"
-                                        value={formik.values.acMonth3EacDate2}
+                                        name="acMonth3EacDate1"
+                                        id="acMonth3EacDate1"
+                                        value={formik.values.acMonth3EacDate1}
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         style={{
@@ -2879,74 +3078,25 @@ const ServiceForm = (props) => {
                                           borderRadius: "0.2rem",
                                         }}
                                       />
-                                      {formik.errors.acMonth3EacDate2 !== "" ? (
+                                      {formik?.touched?.acMonth3EacDate1 &&
+                                      formik.errors.acMonth3EacDate1 !== "" ? (
                                         <span className={classes.error}>
-                                          {formik.errors.acMonth3EacDate2}
+                                          {formik?.errors?.acMonth3EacDate1}
                                         </span>
                                       ) : (
                                         ""
                                       )}
                                     </CustomFormGroup>
                                   </div>
-                                )}
 
-                                {formik?.values?.acMonth3EacDate2 !== "" && (
-                                  <div className="form-group mb-3 col-md-4">
-                                    <CustomFormGroup
-                                    formik={formik}
-                                    name="acMonth3EacDate3"
-                                    >
-                                      <Label for="acMonth3EacDate3">
-                                        EAC 3 date
-                                      </Label>
-                                      <Input
-                                        type="date"
-                                        {...{
-                                          min: moment(
-                                            new Date(
-                                              formik?.values?.dateEnrolledIntoOtz
-                                            )
-                                          ).format("YYYY-MM-DD"),
-                                        }}
-                                        {...{
-                                          max: moment(new Date()).format(
-                                            "YYYY-MM-DD"
-                                          ),
-                                        }}
-                                        disabled={
-                                          !formik?.values?.dateEnrolledIntoOtz
-                                        }
-                                        className="form-control"
-                                        name="acMonth3EacDate3"
-                                        id="acMonth3EacDate3"
-                                        value={formik.values.acMonth3EacDate3}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        style={{
-                                          border: "1px solid #014D88",
-                                          borderRadius: "0.2rem",
-                                        }}
-                                      ></Input>
-                                      {formik.errors.acMonth3EacDate3 !== "" ? (
-                                        <span className={classes.error}>
-                                          {formik.errors.acMonth3EacDate3}
-                                        </span>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </CustomFormGroup>
-                                  </div>
-                                )}
-
-                                {formik?.values?.acMonth3EacDate3 !== "" && (
-                                  <div className="row">
+                                  {formik?.values?.acMonth3EacDate1 !== "" && (
                                     <div className="form-group mb-3 col-md-4">
                                       <CustomFormGroup
-                                      formik={formik}
-                                      name="dateViralLoadAssesmentMonth3"
+                                        formik={formik}
+                                        name="acMonth3EacDate2"
                                       >
-                                        <Label for="dateViralLoadAssesmentMonth3">
-                                          Date of viral load assessment
+                                        <Label for="acMonth3EacDate2">
+                                          EAC 2 date
                                           <span style={{ color: "red" }}>
                                             {" "}
                                             *
@@ -2970,12 +3120,9 @@ const ServiceForm = (props) => {
                                           disabled={
                                             !formik?.values?.dateEnrolledIntoOtz
                                           }
-                                          name="dateViralLoadAssesmentMonth3"
-                                          id="dateViralLoadAssesmentMonth3"
-                                          value={
-                                            formik?.values
-                                              ?.dateViralLoadAssesmentMonth3
-                                          }
+                                          name="acMonth3EacDate2"
+                                          id="acMonth3EacDate2"
+                                          value={formik.values.acMonth3EacDate2}
                                           onChange={formik.handleChange}
                                           onBlur={formik.handleBlur}
                                           style={{
@@ -2983,28 +3130,305 @@ const ServiceForm = (props) => {
                                             borderRadius: "0.2rem",
                                           }}
                                         />
-                                        {formik.errors
-                                          .dateViralLoadAssesmentMonth3 !==
-                                        "" ? (
+                                        {formik?.touched?.acMonth3EacDate2 &&
+                                        formik?.errors?.acMonth3EacDate2 !==
+                                          "" ? (
                                           <span className={classes.error}>
-                                            {
-                                              formik.errors
-                                                .dateViralLoadAssesmentMonth3
-                                            }
+                                            {formik?.errors?.acMonth3EacDate2}
                                           </span>
                                         ) : (
                                           ""
                                         )}
                                       </CustomFormGroup>
                                     </div>
+                                  )}
 
+                                  {formik?.values?.acMonth3EacDate2 !== "" && (
                                     <div className="form-group mb-3 col-md-4">
                                       <CustomFormGroup
-                                      formik={formik}
-                                      name="viralLoadMonth3"
+                                        formik={formik}
+                                        name="acMonth3EacDate3"
                                       >
-                                        <Label for="viralLoadMonth3">
-                                          Viral load
+                                        <Label for="acMonth3EacDate3">
+                                          EAC 3 date
+                                        </Label>
+                                        <Input
+                                          type="date"
+                                          {...{
+                                            min: moment(
+                                              new Date(
+                                                formik?.values?.dateEnrolledIntoOtz
+                                              )
+                                            ).format("YYYY-MM-DD"),
+                                          }}
+                                          {...{
+                                            max: moment(new Date()).format(
+                                              "YYYY-MM-DD"
+                                            ),
+                                          }}
+                                          disabled={
+                                            !formik?.values?.dateEnrolledIntoOtz
+                                          }
+                                          className="form-control"
+                                          name="acMonth3EacDate3"
+                                          id="acMonth3EacDate3"
+                                          value={formik.values.acMonth3EacDate3}
+                                          onChange={formik.handleChange}
+                                          onBlur={formik.handleBlur}
+                                          style={{
+                                            border: "1px solid #014D88",
+                                            borderRadius: "0.2rem",
+                                          }}
+                                        ></Input>
+                                        {formik?.touched?.acMonth3EacDate3 &&
+                                        formik.errors.acMonth3EacDate3 !==
+                                          "" ? (
+                                          <span className={classes.error}>
+                                            {formik.errors.acMonth3EacDate3}
+                                          </span>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </CustomFormGroup>
+                                    </div>
+                                  )}
+
+                                  {formik?.values?.acMonth3EacDate3 !== "" && (
+                                    <div className="row">
+                                      <div className="form-group mb-3 col-md-4">
+                                        <CustomFormGroup
+                                          formik={formik}
+                                          name="dateViralLoadAssesmentMonth3"
+                                        >
+                                          <Label for="dateViralLoadAssesmentMonth3">
+                                            Date of viral load assessment
+                                            <span style={{ color: "red" }}>
+                                              {" "}
+                                              *
+                                            </span>{" "}
+                                          </Label>
+                                          <Input
+                                            className="form-control"
+                                            type="date"
+                                            {...{
+                                              min: moment(
+                                                new Date(
+                                                  formik?.values?.dateEnrolledIntoOtz
+                                                )
+                                              ).format("YYYY-MM-DD"),
+                                            }}
+                                            {...{
+                                              max: moment(new Date()).format(
+                                                "YYYY-MM-DD"
+                                              ),
+                                            }}
+                                            disabled={
+                                              !formik?.values
+                                                ?.dateEnrolledIntoOtz
+                                            }
+                                            name="dateViralLoadAssesmentMonth3"
+                                            id="dateViralLoadAssesmentMonth3"
+                                            value={
+                                              formik?.values
+                                                ?.dateViralLoadAssesmentMonth3
+                                            }
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            style={{
+                                              border: "1px solid #014D88",
+                                              borderRadius: "0.2rem",
+                                            }}
+                                          />
+                                          {formik?.touched
+                                            ?.dateViralLoadAssesmentMonth3 &&
+                                          formik?.errors
+                                            ?.dateViralLoadAssesmentMonth3 !==
+                                            "" ? (
+                                            <span className={classes.error}>
+                                              {
+                                                formik?.errors
+                                                  ?.dateViralLoadAssesmentMonth3
+                                              }
+                                            </span>
+                                          ) : (
+                                            ""
+                                          )}
+                                        </CustomFormGroup>
+                                      </div>
+
+                                      <div className="form-group mb-3 col-md-4">
+                                        <CustomFormGroup
+                                          formik={formik}
+                                          name="viralLoadMonth3"
+                                        >
+                                          <Label for="viralLoadMonth3">
+                                            Viral load
+                                            <span style={{ color: "red" }}>
+                                              {" "}
+                                              *
+                                            </span>{" "}
+                                          </Label>
+                                          <Input
+                                            className="form-control"
+                                            type="number"
+                                            name="viralLoadMonth3"
+                                            id="viralLoadMonth3"
+                                            value={
+                                              formik?.values?.viralLoadMonth3
+                                            }
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            style={{
+                                              border: "1px solid #014D88",
+                                              borderRadius: "0.2rem",
+                                            }}
+                                          />
+                                          {formik?.touched?.viralLoadMonth3 &&
+                                          formik.errors.viralLoadMonth3 !==
+                                            "" ? (
+                                            <span className={classes.error}>
+                                              {formik.errors.viralLoadMonth3}
+                                            </span>
+                                          ) : (
+                                            ""
+                                          )}
+                                        </CustomFormGroup>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </Collapse>
+                          </div>
+                        </div>
+                      )}
+
+                    {formik?.values?.maMonth2PositiveLivingChoice !== "" &&
+                      formik?.values?.maMonth2PositiveLivingDate !== "" &&
+                      formik?.values?.maMonth2LiteracyTreatmentChoice !== "" &&
+                      formik?.values?.maMonth2LiteracyTreatmentDate !== "" &&
+                      formik?.values?.maMonth2AdolescentsParticipationChoice !==
+                        "" &&
+                      formik?.values?.maMonth2AdolescentsParticipationDate !==
+                        "" &&
+                      formik?.values?.maMonth2leadershipTrainingChoice !== "" &&
+                      formik?.values?.maMonth2leadershipTrainingDate !== "" &&
+                      formik?.values?.maMonth2PeerToPeerChoice !== "" &&
+                      formik?.values?.maMonth2PeerToPeerDate !== "" &&
+                      formik?.values?.maMonth2RoleOfOtzChoice !== "" &&
+                      formik?.values?.maMonth2RoleOfOtzDate !== "" &&
+                      formik?.values?.maMonth2OtzChampionOrientationChoice !==
+                        "" &&
+                      formik?.values?.maMonth2OtzChampionOrientationDate !==
+                        "" && (
+                        <div>
+                          <div
+                            style={{
+                              backgroundColor: "#d8f6ff",
+                              width: "95%",
+                              margin: "auto",
+                              marginTop: "5rem",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                            }}
+                          >
+                            <p
+                              style={{
+                                color: "black",
+                                fontSize: "15px",
+                                fontWeight: "600",
+                                marginLeft: "10px",
+                                marginTop: "10px",
+                              }}
+                            >
+                              Modules activity/date of completion
+                            </p>
+                            <IconButton
+                              onClick={() =>
+                                setIsDropdownsOpen((prevState) => {
+                                  return {
+                                    ...prevState,
+                                    monthThreeModulesActivities:
+                                      !prevState.monthThreeModulesActivities,
+                                  };
+                                })
+                              }
+                              aria-expanded={
+                                isDropdownsOpen.monthThreeModulesActivities
+                              }
+                              aria-label="Expand"
+                            >
+                              <ExpandMoreIcon />
+                            </IconButton>
+                          </div>
+
+                          <div className="card-body">
+                            <Collapse
+                              in={isDropdownsOpen.monthThreeModulesActivities}
+                            >
+                              <div
+                                className="basic-form"
+                                style={{ padding: "0 50px 0 50px" }}
+                              >
+                                <div className="row">
+                                  <div className="form-group mb-3 col-md-6">
+                                    <CustomFormGroup
+                                      formik={formik}
+                                      name="maMonth3PositiveLivingChoice"
+                                    >
+                                      <Label for="maMonth3PositiveLivingChoice">
+                                        Positive Living
+                                        <span style={{ color: "red" }}>
+                                          {" "}
+                                          *
+                                        </span>{" "}
+                                      </Label>
+                                      <Input
+                                        className="form-control"
+                                        type="select"
+                                        name="maMonth3PositiveLivingChoice"
+                                        id="maMonth3PositiveLivingChoice"
+                                        value={
+                                          formik.values
+                                            .maMonth3PositiveLivingChoice
+                                        }
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        style={{
+                                          border: "1px solid #014D88",
+                                          borderRadius: "0.2rem",
+                                        }}
+                                      >
+                                        <option value="">Select</option>
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                      </Input>
+                                      {formik?.touched
+                                        ?.maMonth3PositiveLivingChoice &&
+                                      formik.errors
+                                        .maMonth3PositiveLivingChoice !== "" ? (
+                                        <span className={classes.error}>
+                                          {
+                                            formik.errors
+                                              .maMonth3PositiveLivingChoice
+                                          }
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </CustomFormGroup>
+                                  </div>
+                                  {formik?.values
+                                    ?.maMonth3PositiveLivingChoice ===
+                                    "yes" && (
+                                    <div className="form-group mb-3 col-md-6">
+                                      <CustomFormGroup
+                                        formik={formik}
+                                        name="maMonth3PositiveLivingDate"
+                                      >
+                                        <Label for="maMonth3PositiveLivingDate">
+                                          Date for positive living
                                           <span style={{ color: "red" }}>
                                             {" "}
                                             *
@@ -3012,11 +3436,28 @@ const ServiceForm = (props) => {
                                         </Label>
                                         <Input
                                           className="form-control"
-                                          type="number"
-                                          name="viralLoadMonth3"
-                                          id="viralLoadMonth3"
+                                          type="date"
+                                          {...{
+                                            min: moment(
+                                              new Date(
+                                                props?.activeContent?.artCommence?.visitDate
+                                              )
+                                            ).format("YYYY-MM-DD"),
+                                          }}
+                                          {...{
+                                            max: moment(new Date()).format(
+                                              "YYYY-MM-DD"
+                                            ),
+                                          }}
+                                          disabled={
+                                            !props?.activeContent?.enrollment
+                                              ?.dateOfRegistration
+                                          }
+                                          name="maMonth3PositiveLivingDate"
+                                          id="maMonth3PositiveLivingDate"
                                           value={
-                                            formik?.values?.viralLoadMonth3
+                                            formik.values
+                                              .maMonth3PositiveLivingDate
                                           }
                                           onChange={formik.handleChange}
                                           onBlur={formik.handleBlur}
@@ -3025,148 +3466,30 @@ const ServiceForm = (props) => {
                                             borderRadius: "0.2rem",
                                           }}
                                         />
-                                        {formik.errors.viralLoadMonth3 !==
-                                        "" ? (
+                                        {formik?.touched
+                                          ?.maMonth3PositiveLivingDate &&
+                                        formik.errors
+                                          .maMonth3PositiveLivingDate !== "" ? (
                                           <span className={classes.error}>
-                                            {formik.errors.viralLoadMonth3}
+                                            {
+                                              formik.errors
+                                                .maMonth3PositiveLivingDate
+                                            }
                                           </span>
                                         ) : (
                                           ""
                                         )}
                                       </CustomFormGroup>
                                     </div>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </Collapse>
-                        </div>
-                      </div>
-                    )}
+                                  )}
 
-                  {formik?.values?.maMonth2PositiveLivingChoice !== "" &&
-                    formik?.values?.maMonth2PositiveLivingDate !== "" &&
-                    formik?.values?.maMonth2LiteracyTreatmentChoice !== "" &&
-                    formik?.values?.maMonth2LiteracyTreatmentDate !== "" &&
-                    formik?.values?.maMonth2AdolescentsParticipationChoice !==
-                      "" &&
-                    formik?.values?.maMonth2AdolescentsParticipationDate !==
-                      "" &&
-                    formik?.values?.maMonth2leadershipTrainingChoice !== "" &&
-                    formik?.values?.maMonth2leadershipTrainingDate !== "" &&
-                    formik?.values?.maMonth2PeerToPeerChoice !== "" &&
-                    formik?.values?.maMonth2PeerToPeerDate !== "" &&
-                    formik?.values?.maMonth2RoleOfOtzChoice !== "" &&
-                    formik?.values?.maMonth2RoleOfOtzDate !== "" &&
-                    formik?.values?.maMonth2OtzChampionOrientationChoice !==
-                      "" &&
-                    formik?.values?.maMonth2OtzChampionOrientationDate !==
-                      "" && (
-                      <div>
-                        <div
-                          style={{
-                            backgroundColor: "#d8f6ff",
-                            width: "95%",
-                            margin: "auto",
-                            marginTop: "5rem",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                          }}
-                        >
-                          <p
-                            style={{
-                              color: "black",
-                              fontSize: "15px",
-                              fontWeight: "600",
-                              marginLeft: "10px",
-                              marginTop: "10px",
-                            }}
-                          >
-                            Modules activity/date of completion Month 3
-                          </p>
-                          <IconButton
-                            onClick={() =>
-                              setIsDropdownsOpen((prevState) => {
-                                return {
-                                  ...prevState,
-                                  monthThreeModulesActivities:
-                                    !prevState.monthThreeModulesActivities,
-                                };
-                              })
-                            }
-                            aria-expanded={
-                              isDropdownsOpen.monthThreeModulesActivities
-                            }
-                            aria-label="Expand"
-                          >
-                            <ExpandMoreIcon />
-                          </IconButton>
-                        </div>
-
-                        <div className="card-body">
-                          <Collapse
-                            in={isDropdownsOpen.monthThreeModulesActivities}
-                          >
-                            <div
-                              className="basic-form"
-                              style={{ padding: "0 50px 0 50px" }}
-                            >
-                              <div className="row">
-                                <div className="form-group mb-3 col-md-6">
-                                  <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth3PositiveLivingChoice"
-                                  >
-                                    <Label for="maMonth3PositiveLivingChoice">
-                                      Positive Living
-                                      <span style={{ color: "red" }}>
-                                        {" "}
-                                        *
-                                      </span>{" "}
-                                    </Label>
-                                    <Input
-                                      className="form-control"
-                                      type="select"
-                                      name="maMonth3PositiveLivingChoice"
-                                      id="maMonth3PositiveLivingChoice"
-                                      value={
-                                        formik.values
-                                          .maMonth3PositiveLivingChoice
-                                      }
-                                      onChange={formik.handleChange}
-                                      onBlur={formik.handleBlur}
-                                      style={{
-                                        border: "1px solid #014D88",
-                                        borderRadius: "0.2rem",
-                                      }}
-                                    >
-                                      <option value="">Select</option>
-                                      <option value="yes">Yes</option>
-                                      <option value="no">No</option>
-                                    </Input>
-                                    {formik.errors
-                                      .maMonth3PositiveLivingChoice !== "" ? (
-                                      <span className={classes.error}>
-                                        {
-                                          formik.errors
-                                            .maMonth3PositiveLivingChoice
-                                        }
-                                      </span>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </CustomFormGroup>
-                                </div>
-                                {formik?.values
-                                  ?.maMonth3PositiveLivingChoice === "yes" && (
                                   <div className="form-group mb-3 col-md-6">
                                     <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth3PositiveLivingDate"
+                                      formik={formik}
+                                      name="maMonth3LiteracyTreatmentChoice"
                                     >
-                                      <Label for="maMonth3PositiveLivingDate">
-                                        Date for positive living
+                                      <Label for="maMonth3LiteracyTreatmentChoice">
+                                        Literacy Treatment
                                         <span style={{ color: "red" }}>
                                           {" "}
                                           *
@@ -3174,432 +3497,341 @@ const ServiceForm = (props) => {
                                       </Label>
                                       <Input
                                         className="form-control"
-                                        type="date"
-                                        {...{
-                                          min: moment(
-                                            new Date(
-                                              props?.activeContent?.artCommence?.visitDate
-                                            )
-                                          ).format("YYYY-MM-DD"),
-                                        }}
-                                        {...{
-                                          max: moment(new Date()).format(
-                                            "YYYY-MM-DD"
-                                          ),
-                                        }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
-                                        name="maMonth3PositiveLivingDate"
-                                        id="maMonth3PositiveLivingDate"
+                                        type="select"
+                                        name="maMonth3LiteracyTreatmentChoice"
+                                        id="maMonth3LiteracyTreatmentChoice"
                                         value={
                                           formik.values
-                                            .maMonth3PositiveLivingDate
-                                        }
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        style={{
-                                          border: "1px solid #014D88",
-                                          borderRadius: "0.2rem",
-                                        }}
-                                      />
-                                      {formik.errors
-                                        .maMonth3PositiveLivingDate !== "" ? (
-                                        <span className={classes.error}>
-                                          {
-                                            formik.errors
-                                              .maMonth3PositiveLivingDate
-                                          }
-                                        </span>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </CustomFormGroup>
-                                  </div>
-                                )}
-
-                                <div className="form-group mb-3 col-md-6">
-                                  <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth3LiteracyTreatmentChoice"
-                                  >
-                                    <Label for="maMonth3LiteracyTreatmentChoice">
-                                      Literacy Treatment
-                                      <span style={{ color: "red" }}>
-                                        {" "}
-                                        *
-                                      </span>{" "}
-                                    </Label>
-                                    <Input
-                                      className="form-control"
-                                      type="select"
-                                      name="maMonth3LiteracyTreatmentChoice"
-                                      id="maMonth3LiteracyTreatmentChoice"
-                                      value={
-                                        formik.values
-                                          .maMonth3LiteracyTreatmentChoice
-                                      }
-                                      onChange={formik.handleChange}
-                                      onBlur={formik.handleBlur}
-                                      style={{
-                                        border: "1px solid #014D88",
-                                        borderRadius: "0.2rem",
-                                      }}
-                                    >
-                                      <option value="">Select</option>
-                                      <option value="yes">Yes</option>
-                                      <option value="no">No</option>
-                                    </Input>
-                                    {formik.errors
-                                      .maMonth3LiteracyTreatmentChoice !==
-                                    "" ? (
-                                      <span className={classes.error}>
-                                        {
-                                          formik.errors
                                             .maMonth3LiteracyTreatmentChoice
                                         }
-                                      </span>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </CustomFormGroup>
-                                </div>
-
-                                {formik.values
-                                  .maMonth3LiteracyTreatmentChoice ===
-                                  "yes" && (
-                                  <div className="form-group mb-3 col-md-6">
-                                    <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth3LiteracyTreatmentDate"
-                                    >
-                                      <Label for="maMonth3LiteracyTreatmentDate">
-                                        Date for literacy training
-                                        <span style={{ color: "red" }}>
-                                          {" "}
-                                          *
-                                        </span>{" "}
-                                      </Label>
-                                      <Input
-                                        className="form-control"
-                                        type="date"
-                                        {...{
-                                          min: moment(
-                                            new Date(
-                                              props?.activeContent?.artCommence?.visitDate
-                                            )
-                                          ).format("YYYY-MM-DD"),
-                                        }}
-                                        {...{
-                                          max: moment(new Date()).format(
-                                            "YYYY-MM-DD"
-                                          ),
-                                        }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
-                                        name="maMonth3LiteracyTreatmentDate"
-                                        id="maMonth3LiteracyTreatmentDate"
-                                        value={
-                                          formik.values
-                                            .maMonth3LiteracyTreatmentDate
-                                        }
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         style={{
                                           border: "1px solid #014D88",
                                           borderRadius: "0.2rem",
                                         }}
-                                      />
-                                      {formik.errors
-                                        .maMonth3LiteracyTreatmentDate !==
-                                      "" ? (
+                                      >
+                                        <option value="">Select</option>
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                      </Input>
+                                      {formik?.touched
+                                        ?.maMonth3LiteracyTreatmentChoice &&
+                                      formik.errors
+                                        .maMonth3LiteracyTreatmentChoice !==
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
                                             formik.errors
+                                              .maMonth3LiteracyTreatmentChoice
+                                          }
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </CustomFormGroup>
+                                  </div>
+
+                                  {formik.values
+                                    .maMonth3LiteracyTreatmentChoice ===
+                                    "yes" && (
+                                    <div className="form-group mb-3 col-md-6">
+                                      <CustomFormGroup
+                                        formik={formik}
+                                        name="maMonth3LiteracyTreatmentDate"
+                                      >
+                                        <Label for="maMonth3LiteracyTreatmentDate">
+                                          Date for literacy training
+                                          <span style={{ color: "red" }}>
+                                            {" "}
+                                            *
+                                          </span>{" "}
+                                        </Label>
+                                        <Input
+                                          className="form-control"
+                                          type="date"
+                                          {...{
+                                            min: moment(
+                                              new Date(
+                                                props?.activeContent?.artCommence?.visitDate
+                                              )
+                                            ).format("YYYY-MM-DD"),
+                                          }}
+                                          {...{
+                                            max: moment(new Date()).format(
+                                              "YYYY-MM-DD"
+                                            ),
+                                          }}
+                                          disabled={
+                                            !props?.activeContent?.enrollment
+                                              ?.dateOfRegistration
+                                          }
+                                          name="maMonth3LiteracyTreatmentDate"
+                                          id="maMonth3LiteracyTreatmentDate"
+                                          value={
+                                            formik.values
                                               .maMonth3LiteracyTreatmentDate
                                           }
-                                        </span>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </CustomFormGroup>
-                                  </div>
-                                )}
+                                          onChange={formik.handleChange}
+                                          onBlur={formik.handleBlur}
+                                          style={{
+                                            border: "1px solid #014D88",
+                                            borderRadius: "0.2rem",
+                                          }}
+                                        />
+                                        {formik?.touched
+                                          ?.maMonth3LiteracyTreatmentDate &&
+                                        formik.errors
+                                          .maMonth3LiteracyTreatmentDate !==
+                                          "" ? (
+                                          <span className={classes.error}>
+                                            {
+                                              formik.errors
+                                                .maMonth3LiteracyTreatmentDate
+                                            }
+                                          </span>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </CustomFormGroup>
+                                    </div>
+                                  )}
 
-                                <div className="form-group mb-3 col-md-6">
-                                  <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth3AdolescentsParticipationChoice"
-                                  >
-                                    <Label for="maMonth3AdolescentsParticipationChoice">
-                                      Adolescents Participation
-                                      <span style={{ color: "red" }}>
-                                        {" "}
-                                        *
-                                      </span>{" "}
-                                    </Label>
-                                    <Input
-                                      className="form-control"
-                                      type="select"
+                                  <div className="form-group mb-3 col-md-6">
+                                    <CustomFormGroup
+                                      formik={formik}
                                       name="maMonth3AdolescentsParticipationChoice"
-                                      id="maMonth3AdolescentsParticipationChoice"
-                                      value={
-                                        formik.values
-                                          .maMonth3AdolescentsParticipationChoice
-                                      }
-                                      onChange={formik.handleChange}
-                                      onBlur={formik.handleBlur}
-                                      style={{
-                                        border: "1px solid #014D88",
-                                        borderRadius: "0.2rem",
-                                      }}
                                     >
-                                      <option value="">Select</option>
-                                      <option value="yes">Yes</option>
-                                      <option value="no">No</option>
-                                    </Input>
-                                    {formik.errors
-                                      .maMonth3AdolescentsParticipationChoice !==
-                                    "" ? (
-                                      <span className={classes.error}>
-                                        {
-                                          formik.errors
+                                      <Label for="maMonth3AdolescentsParticipationChoice">
+                                        Adolescents Participation
+                                        <span style={{ color: "red" }}>
+                                          {" "}
+                                          *
+                                        </span>{" "}
+                                      </Label>
+                                      <Input
+                                        className="form-control"
+                                        type="select"
+                                        name="maMonth3AdolescentsParticipationChoice"
+                                        id="maMonth3AdolescentsParticipationChoice"
+                                        value={
+                                          formik.values
                                             .maMonth3AdolescentsParticipationChoice
                                         }
-                                      </span>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </CustomFormGroup>
-                                </div>
-
-                                {formik.values
-                                  .maMonth3AdolescentsParticipationChoice ===
-                                  "yes" && (
-                                  <div className="form-group mb-3 col-md-6">
-                                    <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth3AdolescentsParticipationDate"
-                                    >
-                                      <Label for="maMonth3AdolescentsParticipationDate">
-                                        Date for adolescent participation
-                                        <span style={{ color: "red" }}>
-                                          {" "}
-                                          *
-                                        </span>{" "}
-                                      </Label>
-                                      <Input
-                                        className="form-control"
-                                        type="date"
-                                        {...{
-                                          min: moment(
-                                            new Date(
-                                              props?.activeContent?.artCommence?.visitDate
-                                            )
-                                          ).format("YYYY-MM-DD"),
-                                        }}
-                                        {...{
-                                          max: moment(new Date()).format(
-                                            "YYYY-MM-DD"
-                                          ),
-                                        }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
-                                        name="maMonth3AdolescentsParticipationDate"
-                                        id="maMonth3AdolescentsParticipationDate"
-                                        value={
-                                          formik.values
-                                            .maMonth3AdolescentsParticipationDate
-                                        }
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         style={{
                                           border: "1px solid #014D88",
                                           borderRadius: "0.2rem",
                                         }}
-                                      />
-                                      {formik.errors
-                                        .maMonth3AdolescentsParticipationDate !==
-                                      "" ? (
+                                      >
+                                        <option value="">Select</option>
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                      </Input>
+                                      {formik?.touched
+                                        ?.maMonth3AdolescentsParticipationChoice &&
+                                      formik.errors
+                                        .maMonth3AdolescentsParticipationChoice !==
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
                                             formik.errors
+                                              .maMonth3AdolescentsParticipationChoice
+                                          }
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </CustomFormGroup>
+                                  </div>
+
+                                  {formik.values
+                                    .maMonth3AdolescentsParticipationChoice ===
+                                    "yes" && (
+                                    <div className="form-group mb-3 col-md-6">
+                                      <CustomFormGroup
+                                        formik={formik}
+                                        name="maMonth3AdolescentsParticipationDate"
+                                      >
+                                        <Label for="maMonth3AdolescentsParticipationDate">
+                                          Date for adolescent participation
+                                          <span style={{ color: "red" }}>
+                                            {" "}
+                                            *
+                                          </span>{" "}
+                                        </Label>
+                                        <Input
+                                          className="form-control"
+                                          type="date"
+                                          {...{
+                                            min: moment(
+                                              new Date(
+                                                props?.activeContent?.artCommence?.visitDate
+                                              )
+                                            ).format("YYYY-MM-DD"),
+                                          }}
+                                          {...{
+                                            max: moment(new Date()).format(
+                                              "YYYY-MM-DD"
+                                            ),
+                                          }}
+                                          disabled={
+                                            !props?.activeContent?.enrollment
+                                              ?.dateOfRegistration
+                                          }
+                                          name="maMonth3AdolescentsParticipationDate"
+                                          id="maMonth3AdolescentsParticipationDate"
+                                          value={
+                                            formik.values
                                               .maMonth3AdolescentsParticipationDate
                                           }
-                                        </span>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </CustomFormGroup>
-                                  </div>
-                                )}
+                                          onChange={formik.handleChange}
+                                          onBlur={formik.handleBlur}
+                                          style={{
+                                            border: "1px solid #014D88",
+                                            borderRadius: "0.2rem",
+                                          }}
+                                        />
+                                        {formik?.touched
+                                          ?.maMonth3AdolescentsParticipationDate &&
+                                        formik.errors
+                                          .maMonth3AdolescentsParticipationDate !==
+                                          "" ? (
+                                          <span className={classes.error}>
+                                            {
+                                              formik.errors
+                                                .maMonth3AdolescentsParticipationDate
+                                            }
+                                          </span>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </CustomFormGroup>
+                                    </div>
+                                  )}
 
-                                <div className="form-group mb-3 col-md-6">
-                                  <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth3leadershipTrainingChoice"
-                                  >
-                                    <Label for="maMonth3leadershipTrainingChoice">
-                                      Leadership participation
-                                      <span style={{ color: "red" }}>
-                                        {" "}
-                                        *
-                                      </span>{" "}
-                                    </Label>
-                                    <Input
-                                      className="form-control"
-                                      type="select"
+                                  <div className="form-group mb-3 col-md-6">
+                                    <CustomFormGroup
+                                      formik={formik}
                                       name="maMonth3leadershipTrainingChoice"
-                                      id="maMonth3leadershipTrainingChoice"
-                                      value={
-                                        formik.values
-                                          .maMonth3leadershipTrainingChoice
-                                      }
-                                      onChange={formik.handleChange}
-                                      onBlur={formik.handleBlur}
-                                      style={{
-                                        border: "1px solid #014D88",
-                                        borderRadius: "0.2rem",
-                                      }}
                                     >
-                                      <option value="">Select</option>
-                                      <option value="yes">Yes</option>
-                                      <option value="no">No</option>
-                                    </Input>
-                                    {formik.errors
-                                      .maMonth3leadershipTrainingChoice !==
-                                    "" ? (
-                                      <span className={classes.error}>
-                                        {
-                                          formik.errors
+                                      <Label for="maMonth3leadershipTrainingChoice">
+                                        Leadership participation
+                                        <span style={{ color: "red" }}>
+                                          {" "}
+                                          *
+                                        </span>{" "}
+                                      </Label>
+                                      <Input
+                                        className="form-control"
+                                        type="select"
+                                        name="maMonth3leadershipTrainingChoice"
+                                        id="maMonth3leadershipTrainingChoice"
+                                        value={
+                                          formik.values
                                             .maMonth3leadershipTrainingChoice
                                         }
-                                      </span>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </CustomFormGroup>
-                                </div>
-
-                                {formik.values
-                                  .maMonth3leadershipTrainingChoice ===
-                                  "yes" && (
-                                  <div className="form-group mb-3 col-md-6">
-                                    <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth3leadershipTrainingDate"
-                                    >
-                                      <Label for="maMonth3leadershipTrainingDate">
-                                        Date for Leadership participation
-                                        <span style={{ color: "red" }}>
-                                          {" "}
-                                          *
-                                        </span>{" "}
-                                      </Label>
-                                      <Input
-                                        className="form-control"
-                                        type="date"
-                                        {...{
-                                          min: moment(
-                                            new Date(
-                                              props?.activeContent?.artCommence?.visitDate
-                                            )
-                                          ).format("YYYY-MM-DD"),
-                                        }}
-                                        {...{
-                                          max: moment(new Date()).format(
-                                            "YYYY-MM-DD"
-                                          ),
-                                        }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
-                                        name="maMonth3leadershipTrainingDate"
-                                        id="maMonth3leadershipTrainingDate"
-                                        value={
-                                          formik.values
-                                            .maMonth3leadershipTrainingDate
-                                        }
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         style={{
                                           border: "1px solid #014D88",
                                           borderRadius: "0.2rem",
                                         }}
-                                      />
-                                      {formik.errors
-                                        .maMonth3leadershipTrainingDate !==
-                                      "" ? (
+                                      >
+                                        <option value="">Select</option>
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                      </Input>
+                                      {formik?.touched
+                                        ?.maMonth3leadershipTrainingChoice &&
+                                      formik.errors
+                                        .maMonth3leadershipTrainingChoice !==
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
                                             formik.errors
+                                              .maMonth3leadershipTrainingChoice
+                                          }
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </CustomFormGroup>
+                                  </div>
+
+                                  {formik.values
+                                    .maMonth3leadershipTrainingChoice ===
+                                    "yes" && (
+                                    <div className="form-group mb-3 col-md-6">
+                                      <CustomFormGroup
+                                        formik={formik}
+                                        name="maMonth3leadershipTrainingDate"
+                                      >
+                                        <Label for="maMonth3leadershipTrainingDate">
+                                          Date for Leadership participation
+                                          <span style={{ color: "red" }}>
+                                            {" "}
+                                            *
+                                          </span>{" "}
+                                        </Label>
+                                        <Input
+                                          className="form-control"
+                                          type="date"
+                                          {...{
+                                            min: moment(
+                                              new Date(
+                                                props?.activeContent?.artCommence?.visitDate
+                                              )
+                                            ).format("YYYY-MM-DD"),
+                                          }}
+                                          {...{
+                                            max: moment(new Date()).format(
+                                              "YYYY-MM-DD"
+                                            ),
+                                          }}
+                                          disabled={
+                                            !props?.activeContent?.enrollment
+                                              ?.dateOfRegistration
+                                          }
+                                          name="maMonth3leadershipTrainingDate"
+                                          id="maMonth3leadershipTrainingDate"
+                                          value={
+                                            formik.values
                                               .maMonth3leadershipTrainingDate
                                           }
-                                        </span>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </CustomFormGroup>
-                                  </div>
-                                )}
+                                          onChange={formik.handleChange}
+                                          onBlur={formik.handleBlur}
+                                          style={{
+                                            border: "1px solid #014D88",
+                                            borderRadius: "0.2rem",
+                                          }}
+                                        />
+                                        {formik?.touched
+                                          ?.maMonth3leadershipTrainingDate &&
+                                        formik.errors
+                                          .maMonth3leadershipTrainingDate !==
+                                          "" ? (
+                                          <span className={classes.error}>
+                                            {
+                                              formik.errors
+                                                .maMonth3leadershipTrainingDate
+                                            }
+                                          </span>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </CustomFormGroup>
+                                    </div>
+                                  )}
 
-                                <div className="form-group mb-3 col-md-6">
-                                  <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth3PeerToPeerChoice"
-                                  >
-                                    <Label for="maMonth3PeerToPeerChoice">
-                                      Peer to Peer Mentorship
-                                      <span style={{ color: "red" }}>
-                                        {" "}
-                                        *
-                                      </span>{" "}
-                                    </Label>
-                                    <Input
-                                      className="form-control"
-                                      type="select"
+                                  <div className="form-group mb-3 col-md-6">
+                                    <CustomFormGroup
+                                      formik={formik}
                                       name="maMonth3PeerToPeerChoice"
-                                      id="maMonth3PeerToPeerChoice"
-                                      value={
-                                        formik.values.maMonth3PeerToPeerChoice
-                                      }
-                                      onChange={formik.handleChange}
-                                      onBlur={formik.handleBlur}
-                                      style={{
-                                        border: "1px solid #014D88",
-                                        borderRadius: "0.2rem",
-                                      }}
                                     >
-                                      <option value="">Select</option>
-                                      <option value="yes">Yes</option>
-                                      <option value="no">No</option>
-                                    </Input>
-                                    {formik.errors.maMonth3PeerToPeerChoice !==
-                                    "" ? (
-                                      <span className={classes.error}>
-                                        {formik.errors.maMonth3PeerToPeerChoice}
-                                      </span>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </CustomFormGroup>
-                                </div>
-
-                                {formik.values.maMonth3PeerToPeerChoice ===
-                                  "yes" && (
-                                  <div className="form-group mb-3 col-md-6">
-                                    <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth3PeerToPeerDate"
-                                    >
-                                      <Label for="maMonth3PeerToPeerDate">
-                                        Date for peer to peer mentorship
+                                      <Label for="maMonth3PeerToPeerChoice">
+                                        Peer to Peer Mentorship
                                         <span style={{ color: "red" }}>
                                           {" "}
                                           *
@@ -3607,27 +3839,11 @@ const ServiceForm = (props) => {
                                       </Label>
                                       <Input
                                         className="form-control"
-                                        type="date"
-                                        {...{
-                                          min: moment(
-                                            new Date(
-                                              props?.activeContent?.artCommence?.visitDate
-                                            )
-                                          ).format("YYYY-MM-DD"),
-                                        }}
-                                        {...{
-                                          max: moment(new Date()).format(
-                                            "YYYY-MM-DD"
-                                          ),
-                                        }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
-                                        name="maMonth3PeerToPeerDate"
-                                        id="maMonth3PeerToPeerDate"
+                                        type="select"
+                                        name="maMonth3PeerToPeerChoice"
+                                        id="maMonth3PeerToPeerChoice"
                                         value={
-                                          formik.values.maMonth3PeerToPeerDate
+                                          formik.values.maMonth3PeerToPeerChoice
                                         }
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
@@ -3635,219 +3851,19 @@ const ServiceForm = (props) => {
                                           border: "1px solid #014D88",
                                           borderRadius: "0.2rem",
                                         }}
-                                      />
-                                      {formik.errors.maMonth3PeerToPeerDate !==
-                                      "" ? (
-                                        <span className={classes.error}>
-                                          {formik.errors.maMonth3PeerToPeerDate}
-                                        </span>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </CustomFormGroup>
-                                  </div>
-                                )}
-
-                                <div className="form-group mb-3 col-md-6">
-                                  <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth3RoleOfOtzChoice"
-                                  >
-                                    <Label for="maMonth3RoleOfOtzChoice">
-                                      Role of OTZ in 95-95-95
-                                      <span style={{ color: "red" }}>
-                                        {" "}
-                                        *
-                                      </span>{" "}
-                                    </Label>
-                                    <Input
-                                      className="form-control"
-                                      type="select"
-                                      name="maMonth3RoleOfOtzChoice"
-                                      id="maMonth3RoleOfOtzChoice"
-                                      value={
-                                        formik.values.maMonth3RoleOfOtzChoice
-                                      }
-                                      onChange={formik.handleChange}
-                                      onBlur={formik.handleBlur}
-                                      style={{
-                                        border: "1px solid #014D88",
-                                        borderRadius: "0.2rem",
-                                      }}
-                                    >
-                                      <option value="">Select</option>
-                                      <option value="yes">Yes</option>
-                                      <option value="no">No</option>
-                                    </Input>
-                                    {formik.errors.maMonth3RoleOfOtzChoice !==
-                                    "" ? (
-                                      <span className={classes.error}>
-                                        {formik.errors.maMonth3RoleOfOtzChoice}
-                                      </span>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </CustomFormGroup>
-                                </div>
-
-                                {formik.values.maMonth3RoleOfOtzChoice ===
-                                  "yes" && (
-                                  <div className="form-group mb-3 col-md-6">
-                                    <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth3RoleOfOtzDate"
-                                    >
-                                      <Label for="maMonth3RoleOfOtzDate">
-                                        Date for role of OTZ in 95-95-95
-                                        <span style={{ color: "red" }}>
-                                          {" "}
-                                          *
-                                        </span>{" "}
-                                      </Label>
-                                      <Input
-                                        className="form-control"
-                                        type="date"
-                                        {...{
-                                          min: moment(
-                                            new Date(
-                                              props?.activeContent?.artCommence?.visitDate
-                                            )
-                                          ).format("YYYY-MM-DD"),
-                                        }}
-                                        {...{
-                                          max: moment(new Date()).format(
-                                            "YYYY-MM-DD"
-                                          ),
-                                        }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
-                                        name="maMonth3RoleOfOtzDate"
-                                        id="maMonth3RoleOfOtzDate"
-                                        value={
-                                          formik.values.maMonth3RoleOfOtzDate
-                                        }
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        style={{
-                                          border: "1px solid #014D88",
-                                          borderRadius: "0.2rem",
-                                        }}
-                                      />
-                                      {formik.errors.maMonth3RoleOfOtzDate !==
-                                      "" ? (
-                                        <span className={classes.error}>
-                                          {formik.errors.maMonth3RoleOfOtzDate}
-                                        </span>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </CustomFormGroup>
-                                  </div>
-                                )}
-
-                                <div className="form-group mb-3 col-md-6">
-                                  <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth3OtzChampionOrientationChoice"
-                                  >
-                                    <Label for="maMonth3OtzChampionOrientationChoice">
-                                      OTZ champion orientation
-                                      <span style={{ color: "red" }}>
-                                        {" "}
-                                        *
-                                      </span>{" "}
-                                    </Label>
-                                    <Input
-                                      className="form-control"
-                                      type="select"
-                                      name="maMonth3OtzChampionOrientationChoice"
-                                      id="maMonth3OtzChampionOrientationChoice"
-                                      value={
-                                        formik.values
-                                          .maMonth3OtzChampionOrientationChoice
-                                      }
-                                      onChange={formik.handleChange}
-                                      onBlur={formik.handleBlur}
-                                      style={{
-                                        border: "1px solid #014D88",
-                                        borderRadius: "0.2rem",
-                                      }}
-                                    >
-                                      <option value="">Select</option>
-                                      <option value="yes">Yes</option>
-                                      <option value="no">No</option>
-                                    </Input>
-                                    {formik.errors
-                                      .maMonth3OtzChampionOrientationChoice !==
-                                    "" ? (
-                                      <span className={classes.error}>
-                                        {
-                                          formik.errors
-                                            .maMonth3OtzChampionOrientationChoice
-                                        }
-                                      </span>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </CustomFormGroup>
-                                </div>
-
-                                {formik.values
-                                  .maMonth3OtzChampionOrientationChoice ===
-                                  "yes" && (
-                                  <div className="form-group mb-3 col-md-6">
-                                    <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth3OtzChampionOrientationDate"
-                                    >
-                                      <Label for="maMonth3OtzChampionOrientationDate">
-                                        Date for OTZ Champion Orientation
-                                        <span style={{ color: "red" }}>
-                                          {" "}
-                                          *
-                                        </span>{" "}
-                                      </Label>
-                                      <Input
-                                        className="form-control"
-                                        type="date"
-                                        {...{
-                                          min: moment(
-                                            new Date(
-                                              props?.activeContent?.artCommence?.visitDate
-                                            )
-                                          ).format("YYYY-MM-DD"),
-                                        }}
-                                        {...{
-                                          max: moment(new Date()).format(
-                                            "YYYY-MM-DD"
-                                          ),
-                                        }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
-                                        name="maMonth3OtzChampionOrientationDate"
-                                        id="maMonth3OtzChampionOrientationDate"
-                                        value={
-                                          formik.values
-                                            .maMonth3OtzChampionOrientationDate
-                                        }
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        style={{
-                                          border: "1px solid #014D88",
-                                          borderRadius: "0.2rem",
-                                        }}
-                                      />
-                                      {formik.errors
-                                        .maMonth3OtzChampionOrientationDate !==
-                                      "" ? (
+                                      >
+                                        <option value="">Select</option>
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                      </Input>
+                                      {formik?.touched
+                                        ?.maMonth3PeerToPeerChoice &&
+                                      formik.errors.maMonth3PeerToPeerChoice !==
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
                                             formik.errors
-                                              .maMonth3OtzChampionOrientationDate
+                                              .maMonth3PeerToPeerChoice
                                           }
                                         </span>
                                       ) : (
@@ -3855,13 +3871,326 @@ const ServiceForm = (props) => {
                                       )}
                                     </CustomFormGroup>
                                   </div>
-                                )}
+
+                                  {formik.values.maMonth3PeerToPeerChoice ===
+                                    "yes" && (
+                                    <div className="form-group mb-3 col-md-6">
+                                      <CustomFormGroup
+                                        formik={formik}
+                                        name="maMonth3PeerToPeerDate"
+                                      >
+                                        <Label for="maMonth3PeerToPeerDate">
+                                          Date for peer to peer mentorship
+                                          <span style={{ color: "red" }}>
+                                            {" "}
+                                            *
+                                          </span>{" "}
+                                        </Label>
+                                        <Input
+                                          className="form-control"
+                                          type="date"
+                                          {...{
+                                            min: moment(
+                                              new Date(
+                                                props?.activeContent?.artCommence?.visitDate
+                                              )
+                                            ).format("YYYY-MM-DD"),
+                                          }}
+                                          {...{
+                                            max: moment(new Date()).format(
+                                              "YYYY-MM-DD"
+                                            ),
+                                          }}
+                                          disabled={
+                                            !props?.activeContent?.enrollment
+                                              ?.dateOfRegistration
+                                          }
+                                          name="maMonth3PeerToPeerDate"
+                                          id="maMonth3PeerToPeerDate"
+                                          value={
+                                            formik.values.maMonth3PeerToPeerDate
+                                          }
+                                          onChange={formik.handleChange}
+                                          onBlur={formik.handleBlur}
+                                          style={{
+                                            border: "1px solid #014D88",
+                                            borderRadius: "0.2rem",
+                                          }}
+                                        />
+                                        {formik?.touched
+                                          ?.maMonth3PeerToPeerDate &&
+                                        formik.errors.maMonth3PeerToPeerDate !==
+                                          "" ? (
+                                          <span className={classes.error}>
+                                            {
+                                              formik.errors
+                                                .maMonth3PeerToPeerDate
+                                            }
+                                          </span>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </CustomFormGroup>
+                                    </div>
+                                  )}
+
+                                  <div className="form-group mb-3 col-md-6">
+                                    <CustomFormGroup
+                                      formik={formik}
+                                      name="maMonth3RoleOfOtzChoice"
+                                    >
+                                      <Label for="maMonth3RoleOfOtzChoice">
+                                        Role of OTZ in 95-95-95
+                                        <span style={{ color: "red" }}>
+                                          {" "}
+                                          *
+                                        </span>{" "}
+                                      </Label>
+                                      <Input
+                                        className="form-control"
+                                        type="select"
+                                        name="maMonth3RoleOfOtzChoice"
+                                        id="maMonth3RoleOfOtzChoice"
+                                        value={
+                                          formik.values.maMonth3RoleOfOtzChoice
+                                        }
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        style={{
+                                          border: "1px solid #014D88",
+                                          borderRadius: "0.2rem",
+                                        }}
+                                      >
+                                        <option value="">Select</option>
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                      </Input>
+                                      {formik?.touched
+                                        ?.maMonth3RoleOfOtzChoice &&
+                                      formik.errors.maMonth3RoleOfOtzChoice !==
+                                        "" ? (
+                                        <span className={classes.error}>
+                                          {
+                                            formik.errors
+                                              .maMonth3RoleOfOtzChoice
+                                          }
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </CustomFormGroup>
+                                  </div>
+
+                                  {formik.values.maMonth3RoleOfOtzChoice ===
+                                    "yes" && (
+                                    <div className="form-group mb-3 col-md-6">
+                                      <CustomFormGroup
+                                        formik={formik}
+                                        name="maMonth3RoleOfOtzDate"
+                                      >
+                                        <Label for="maMonth3RoleOfOtzDate">
+                                          Date for role of OTZ in 95-95-95
+                                          <span style={{ color: "red" }}>
+                                            {" "}
+                                            *
+                                          </span>{" "}
+                                        </Label>
+                                        <Input
+                                          className="form-control"
+                                          type="date"
+                                          {...{
+                                            min: moment(
+                                              new Date(
+                                                props?.activeContent?.artCommence?.visitDate
+                                              )
+                                            ).format("YYYY-MM-DD"),
+                                          }}
+                                          {...{
+                                            max: moment(new Date()).format(
+                                              "YYYY-MM-DD"
+                                            ),
+                                          }}
+                                          disabled={
+                                            !props?.activeContent?.enrollment
+                                              ?.dateOfRegistration
+                                          }
+                                          name="maMonth3RoleOfOtzDate"
+                                          id="maMonth3RoleOfOtzDate"
+                                          value={
+                                            formik.values.maMonth3RoleOfOtzDate
+                                          }
+                                          onChange={formik.handleChange}
+                                          onBlur={formik.handleBlur}
+                                          style={{
+                                            border: "1px solid #014D88",
+                                            borderRadius: "0.2rem",
+                                          }}
+                                        />
+                                        {formik?.touched
+                                          ?.maMonth3RoleOfOtzDate &&
+                                        formik.errors.maMonth3RoleOfOtzDate !==
+                                          "" ? (
+                                          <span className={classes.error}>
+                                            {
+                                              formik.errors
+                                                .maMonth3RoleOfOtzDate
+                                            }
+                                          </span>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </CustomFormGroup>
+                                    </div>
+                                  )}
+
+                                  <div className="form-group mb-3 col-md-6">
+                                    <CustomFormGroup
+                                      formik={formik}
+                                      name="maMonth3OtzChampionOrientationChoice"
+                                    >
+                                      <Label for="maMonth3OtzChampionOrientationChoice">
+                                        OTZ champion orientation
+                                        <span style={{ color: "red" }}>
+                                          {" "}
+                                          *
+                                        </span>{" "}
+                                      </Label>
+                                      <Input
+                                        className="form-control"
+                                        type="select"
+                                        name="maMonth3OtzChampionOrientationChoice"
+                                        id="maMonth3OtzChampionOrientationChoice"
+                                        value={
+                                          formik.values
+                                            .maMonth3OtzChampionOrientationChoice
+                                        }
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        style={{
+                                          border: "1px solid #014D88",
+                                          borderRadius: "0.2rem",
+                                        }}
+                                      >
+                                        <option value="">Select</option>
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                      </Input>
+                                      {formik?.touched
+                                        ?.maMonth3OtzChampionOrientationChoice &&
+                                      formik.errors
+                                        .maMonth3OtzChampionOrientationChoice !==
+                                        "" ? (
+                                        <span className={classes.error}>
+                                          {
+                                            formik.errors
+                                              .maMonth3OtzChampionOrientationChoice
+                                          }
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </CustomFormGroup>
+                                  </div>
+
+                                  {formik.values
+                                    .maMonth3OtzChampionOrientationChoice ===
+                                    "yes" && (
+                                    <div className="form-group mb-3 col-md-6">
+                                      <CustomFormGroup
+                                        formik={formik}
+                                        name="maMonth3OtzChampionOrientationDate"
+                                      >
+                                        <Label for="maMonth3OtzChampionOrientationDate">
+                                          Date for OTZ Champion Orientation
+                                          <span style={{ color: "red" }}>
+                                            {" "}
+                                            *
+                                          </span>{" "}
+                                        </Label>
+                                        <Input
+                                          className="form-control"
+                                          type="date"
+                                          {...{
+                                            min: moment(
+                                              new Date(
+                                                props?.activeContent?.artCommence?.visitDate
+                                              )
+                                            ).format("YYYY-MM-DD"),
+                                          }}
+                                          {...{
+                                            max: moment(new Date()).format(
+                                              "YYYY-MM-DD"
+                                            ),
+                                          }}
+                                          disabled={
+                                            !props?.activeContent?.enrollment
+                                              ?.dateOfRegistration
+                                          }
+                                          name="maMonth3OtzChampionOrientationDate"
+                                          id="maMonth3OtzChampionOrientationDate"
+                                          value={
+                                            formik.values
+                                              .maMonth3OtzChampionOrientationDate
+                                          }
+                                          onChange={formik.handleChange}
+                                          onBlur={formik.handleBlur}
+                                          style={{
+                                            border: "1px solid #014D88",
+                                            borderRadius: "0.2rem",
+                                          }}
+                                        />
+                                        {formik?.touched
+                                          ?.maMonth3OtzChampionOrientationDate &&
+                                        formik.errors
+                                          .maMonth3OtzChampionOrientationDate !==
+                                          "" ? (
+                                          <span className={classes.error}>
+                                            {
+                                              formik.errors
+                                                .maMonth3OtzChampionOrientationDate
+                                            }
+                                          </span>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </CustomFormGroup>
+                                    </div>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                          </Collapse>
+                            </Collapse>
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
+
+                    <div className="d-flex justify-content-end">
+                      <MatButton
+                        type="button"
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                        style={{ backgroundColor: "#014d88" }}
+                        startIcon={<SaveIcon />}
+                        disabled={saving}
+                        onClick={() =>
+                          handleSubmitAdherence(formik.values, {
+                            reroute: false,
+                            monthOfData: 3,
+                          })
+                        }
+                      >
+                        {!saving ? (
+                          <span style={{ textTransform: "capitalize" }}>
+                            Submit month 3
+                          </span>
+                        ) : (
+                          <span style={{ textTransform: "capitalize" }}>
+                            Submitting...
+                          </span>
+                        )}
+                      </MatButton>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -3944,8 +4273,8 @@ const ServiceForm = (props) => {
                             <div className="row">
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="maMonth1PositiveLivingChoice"
+                                  formik={formik}
+                                  name="maMonth1PositiveLivingChoice"
                                 >
                                   <Label for="maMonth1PositiveLivingChoice">
                                     Positive Living
@@ -3973,8 +4302,10 @@ const ServiceForm = (props) => {
                                     <option value="yes">Yes</option>
                                     <option value="no">No</option>
                                   </Input>
-                                  {formik.errors
-                                    .maMonth1PositiveLivingChoice !== "" ? (
+                                  {formik?.touched
+                                    ?.maMonth1PositiveLivingChoice &&
+                                  formik.errors.maMonth1PositiveLivingChoice !==
+                                    "" ? (
                                     <span className={classes.error}>
                                       {
                                         formik.errors
@@ -3990,8 +4321,8 @@ const ServiceForm = (props) => {
                                 "yes" && (
                                 <div className="form-group mb-3 col-md-6">
                                   <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth1PositiveLivingDate"
+                                    formik={formik}
+                                    name="maMonth1PositiveLivingDate"
                                   >
                                     <Label for="maMonth1PositiveLivingDate">
                                       Date for positive living
@@ -4031,8 +4362,10 @@ const ServiceForm = (props) => {
                                         borderRadius: "0.2rem",
                                       }}
                                     />
-                                    {formik.errors
-                                      .maMonth1PositiveLivingDate !== "" ? (
+                                    {formik?.touched
+                                      ?.maMonth1PositiveLivingDate &&
+                                    formik.errors.maMonth1PositiveLivingDate !==
+                                      "" ? (
                                       <span className={classes.error}>
                                         {
                                           formik.errors
@@ -4048,8 +4381,8 @@ const ServiceForm = (props) => {
 
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="maMonth1LiteracyTreatmentChoice"
+                                  formik={formik}
+                                  name="maMonth1LiteracyTreatmentChoice"
                                 >
                                   <Label for="maMonth1LiteracyTreatmentChoice">
                                     Literacy Treatment
@@ -4078,7 +4411,9 @@ const ServiceForm = (props) => {
                                     <option value="yes">Yes</option>
                                     <option value="no">No</option>
                                   </Input>
-                                  {formik.errors
+                                  {formik?.touched
+                                    ?.maMonth1LiteracyTreatmentChoice &&
+                                  formik.errors
                                     .maMonth1LiteracyTreatmentChoice !== "" ? (
                                     <span className={classes.error}>
                                       {
@@ -4096,8 +4431,8 @@ const ServiceForm = (props) => {
                                 "yes" && (
                                 <div className="form-group mb-3 col-md-6">
                                   <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth1LiteracyTreatmentDate"
+                                    formik={formik}
+                                    name="maMonth1LiteracyTreatmentDate"
                                   >
                                     <Label for="maMonth1LiteracyTreatmentDate">
                                       Date for literacy training
@@ -4138,7 +4473,9 @@ const ServiceForm = (props) => {
                                         borderRadius: "0.2rem",
                                       }}
                                     />
-                                    {formik.errors
+                                    {formik?.touched
+                                      ?.maMonth1LiteracyTreatmentDate &&
+                                    formik.errors
                                       .maMonth1LiteracyTreatmentDate !== "" ? (
                                       <span className={classes.error}>
                                         {
@@ -4155,8 +4492,8 @@ const ServiceForm = (props) => {
 
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="maMonth1AdolescentsParticipationChoice"
+                                  formik={formik}
+                                  name="maMonth1AdolescentsParticipationChoice"
                                 >
                                   <Label for="maMonth1AdolescentsParticipationChoice">
                                     Adolescents Participation
@@ -4185,9 +4522,11 @@ const ServiceForm = (props) => {
                                     <option value="yes">Yes</option>
                                     <option value="no">No</option>
                                   </Input>
-                                  {formik.errors
+                                  {formik?.touched
+                                    ?.maMonth1AdolescentsParticipationChoice &&
+                                  formik.errors
                                     .maMonth1AdolescentsParticipationChoice !==
-                                  "" ? (
+                                    "" ? (
                                     <span className={classes.error}>
                                       {
                                         formik.errors
@@ -4205,8 +4544,8 @@ const ServiceForm = (props) => {
                                 "yes" && (
                                 <div className="form-group mb-3 col-md-6">
                                   <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth1AdolescentsParticipationDate"
+                                    formik={formik}
+                                    name="maMonth1AdolescentsParticipationDate"
                                   >
                                     <Label for="maMonth1AdolescentsParticipationDate">
                                       Date for adolescent participation
@@ -4247,9 +4586,11 @@ const ServiceForm = (props) => {
                                         borderRadius: "0.2rem",
                                       }}
                                     />
-                                    {formik.errors
+                                    {formik?.touched
+                                      ?.maMonth1AdolescentsParticipationDate &&
+                                    formik.errors
                                       .maMonth1AdolescentsParticipationDate !==
-                                    "" ? (
+                                      "" ? (
                                       <span className={classes.error}>
                                         {
                                           formik.errors
@@ -4265,8 +4606,8 @@ const ServiceForm = (props) => {
 
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="maMonth1leadershipTrainingChoice"
+                                  formik={formik}
+                                  name="maMonth1leadershipTrainingChoice"
                                 >
                                   <Label for="maMonth1leadershipTrainingChoice">
                                     Leadership participation
@@ -4295,7 +4636,9 @@ const ServiceForm = (props) => {
                                     <option value="yes">Yes</option>
                                     <option value="no">No</option>
                                   </Input>
-                                  {formik.errors
+                                  {formik?.touched
+                                    ?.maMonth1leadershipTrainingChoice &&
+                                  formik.errors
                                     .maMonth1leadershipTrainingChoice !== "" ? (
                                     <span className={classes.error}>
                                       {
@@ -4313,8 +4656,8 @@ const ServiceForm = (props) => {
                                 .maMonth1leadershipTrainingChoice === "yes" && (
                                 <div className="form-group mb-3 col-md-6">
                                   <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth1leadershipTrainingDate"
+                                    formik={formik}
+                                    name="maMonth1leadershipTrainingDate"
                                   >
                                     <Label for="maMonth1leadershipTrainingDate">
                                       Date for Leadership participation
@@ -4355,7 +4698,9 @@ const ServiceForm = (props) => {
                                         borderRadius: "0.2rem",
                                       }}
                                     />
-                                    {formik.errors
+                                    {formik?.touched
+                                      ?.maMonth1leadershipTrainingDate &&
+                                    formik.errors
                                       .maMonth1leadershipTrainingDate !== "" ? (
                                       <span className={classes.error}>
                                         {
@@ -4372,8 +4717,8 @@ const ServiceForm = (props) => {
 
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="maMonth1PeerToPeerChoice"
+                                  formik={formik}
+                                  name="maMonth1PeerToPeerChoice"
                                 >
                                   <Label for="maMonth1PeerToPeerChoice">
                                     Peer to Peer Mentorship
@@ -4401,8 +4746,9 @@ const ServiceForm = (props) => {
                                     <option value="yes">Yes</option>
                                     <option value="no">No</option>
                                   </Input>
-                                  {formik.errors.maMonth1PeerToPeerChoice !==
-                                  "" ? (
+                                  {formik?.touched?.maMonth1PeerToPeerChoice &&
+                                  formik.errors.maMonth1PeerToPeerChoice !==
+                                    "" ? (
                                     <span className={classes.error}>
                                       {formik.errors.maMonth1PeerToPeerChoice}
                                     </span>
@@ -4416,8 +4762,8 @@ const ServiceForm = (props) => {
                                 "yes" && (
                                 <div className="form-group mb-3 col-md-6">
                                   <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth1PeerToPeerDate"
+                                    formik={formik}
+                                    name="maMonth1PeerToPeerDate"
                                   >
                                     <Label for="maMonth1PeerToPeerDate">
                                       Date for peer to peer mentorship
@@ -4457,8 +4803,9 @@ const ServiceForm = (props) => {
                                         borderRadius: "0.2rem",
                                       }}
                                     />
-                                    {formik.errors.maMonth1PeerToPeerDate !==
-                                    "" ? (
+                                    {formik?.touched?.maMonth1PeerToPeerDate &&
+                                    formik.errors.maMonth1PeerToPeerDate !==
+                                      "" ? (
                                       <span className={classes.error}>
                                         {formik.errors.maMonth1PeerToPeerDate}
                                       </span>
@@ -4471,8 +4818,8 @@ const ServiceForm = (props) => {
 
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="maMonth1RoleOfOtzChoice"
+                                  formik={formik}
+                                  name="maMonth1RoleOfOtzChoice"
                                 >
                                   <Label for="maMonth1RoleOfOtzChoice">
                                     Role of OTZ in 95-95-95
@@ -4500,8 +4847,9 @@ const ServiceForm = (props) => {
                                     <option value="yes">Yes</option>
                                     <option value="no">No</option>
                                   </Input>
-                                  {formik.errors.maMonth1RoleOfOtzChoice !==
-                                  "" ? (
+                                  {formik?.touched?.maMonth1RoleOfOtzChoice &&
+                                  formik.errors.maMonth1RoleOfOtzChoice !==
+                                    "" ? (
                                     <span className={classes.error}>
                                       {formik.errors.maMonth1RoleOfOtzChoice}
                                     </span>
@@ -4515,8 +4863,8 @@ const ServiceForm = (props) => {
                                 "yes" && (
                                 <div className="form-group mb-3 col-md-6">
                                   <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth1RoleOfOtzDate"
+                                    formik={formik}
+                                    name="maMonth1RoleOfOtzDate"
                                   >
                                     <Label for="maMonth1RoleOfOtzDate">
                                       Date for role of OTZ in 95-95-95
@@ -4556,8 +4904,9 @@ const ServiceForm = (props) => {
                                         borderRadius: "0.2rem",
                                       }}
                                     />
-                                    {formik.errors.maMonth1RoleOfOtzDate !==
-                                    "" ? (
+                                    {formik?.touched?.maMonth1RoleOfOtzDate &&
+                                    formik.errors.maMonth1RoleOfOtzDate !==
+                                      "" ? (
                                       <span className={classes.error}>
                                         {formik.errors.maMonth1RoleOfOtzDate}
                                       </span>
@@ -4570,8 +4919,8 @@ const ServiceForm = (props) => {
 
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="maMonth1OtzChampionOrientationChoice"
+                                  formik={formik}
+                                  name="maMonth1OtzChampionOrientationChoice"
                                 >
                                   <Label for="maMonth1OtzChampionOrientationChoice">
                                     OTZ champion orientation
@@ -4600,9 +4949,11 @@ const ServiceForm = (props) => {
                                     <option value="yes">Yes</option>
                                     <option value="no">No</option>
                                   </Input>
-                                  {formik.errors
+                                  {formik?.touched
+                                    ?.maMonth1OtzChampionOrientationChoice &&
+                                  formik.errors
                                     .maMonth1OtzChampionOrientationChoice !==
-                                  "" ? (
+                                    "" ? (
                                     <span className={classes.error}>
                                       {
                                         formik.errors
@@ -4620,8 +4971,8 @@ const ServiceForm = (props) => {
                                 "yes" && (
                                 <div className="form-group mb-3 col-md-6">
                                   <CustomFormGroup
-                                  formik={formik}
-                                  name="maMonth1OtzChampionOrientationDate"
+                                    formik={formik}
+                                    name="maMonth1OtzChampionOrientationDate"
                                   >
                                     <Label for="maMonth1OtzChampionOrientationDate">
                                       Date for OTZ Champion Orientation
@@ -4662,9 +5013,11 @@ const ServiceForm = (props) => {
                                         borderRadius: "0.2rem",
                                       }}
                                     />
-                                    {formik.errors
+                                    {formik?.touched
+                                      ?.maMonth1OtzChampionOrientationDate &&
+                                    formik.errors
                                       .maMonth1OtzChampionOrientationDate !==
-                                    "" ? (
+                                      "" ? (
                                       <span className={classes.error}>
                                         {
                                           formik.errors
@@ -4754,8 +5107,8 @@ const ServiceForm = (props) => {
                                 <div className="row">
                                   <div className="form-group mb-3 col-md-6">
                                     <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth2PositiveLivingChoice"
+                                      formik={formik}
+                                      name="maMonth2PositiveLivingChoice"
                                     >
                                       <Label for="maMonth2PositiveLivingChoice">
                                         Positive Living
@@ -4784,7 +5137,9 @@ const ServiceForm = (props) => {
                                         <option value="yes">Yes</option>
                                         <option value="no">No</option>
                                       </Input>
-                                      {formik.errors
+                                      {formik?.touched
+                                        ?.maMonth2PositiveLivingChoice &&
+                                      formik.errors
                                         .maMonth2PositiveLivingChoice !== "" ? (
                                         <span className={classes.error}>
                                           {
@@ -4801,8 +5156,8 @@ const ServiceForm = (props) => {
                                     .maMonth2PositiveLivingChoice === "yes" && (
                                     <div className="form-group mb-3 col-md-6">
                                       <CustomFormGroup
-                                      formik={formik}
-                                      name="maMonth2PositiveLivingDate"
+                                        formik={formik}
+                                        name="maMonth2PositiveLivingDate"
                                       >
                                         <Label for="maMonth2PositiveLivingDate">
                                           Date for positive living
@@ -4843,7 +5198,9 @@ const ServiceForm = (props) => {
                                             borderRadius: "0.2rem",
                                           }}
                                         />
-                                        {formik.errors
+                                        {formik?.touched
+                                          ?.maMonth2PositiveLivingDate &&
+                                        formik.errors
                                           .maMonth2PositiveLivingDate !== "" ? (
                                           <span className={classes.error}>
                                             {
@@ -4860,8 +5217,8 @@ const ServiceForm = (props) => {
 
                                   <div className="form-group mb-3 col-md-6">
                                     <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth2LiteracyTreatmentChoice"
+                                      formik={formik}
+                                      name="maMonth2LiteracyTreatmentChoice"
                                     >
                                       <Label for="maMonth2LiteracyTreatmentChoice">
                                         Literacy Treatment
@@ -4890,9 +5247,11 @@ const ServiceForm = (props) => {
                                         <option value="yes">Yes</option>
                                         <option value="no">No</option>
                                       </Input>
-                                      {formik.errors
+                                      {formik?.touched
+                                        ?.maMonth2LiteracyTreatmentChoice &&
+                                      formik.errors
                                         .maMonth2LiteracyTreatmentChoice !==
-                                      "" ? (
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
                                             formik.errors
@@ -4910,8 +5269,8 @@ const ServiceForm = (props) => {
                                     "yes" && (
                                     <div className="form-group mb-3 col-md-6">
                                       <CustomFormGroup
-                                      formik={formik}
-                                      name="maMonth2LiteracyTreatmentDate"
+                                        formik={formik}
+                                        name="maMonth2LiteracyTreatmentDate"
                                       >
                                         <Label for="maMonth2LiteracyTreatmentDate">
                                           Date for literacy training
@@ -4952,9 +5311,11 @@ const ServiceForm = (props) => {
                                             borderRadius: "0.2rem",
                                           }}
                                         />
-                                        {formik.errors
+                                        {formik?.touched
+                                          ?.maMonth2LiteracyTreatmentDate &&
+                                        formik.errors
                                           .maMonth2LiteracyTreatmentDate !==
-                                        "" ? (
+                                          "" ? (
                                           <span className={classes.error}>
                                             {
                                               formik.errors
@@ -4970,8 +5331,8 @@ const ServiceForm = (props) => {
 
                                   <div className="form-group mb-3 col-md-6">
                                     <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth2AdolescentsParticipationChoice"
+                                      formik={formik}
+                                      name="maMonth2AdolescentsParticipationChoice"
                                     >
                                       <Label for="maMonth2AdolescentsParticipationChoice">
                                         Adolescents Participation
@@ -5000,9 +5361,11 @@ const ServiceForm = (props) => {
                                         <option value="yes">Yes</option>
                                         <option value="no">No</option>
                                       </Input>
-                                      {formik.errors
+                                      {formik?.touched
+                                        ?.maMonth2AdolescentsParticipationChoice &&
+                                      formik.errors
                                         .maMonth2AdolescentsParticipationChoice !==
-                                      "" ? (
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
                                             formik.errors
@@ -5020,8 +5383,8 @@ const ServiceForm = (props) => {
                                     "yes" && (
                                     <div className="form-group mb-3 col-md-6">
                                       <CustomFormGroup
-                                      formik={formik}
-                                      name="maMonth2AdolescentsParticipationDate"
+                                        formik={formik}
+                                        name="maMonth2AdolescentsParticipationDate"
                                       >
                                         <Label for="maMonth2AdolescentsParticipationDate">
                                           Date for adolescent participation
@@ -5062,9 +5425,11 @@ const ServiceForm = (props) => {
                                             borderRadius: "0.2rem",
                                           }}
                                         />
-                                        {formik.errors
+                                        {formik?.touched
+                                          ?.maMonth2AdolescentsParticipationDate &&
+                                        formik.errors
                                           .maMonth2AdolescentsParticipationDate !==
-                                        "" ? (
+                                          "" ? (
                                           <span className={classes.error}>
                                             {
                                               formik.errors
@@ -5080,8 +5445,8 @@ const ServiceForm = (props) => {
 
                                   <div className="form-group mb-3 col-md-6">
                                     <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth2leadershipTrainingChoice"
+                                      formik={formik}
+                                      name="maMonth2leadershipTrainingChoice"
                                     >
                                       <Label for="maMonth2leadershipTrainingChoice">
                                         Leadership participation
@@ -5110,9 +5475,11 @@ const ServiceForm = (props) => {
                                         <option value="yes">Yes</option>
                                         <option value="no">No</option>
                                       </Input>
-                                      {formik.errors
+                                      {formik?.touched
+                                        ?.maMonth2leadershipTrainingChoice &&
+                                      formik.errors
                                         .maMonth2leadershipTrainingChoice !==
-                                      "" ? (
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
                                             formik.errors
@@ -5130,8 +5497,8 @@ const ServiceForm = (props) => {
                                     "yes" && (
                                     <div className="form-group mb-3 col-md-6">
                                       <CustomFormGroup
-                                      formik={formik}
-                                      name="maMonth2leadershipTrainingDate"
+                                        formik={formik}
+                                        name="maMonth2leadershipTrainingDate"
                                       >
                                         <Label for="maMonth2leadershipTrainingDate">
                                           Date for Leadership participation
@@ -5172,9 +5539,11 @@ const ServiceForm = (props) => {
                                             borderRadius: "0.2rem",
                                           }}
                                         />
-                                        {formik.errors
+                                        {formik?.touched
+                                          ?.maMonth2leadershipTrainingDate &&
+                                        formik.errors
                                           .maMonth2leadershipTrainingDate !==
-                                        "" ? (
+                                          "" ? (
                                           <span className={classes.error}>
                                             {
                                               formik.errors
@@ -5190,8 +5559,8 @@ const ServiceForm = (props) => {
 
                                   <div className="form-group mb-3 col-md-6">
                                     <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth2PeerToPeerChoice"
+                                      formik={formik}
+                                      name="maMonth2PeerToPeerChoice"
                                     >
                                       <Label for="maMonth2PeerToPeerChoice">
                                         Peer to Peer Mentorship
@@ -5219,8 +5588,10 @@ const ServiceForm = (props) => {
                                         <option value="yes">Yes</option>
                                         <option value="no">No</option>
                                       </Input>
-                                      {formik.errors
-                                        .maMonth2PeerToPeerChoice !== "" ? (
+                                      {formik?.touched
+                                        ?.maMonth2PeerToPeerChoice &&
+                                      formik.errors.maMonth2PeerToPeerChoice !==
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
                                             formik.errors
@@ -5237,8 +5608,8 @@ const ServiceForm = (props) => {
                                     "yes" && (
                                     <div className="form-group mb-3 col-md-6">
                                       <CustomFormGroup
-                                      formik={formik}
-                                      name="maMonth2PeerToPeerDate"
+                                        formik={formik}
+                                        name="maMonth2PeerToPeerDate"
                                       >
                                         <Label for="maMonth2PeerToPeerDate">
                                           Date for peer to peer mentorship
@@ -5278,8 +5649,10 @@ const ServiceForm = (props) => {
                                             borderRadius: "0.2rem",
                                           }}
                                         />
-                                        {formik.errors
-                                          .maMonth2PeerToPeerDate !== "" ? (
+                                        {formik?.touched
+                                          ?.maMonth2PeerToPeerDate &&
+                                        formik.errors.maMonth2PeerToPeerDate !==
+                                          "" ? (
                                           <span className={classes.error}>
                                             {
                                               formik.errors
@@ -5295,8 +5668,8 @@ const ServiceForm = (props) => {
 
                                   <div className="form-group mb-3 col-md-6">
                                     <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth2RoleOfOtzChoice"
+                                      formik={formik}
+                                      name="maMonth2RoleOfOtzChoice"
                                     >
                                       <Label for="maMonth2RoleOfOtzChoice">
                                         Role of OTZ in 95-95-95
@@ -5324,8 +5697,10 @@ const ServiceForm = (props) => {
                                         <option value="yes">Yes</option>
                                         <option value="no">No</option>
                                       </Input>
-                                      {formik.errors.maMonth2RoleOfOtzChoice !==
-                                      "" ? (
+                                      {formik?.touched
+                                        ?.maMonth2RoleOfOtzChoice &&
+                                      formik.errors.maMonth2RoleOfOtzChoice !==
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
                                             formik.errors
@@ -5342,8 +5717,8 @@ const ServiceForm = (props) => {
                                     "yes" && (
                                     <div className="form-group mb-3 col-md-6">
                                       <CustomFormGroup
-                                      formik={formik}
-                                      name="maMonth2RoleOfOtzDate"
+                                        formik={formik}
+                                        name="maMonth2RoleOfOtzDate"
                                       >
                                         <Label for="maMonth2RoleOfOtzDate">
                                           Date for role of OTZ in 95-95-95
@@ -5383,8 +5758,10 @@ const ServiceForm = (props) => {
                                             borderRadius: "0.2rem",
                                           }}
                                         />
-                                        {formik.errors.maMonth2RoleOfOtzDate !==
-                                        "" ? (
+                                        {formik?.touched
+                                          ?.maMonth2RoleOfOtzDate &&
+                                        formik.errors.maMonth2RoleOfOtzDate !==
+                                          "" ? (
                                           <span className={classes.error}>
                                             {
                                               formik.errors
@@ -5400,8 +5777,8 @@ const ServiceForm = (props) => {
 
                                   <div className="form-group mb-3 col-md-6">
                                     <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth2OtzChampionOrientationChoice"
+                                      formik={formik}
+                                      name="maMonth2OtzChampionOrientationChoice"
                                     >
                                       <Label for="maMonth2OtzChampionOrientationChoice">
                                         OTZ champion orientation
@@ -5430,9 +5807,11 @@ const ServiceForm = (props) => {
                                         <option value="yes">Yes</option>
                                         <option value="no">No</option>
                                       </Input>
-                                      {formik.errors
+                                      {formik?.touched
+                                        ?.maMonth2OtzChampionOrientationChoice &&
+                                      formik.errors
                                         .maMonth2OtzChampionOrientationChoice !==
-                                      "" ? (
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
                                             formik.errors
@@ -5450,8 +5829,8 @@ const ServiceForm = (props) => {
                                     "yes" && (
                                     <div className="form-group mb-3 col-md-6">
                                       <CustomFormGroup
-                                      formik={formik}
-                                      name="maMonth2OtzChampionOrientationDate"
+                                        formik={formik}
+                                        name="maMonth2OtzChampionOrientationDate"
                                       >
                                         <Label for="maMonth2OtzChampionOrientationDate">
                                           Date for OTZ Champion Orientation
@@ -5492,9 +5871,11 @@ const ServiceForm = (props) => {
                                             borderRadius: "0.2rem",
                                           }}
                                         />
-                                        {formik.errors
+                                        {formik?.touched
+                                          ?.maMonth2OtzChampionOrientationDate &&
+                                        formik.errors
                                           .maMonth2OtzChampionOrientationDate !==
-                                        "" ? (
+                                          "" ? (
                                           <span className={classes.error}>
                                             {
                                               formik.errors
@@ -5585,8 +5966,8 @@ const ServiceForm = (props) => {
                                 <div className="row">
                                   <div className="form-group mb-3 col-md-6">
                                     <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth3PositiveLivingChoice"
+                                      formik={formik}
+                                      name="maMonth3PositiveLivingChoice"
                                     >
                                       <Label for="maMonth3PositiveLivingChoice">
                                         Positive Living
@@ -5615,7 +5996,9 @@ const ServiceForm = (props) => {
                                         <option value="yes">Yes</option>
                                         <option value="no">No</option>
                                       </Input>
-                                      {formik.errors
+                                      {formik?.touched
+                                        ?.maMonth3PositiveLivingChoice &&
+                                      formik.errors
                                         .maMonth3PositiveLivingChoice !== "" ? (
                                         <span className={classes.error}>
                                           {
@@ -5633,8 +6016,8 @@ const ServiceForm = (props) => {
                                     "yes" && (
                                     <div className="form-group mb-3 col-md-6">
                                       <CustomFormGroup
-                                      formik={formik}
-                                      name="maMonth3PositiveLivingDate"
+                                        formik={formik}
+                                        name="maMonth3PositiveLivingDate"
                                       >
                                         <Label for="maMonth3PositiveLivingDate">
                                           Date for positive living
@@ -5675,7 +6058,9 @@ const ServiceForm = (props) => {
                                             borderRadius: "0.2rem",
                                           }}
                                         />
-                                        {formik.errors
+                                        {formik?.touched
+                                          ?.maMonth3PositiveLivingDate &&
+                                        formik.errors
                                           .maMonth3PositiveLivingDate !== "" ? (
                                           <span className={classes.error}>
                                             {
@@ -5692,8 +6077,8 @@ const ServiceForm = (props) => {
 
                                   <div className="form-group mb-3 col-md-6">
                                     <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth3LiteracyTreatmentChoice"
+                                      formik={formik}
+                                      name="maMonth3LiteracyTreatmentChoice"
                                     >
                                       <Label for="maMonth3LiteracyTreatmentChoice">
                                         Literacy Treatment
@@ -5722,9 +6107,11 @@ const ServiceForm = (props) => {
                                         <option value="yes">Yes</option>
                                         <option value="no">No</option>
                                       </Input>
-                                      {formik.errors
+                                      {formik?.touched
+                                        ?.maMonth3LiteracyTreatmentChoice &&
+                                      formik.errors
                                         .maMonth3LiteracyTreatmentChoice !==
-                                      "" ? (
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
                                             formik.errors
@@ -5742,8 +6129,8 @@ const ServiceForm = (props) => {
                                     "yes" && (
                                     <div className="form-group mb-3 col-md-6">
                                       <CustomFormGroup
-                                      formik={formik}
-                                      name="maMonth3LiteracyTreatmentDate"
+                                        formik={formik}
+                                        name="maMonth3LiteracyTreatmentDate"
                                       >
                                         <Label for="maMonth3LiteracyTreatmentDate">
                                           Date for literacy training
@@ -5784,9 +6171,11 @@ const ServiceForm = (props) => {
                                             borderRadius: "0.2rem",
                                           }}
                                         />
-                                        {formik.errors
+                                        {formik?.touched
+                                          ?.maMonth3LiteracyTreatmentDate &&
+                                        formik.errors
                                           .maMonth3LiteracyTreatmentDate !==
-                                        "" ? (
+                                          "" ? (
                                           <span className={classes.error}>
                                             {
                                               formik.errors
@@ -5802,8 +6191,8 @@ const ServiceForm = (props) => {
 
                                   <div className="form-group mb-3 col-md-6">
                                     <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth3AdolescentsParticipationChoice"
+                                      formik={formik}
+                                      name="maMonth3AdolescentsParticipationChoice"
                                     >
                                       <Label for="maMonth3AdolescentsParticipationChoice">
                                         Adolescents Participation
@@ -5832,9 +6221,11 @@ const ServiceForm = (props) => {
                                         <option value="yes">Yes</option>
                                         <option value="no">No</option>
                                       </Input>
-                                      {formik.errors
+                                      {formik?.touched
+                                        ?.maMonth3AdolescentsParticipationChoice &&
+                                      formik.errors
                                         .maMonth3AdolescentsParticipationChoice !==
-                                      "" ? (
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
                                             formik.errors
@@ -5852,8 +6243,8 @@ const ServiceForm = (props) => {
                                     "yes" && (
                                     <div className="form-group mb-3 col-md-6">
                                       <CustomFormGroup
-                                      formik={formik}
-                                      name="maMonth3AdolescentsParticipationDate"
+                                        formik={formik}
+                                        name="maMonth3AdolescentsParticipationDate"
                                       >
                                         <Label for="maMonth3AdolescentsParticipationDate">
                                           Date for adolescent participation
@@ -5894,9 +6285,11 @@ const ServiceForm = (props) => {
                                             borderRadius: "0.2rem",
                                           }}
                                         />
-                                        {formik.errors
+                                        {formik?.touched
+                                          ?.maMonth3AdolescentsParticipationDate &&
+                                        formik.errors
                                           .maMonth3AdolescentsParticipationDate !==
-                                        "" ? (
+                                          "" ? (
                                           <span className={classes.error}>
                                             {
                                               formik.errors
@@ -5912,8 +6305,8 @@ const ServiceForm = (props) => {
 
                                   <div className="form-group mb-3 col-md-6">
                                     <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth3leadershipTrainingChoice"
+                                      formik={formik}
+                                      name="maMonth3leadershipTrainingChoice"
                                     >
                                       <Label for="maMonth3leadershipTrainingChoice">
                                         Leadership participation
@@ -5942,9 +6335,11 @@ const ServiceForm = (props) => {
                                         <option value="yes">Yes</option>
                                         <option value="no">No</option>
                                       </Input>
-                                      {formik.errors
+                                      {formik?.touched
+                                        ?.maMonth3leadershipTrainingChoice &&
+                                      formik.errors
                                         .maMonth3leadershipTrainingChoice !==
-                                      "" ? (
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
                                             formik.errors
@@ -5962,8 +6357,8 @@ const ServiceForm = (props) => {
                                     "yes" && (
                                     <div className="form-group mb-3 col-md-6">
                                       <CustomFormGroup
-                                      formik={formik}
-                                      name="maMonth3leadershipTrainingDate"
+                                        formik={formik}
+                                        name="maMonth3leadershipTrainingDate"
                                       >
                                         <Label for="maMonth3leadershipTrainingDate">
                                           Date for Leadership participation
@@ -6022,8 +6417,8 @@ const ServiceForm = (props) => {
 
                                   <div className="form-group mb-3 col-md-6">
                                     <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth3PeerToPeerChoice"
+                                      formik={formik}
+                                      name="maMonth3PeerToPeerChoice"
                                     >
                                       <Label for="maMonth3PeerToPeerChoice">
                                         Peer to Peer Mentorship
@@ -6051,8 +6446,10 @@ const ServiceForm = (props) => {
                                         <option value="yes">Yes</option>
                                         <option value="no">No</option>
                                       </Input>
-                                      {formik.errors
-                                        .maMonth3PeerToPeerChoice !== "" ? (
+                                      {formik?.touched
+                                        ?.maMonth3PeerToPeerChoice &&
+                                      formik.errors.maMonth3PeerToPeerChoice !==
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
                                             formik.errors
@@ -6069,8 +6466,8 @@ const ServiceForm = (props) => {
                                     "yes" && (
                                     <div className="form-group mb-3 col-md-6">
                                       <CustomFormGroup
-                                      formik={formik}
-                                      name="maMonth3PeerToPeerDate"
+                                        formik={formik}
+                                        name="maMonth3PeerToPeerDate"
                                       >
                                         <Label for="maMonth3PeerToPeerDate">
                                           Date for peer to peer mentorship
@@ -6110,8 +6507,10 @@ const ServiceForm = (props) => {
                                             borderRadius: "0.2rem",
                                           }}
                                         />
-                                        {formik.errors
-                                          .maMonth3PeerToPeerDate !== "" ? (
+                                        {formik?.touched
+                                          ?.maMonth3PeerToPeerDate &&
+                                        formik.errors.maMonth3PeerToPeerDate !==
+                                          "" ? (
                                           <span className={classes.error}>
                                             {
                                               formik.errors
@@ -6127,8 +6526,8 @@ const ServiceForm = (props) => {
 
                                   <div className="form-group mb-3 col-md-6">
                                     <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth3RoleOfOtzChoice"
+                                      formik={formik}
+                                      name="maMonth3RoleOfOtzChoice"
                                     >
                                       <Label for="maMonth3RoleOfOtzChoice">
                                         Role of OTZ in 95-95-95
@@ -6156,8 +6555,10 @@ const ServiceForm = (props) => {
                                         <option value="yes">Yes</option>
                                         <option value="no">No</option>
                                       </Input>
-                                      {formik.errors.maMonth3RoleOfOtzChoice !==
-                                      "" ? (
+                                      {formik?.touched
+                                        ?.maMonth3RoleOfOtzChoice &&
+                                      formik.errors.maMonth3RoleOfOtzChoice !==
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
                                             formik.errors
@@ -6174,8 +6575,8 @@ const ServiceForm = (props) => {
                                     "yes" && (
                                     <div className="form-group mb-3 col-md-6">
                                       <CustomFormGroup
-                                      formik={formik}
-                                      name="maMonth3RoleOfOtzDate"
+                                        formik={formik}
+                                        name="maMonth3RoleOfOtzDate"
                                       >
                                         <Label for="maMonth3RoleOfOtzDate">
                                           Date for role of OTZ in 95-95-95
@@ -6215,8 +6616,10 @@ const ServiceForm = (props) => {
                                             borderRadius: "0.2rem",
                                           }}
                                         />
-                                        {formik.errors.maMonth3RoleOfOtzDate !==
-                                        "" ? (
+                                        {formik?.touched
+                                          ?.maMonth3RoleOfOtzDate &&
+                                        formik.errors.maMonth3RoleOfOtzDate !==
+                                          "" ? (
                                           <span className={classes.error}>
                                             {
                                               formik.errors
@@ -6232,8 +6635,8 @@ const ServiceForm = (props) => {
 
                                   <div className="form-group mb-3 col-md-6">
                                     <CustomFormGroup
-                                    formik={formik}
-                                    name="maMonth3OtzChampionOrientationChoice"
+                                      formik={formik}
+                                      name="maMonth3OtzChampionOrientationChoice"
                                     >
                                       <Label for="maMonth3OtzChampionOrientationChoice">
                                         OTZ champion orientation
@@ -6262,9 +6665,11 @@ const ServiceForm = (props) => {
                                         <option value="yes">Yes</option>
                                         <option value="no">No</option>
                                       </Input>
-                                      {formik.errors
+                                      {formik?.touched
+                                        ?.maMonth3OtzChampionOrientationChoice &&
+                                      formik.errors
                                         .maMonth3OtzChampionOrientationChoice !==
-                                      "" ? (
+                                        "" ? (
                                         <span className={classes.error}>
                                           {
                                             formik.errors
@@ -6282,8 +6687,8 @@ const ServiceForm = (props) => {
                                     "yes" && (
                                     <div className="form-group mb-3 col-md-6">
                                       <CustomFormGroup
-                                      formik={formik}
-                                      name="maMonth3OtzChampionOrientationDate"
+                                        formik={formik}
+                                        name="maMonth3OtzChampionOrientationDate"
                                       >
                                         <Label for="maMonth3OtzChampionOrientationDate">
                                           Date for OTZ Champion Orientation
@@ -6324,9 +6729,11 @@ const ServiceForm = (props) => {
                                             borderRadius: "0.2rem",
                                           }}
                                         />
-                                        {formik.errors
+                                        {formik?.touched
+                                          ?.maMonth3OtzChampionOrientationDate &&
+                                        formik.errors
                                           .maMonth3OtzChampionOrientationDate !==
-                                        "" ? (
+                                          "" ? (
                                           <span className={classes.error}>
                                             {
                                               formik.errors
@@ -6419,8 +6826,8 @@ const ServiceForm = (props) => {
                             <div className="row">
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="sixMonthsResult"
+                                  formik={formik}
+                                  name="sixMonthsResult"
                                 >
                                   <Label for="sixMonthsResult">
                                     Result
@@ -6442,7 +6849,8 @@ const ServiceForm = (props) => {
                                       borderRadius: "0.2rem",
                                     }}
                                   ></Input>
-                                  {formik.errors.sixMonthsResult !== "" ? (
+                                  {formik?.touched?.sixMonthsResult &&
+                                  formik.errors.sixMonthsResult !== "" ? (
                                     <span className={classes.error}>
                                       {formik.errors.sixMonthsResult}
                                     </span>
@@ -6454,8 +6862,8 @@ const ServiceForm = (props) => {
 
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="sixMonthsDate"
+                                  formik={formik}
+                                  name="sixMonthsDate"
                                 >
                                   <Label for="sixMonthsDate">
                                     Date
@@ -6493,7 +6901,8 @@ const ServiceForm = (props) => {
                                       borderRadius: "0.2rem",
                                     }}
                                   />
-                                  {formik.errors.sixMonthsDate !== "" ? (
+                                  {formik?.touched?.sixMonthsDate &&
+                                  formik.errors.sixMonthsDate !== "" ? (
                                     <span className={classes.error}>
                                       {formik.errors.sixMonthsDate}
                                     </span>
@@ -6558,8 +6967,8 @@ const ServiceForm = (props) => {
                             <div className="row">
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="twelveMonthsResult"
+                                  formik={formik}
+                                  name="twelveMonthsResult"
                                 >
                                   <Label for="twelveMonthsResult">
                                     Result
@@ -6581,7 +6990,8 @@ const ServiceForm = (props) => {
                                       borderRadius: "0.2rem",
                                     }}
                                   ></Input>
-                                  {formik.errors.twelveMonthsResult !== "" ? (
+                                  {formik?.touched?.twelveMonthsResult &&
+                                  formik.errors.twelveMonthsResult !== "" ? (
                                     <span className={classes.error}>
                                       {formik.errors.twelveMonthsResult}
                                     </span>
@@ -6593,8 +7003,8 @@ const ServiceForm = (props) => {
 
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="twelveMonthsDate"
+                                  formik={formik}
+                                  name="twelveMonthsDate"
                                 >
                                   <Label for="twelveMonthsDate">
                                     Date
@@ -6632,7 +7042,8 @@ const ServiceForm = (props) => {
                                       borderRadius: "0.2rem",
                                     }}
                                   />
-                                  {formik.errors.twelveMonthsDate !== "" ? (
+                                  {formik?.touched?.twelveMonthsDate &&
+                                  formik.errors.twelveMonthsDate !== "" ? (
                                     <span className={classes.error}>
                                       {formik.errors.twelveMonthsDate}
                                     </span>
@@ -6698,8 +7109,8 @@ const ServiceForm = (props) => {
                             <div className="row">
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="eighteenMonthsResult"
+                                  formik={formik}
+                                  name="eighteenMonthsResult"
                                 >
                                   <Label for="eighteenMonthsResult">
                                     Result
@@ -6721,7 +7132,8 @@ const ServiceForm = (props) => {
                                       borderRadius: "0.2rem",
                                     }}
                                   ></Input>
-                                  {formik.errors.eighteenMonthsResult !== "" ? (
+                                  {formik?.touched?.eighteenMonthsResult &&
+                                  formik.errors.eighteenMonthsResult !== "" ? (
                                     <span className={classes.error}>
                                       {formik.errors.eighteenMonthsResult}
                                     </span>
@@ -6733,8 +7145,8 @@ const ServiceForm = (props) => {
 
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="eighteenMonthsDate"
+                                  formik={formik}
+                                  name="eighteenMonthsDate"
                                 >
                                   <Label for="eighteenMonthsDate">
                                     Date
@@ -6772,7 +7184,8 @@ const ServiceForm = (props) => {
                                       borderRadius: "0.2rem",
                                     }}
                                   ></Input>
-                                  {formik.errors.eighteenMonthsDate !== "" ? (
+                                  {formik?.touched?.eighteenMonthsDate &&
+                                  formik.errors.eighteenMonthsDate !== "" ? (
                                     <span className={classes.error}>
                                       {formik.errors.eighteenMonthsDate}
                                     </span>
@@ -6838,8 +7251,8 @@ const ServiceForm = (props) => {
                             <div className="row">
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="twentyFourMonthsResult"
+                                  formik={formik}
+                                  name="twentyFourMonthsResult"
                                 >
                                   <Label for="twentyFourMonthsResult">
                                     Result
@@ -6861,8 +7274,9 @@ const ServiceForm = (props) => {
                                       borderRadius: "0.2rem",
                                     }}
                                   ></Input>
-                                  {formik.errors.twentyFourMonthsResult !==
-                                  "" ? (
+                                  {formik?.touched?.twentyFourMonthsResult &&
+                                  formik.errors.twentyFourMonthsResult !==
+                                    "" ? (
                                     <span className={classes.error}>
                                       {formik.errors.twentyFourMonthsResult}
                                     </span>
@@ -6874,8 +7288,8 @@ const ServiceForm = (props) => {
 
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="maMonth3LiteracyTreatmentChoice"
+                                  formik={formik}
+                                  name="maMonth3LiteracyTreatmentChoice"
                                 >
                                   <Label for="maMonth3LiteracyTreatmentChoice">
                                     Date
@@ -6913,7 +7327,8 @@ const ServiceForm = (props) => {
                                       borderRadius: "0.2rem",
                                     }}
                                   ></Input>
-                                  {formik.errors.twentyFourMonthsDate !== "" ? (
+                                  {formik?.touched?.twentyFourMonthsDate &&
+                                  formik.errors.twentyFourMonthsDate !== "" ? (
                                     <span className={classes.error}>
                                       {formik.errors.twentyFourMonthsDate}
                                     </span>
@@ -6978,8 +7393,8 @@ const ServiceForm = (props) => {
                             <div className="row">
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="thirtyMonthsResult"
+                                  formik={formik}
+                                  name="thirtyMonthsResult"
                                 >
                                   <Label for="thirtyMonthsResult">
                                     Result
@@ -7001,7 +7416,8 @@ const ServiceForm = (props) => {
                                       borderRadius: "0.2rem",
                                     }}
                                   ></Input>
-                                  {formik.errors.thirtyMonthsResult !== "" ? (
+                                  {formik?.touched?.thirtyMonthsResult &&
+                                  formik.errors.thirtyMonthsResult !== "" ? (
                                     <span className={classes.error}>
                                       {formik.errors.thirtyMonthsResult}
                                     </span>
@@ -7013,8 +7429,8 @@ const ServiceForm = (props) => {
 
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="thirtyMonthsDate"
+                                  formik={formik}
+                                  name="thirtyMonthsDate"
                                 >
                                   <Label for="thirtyMonthsDate">
                                     Date
@@ -7052,7 +7468,8 @@ const ServiceForm = (props) => {
                                       borderRadius: "0.2rem",
                                     }}
                                   ></Input>
-                                  {formik.errors.thirtyMonthsDate !== "" ? (
+                                  {formik?.touched?.thirtyMonthsDate &&
+                                  formik.errors.thirtyMonthsDate !== "" ? (
                                     <span className={classes.error}>
                                       {formik.errors.thirtyMonthsDate}
                                     </span>
@@ -7118,8 +7535,8 @@ const ServiceForm = (props) => {
                             <div className="row">
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="thirtySixMonthsResult"
+                                  formik={formik}
+                                  name="thirtySixMonthsResult"
                                 >
                                   <Label for="thirtySixMonthsResult">
                                     Result
@@ -7141,8 +7558,8 @@ const ServiceForm = (props) => {
                                       borderRadius: "0.2rem",
                                     }}
                                   ></Input>
-                                  {formik.errors.thirtySixMonthsResult !==
-                                  "" ? (
+                                  {formik?.touched?.thirtySixMonthsResult &&
+                                  formik.errors.thirtySixMonthsResult !== "" ? (
                                     <span className={classes.error}>
                                       {formik.errors.thirtySixMonthsResult}
                                     </span>
@@ -7154,8 +7571,8 @@ const ServiceForm = (props) => {
 
                               <div className="form-group mb-3 col-md-6">
                                 <CustomFormGroup
-                                formik={formik}
-                                name="thirtySixMonthsDate"
+                                  formik={formik}
+                                  name="thirtySixMonthsDate"
                                 >
                                   <Label for="thirtySixMonthsDate">
                                     Date
@@ -7193,7 +7610,8 @@ const ServiceForm = (props) => {
                                       borderRadius: "0.2rem",
                                     }}
                                   ></Input>
-                                  {formik.errors.thirtySixMonthsDate !== "" ? (
+                                  {formik?.touched?.thirtySixMonthsDate &&
+                                  formik.errors.thirtySixMonthsDate !== "" ? (
                                     <span className={classes.error}>
                                       {formik.errors.thirtySixMonthsDate}
                                     </span>
@@ -7211,7 +7629,9 @@ const ServiceForm = (props) => {
                 </div>
               )}
 
-              <div className="card">
+              <div className="card"
+               
+              >
                 <div
                   className="card-header"
                   style={{
@@ -7234,14 +7654,12 @@ const ServiceForm = (props) => {
 
                 <div
                   className="basic-form"
-                  style={{ padding: "0 50px 0 50px" }}
+                  style={{ padding: "50px 50px 50px 50px", }}
+                  
                 >
                   <div className="row">
                     <div className="form-group mb-3 col-md-4">
-                      <CustomFormGroup
-                      formik={formik}
-                      name="outcomes"
-                      >
+                      <CustomFormGroup formik={formik} name="outcomes">
                         <Label for="outcomes">
                           Outcome
                           <span style={{ color: "red" }}> *</span>{" "}
@@ -7266,7 +7684,8 @@ const ServiceForm = (props) => {
                             </>
                           ))}
                         </Input>
-                        {formik.errors.outcomes !== "" ? (
+                        {formik?.touched?.outcomes &&
+                        formik.errors.outcomes !== "" ? (
                           <span className={classes.error}>
                             {formik.errors.outcomes}
                           </span>
@@ -7277,10 +7696,7 @@ const ServiceForm = (props) => {
                     </div>
 
                     <div className="form-group mb-3 col-md-4">
-                      <CustomFormGroup
-                      formik={formik}
-                      name="exitedOtz"
-                      >
+                      <CustomFormGroup formik={formik} name="exitedOtz">
                         <Label for="exitedOtz">
                           Exited OTZ
                           <span style={{ color: "red" }}> *</span>{" "}
@@ -7302,7 +7718,8 @@ const ServiceForm = (props) => {
                           <option value="yes">Yes</option>
                           <option value="no">No</option>
                         </Input>
-                        {formik.errors.exitedOtz !== "" ? (
+                        {formik?.touched?.exitedOtz &&
+                        formik.errors.exitedOtz !== "" ? (
                           <span className={classes.error}>
                             {formik.errors.exitedOtz}
                           </span>
@@ -7316,8 +7733,8 @@ const ServiceForm = (props) => {
                       <>
                         <div className="form-group mb-3 col-md-4">
                           <CustomFormGroup
-                          formik={formik}
-                          name="viralLoadOnOtzExit"
+                            formik={formik}
+                            name="viralLoadOnOtzExit"
                           >
                             <Label for="viralLoadOnOtzExit">
                               Viral load on OTZ exit
@@ -7336,7 +7753,8 @@ const ServiceForm = (props) => {
                                 borderRadius: "0.2rem",
                               }}
                             />
-                            {formik.errors.viralLoadOnOtzExit !== "" ? (
+                            {formik?.touched?.viralLoadOnOtzExit &&
+                            formik.errors.viralLoadOnOtzExit !== "" ? (
                               <span className={classes.error}>
                                 {formik.errors.viralLoadOnOtzExit}
                               </span>
@@ -7347,10 +7765,7 @@ const ServiceForm = (props) => {
                         </div>
 
                         <div className="form-group mb-3 col-md-4">
-                          <CustomFormGroup
-                          formik={formik}
-                          name="exitedByName"
-                          >
+                          <CustomFormGroup formik={formik} name="exitedByName">
                             <Label for="exitedByName">
                               Exited by (Name)
                               <span style={{ color: "red" }}> *</span>{" "}
@@ -7361,14 +7776,18 @@ const ServiceForm = (props) => {
                               name="exitedByName"
                               id="exitedByName"
                               value={formik.values.exitedByName}
-                              onChange={formik.handleChange}
+                              onChange={(e) =>
+                                handleFilterNumber(e, formik.setFieldValue)
+                              }
                               onBlur={formik.handleBlur}
+                              pattern="^[^0-9]+$"
                               style={{
                                 border: "1px solid #014D88",
                                 borderRadius: "0.2rem",
                               }}
                             />
-                            {formik.errors.exitedByName !== "" ? (
+                            {formik?.touched?.exitedByName &&
+                            formik.errors.exitedByName !== "" ? (
                               <span className={classes.error}>
                                 {formik.errors.exitedByName}
                               </span>
@@ -7380,8 +7799,8 @@ const ServiceForm = (props) => {
 
                         <div className="form-group mb-3 col-md-4">
                           <CustomFormGroup
-                          formik={formik}
-                          name="exitedByDesignation"
+                            formik={formik}
+                            name="exitedByDesignation"
                           >
                             <Label for="exitedByDesignation">
                               Exited by (Designation)
@@ -7393,14 +7812,18 @@ const ServiceForm = (props) => {
                               name="exitedByDesignation"
                               id="exitedByDesignation"
                               value={formik.values.exitedByDesignation}
-                              onChange={formik.handleChange}
+                              onChange={(e) =>
+                                handleFilterNumber(e, formik.setFieldValue)
+                              }
                               onBlur={formik.handleBlur}
+                              pattern="^[^0-9]+$"
                               style={{
                                 border: "1px solid #014D88",
                                 borderRadius: "0.2rem",
                               }}
                             />
-                            {formik.errors.exitedByDesignation !== "" ? (
+                            {formik?.touched?.exitedByDesignation &&
+                            formik.errors.exitedByDesignation !== "" ? (
                               <span className={classes.error}>
                                 {formik.errors.exitedByDesignation}
                               </span>
@@ -7411,10 +7834,7 @@ const ServiceForm = (props) => {
                         </div>
 
                         <div className="form-group mb-3 col-md-4">
-                          <CustomFormGroup
-                          formik={formik}
-                          name="exitedByDate"
-                          >
+                          <CustomFormGroup formik={formik} name="exitedByDate">
                             <Label for="exitedByDate">
                               Exited by (Date)
                               <span style={{ color: "red" }}> *</span>{" "}
@@ -7446,7 +7866,8 @@ const ServiceForm = (props) => {
                                 borderRadius: "0.2rem",
                               }}
                             />
-                            {formik.errors.exitedByDate !== "" ? (
+                            {formik?.touched?.exitedByDate &&
+                            formik.errors.exitedByDate !== "" ? (
                               <span className={classes.error}>
                                 {formik.errors.exitedByDate}
                               </span>
@@ -7458,8 +7879,8 @@ const ServiceForm = (props) => {
 
                         <div className="form-group mb-3 col-md-4">
                           <CustomFormGroup
-                          formik={formik}
-                          name="exitedBySignature"
+                            formik={formik}
+                            name="exitedBySignature"
                           >
                             <Label for="exitedBySignature">
                               Exited by (Signature)
@@ -7471,14 +7892,18 @@ const ServiceForm = (props) => {
                               name="exitedBySignature"
                               id="exitedBySignature"
                               value={formik.values.exitedBySignature}
-                              onChange={formik.handleChange}
+                              onChange={(e) =>
+                                handleFilterNumber(e, formik.setFieldValue)
+                              }
                               onBlur={formik.handleBlur}
+                              pattern="^[^0-9]+$"
                               style={{
                                 border: "1px solid #014D88",
                                 borderRadius: "0.2rem",
                               }}
                             />
-                            {formik.errors.exitedBySignature !== "" ? (
+                            {formik?.touched?.exitedBySignature &&
+                            formik.errors.exitedBySignature !== "" ? (
                               <span className={classes.error}>
                                 {formik.errors.exitedBySignature}
                               </span>
@@ -7490,8 +7915,8 @@ const ServiceForm = (props) => {
 
                         <div className="form-group mb-3 col-md-4">
                           <CustomFormGroup
-                          formik={formik}
-                          name="dateOfAssessmentDone"
+                            formik={formik}
+                            name="dateOfAssessmentDone"
                           >
                             <Label for="dateOfAssessmentDone">
                               Viral load assessment date
@@ -7524,7 +7949,8 @@ const ServiceForm = (props) => {
                                 borderRadius: "0.2rem",
                               }}
                             />
-                            {formik.errors.dateOfAssessmentDone !== "" ? (
+                            {formik?.touched?.dateOfAssessmentDone &&
+                            formik.errors.dateOfAssessmentDone !== "" ? (
                               <span className={classes.error}>
                                 {formik.errors.dateOfAssessmentDone}
                               </span>
@@ -7538,10 +7964,7 @@ const ServiceForm = (props) => {
 
                     {formik?.values?.outcomes === "1138" && (
                       <div className="form-group mb-3 col-md-4">
-                        <CustomFormGroup
-                        formik={formik}
-                        name="transitionDate"
-                        >
+                        <CustomFormGroup formik={formik} name="transitionDate">
                           <Label for="transitionDate">
                             Transition Date
                             <span style={{ color: "red" }}> *</span>{" "}
@@ -7573,7 +7996,8 @@ const ServiceForm = (props) => {
                               borderRadius: "0.2rem",
                             }}
                           />
-                          {formik.errors.transitionDate !== "" ? (
+                          {formik?.touched?.transitionDate &&
+                          formik.errors.transitionDate !== "" ? (
                             <span className={classes.error}>
                               {formik.errors.transitionDate}
                             </span>
@@ -7596,7 +8020,7 @@ const ServiceForm = (props) => {
                   style={{ backgroundColor: "#014d88" }}
                   startIcon={<SaveIcon />}
                   disabled={saving}
-                  onClick={() => handleSubmit(formik.values)}
+                  onClick={formik?.handleSubmit}
                 >
                   {!saving ? (
                     <span style={{ textTransform: "capitalize" }}>Submit</span>
