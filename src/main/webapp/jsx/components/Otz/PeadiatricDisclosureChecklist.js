@@ -376,7 +376,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         id="caregiverName"
                         type="text"
                         value={formik.values.caregiverName}
-                        onChange={formik.handleChange}
+                        onChange={(e)=>handleFilterNumber(e, formik?.setFieldValue)}
                         onBlur={formik.handleBlur}
                         style={{
                           border: "1px solid #014D88",

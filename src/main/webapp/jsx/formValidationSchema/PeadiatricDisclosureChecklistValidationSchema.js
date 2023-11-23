@@ -62,7 +62,7 @@ export const usePeadiatricFormValidationSchema = (onSubmit) => {
 
   const PeadiatricFormInitialSchema = yup.object({
     // facilityName: yup.string(),
-    childName: yup.string(),
+    childName: yup.string().matches(/^[^0-9]*$/, 'Numbers are not allowed'),
     dob: yup.string(),
     caregiverName: yup.string().matches(/^[^0-9]*$/, 'Numbers are not allowed'),
     sex: yup.string(),

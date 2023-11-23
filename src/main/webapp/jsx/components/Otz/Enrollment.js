@@ -173,7 +173,7 @@ const EnrollmentOtz = (props) => {
         if (param?.monthOfData) {
           toast.success(`Month ${param?.monthOfData} update successful.`);
         } else {
-          toast.success("Service OTZ screening update successful.");
+          toast.success("Service OTZ enrollment update successful.");
         }
         props.setActiveContent({
           ...props?.activeContent,

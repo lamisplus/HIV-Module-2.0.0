@@ -42,7 +42,7 @@ export default function App() {
           <Route path="/">
             <Home />
             {/* <ServiceForm/> */}
-            <EnrollmentOtz/>
+            {/* <EnrollmentOtz/> */}
           </Route>       
           
         </Switch>

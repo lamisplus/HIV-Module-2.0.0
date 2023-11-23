@@ -357,7 +357,7 @@ const ServiceForm = (props) => {
                   }}
                 >
                   <h5 className="card-title" style={{ color: "#fff" }}>
-                    Service form
+                  Enrollment
                   </h5>
 
                   <>
@@ -368,9 +368,9 @@ const ServiceForm = (props) => {
                 </div>
 
                 <div className="row p-4">
-                  <h5 className="p-2 card-title" style={{ color: "#014d88" }}>
+                  {/* <h5 className="p-2 card-title" style={{ color: "#014d88" }}>
                     Enrollment
-                  </h5>
+                  </h5> */}
 
                   <div className="form-group mb-3 col-md-4">
                     <CustomFormGroup formik={formik} name="artStartDate">

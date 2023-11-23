@@ -7,6 +7,9 @@ function SubMenu(props) {
   //const classes = useStyles();
   const [activeItem, setActiveItem] = useState("recent-history");
   const patientObj = props.patientObj;
+  const [saving, setSavings] = useState(false);
+  const [currentOtzRecord, setCurrentOtzRecord] = useState(null);
+
 
   const patientCurrentStatus =
     props.patientObj && props.patientObj.currentStatus === "Died (Confirmed)"
@@ -40,6 +43,21 @@ function SubMenu(props) {
         //console.log(error);
       });
   };
+  
+  // const getOtzRecordIfExists = () => {
+  //   axios
+  //     .get(`${baseUrl}observation/${props.patientObj.id}`, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     })
+  //     .then((response) => {
+  //       const patientDTO = response.data.data;
+  
+  //       setCurrentOtzRecord(patientDTO);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
 
   const loadEAC = (row) => {
     setActiveItem("eac");
@@ -367,7 +385,7 @@ function SubMenu(props) {
                       OTZ Enrollment Form
                     </Dropdown.Item> 
 
-                    
+
                     <Dropdown.Item
                       onClick={() => loadOtzServiceForm(patientObj)}
                       name="OTZ Service Form"
