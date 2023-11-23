@@ -41,8 +41,6 @@ export default function App() {
 
           <Route path="/">
             <Home />
-            {/* <ServiceForm/> */}
-            {/* <EnrollmentOtz/> */}
           </Route>       
           
         </Switch>
