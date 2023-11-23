@@ -169,7 +169,7 @@ const EnrollmentOtz = (props) => {
       )
       .then((response) => {
         setSavings(false);
-        getOldRecordIfExists();
+        // getOldRecordIfExists();
         if (param?.monthOfData) {
           toast.success(`Month ${param?.monthOfData} update successful.`);
         } else {
