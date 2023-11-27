@@ -57,7 +57,6 @@ import UpdateViewViralLoadOrderResult from "./../Laboratory/ViralLoadOrderResult
 import OtzServiceForm from "./../Otz/ServiceForm";
 import OtzPeadiatricDisclosureChecklist from "./../Otz/PeadiatricDisclosureChecklist";
 import OtzRegister from "./../Otz/Register";
-import EnrollmentOtz from "../Otz/Enrollment";
 
 const styles = (theme) => ({
   root: {
@@ -439,13 +438,6 @@ function PatientCard(props) {
 
           {activeContent.route === "otz-service-form" && (
             <OtzServiceForm
-              patientObj={patientObj}
-              setActiveContent={setActiveContent}
-              activeContent={activeContent}
-            />
-          )}
-          {activeContent.route === "otz-enrollment-form" && (
-            <EnrollmentOtz
               patientObj={patientObj}
               setActiveContent={setActiveContent}
               activeContent={activeContent}

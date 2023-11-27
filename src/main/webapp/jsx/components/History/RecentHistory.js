@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 const RecentHistory = (props) => {
   const classes = useStyles();
-  const [vitaLoad, setViralLoad] = useState([]);
+  const [viralLoad, setViralLoad] = useState([]);
   const [refillList, setRefillList] = useState([]);
   const [clinicVisitList, setClinicVisitList] = useState([]);
   const [recentActivities, setRecentActivities] = useState([]);
@@ -794,9 +794,9 @@ const RecentHistory = (props) => {
                     className="widget-timeline dz-scroll height370 ps ps--active-y"
                   >
                     <ul className="timeline">
-                      {vitaLoad.length > 0 ? (
+                      {viralLoad.length > 0 ? (
                         <>
-                          {vitaLoad.map((test, index) => (
+                          {viralLoad.map((test, index) => (
                             <>
                               <li key={index}>
                                 <div
@@ -985,7 +985,7 @@ const RecentHistory = (props) => {
         </Modal.Header>
         <Modal.Body>
           <h4>
-            Are you Sure you want to delete <b>{record && record.name}</b>
+            Are you Sure you want to delete <b>{record && record.name==='Chronic Care' ? 'Care and Support' : record && record.name}</b>
           </h4>
         </Modal.Body>
         <Modal.Footer>

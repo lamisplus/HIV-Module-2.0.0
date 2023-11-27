@@ -7,9 +7,6 @@ function SubMenu(props) {
   //const classes = useStyles();
   const [activeItem, setActiveItem] = useState("recent-history");
   const patientObj = props.patientObj;
-  const [saving, setSavings] = useState(false);
-  const [currentOtzRecord, setCurrentOtzRecord] = useState(null);
-
 
   const patientCurrentStatus =
     props.patientObj && props.patientObj.currentStatus === "Died (Confirmed)"
@@ -43,21 +40,6 @@ function SubMenu(props) {
         //console.log(error);
       });
   };
-  
-  // const getOtzRecordIfExists = () => {
-  //   axios
-  //     .get(`${baseUrl}observation/${props.patientObj.id}`, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     })
-  //     .then((response) => {
-  //       const patientDTO = response.data.data;
-  
-  //       setCurrentOtzRecord(patientDTO);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // };
 
   const loadEAC = (row) => {
     setActiveItem("eac");
@@ -150,14 +132,6 @@ function SubMenu(props) {
       ...props.activeContent,
       ...props.expandedPatientObj,
       route: "otz-service-form",
-    });
-  };
-  const loadOtzEnrollmentForm = () => {
-    setActiveItem("otz-enrollment-form");
-    props.setActiveContent({
-      ...props.activeContent,
-      ...props.expandedPatientObj,
-      route: "otz-enrollment-form",
     });
   };
   const loadOtzCheckList = () => {
@@ -375,17 +349,6 @@ function SubMenu(props) {
                 </Dropdown>
                 <Dropdown item text="OTZ">
                   <Dropdown.Menu>
-
-                  <Dropdown.Item
-                      onClick={() => loadOtzEnrollmentForm(patientObj)}
-                      name="OTZ Enrollment Form"
-                      active={activeItem === "otz-enrollment-form"}
-                      title="Enrollment Form"
-                    >
-                      OTZ Enrollment Form
-                    </Dropdown.Item> 
-
-
                     <Dropdown.Item
                       onClick={() => loadOtzServiceForm(patientObj)}
                       name="OTZ Service Form"
@@ -394,10 +357,6 @@ function SubMenu(props) {
                     >
                       OTZ Service Form
                     </Dropdown.Item>
-
-                   
-
-
                     {patientObj.age <=17 && (
                     <Dropdown.Item
                       onClick={() => loadOtzCheckList(patientObj)}
