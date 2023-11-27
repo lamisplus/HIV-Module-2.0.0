@@ -235,7 +235,7 @@ const ChronicCare = (props) => {
       props.activeContent.id &&
       props.activeContent.id !== "" &&
       props.activeContent.id !== null
-    ) {sis
+    ) {
       setSisabledField(
         props.activeContent.actionType === "view"
       );

@@ -311,7 +311,7 @@ export const useServiceFormValidationSchema = (onSubmit) => {
 
     viralLoadOnOtzExit: yup.string(),
     dateOfAssessmentDone: yup.string(),
-    exitedByName: yup.string(),
+    exitedByName: yup.string().matches(/^[^0-9]*$/, 'Numbers are not allowed'),
     exitedByDesignation: yup.string(),
     exitedByDate: yup.date(),
     exitedBySignature: yup.string(),

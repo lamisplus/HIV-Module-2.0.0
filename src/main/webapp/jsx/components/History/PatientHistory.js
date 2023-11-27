@@ -658,7 +658,7 @@ const PatientnHistory = (props) => {
         </Modal.Header>
         <Modal.Body>
           <h4>
-            Are you Sure you want to delete <b>{record && record.name}</b>
+            Are you Sure you want to delete <b>{record && record.name==='Chronic Care' ? 'Care and Support' : record && record.name}</b>
           </h4>
         </Modal.Body>
         <Modal.Footer>
