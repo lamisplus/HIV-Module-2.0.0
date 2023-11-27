@@ -2,6 +2,7 @@ package org.lamisplus.modules.hiv.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.audit4j.core.util.Log;
 import org.jetbrains.annotations.NotNull;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
@@ -105,21 +106,21 @@ public class HivPatientService {
     
     public PageDTO getHivPatients(String searchValue, Pageable pageable) {
         Long facilityId = currentUserOrganizationService.getCurrentUserOrganization();
+        log.info("searchValue is {}", searchValue);
+        Page<PatientProjection> persons = null;
 
-//        if(!String.valueOf(searchValue).equals("null") && !searchValue.equals("*")){
-//            searchValue = searchValue.replaceAll("\\s", "");
-//            String queryParam = "%"+searchValue+"%";
-        if (!((searchValue == null) || (searchValue.equals("*")))) {
+       if(searchValue != null && !StringUtils.isBlank(searchValue) && !searchValue.equalsIgnoreCase("null")){
             searchValue = searchValue.replaceAll("\\s", "");
             searchValue = searchValue.replaceAll(",", "");
 
             String queryParam = "%" + searchValue + "%";
-            Page<PatientProjection> persons =
-                    enrollmentRepository.getPatientsByFacilityBySearchParam(facilityId, queryParam, pageable);
-            return getPageDTO(persons);
+            persons = enrollmentRepository.getPatientsByFacilityBySearchParam(facilityId, queryParam, pageable);
+            //log.info("person searched size is {}", persons.getSize());
+           return getPageDTO(persons);
         }
-        Page<PatientProjection> persons = enrollmentRepository.getPatientsByFacilityId(facilityId, pageable);
-        return getPageDTO(persons);
+       persons = enrollmentRepository.getPatientsByFacilityId(facilityId, pageable);
+       //log.info("person not searched size is {}", persons.getSize());
+       return getPageDTO(persons);
     }
     
     
