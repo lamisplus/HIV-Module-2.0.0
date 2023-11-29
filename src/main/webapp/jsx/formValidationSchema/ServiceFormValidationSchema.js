@@ -99,7 +99,7 @@ export const useServiceFormValidationSchema = (onSubmit) => {
     thirtySixMonthsResult: "",
     thirtySixMonthsDate: "",
 
-    outcomes: null,
+    outcomes: "",
     exitedOtz: "",
     transitionDate: "",
 
@@ -354,16 +354,16 @@ export const useServiceFormValidationSchema = (onSubmit) => {
       then: yup.date().required("Date is required"),
     }),
 
-    outcomes: yup.number().required("This field is required"),
+    outcomes: yup.number("Wrong field type").required("This field is required"),
     exitedOtz: yup.string(),
     transitionDate: yup.date(),
 
     viralLoadOnOtzExit: yup.string(),
     dateOfAssessmentDone: yup.string(),
     exitedByName: yup.string().matches(/^[^0-9]*$/, "Numbers are not allowed"),
-    exitedByDesignation: yup.string(),
+    exitedByDesignation: yup.string().matches(/^[^0-9]*$/, "Numbers are not allowed"),
     exitedByDate: yup.date(),
-    exitedBySignature: yup.string(),
+    exitedBySignature: yup.string().matches(/^[^0-9]*$/, "Numbers are not allowed"),
   });
 
   const formik = useFormik({
