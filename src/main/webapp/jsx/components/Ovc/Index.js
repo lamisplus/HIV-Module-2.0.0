@@ -92,14 +92,14 @@ function Index(props) {
         </Tab.Pane>
       ),
     },
-    // {
-    //   menuItem: "Import / Export",
-    //   render: () => (
-    //     <Tab.Pane>
-    //       <List permissions={permissions} />
-    //     </Tab.Pane>
-    //   ),
-    // },
+    {
+      menuItem: "OVC Treatment",
+      render: () => (
+        <Tab.Pane>
+          <List permissions={permissions} />
+        </Tab.Pane>
+      ),
+    },
   ];
 
   return (
