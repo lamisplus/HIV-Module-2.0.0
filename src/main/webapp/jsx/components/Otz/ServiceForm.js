@@ -1835,8 +1835,7 @@ const ServiceForm = (props) => {
                                               ),
                                             }}
                                             disabled={
-                                              !formik?.values
-                                                ?.dateEnrolledIntoOtz
+                                              !formik?.values?.dateEnrolledIntoOtz
                                             }
                                             name="acMonth2EacDate1"
                                             id="acMonth2EacDate1"

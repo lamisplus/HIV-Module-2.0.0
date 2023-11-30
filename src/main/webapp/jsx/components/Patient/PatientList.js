@@ -119,7 +119,8 @@ const Patients = (props) => {
   };
 
   const calculate_age = (dob) => {
-    if(dob!==null && dob!="") {//Check if the DOB is not null or empty
+    if (dob !== null && dob != "") {
+      //Check if the DOB is not null or empty
       const today = new Date();
       const dateParts = dob.split("-");
       const birthDate = new Date(dob); // create a date object directly from`dob1`argument
@@ -133,8 +134,8 @@ const Patients = (props) => {
         return m + " month(s)";
       }
       return age_now + " year(s)";
-    }else{
-      return null
+    } else {
+      return null;
     }
   };
 
