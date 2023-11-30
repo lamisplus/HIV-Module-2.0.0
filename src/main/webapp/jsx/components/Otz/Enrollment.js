@@ -7,8 +7,6 @@ import "react-toastify/dist/ReactToastify.css";
 import "react-widgets/dist/css/react-widgets.css";
 import { FaPlus } from "react-icons/fa";
 import { useServiceFormValidationSchema } from "../../formValidationSchema/OtzEnrollmentValidationSchema";
-import { Collapse, IconButton } from "@material-ui/core";
-import { ExpandMore as ExpandMoreIcon } from "@material-ui/icons";
 import MatButton from "@material-ui/core/Button";
 import SaveIcon from "@material-ui/icons/Save";
 import moment from "moment";
@@ -89,9 +87,9 @@ const useStyles = makeStyles((theme) => ({
 
 const EnrollmentOtz = (props) => {
   const [saving, setSavings] = useState(false);
-  const [currentRecord, SetCurrentRecord] = useState(null);
+  const [currentRecord, setCurrentRecord] = useState(null);
   const [otzOutcomesArray, setOtzOutcomes] = useState([]);
-
+  console.log(Number(props?.activeContent?.currentLabResult?.result));
   const submitNewRecord = (values, param) => {
     const observation = {
       data: values,
@@ -109,27 +107,19 @@ const EnrollmentOtz = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        getOldRecordIfExists();
         setSavings(false);
-        // props.patientObj.mentalHealth = true;
-        if (param?.monthOfData) {
-          toast.success(`Month ${param?.monthOfData} saved successful.`);
-        } else {
-          toast.success("Service OTZ enrollment save successful.");
-          getOldRecordIfExists();
-        }
+        toast.success("Service OTZ enrollment save successful.");
         props.setActiveContent({
           ...props?.activeContent,
-          route: param?.reroute
-            ? "recent-history"
-            : props?.activeContent?.route,
-        }); //Redirect to patient home page
+          route: "otz-service-form",
+        });
       })
       .catch((error) => {
         setSavings(false);
         let errorMessage =
-          error.response.data && error.response.data.apierror.message !== ""
-            ? error.response.data.apierror.message
+          error?.response?.data &&
+          error?.response?.data?.apierror?.message !== ""
+            ? error?.response?.data?.apierror?.message
             : "Something went wrong, please try again";
         toast.error(errorMessage);
       });
@@ -145,7 +135,7 @@ const EnrollmentOtz = (props) => {
       });
   };
 
-  const updateOldRecord = (values, param) => {
+  const updateOldRecord = (values) => {
     const observation = {
       data: values,
       dateOfObservation:
@@ -153,51 +143,59 @@ const EnrollmentOtz = (props) => {
           ? values.dateDone
           : moment(new Date()).format("YYYY-MM-DD"),
       facilityId: null,
-      personId: props?.activeContent?.id || currentRecord?.id,
+      personId: currentRecord?.personId,
       type: "Service OTZ",
       visitId: null,
     };
     axios
-      .put(
-        `${baseUrl}observation/${
-          props?.activeContent?.id || currentRecord?.id
-        }`,
-        observation,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
+      .put(`${baseUrl}observation/${currentRecord?.id}`, observation, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((response) => {
         setSavings(false);
-        getOldRecordIfExists();
-        if (param?.monthOfData) {
-          toast.success(`Month ${param?.monthOfData} update successful.`);
-        } else {
-          toast.success("Service OTZ enrollment update successful.");
-        }
+
+        toast.success("Service OTZ enrollment update successful.");
+
         props.setActiveContent({
           ...props?.activeContent,
-          route: param?.reroute
-            ? "recent-history"
-            : props?.activeContent?.route,
-        }); //Redirect to patient home page
+          route: "otz-service-form",
+        });
       })
       .catch((error) => {
         setSavings(false);
         let errorMessage =
-          error.response.data && error.response.data.apierror.message !== ""
-            ? error.response.data.apierror.message
+          error?.response?.data && error?.response?.data?.apierror?.message !== ""
+            ? error?.response?.data?.apierror?.message
             : "Something went wrong, please try again";
         toast.error(errorMessage);
       });
   };
 
-  const handleSubmit = (values, param) => {
-    if (currentRecord?.id || props?.activeContent?.id) {
-      updateOldRecord(values, param);
+  const handleSubmit = (values) => {
+    const artStartDate = props?.activeContent?.artCommence?.visitDate;
+    const baselineViralLoadAtEnrollment = Number(
+      props?.activeContent?.currentLabResult?.result
+    );
+
+    if (!artStartDate || !baselineViralLoadAtEnrollment) {
+      toast.error(
+        "ensure ART start date and Baseline viral load are prefilled"
+      );
+      return;
+    }
+    if (currentRecord?.id) {
+      updateOldRecord({
+        ...values,
+        artStartDate,
+        baselineViralLoadAtEnrollment,
+      });
       return;
     } else {
-      submitNewRecord(values, param);
+      submitNewRecord({
+        ...values,
+        artStartDate,
+        baselineViralLoadAtEnrollment,
+      });
     }
   };
 
@@ -231,13 +229,16 @@ const EnrollmentOtz = (props) => {
 
   const getOldRecordIfExists = () => {
     axios
-      .get(`${baseUrl}observation/${props?.activeContent?.id}`, {
+      .get(`${baseUrl}observation/person/${props?.activeContent?.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        const patientDTO = response.data.data;
-        formik.setValues(patientDTO);
-        SetCurrentRecord(patientDTO);
+        const patientDTO = response?.data;
+        const otzData =
+          patientDTO?.filter?.((item) => item?.type === "Service OTZ")?.[0] ||
+          {};
+        formik.setValues(otzData?.data);
+        setCurrentRecord(otzData);
       })
       .catch((error) => {
         console.log(error);
@@ -245,8 +246,18 @@ const EnrollmentOtz = (props) => {
   };
 
   useEffect(() => {
-    getOldRecordIfExists();
+    if (props?.activeContent?.id) {
+      getOldRecordIfExists();
+    }
     getOtzOutomes();
+
+    formik.setValues({
+    ...formik?.values,
+    artStartDate:props?.activeContent?.artCommence?.visitDate,
+    baselineViralLoadAtEnrollment: Number(
+      props?.activeContent?.currentLabResult?.result
+    )
+    })
   }, []);
 
   const classes = useStyles();
@@ -271,13 +282,11 @@ const EnrollmentOtz = (props) => {
     thirtySixMonthsPEVLM: true,
   });
 
-
   const setCustomDate = (e) => {
     formik.setValues({
-      ...formik.values,
+      ...formik?.values,
       dateEnrolledIntoOtz: e?.target?.value,
       dateDone: "",
-     
     });
   };
 
@@ -286,7 +295,7 @@ const EnrollmentOtz = (props) => {
     const newValue = e.target.value.replace(/\d/g, "");
     setFieldValue(e.target.name, newValue);
   };
-
+  console.log(formik.errors);
   return (
     <>
       <ToastContainer autoClose={3000} hideProgressBar />
@@ -327,7 +336,6 @@ const EnrollmentOtz = (props) => {
                 </div>
 
                 <div className="row p-4">
-
                   <div className="form-group mb-3 col-md-4">
                     <CustomFormGroup formik={formik} name="artStartDate">
                       <Label>ART start date</Label>
@@ -335,7 +343,7 @@ const EnrollmentOtz = (props) => {
                         name="artStartDate"
                         id="artStartDate"
                         type="date"
-                        value={props?.activeContent?.artCommence?.visitDate}
+                        value={formik?.values?.artStartDate}
                         disabled
                         style={{
                           border: "1px solid #014D88",
@@ -351,13 +359,6 @@ const EnrollmentOtz = (props) => {
                         }}
                       />
                     </CustomFormGroup>
-                    {/* {formik.errors.artStartDate !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.artStartDate}
-                      </span>
-                    ) : (
-                      ""
-                    )} */}
                   </div>
 
                   <div className="form-group mb-3 col-md-4">
@@ -367,7 +368,7 @@ const EnrollmentOtz = (props) => {
                         name="dateEnrolledIntoOtz"
                         id="dateEnrolledIntoOtz"
                         type="date"
-                        value={formik.values.dateEnrolledIntoOtz}
+                        value={formik?.values?.dateEnrolledIntoOtz}
                         onChange={setCustomDate}
                         onBlur={formik.handleBlur}
                         // disabled={!!currentRecord?.dateEnrolledIntoOtz}
@@ -399,14 +400,14 @@ const EnrollmentOtz = (props) => {
                   {props?.activeContent?.enrollment?.pregnancyStatusId === 73 ||
                   props?.activeContent?.enrollment?.pregnancyStatusId === 75 ? (
                     <div className="form-group mb-3 col-md-4">
-                      <CustomFormGroup formik={formik} name="OtzPlus">
+                      <CustomFormGroup formik={formik} name="otzPlus">
                         <Label>OTZ plus</Label>
                         <Input
-                          name="OtzPlus"
-                          id="OtzPlus"
+                          name="otzPlus"
+                          id="otzPlus"
                           type="select"
-                          disabled={!!currentRecord?.OtzPlus}
-                          value={formik.values.OtzPlus}
+                          disabled={!!currentRecord?.otzPlus}
+                          value={formik?.values?.otzPlus}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
                           style={{
@@ -419,10 +420,10 @@ const EnrollmentOtz = (props) => {
                           <option value="no">No</option>
                         </Input>
                       </CustomFormGroup>
-                      {formik?.touched?.OtzPlus &&
-                      formik.errors.OtzPlus !== "" ? (
+                      {formik?.touched?.otzPlus &&
+                      formik?.errors?.otzPlus !== "" ? (
                         <span className={classes.error}>
-                          {formik?.errors?.OtzPlus}
+                          {formik?.errors?.otzPlus}
                         </span>
                       ) : (
                         ""
@@ -442,20 +443,21 @@ const EnrollmentOtz = (props) => {
                         name="baselineViralLoadAtEnrollment"
                         id="baselineViralLoadAtEnrollment"
                         type="number"
-                        value={formik.values.baselineViralLoadAtEnrollment}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        disabled={!formik.values?.dateEnrolledIntoOtz}
+                        value={Number(
+                          props?.activeContent?.currentLabResult?.result
+                        )}
+                        // onChange={formik.handleChange}
+                        // onBlur={formik.handleBlur}
+                        readOnly
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
                         }}
                       ></Input>
                     </CustomFormGroup>
-                    {formik?.touched?.baselineViralLoadAtEnrollment &&
-                    formik.errors.baselineViralLoadAtEnrollment !== "" ? (
+                    {formik?.errors?.baselineViralLoadAtEnrollment !== "" ? (
                       <span className={classes.error}>
-                        {formik.errors.baselineViralLoadAtEnrollment}
+                        {formik?.errors?.baselineViralLoadAtEnrollment}
                       </span>
                     ) : (
                       ""
@@ -464,7 +466,7 @@ const EnrollmentOtz = (props) => {
 
                   <div className="form-group mb-3 col-md-6">
                     <CustomFormGroup formik={formik} name="dateDone">
-                      <Label>Date Done</Label>
+                      <Label>Date viral load test done</Label>
                       <Input
                         name="dateDone"
                         id="dateDone"
@@ -479,7 +481,7 @@ const EnrollmentOtz = (props) => {
                         {...{
                           max: moment(Date.now()).format("YYYY-MM-DD"),
                         }}
-                        value={formik.values.dateDone}
+                        value={formik?.values?.dateDone}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         disabled={!formik?.values?.dateEnrolledIntoOtz}
@@ -500,10 +502,6 @@ const EnrollmentOtz = (props) => {
                   </div>
                 </div>
               </div>
-
-           
-
-            
 
               <div className="d-flex justify-content-end">
                 <MatButton
