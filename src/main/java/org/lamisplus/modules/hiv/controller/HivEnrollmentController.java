@@ -117,7 +117,8 @@ public class HivEnrollmentController {
     }
 
     @GetMapping(value = "patient/enrollment/unique-id-exists")
-    public ResponseEntity<?> uniqueIdExists(@RequestParam("personUuid") String personUuid, @RequestParam("uniqueId") String uniqueId){
+    public ResponseEntity<?> uniqueIdExists(@RequestParam("personUuid") Optional<String> personUuid, @RequestParam("uniqueId") String uniqueId){
+
         return hivEnrollmentService.uniqueIdExists(
                 personUuid,
                 uniqueId).isPresent()
