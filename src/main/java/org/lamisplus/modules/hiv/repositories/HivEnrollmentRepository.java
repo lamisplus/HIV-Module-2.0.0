@@ -203,4 +203,5 @@ public interface HivEnrollmentRepository extends JpaRepository<HivEnrollment, Lo
 
     Optional<HivEnrollment> findByUuid(String uuid);
     Optional<HivEnrollment> findByUniqueIdAndArchivedAndPersonUuidNot(String uniqueId, Integer archived, String personUuid);
+    Optional<HivEnrollment> findByUniqueIdAndArchived(String uniqueId, Integer archived);
 }

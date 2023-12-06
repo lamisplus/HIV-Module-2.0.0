@@ -175,8 +175,11 @@ public class HivEnrollmentService {
 		return hivEnrollmentRepository.getOVCServiceByDomainId(domainId);
 	}
 
-	public Optional<HivEnrollment> uniqueIdExists(String personUuid, String uniqueId){
-		return hivEnrollmentRepository.findByUniqueIdAndArchivedAndPersonUuidNot(uniqueId, Constants.UNARCHIVED, personUuid);
+	public Optional<HivEnrollment> uniqueIdExists(Optional<String> personUuid, String uniqueId){
+		if(personUuid.isPresent()){
+			return hivEnrollmentRepository.findByUniqueIdAndArchivedAndPersonUuidNot(uniqueId, Constants.UNARCHIVED, personUuid);
+		}
+		return hivEnrollmentRepository.findByUniqueIdAndArchived(uniqueId, Constants.UNARCHIVED);
 	}
 	
 	
