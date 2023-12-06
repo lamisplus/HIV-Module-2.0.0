@@ -177,7 +177,7 @@ public class HivEnrollmentService {
 
 	public Optional<HivEnrollment> uniqueIdExists(Optional<String> personUuid, String uniqueId){
 		if(personUuid.isPresent()){
-			return hivEnrollmentRepository.findByUniqueIdAndArchivedAndPersonUuidNot(uniqueId, Constants.UNARCHIVED, personUuid);
+			return hivEnrollmentRepository.findByUniqueIdAndArchivedAndPersonUuidNot(uniqueId, Constants.UNARCHIVED, personUuid.get());
 		}
 		return hivEnrollmentRepository.findByUniqueIdAndArchived(uniqueId, Constants.UNARCHIVED);
 	}
