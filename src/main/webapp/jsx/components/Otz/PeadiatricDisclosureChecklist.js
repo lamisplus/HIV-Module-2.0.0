@@ -119,6 +119,13 @@ const PeadiatricDisclosureChecklist = (props) => {
       });
   };
 
+  const handleFilterNumber = (e, setFieldValue) => {
+    
+    // Apply your regex to filter out numbers
+    const newValue = e.target.value.replace(/\d/g, "");
+    setFieldValue(e.target.name, newValue);
+  };
+
   const updateOldRecord = (values) => {
     const observation = {
       data: values,
@@ -369,7 +376,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         id="caregiverName"
                         type="text"
                         value={formik.values.caregiverName}
-                        onChange={formik.handleChange}
+                        onChange={(e)=>handleFilterNumber(e, formik?.setFieldValue)}
                         onBlur={formik.handleBlur}
                         style={{
                           border: "1px solid #014D88",
@@ -488,7 +495,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         name="task1HCW"
                         id="task1HCW"
                         value={formik.values.task1HCW}
-                        onChange={formik.handleChange}
+                        onChange={(e) => handleFilterNumber(e, formik?.setFieldValue)}
                         onBlur={formik.handleBlur}
                         style={{
                           border: "1px solid #014D88",
@@ -701,7 +708,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         name="task2HCW"
                         id="task2HCW"
                         value={formik.values.task2HCW}
-                        onChange={formik.handleChange}
+                        onChange={(e) => handleFilterNumber(e, formik?.setFieldValue)}
                         onBlur={formik.handleBlur}
                         style={{
                           border: "1px solid #014D88",
@@ -1111,7 +1118,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         name="task3HCW"
                         id="task3HCW"
                         value={formik.values.task3HCW}
-                        onChange={formik.handleChange}
+                        onChange={(e) => handleFilterNumber(e, formik?.setFieldValue)}
                         onBlur={formik.handleBlur}
                         style={{
                           border: "1px solid #014D88",
@@ -1609,7 +1616,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         name="task4HCW"
                         id="task4HCW"
                         value={formik.values.task4HCW}
-                        onChange={formik.handleChange}
+                        onChange={(e) => handleFilterNumber(e, formik?.setFieldValue)}
                         onBlur={formik.handleBlur}
                         style={{
                           border: "1px solid #014D88",

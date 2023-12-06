@@ -122,6 +122,8 @@ public class StatusManagementService {
 			ArtPharmacy currentQuarterCurrentRefill = currentRefillInQuarter.get();
 			LocalDate visitDate = currentQuarterCurrentRefill.getVisitDate();
 			Integer refillPeriod = currentQuarterCurrentRefill.getRefillPeriod();
+			//check if there is refillPeriod
+			refillPeriod = refillPeriod == null || refillPeriod == 0 ? 0 : refillPeriod;
 			LocalDate expectedQuarterRefillPeriodBeforeIIT = visitDate.plusDays(refillPeriod).plusDays(28);
 			if (expectedQuarterRefillPeriodBeforeIIT.isBefore(quarterEnd)) {
 				return new HIVInterQuarterStatus(expectedQuarterRefillPeriodBeforeIIT, "IIT");
