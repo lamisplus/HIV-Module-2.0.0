@@ -373,8 +373,8 @@ function SubMenu(props) {
                 </Dropdown>
               </Menu.Menu>
 
-              {/* <Menu.Item onClick={() => loadTransferForm(patientObj)} name='transfer'
-                    active={activeItem === 'transfer'} title="Transfer">Transfer</Menu.Item> */}
+              <Menu.Item onClick={() => loadTransferForm(patientObj)} name='transfer'
+                    active={activeItem === 'transfer'} title="Transfer">Transfer</Menu.Item>
               <Menu.Item
                 onClick={() => loadPatientHistory(patientObj)}
                 name="history"
