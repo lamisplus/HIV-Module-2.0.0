@@ -41,4 +41,5 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
             "AND tbTreatmentPersonUuid = ?2", nativeQuery = true)
     Optional<String>  getIPTEligiblePatientUuid(Long facilityId, String uuid);
 
+    List<Observation> getAllByPersonAndFacilityId(Person person, Long orgId);
 }

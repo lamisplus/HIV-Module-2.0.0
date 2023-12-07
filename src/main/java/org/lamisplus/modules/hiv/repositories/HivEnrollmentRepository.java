@@ -177,7 +177,7 @@ public interface HivEnrollmentRepository extends JpaRepository<HivEnrollment, Lo
             "                        (SELECT TRUE as commenced, hac.person_uuid FROM hiv_art_clinical hac WHERE hac.archived=0 AND hac.is_commencement is true \n" +
             "                        GROUP BY hac.person_uuid)ca ON p.uuid = ca.person_uuid \n" +
             "                        LEFT JOIN base_application_codeset pc on pc.id = e.status_at_registration_id \n" +
-            "                        WHERE p.archived=0 " +
+            "                        WHERE p.archived=1 " +
             "                       AND  b.biometric_type IS NULL \n" +
             "                       AND p.facility_id= ?1 \n" +
             "                        GROUP BY e.id, e.target_group_id,ca.commenced, p.id, p.first_name, \n" +
