@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import org.lamisplus.modules.hiv.utility.Constants;
 
 @Service
 @RequiredArgsConstructor
@@ -348,7 +349,7 @@ public class HivPatientService {
 
     private void processAndSetObservationStatus(Person person, HivPatientDto hivPatientDto) {
         Long orgId = currentUserOrganizationService.getCurrentUserOrganization ();
-        List<Observation> observationList = observationRepository.getAllByPersonAndFacilityId (person, orgId);
+        List<Observation> observationList = observationRepository.getAllByPersonAndFacilityIdAndArchived (person, orgId, Constants.UNARCHIVED);
         if (!observationList.isEmpty ()) {
             observationList
                     .stream ()
