@@ -258,6 +258,15 @@ const RecentHistory = (props) => {
         activeTab: "history",
         actionType: action,
       });
+    } else if (row.path === "Client-verfication-form") {
+      props.setActiveContent({
+        ...props.activeContent,
+        route: "client-verfication-form-update",
+        id: row.id,
+        activeTab: "history",
+        actionType: action,
+      });
+
     } else if (row.path === "client-tracker") {
       props.setActiveContent({
         ...props.activeContent,

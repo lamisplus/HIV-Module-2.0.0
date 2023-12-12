@@ -198,10 +198,10 @@ const PatientnHistory = (props) => {
         activeTab: "history",
         actionType: action,
       });
-    } else if (row.path === "Intensive-follow-up") {
+    } else if (row.path === "Client-Verification") {
       props.setActiveContent({
         ...props.activeContent,
-        route: "intensive-follow-up-update",
+        route: "client-verfication-form",
         id: row.id,
         activeTab: "history",
         actionType: action,

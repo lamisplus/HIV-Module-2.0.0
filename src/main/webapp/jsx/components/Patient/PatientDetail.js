@@ -51,6 +51,7 @@ import LabOrderResult from "./../Laboratory/LabOrderResult/index";
 import ViralLoadOrderResult from "./../Laboratory/ViralLoadOrderResult/index";
 import IntensiveFollowUpUpdate from "./../IntensiveFollowUp/ViewUpdate";
 import IntensiveFollowUp from "./../IntensiveFollowUp/Index";
+import ClientVerficationForm from "./../ClientVerfication/Index";
 import TransferForm from "./../TransferForm/Index";
 import ViewUpdateLabOrderResult from "./../Laboratory/LabOrderResult/UpdateLabOrderResult";
 import UpdateViewViralLoadOrderResult from "./../Laboratory/ViralLoadOrderResult/UpdateViewViralLoadOrderResult";
@@ -400,6 +401,13 @@ function PatientCard(props) {
           )}
           {activeContent.route === "intensive-followup" && (
             <IntensiveFollowUp
+              patientObj={patientObj}
+              setActiveContent={setActiveContent}
+              activeContent={activeContent}
+            />
+          )}
+          {activeContent.route === "client-verfication-form" && (
+            <ClientVerficationForm
               patientObj={patientObj}
               setActiveContent={setActiveContent}
               activeContent={activeContent}
