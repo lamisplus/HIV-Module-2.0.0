@@ -85,8 +85,6 @@ const Tracking = (props) =>{
     console.log(props)
     const [errors, setErrors] = useState({});
     let temp = { ...errors }
-    
-    
     const classes = useStyles()
     const [dateOfDiscontinuation, setDateOfDiscontinuation] = useState(false);
     const [dateReturnedToCare, setDateReturnedToCare] = useState(false);
@@ -107,11 +105,7 @@ const Tracking = (props) =>{
             verificationAttempts:"",
             verificationStatus:"",
             outcome:"",
-            comment:"",	
-            discontinuation:"",
-            dateOfDiscontinuation:"",
-            dateOfReturnedToCare:"",
-            referredTo:"",
+            comment:"",
     });
     const [clientVerificationObj, setClientVerificationObj] = useState({  
         attempt:"",
@@ -119,11 +113,11 @@ const Tracking = (props) =>{
         dateOfDiscontinuation:"",
         discontinuation:"",
         dateReturnedToCare:"",
-        referredTo:"",	
+        referredTo:"",
+        serialEnrollmentNo:""
     });
     // console.log(clientVerificationObj)
     const [attemptList, setAttemptList] = useState([]);
-
     const indicationForClientVerification = [
         { value: "No initial biometric capture", label: "No initial biometric capture" },
         { value: "Duplicated demographic and clinical variables", label: "Duplicated demographic and clinical variables" },
@@ -138,25 +132,28 @@ const Tracking = (props) =>{
       ];
 
       useEffect(() => {
-        //GetFormDetail()
-    }, [props.patientObj.id]);
+          if(props.activeContent.actionType==="update" || props.activeContent.actionType==="view"){
+              GetFormDetail(props.activeContent.id) ;
+          }
+    }, [props.activeContent]);
     //Get Client Verification Form Object
-    // const GetFormDetail =()=>{
-    //     axios
-    //         .get(`${baseUrl}observation/person/${props.patientObj.id}`,
-    //             { headers: {"Authorization" : `Bearer ${token}`} }
-    //         )
-    //         .then((response) => {            
-    //             const Obj= response.data.find((x)=> x.type==='Client Verification') 
-    //             setObservation({...Obj})
-    //             setAttemptList(Obj.data)
-    //             console.log(Obj)
-    //         })
-    //         .catch((error) => {
-    //         //console.log(error);
-    //         });
-        
-    // } 
+    const GetFormDetail =(id)=>{
+        axios
+            .get(`${baseUrl}observation/${id}`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then(response => {
+                const Obj= response
+                setObservation({...Obj})
+                clientVerificationObj.dateOfVerification=Obj.data.dateOfObservation
+                //setClientVerificationObj({...Obj.data})
+                setAttemptList(Obj.data)
+            })
+            .catch((error) => {
+            //console.log(error);
+            });
+    }
+    console.log(clientVerificationObj)
     const handleInputChangeAttempt = e => {
         // console.log('checking for date',e.target.value)
         setErrors({...temp, [e.target.name]:""})
@@ -181,22 +178,32 @@ const Tracking = (props) =>{
     }
 
     //Validations of the forms
-    const validateAttempt = () => { 
-    attempt.anyOfTheFollowing=selected       
-    temp.serialEnrollmentNo = attempt.serialEnrollmentNo ? "" : "This field is required"
-    temp.dateOfAttempt = attempt.dateOfAttempt ? "" : "This field is required"
-    temp.verificationAttempts = attempt.verificationAttempts? "" : "This field is required"
-    temp.verificationStatus = attempt.verificationStatus ? "" : "This field is required"
-    temp.outcome = attempt.outcome ? "" : "This field is required"
-    temp.comment = attempt.comment ? "" : "This field is required"
+    const validateAttempt = () => {
+        temp.dateOfAttempt = attempt.dateOfAttempt ? "" : "This field is required"
+        temp.verificationAttempts = attempt.verificationAttempts? "" : "This field is required"
+        temp.verificationStatus = attempt.verificationStatus ? "" : "This field is required"
+        temp.outcome = attempt.outcome ? "" : "This field is required"
+        temp.comment = attempt.comment ? "" : "This field is required"
 
-    setErrors({
-        ...temp
-    })
-    return Object.values(temp).every(x => x === "")
-  }
+        setErrors({
+            ...temp
+        })
+        return Object.values(temp).every(x => x === "")
+    }
+    const validateClientverificationObj = () => {
+        temp.dateOfVerification = clientVerificationObj.dateOfVerification ? "" : "This field is required"
+        temp.discontinuation = clientVerificationObj.discontinuation? "" : "This field is required"
+        temp.serialEnrollmentNo = clientVerificationObj.serialEnrollmentNo ? "" : "This field is required"
+        // temp.outcome = clientVerificationObj.outcome ? "" : "This field is required"
+        // temp.comment = clientVerificationObj.comment ? "" : "This field is required"
+
+        setErrors({
+            ...temp
+        })
+        return Object.values(temp).every(x => x === "")
+    }
     const addAttempt = e => {
-        attempt.anyOfTheFollowing=selected
+        //attempt.anyOfTheFollowing=selected
         if(validateAttempt()){ 
             setAttemptList([...attemptList, attempt])
             setAttempt({
@@ -227,46 +234,51 @@ const Tracking = (props) =>{
     /**** Submit Button Processing  */
     const handleSubmit = (e) => {        
         e.preventDefault();
-        console.log(attemptList)
-        console.log(clientVerificationObj)
         observation.dateOfObservation=clientVerificationObj.dateOfVerification
         
         //assigning the verifcation date to date of observation Object
         clientVerificationObj.attempt=attemptList // Assgining all the attempted list to the ClientVerifiction Object 
         observation.data=clientVerificationObj
-            if(attemptList.length >0){
-                observation.dateOfObservation= observation.dateOfObservation !=="" ? observation.dateOfObservation : moment(new Date()).format("YYYY-MM-DD")       
-                observation.personId =patientObj.id
-                observation.data=attemptList        
-                setSaving(true);
-                axios.post(`${baseUrl}observation`,observation,
-                { headers: {"Authorization" : `Bearer ${token}`}},
-                
-                )
-                    .then(response => {
-                        setSaving(false);
-                        toast.success("Client Verfication form Save successful", {position: toast.POSITION.BOTTOM_CENTER});
-                        props.setActiveContent({...props.activeContent, route:'recent-history'})
-                        //props.setActiveContent('recent-history')
 
-                    })
-                    .catch(error => {
-                        setSaving(false);
-                        if(error.response && error.response.data){
-                            let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
-                            if(error.response.data.apierror && error.response.data.apierror.message!=="" && error.response.data.apierror && error.response.data.apierror.subErrors[0].message!==""){
-                                toast.error(error.response.data.apierror.message + " : " + error.response.data.apierror.subErrors[0].field + " " + error.response.data.apierror.subErrors[0].message, {position: toast.POSITION.BOTTOM_CENTER});
-                            }else{
-                                toast.error(errorMessage, {position: toast.POSITION.BOTTOM_CENTER});
+            if(attemptList.length >0){
+                if(validateClientverificationObj()){
+                    observation.dateOfObservation= observation.dateOfObservation !=="" ? observation.dateOfObservation : moment(new Date()).format("YYYY-MM-DD")
+                    observation.personId =patientObj.id
+                    observation.data=attemptList
+                    setSaving(true);
+                    axios.post(`${baseUrl}observation`,observation,
+                        { headers: {"Authorization" : `Bearer ${token}`}},
+
+                    )
+                        .then(response => {
+                            setSaving(false);
+                            toast.success("Client Verfication form Save successful", {position: toast.POSITION.BOTTOM_CENTER});
+                            props.setActiveContent({...props.activeContent, route:'recent-history'})
+                            //props.setActiveContent('recent-history')
+
+                        })
+                        .catch(error => {
+                            setSaving(false);
+                            if(error.response && error.response.data){
+                                let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
+                                if(error.response.data.apierror && error.response.data.apierror.message!=="" && error.response.data.apierror && error.response.data.apierror.subErrors[0].message!==""){
+                                    toast.error(error.response.data.apierror.message + " : " + error.response.data.apierror.subErrors[0].field + " " + error.response.data.apierror.subErrors[0].message, {position: toast.POSITION.BOTTOM_CENTER});
+                                }else{
+                                    toast.error(errorMessage, {position: toast.POSITION.BOTTOM_CENTER});
+                                }
                             }
-                        }
-                        else{
-                            toast.error("Something went wrong. Please try again...", {position: toast.POSITION.BOTTOM_CENTER});
-                        console.log(error)}
-                    });
+                            else{
+                                toast.error("Something went wrong. Please try again...", {position: toast.POSITION.BOTTOM_CENTER});
+                                console.log(error)}
+                        });
                 }else{
+                    toast.error("All field are required", {position: toast.POSITION.BOTTOM_CENTER});
+                }
+                }else{
+
                     toast.error("Attempt to Contact can not be empty", {position: toast.POSITION.BOTTOM_CENTER});
                 }
+
        
     }
 
@@ -287,9 +299,9 @@ const Tracking = (props) =>{
                                 <Input
                                     type="date"
                                     name="dateOfVerification"
-                                    value={attempt.dateOfVerification}
+                                    value={clientVerificationObj.dateOfVerification}
                                     // min={enrollDate}
-                                    onChange={handleInputChange}
+                                    onChange={handleInputChangeDiscontinuation}
                                     style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                     max= {moment(new Date()).format("YYYY-MM-DD") } 
                                    > 
@@ -307,8 +319,8 @@ const Tracking = (props) =>{
                                     type="text"
                                     name="serialEnrollmentNo"
                                     id="serialEnrollmentNo"
-                                    value={attempt.serialEnrollmentNo}
-                                    onChange={handleInputChangeAttempt}
+                                    value={clientVerificationObj.serialEnrollmentNo}
+                                    onChange={handleInputChangeDiscontinuation}
                                     style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                     > 
                                 </Input>
@@ -505,12 +517,12 @@ const Tracking = (props) =>{
                         <div className="row">
                             <div className="form-group mb-3 col-md-4">
                                 <FormGroup>
-                                <Label > Patient Care in Facility Discontinued?  {clientVerificationObj.dateOfDiscontinuation} <span style={{ color:"red"}}> *</span></Label>
+                                <Label > Patient Care in Facility Discontinued? <span style={{ color:"red"}}> *</span></Label>
                                 <Input
                                     type="select"
-                                    name="dateOfDiscontinuation"
-                                    id="dateOfDiscontinuation"
-                                    value={clientVerificationObj.dateOfDiscontinuation}
+                                    name="discontinuation"
+                                    id="discontinuation"
+                                    value={clientVerificationObj.discontinuation}
                                     onChange={handleInputChangeDiscontinuation}
                                     style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                     
@@ -526,21 +538,21 @@ const Tracking = (props) =>{
                                     ))}
                                     </Input>
                 
-                                {errors.dateOfDiscontinuation !=="" ? (
-                                <span className={classes.error}>{errors.dateOfDiscontinuation}</span>
+                                {errors.discontinuation !=="" ? (
+                                <span className={classes.error}>{errors.discontinuation}</span>
                                 ) : "" }
                        
                                 </FormGroup >
                             </div>
                             
-                                {clientVerificationObj.dateOfDiscontinuation === 'Yes' && (
+                                {clientVerificationObj.discontinuation === 'Yes' && (
                                     <div className="form-group mb-3 col-md-4">
                                         <label>Date of Discontinuation </label>
                                         <Input
                                             type="date"
-                                            name="discontinuation"
-                                            id="discontinuation"
-                                            value={clientVerificationObj.discontinuation}                                          //  min={enrollDate}
+                                            name="dateOfDiscontinuation"
+                                            id="dateOfDiscontinuation"
+                                            value={clientVerificationObj.dateOfDiscontinuation}                                          //  min={enrollDate}
                                             onChange={handleInputChangeDiscontinuation}
                                             style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                             max= {moment(new Date()).format("YYYY-MM-DD") }
@@ -548,7 +560,7 @@ const Tracking = (props) =>{
                                     </div>
                                 )}
 
-                                {clientVerificationObj.dateOfDiscontinuation ==='No' && (
+                                {clientVerificationObj.discontinuation ==='No' && (
                                     <>
                                      <div className="form-group mb-3 col-md-4">
                                         <label>Date Return to Care </label>
