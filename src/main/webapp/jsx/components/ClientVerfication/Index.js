@@ -82,7 +82,7 @@ const useStyles = makeStyles(theme => ({
 
 const Tracking = (props) =>{
     const patientObj = props.patientObj;
-    console.log(props)
+    //console.log(props)
     const [errors, setErrors] = useState({});
     let temp = { ...errors }
     const classes = useStyles()
@@ -146,6 +146,7 @@ const Tracking = (props) =>{
                 const Obj= response
                 setObservation({...Obj})
                 clientVerificationObj.dateOfVerification=Obj.data.dateOfObservation
+                console.log(Obj.data);
                 //setClientVerificationObj({...Obj.data})
                 setAttemptList(Obj.data)
             })
@@ -153,7 +154,6 @@ const Tracking = (props) =>{
             //console.log(error);
             });
     }
-    console.log(clientVerificationObj)
     const handleInputChangeAttempt = e => {
         // console.log('checking for date',e.target.value)
         setErrors({...temp, [e.target.name]:""})
@@ -183,7 +183,7 @@ const Tracking = (props) =>{
         temp.verificationAttempts = attempt.verificationAttempts? "" : "This field is required"
         temp.verificationStatus = attempt.verificationStatus ? "" : "This field is required"
         temp.outcome = attempt.outcome ? "" : "This field is required"
-        temp.comment = attempt.comment ? "" : "This field is required"
+        //temp.comment = attempt.comment ? "" : "This field is required"
 
         setErrors({
             ...temp
@@ -191,7 +191,7 @@ const Tracking = (props) =>{
         return Object.values(temp).every(x => x === "")
     }
     const validateClientverificationObj = () => {
-        temp.dateOfVerification = clientVerificationObj.dateOfVerification ? "" : "This field is required"
+        //temp.dateOfVerification = clientVerificationObj.dateOfVerification ? "" : "This field is required"
         temp.discontinuation = clientVerificationObj.discontinuation? "" : "This field is required"
         temp.serialEnrollmentNo = clientVerificationObj.serialEnrollmentNo ? "" : "This field is required"
         // temp.outcome = clientVerificationObj.outcome ? "" : "This field is required"
@@ -217,8 +217,6 @@ const Tracking = (props) =>{
             dateOfReturnedToCare:"",
             returnedToCare:"",
             referredTo:"",
-           
-
             })
         }else{
             toast.error("Please fill the required fields");
@@ -234,17 +232,15 @@ const Tracking = (props) =>{
     /**** Submit Button Processing  */
     const handleSubmit = (e) => {        
         e.preventDefault();
-        observation.dateOfObservation=clientVerificationObj.dateOfVerification
-        
         //assigning the verifcation date to date of observation Object
-        clientVerificationObj.attempt=attemptList // Assgining all the attempted list to the ClientVerifiction Object 
+        clientVerificationObj.attempt=attemptList // Assgining all the attempted list to the ClientVerifiction Object
         observation.data=clientVerificationObj
+        //observation.dateOfObservation=clientVerificationObj.dateOfVerification
 
             if(attemptList.length >0){
                 if(validateClientverificationObj()){
                     observation.dateOfObservation= observation.dateOfObservation !=="" ? observation.dateOfObservation : moment(new Date()).format("YYYY-MM-DD")
                     observation.personId =patientObj.id
-                    observation.data=attemptList
                     setSaving(true);
                     axios.post(`${baseUrl}observation`,observation,
                         { headers: {"Authorization" : `Bearer ${token}`}},
@@ -278,7 +274,6 @@ const Tracking = (props) =>{
 
                     toast.error("Attempt to Contact can not be empty", {position: toast.POSITION.BOTTOM_CENTER});
                 }
-
        
     }
 
@@ -293,25 +288,25 @@ const Tracking = (props) =>{
                         <br/>
                         <br/>
                         <div className="row">
-                        <div className="form-group mb-3 col-md-4">        
-                            <FormGroup>
-                                <Label > Date Of Verfication <span style={{ color:"red"}}> *</span></Label>
-                                <Input
-                                    type="date"
-                                    name="dateOfVerification"
-                                    value={clientVerificationObj.dateOfVerification}
-                                    // min={enrollDate}
-                                    onChange={handleInputChangeDiscontinuation}
-                                    style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                                    max= {moment(new Date()).format("YYYY-MM-DD") } 
-                                   > 
-                                </Input>
-                                {errors.dateOfVerification !=="" ? (
-                                    <span className={classes.error}>{errors.dateOfVerification}</span>
-                                ) : "" }
-                             </FormGroup> 
-                        </div>
-                       
+                        {/*<div className="form-group mb-3 col-md-4">        */}
+                        {/*    <FormGroup>*/}
+                        {/*        <Label > Date Of Verfication <span style={{ color:"red"}}> *</span></Label>*/}
+                        {/*        <Input*/}
+                        {/*            type="date"*/}
+                        {/*            name="dateOfVerification"*/}
+                        {/*            value={clientVerificationObj.dateOfVerification}*/}
+                        {/*            // min={enrollDate}*/}
+                        {/*            onChange={handleInputChangeDiscontinuation}*/}
+                        {/*            style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}*/}
+                        {/*            max= {moment(new Date()).format("YYYY-MM-DD") } */}
+                        {/*           > */}
+                        {/*        </Input>*/}
+                        {/*        {errors.dateOfVerification !=="" ? (*/}
+                        {/*            <span className={classes.error}>{errors.dateOfVerification}</span>*/}
+                        {/*        ) : "" }*/}
+                        {/*     </FormGroup> */}
+                        {/*</div>*/}
+
                         <div className="form-group mb-3 col-md-4">        
                             <FormGroup>
                                 <Label >Serial Enrollment No <span style={{ color:"red"}}> *</span></Label>
@@ -334,7 +329,7 @@ const Tracking = (props) =>{
 
                         <div className="row">
                         <hr/>
-                        <h3>Indication For Client Verification</h3>    
+                        <h3>Indication For Client Verification </h3>
                             <div className="form-group mb-3 col-md-12">
                                 <FormGroup>
                                 <Label >Indication For Client Verification <span style={{ color:"red"}}> *</span></Label>
@@ -457,7 +452,7 @@ const Tracking = (props) =>{
                             </div>
                             <div className="form-group mb-3 col-md-4">
                                 <FormGroup>
-                                <Label > Comment <span style={{ color:"red"}}> *</span></Label>
+                                <Label > Comment </Label>
                                 <Input
                                     type="text"
                                     name="comment"
@@ -578,7 +573,7 @@ const Tracking = (props) =>{
                                       </div>
                                    
                                         <div className="form-group mb-3 col-md-4">
-                                            <label>Refer To</label>
+                                            <label>Referred To</label>
                                             <Input
                                             type="select"
                                             name="referredTo"
