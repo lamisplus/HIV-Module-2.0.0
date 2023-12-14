@@ -109,12 +109,8 @@ const MenuProps = {
   }
 
 const Tracking = (props) =>{
-
-
-
-
     const theme = useTheme();
-  const [selectedOptions, setSelectedOptions] = useState([]);
+    const [selectedOptions, setSelectedOptions] = useState([]);
     const patientObj = props.patientObj;
     const [errors, setErrors] = useState({});
     let temp = { ...errors }
@@ -133,38 +129,52 @@ const Tracking = (props) =>{
     })
     const [attempt, setAttempt] = useState({  
             dateOfAttempt:"",
-            // verificationAttempts:"",
             verificationStatus:"",
             outcome:"",
-            comment:"", 
-            discontinuation:"",
-            dateOfDiscontinuation:"",
-            returnedToCare:"",
-            referedTo:""
+            comment:"",
+            verificationAttempts:""
     
     });
+    const [clientVerificationObj, setClientVerificationObj] = useState({
+        attempt:"",
+        dateOfDiscontinuation:"",
+        discontinuation:"",
+        returnedToCare:"",
+        referredTo:"",
+        serialEnrollmentNo:"",
+        anyOfTheFollowing:""
+
+    });
+
+    const [attemptList, setAttemptList] = useState([]);
+    useEffect(() => {
+            if(props.activeContent.actionType==='update' || props.activeContent.actionType==='view'){
+                GetFormDetail(props.activeContent.id)
+            }
+    }, [props.activeContent.actionType]);
+    const GetFormDetail =(id)=>{
+        axios
+            .get(`${baseUrl}observation/${id}`,
+                { headers: {"Authorization" : `Bearer ${token}`} }
+            )
+            .then((response) => {
+                const Obj= response.data
+                setObservation({...Obj})
+                setClientVerificationObj({...Obj.data})
+                setAttemptList([...Obj.data.attempt]);
+                setSelected([...Obj.data.anyOfTheFollowing])
+            })
+            .catch((error) => {
+                //console.log(error);
+            });
+    }
     const optionsForCallOutCome = [
         'Physical document audited-Folder/register review',
         'Client contacted(Phone)',
         '1st Biometric capture',
         'Biometric recapture',
         'Facility Visit',
-      
       ];
-
-    const [clientVerificationObj, setClientVerificationObj] = useState({  
-            attempt:"",
-            dateOfAttempt:"",
-            dateOfDiscontinuation:"",
-            discontinuation:"",
-            returnedToCare:"",
-            referedTo:""    
-
-    });
-
-   
-
-    const [attemptList, setAttemptList] = useState([]);
 
     const indicationForClientVerification = [
         { value: "No initial biometric capture", label: "No initial biometric capture" },
@@ -183,10 +193,6 @@ const Tracking = (props) =>{
         // console.log('checking for date',e.target.value)
         setErrors({...temp, [e.target.name]:""})
         setAttempt ({...attempt,  [e.target.name]: e.target.value});
-        if(e.target.name === 'discontinuation'){
-            setClientVerificationObj({...clientVerificationObj, [e.target.name]: e.target.value }) 
-
-        }
     }
 
     const handleChange = (event) => {
@@ -213,40 +219,44 @@ const Tracking = (props) =>{
 
     //Validations of the forms
     const validateAttempt = () => { 
-    attempt.anyOfTheFollowing=selected      
-    temp.dateOfAttempt =attempt.dateOfAttempt?"": "This field is required"
-    temp.serialEnrollmentNo = attempt.serialEnrollmentNo ? "" : "This field is required"
-    // temp.dateOfVerfication = attempt.dateOfVerfication ? "" : "This field is required"
-    // temp.verificationAttempts = attempt.verificationAttempts? "" : "This field is required"
-    temp.verificationStatus = attempt.verificationStatus ? "" : "This field is required"
-    temp.outcome = attempt.outcome ? "" : "This field is required"
-    temp.comment = attempt.comment ? "" : "This field is required"
-
-    setErrors({
-        ...temp
-    })
-    return Object.values(temp).every(x => x === "")
-  }
+        //attempt.verificationAttempts=selected
+        temp.dateOfAttempt =attempt.dateOfAttempt?"": "This field is required"
+        temp.verificationStatus = attempt.verificationStatus ? "" : "This field is required"
+        temp.outcome = attempt.outcome ? "" : "This field is required"
+        temp.verificationAttempts = attempt.verificationAttempts ? "" : "This field is required"
+        setErrors({
+            ...temp
+        })
+        return Object.values(temp).every(x => x === "")
+    }
+    const clientVerificationFormObj = () => {
+        clientVerificationObj.anyOfTheFollowing=selected
+        temp.serialEnrollmentNo =clientVerificationObj.serialEnrollmentNo?"": "This field is required"
+        temp.discontinuation = clientVerificationObj.discontinuation ? "" : "This field is required"
+        temp.anyOfTheFollowing = clientVerificationObj.anyOfTheFollowing ? "" : "This field is required"
+        setErrors({
+            ...temp
+        })
+        return Object.values(temp).every(x => x === "")
+    }
     const addAttempt = e => {
-        attempt.anyOfTheFollowing=selected
+        //attempt.anyOfTheFollowing=selected
         attempt.verificationAttempts = selectedOptions.join(', ');
         if(validateAttempt()){ 
             setAttemptList([...attemptList, attempt])
             setAttempt({
-            // dateOfVerfication:"",
-            serialEnrollmentNo:"",
-            // verificationAttempts:selectedOptions.join(', '),
-            verificationStatus:"",
-            outcome:"",
-            comment:"",
-            dateOfDiscontinuation:"",
+                verificationStatus:"",
+                outcome:"",
+                comment:"",
+                dateOfDiscontinuation:"",
+                verificationAttempts:""
             })
             setSelectedOptions([]);
         }else{
             toast.error("Please fill the required fields");
         }
       }
-    /* Remove ADR  function **/
+    /* Remove  function **/
     const removeAttempt = index => {       
         attemptList.splice(index, 1);
         setAttemptList([...attemptList]);        
@@ -255,45 +265,71 @@ const Tracking = (props) =>{
     /**** Submit Button Processing  */
     const handleSubmit = (e) => {        
         e.preventDefault();
-        // console.log(clientVerificationObj)
-        // observation.dateOfObservation=attempt.dateOfVerfication
-        console.log(observation.serialNo)//assigning the verifcation date to date of observation Object
         clientVerificationObj.attempt=attemptList // Assgining all the attempted list to the ClientVerifiction Object 
         observation.data=clientVerificationObj
-            if(attemptList.length >0){
-                observation.dateOfObservation= observation.dateOfObservation !=="" ? observation.dateOfObservation : moment(new Date()).format("YYYY-MM-DD") 
-                observation.personId =patientObj.id
+        if(clientVerificationFormObj()) {
+            if (attemptList.length > 0) {
+                observation.dateOfObservation = observation.dateOfObservation !== "" ? observation.dateOfObservation : moment(new Date()).format("YYYY-MM-DD")
+                observation.personId = patientObj.id
                 // observation.data=attemptList        
                 setSaving(true);
-                axios.post(`${baseUrl}observation`,observation,
-                { headers: {"Authorization" : `Bearer ${token}`}},
-                )
-                    .then(response => {
-                        setSaving(false);
-                        toast.success("Client Verfication form Save successful", {position: toast.POSITION.BOTTOM_CENTER});
-                        props.setActiveContent({...props.activeContent, route:'recent-history'})
-                        props.setActiveContent('recent-history')
+                if(props.activeContent && props.activeContent.actionType==='update'){//If the the action type is update
+                    axios.put(`${baseUrl}observation/${props.activeContent.id}`, observation,
+                        {headers: {"Authorization": `Bearer ${token}`}},
+                    )
+                        .then(response => {
+                            setSaving(false);
+                            toast.success("Client Verfication form Save successful", {position: toast.POSITION.BOTTOM_CENTER});
+                            props.setActiveContent({...props.activeContent, route: 'recent-history'})
 
-                    })
-                    .catch(error => {
-                        setSaving(false);
-                        if(error.response && error.response.data){
-                            let errorMessage = error.response.data.apierror && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
-                            if(error.response.data.apierror && error.response.data.apierror.message!=="" && error.response.data.apierror && error.response.data.apierror.subErrors[0].message!==""){
-                                toast.error(error.response.data.apierror.message + " : " + error.response.data.apierror.subErrors[0].field + " " + error.response.data.apierror.subErrors[0].message, {position: toast.POSITION.BOTTOM_CENTER});
-                            }else{
-                                toast.error(errorMessage, {position: toast.POSITION.BOTTOM_CENTER});
+                        })
+                        .catch(error => {
+                            setSaving(false);
+                            if (error.response && error.response.data) {
+                                let errorMessage = error.response.data.apierror && error.response.data.apierror.message !== "" ? error.response.data.apierror.message : "Something went wrong, please try again";
+                                if (error.response.data.apierror && error.response.data.apierror.message !== "" && error.response.data.apierror && error.response.data.apierror.subErrors[0].message !== "") {
+                                    toast.error(error.response.data.apierror.message + " : " + error.response.data.apierror.subErrors[0].field + " " + error.response.data.apierror.subErrors[0].message, {position: toast.POSITION.BOTTOM_CENTER});
+                                } else {
+                                    toast.error(errorMessage, {position: toast.POSITION.BOTTOM_CENTER});
+                                }
+                            } else {
+                                toast.error("Something went wrong. Please try again...", {position: toast.POSITION.BOTTOM_CENTER});
                             }
-                        }
-                        else{
-                            toast.error("Something went wrong. Please try again...", {position: toast.POSITION.BOTTOM_CENTER});
-                        }
-                    });
-                }else{
-                    toast.error("Attempt to Contact can not be empty", {position: toast.POSITION.BOTTOM_CENTER});
+                        });
+                }else{//this is to call the POST API
+                    axios.post(`${baseUrl}observation`, observation,
+                        {headers: {"Authorization": `Bearer ${token}`}},
+                    )
+                        .then(response => {
+                            setSaving(false);
+                            toast.success("Client Verfication form Save successful", {position: toast.POSITION.BOTTOM_CENTER});
+                            props.setActiveContent({...props.activeContent, route: 'recent-history'})
+
+                        })
+                        .catch(error => {
+                            setSaving(false);
+                            if (error.response && error.response.data) {
+                                let errorMessage = error.response.data.apierror && error.response.data.apierror.message !== "" ? error.response.data.apierror.message : "Something went wrong, please try again";
+                                if (error.response.data.apierror && error.response.data.apierror.message !== "" && error.response.data.apierror && error.response.data.apierror.subErrors[0].message !== "") {
+                                    toast.error(error.response.data.apierror.message + " : " + error.response.data.apierror.subErrors[0].field + " " + error.response.data.apierror.subErrors[0].message, {position: toast.POSITION.BOTTOM_CENTER});
+                                } else {
+                                    toast.error(errorMessage, {position: toast.POSITION.BOTTOM_CENTER});
+                                }
+                            } else {
+                                toast.error("Something went wrong. Please try again...", {position: toast.POSITION.BOTTOM_CENTER});
+                            }
+                        });
                 }
+
+            } else {
+                toast.error("Attempt to Contact can not be empty", {position: toast.POSITION.BOTTOM_CENTER});
+            }
+        }else{
+            toast.error("All fields are required", {position: toast.POSITION.BOTTOM_CENTER});
+        }
        
     }
+
 
   return (      
         <div>                   
@@ -329,9 +365,9 @@ const Tracking = (props) =>{
                                     <Input
                                         type="text"
                                         name="serialEnrollmentNo"
-                                        // id="serialEnrollmentNo"
-                                        value={attempt.serialEnrollmentNo}
-                                        onChange={handleInputChange}
+                                        id="serialEnrollmentNo"
+                                        value={clientVerificationObj.serialEnrollmentNo}
+                                        onChange={handleInputChangeDiscontinuation}
                                         style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                         > 
                                     </Input>
@@ -382,8 +418,8 @@ const Tracking = (props) =>{
                                     ) : "" }   
                                     </FormGroup>
                                 </div>
-                                <div className="form-group mb-3 col-md-4">
-                                    {/* <FormGroup>
+                                {/* <div className="form-group mb-3 col-md-4">
+                                     <FormGroup>
                                     <Label > Verification Attempts<span style={{ color:"red"}}> *</span></Label>
                                     <Input
                                         type="select"
@@ -408,41 +444,45 @@ const Tracking = (props) =>{
                                     {errors.verificationAttempts !=="" ? (
                                     <span className={classes.error}>{errors.verificationAttempts}</span>
                                     ) : "" }
-                                    </FormGroup> */}
-                       
+                                    </FormGroup>
+                                </div>*/}
+                                <div>
+
+                                    <FormControl className="mb-3 col-md-12" >
+                                    <Label id="demo-multiple-name-label">Verification Attempts</Label>
+                                    <Select
+                                      labelId="demo-multiple-name-label"
+                                      id="demo-multiple-name"
+                                      multiple
+                                      value={selectedOptions}
+                                      onChange={handleChange}
+                                      input={<OutlinedInput label="Verification Attempts" />}
+                                      MenuProps={MenuProps}
+                                    >
+                                      {optionsForCallOutCome.map((option) => (
+                                        <MenuItem
+                                          key={option}
+                                          value={option}
+                                          style={getStyles(option, selectedOptions, theme)}
+                                        >
+                                          {option}
+                                        </MenuItem>
+                                      ))}
+                                    </Select>
+                                        {errors.verificationAttempts !=="" ? (
+                                            <span className={classes.error}>{errors.verificationAttempts}</span>
+                                        ) : "" }
+                                  </FormControl>
 
                                 </div>
-                                <div>
-      <FormControl sx={{ mb: 3, width: 750 }}>
-        <Label id="demo-multiple-name-label">Verification Attempts</Label>
-        <Select
-          labelId="demo-multiple-name-label"
-          id="demo-multiple-name"
-          multiple
-          value={selectedOptions}
-          onChange={handleChange}
-          input={<OutlinedInput label="Verification Attempts" />}
-          MenuProps={MenuProps}
-        >
-          {optionsForCallOutCome.map((option) => (
-            <MenuItem
-              key={option}
-              value={option}
-              style={getStyles(option, selectedOptions, theme)}
-            >
-              {option}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </div>
-                                <div className="form-group mb-3 col-md-4">
+
+                                <div className="form-group mb-3 col-md-3">
                                 <FormGroup>
                                 <Label for=""> Verification Status <span style={{ color:"red"}}> *</span></Label>
                                     <Input 
                                         type="select"
                                         name="verificationStatus"
-                                        id="verificationnStatus"
+                                        id="verificationStatus"
                                         onChange={handleInputChangeAttempt}
                                         value={attempt.verificationStatus}  
                                     >
@@ -462,17 +502,17 @@ const Tracking = (props) =>{
                                 </FormGroup>
                                 </div>
                             </div>
-                            <div className="form-group mb-3 col-md-4">
+                            <div className="form-group mb-3 col-md-3">
                                 <FormGroup>
                                 <Label > Outcome <span style={{ color:"red"}}> *</span></Label>
                                 <Input
-                                        type="select"
-                                        name="outcome"
-                                        id="outcome"
-                                        value={attempt.outcome}
-                                        onChange={handleInputChangeAttempt}
-                                        style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                                    
+                                    type="select"
+                                    name="outcome"
+                                    id="outcome"
+                                    value={attempt.outcome}
+                                    onChange={handleInputChangeAttempt}
+                                    style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+
                                 >
                                         <option value=""> Select </option>
                                         <option value="valid"> Valid </option>
@@ -517,8 +557,8 @@ const Tracking = (props) =>{
                                     <thead >
                                         <tr>
                                             <th>Date of Attempt</th>
-                                            <th>Verfication Attempt</th>
-                                            <th>Verfication Status</th>
+                                            <th>Verification Attempt</th>
+                                            <th>Verification Status</th>
                                             <th>Outcome</th>
                                             <th>comment</th>
                                             
@@ -548,48 +588,43 @@ const Tracking = (props) =>{
                         <div className="row">
                             <div className="form-group mb-3 col-md-4">
                                 <FormGroup>
-                                <Label > Patient Care in Facility Discontinued?  {clientVerificationObj.dateOfDiscontinuation} <span style={{ color:"red"}}> *</span></Label>
+                                <Label > Patient Care in Facility Discontinued?  <span style={{ color:"red"}}> *</span></Label>
                                 <Input
                                     type="select"
-                                    name="dateOfDiscontinuation"
-                                    id="dateOfDiscontinuation"
-                                    value={clientVerificationObj.dateOfDiscontinuation}
+                                    name="discontinuation"
+                                    id="discontinuation"
+                                    value={clientVerificationObj.discontinuation}
                                     onChange={handleInputChangeDiscontinuation}
                                     style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                                    
                                 >
                                         <option value=""> Select </option>
                                         <option value="Yes"> Yes </option>
                                         <option value="No"> No </option>
-                                        
-                                        {optionsForCallOutCome.map((value) => (
-                                        <option key={value.code} value={value.display}>
-                                            {value.display}
-                                        </option>
+
                                     ))}
                                     </Input>
-                                {errors.dateOfDiscontinuation !=="" ? (
-                                <span className={classes.error}>{errors.dateOfDiscontinuation}</span>
+                                {errors.discontinuation !=="" ? (
+                                <span className={classes.error}>{errors.discontinuation}</span>
                                 ) : "" }
                        
                                 </FormGroup >
                             </div>
-                                {clientVerificationObj.dateOfDiscontinuation === 'Yes' && (
+                                {clientVerificationObj.discontinuation === 'Yes' && (
                                     <div className="form-group mb-3 col-md-4">
                                         <label>Date of Discontinuation </label>
                                         <Input
                                             type="date"
-                                            name="discontinuation"
-                                            id="discontinuation"
-                                            value={clientVerificationObj.discontinuation}                                          //  min={enrollDate}
-                                            onChange={handleInputChangeAttempt}
+                                            name="dateOfDiscontinuation"
+                                            id="dateOfDiscontinuation"
+                                            value={clientVerificationObj.dateOfDiscontinuation}                                          //  min={enrollDate}
+                                            onChange={handleInputChangeDiscontinuation}
                                             style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                             max= {moment(new Date()).format("YYYY-MM-DD") }
                                         />
                                     </div>
                                 )}
 
-                                {clientVerificationObj.dateOfDiscontinuation ==='No' && (
+                                {clientVerificationObj.discontinuation ==='No' && (
                                     <>
                                      <div className="form-group mb-3 col-md-4">
                                         <label>Date Return to Care:</label>
@@ -610,23 +645,19 @@ const Tracking = (props) =>{
                                             <label>Refer To:</label>
                                             <Input
                                             type="select"
-                                            name="referedTo"
-                                            id="referedTo"
-                                            value={clientVerificationObj.referedTo}
+                                            name="referredTo"
+                                            id="referredTo"
+                                            value={clientVerificationObj.referredTo}
                                             onChange={handleInputChangeDiscontinuation}
                                             style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                             
                                             >
                                             <option value=""> Select </option>
-                                            <option value="vl"> VL </option>
-                                            <option value="adherenceCounselling"> Adherence Counselling</option>
-                                            <option value="tbscreen"> TB scrren </option>
-                                            <option value="others"> Others </option>
-                                            {optionsForCallOutCome.map((value) => (
-                                            <option key={value.code} value={value.display}>
-                                                {value.display}
-                                            </option>
-                                            ))}
+                                            <option value="VL"> VL </option>
+                                            <option value="Adherence Counselling"> Adherence Counselling</option>
+                                            <option value="TB Screen"> TB scrren </option>
+                                            <option value="Others"> Others </option>
+
                                             </Input>
                                         </div>
                                     </>  
@@ -637,21 +668,22 @@ const Tracking = (props) =>{
                     
                     {saving ? <Spinner /> : ""}
                     <br />
-                
+
                     <MatButton
                     type="submit"
                     variant="contained"
                     color="primary"
                     className={classes.button}
                     startIcon={<SaveIcon />}
+                    hidden={props.activeContent.actionType==='view' ? true : false}
                     onClick={handleSubmit}
                     style={{backgroundColor:"#014d88"}}
                     disabled={attemptList.length <=0 && !saving ? true : false}
                     >
                     {!saving ? (
-                    <span style={{ textTransform: "capitalize" }}>Save</span>
+                    <span style={{ textTransform: "capitalize" }}> {props.activeContent.actionType==='update' ? 'Update' : 'Save'}</span>
                     ) : (
-                    <span style={{ textTransform: "capitalize" }}>Saving...</span>
+                    <span style={{ textTransform: "capitalize" }}>{props.activeContent.actionType==='update' ? 'Update...' : 'Save...'}</span>
                     )}
                     </MatButton>
                 

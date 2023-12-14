@@ -291,6 +291,14 @@ const RecentHistory = (props) => {
         activeTab: "history",
         actionType: action,
       });
+    }else if (row.path === "Client-Verification") {
+      props.setActiveContent({
+        ...props.activeContent,
+        route: "client-verfication-form",
+        id: row.id,
+        activeTab: "history",
+        actionType: action,
+      });
     } else if (row.path === "Chronic-Care") {
       props.setActiveContent({
         ...props.activeContent,
@@ -531,6 +539,32 @@ const RecentHistory = (props) => {
             toast.error("Something went wrong. Please try again...");
           }
         });
+    }else if (row.path === "Client-Verification") {//Client-Verification
+      setSaving(true);
+      //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
+      axios
+          .delete(`${baseUrl}observation/${row.id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then((response) => {
+            toast.success("Record Deleted Successfully");
+            RecentActivities();
+            toggle();
+            setSaving(false);
+          })
+          .catch((error) => {
+            setSaving(false);
+            if (error.response && error.response.data) {
+              let errorMessage =
+                  error.response.data.apierror &&
+                  error.response.data.apierror.message !== ""
+                      ? error.response.data.apierror.message
+                      : "Something went wrong, please try again";
+              toast.error(errorMessage);
+            } else {
+              toast.error("Something went wrong. Please try again...");
+            }
+          });
     } else if (row.path === "Chronic-Care") {
       setSaving(true);
       //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
