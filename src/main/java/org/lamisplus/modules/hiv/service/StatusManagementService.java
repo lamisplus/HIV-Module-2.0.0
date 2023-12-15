@@ -109,6 +109,7 @@ public class StatusManagementService {
 				);
 		Optional<HIVStatusTracker> patientNegativeStatus = hivStatusTrackerRepository
 				.getStatusByPersonUuidAndDateRange(personUuid, quarterEnd);
+
 		if (patientNegativeStatus.isPresent() && staticStatus.contains(patientNegativeStatus.get().getHivStatus())) {
 			String hivStatus = patientNegativeStatus.get().getHivStatus();
 				String finalStatus = hivStatus.replaceAll("_", " ").toUpperCase();
@@ -122,6 +123,8 @@ public class StatusManagementService {
 			ArtPharmacy currentQuarterCurrentRefill = currentRefillInQuarter.get();
 			LocalDate visitDate = currentQuarterCurrentRefill.getVisitDate();
 			Integer refillPeriod = currentQuarterCurrentRefill.getRefillPeriod();
+			//check if there is refillPeriod
+			refillPeriod = refillPeriod == null || refillPeriod == 0 ? 0 : refillPeriod;
 			LocalDate expectedQuarterRefillPeriodBeforeIIT = visitDate.plusDays(refillPeriod).plusDays(28);
 			if (expectedQuarterRefillPeriodBeforeIIT.isBefore(quarterEnd)) {
 				return new HIVInterQuarterStatus(expectedQuarterRefillPeriodBeforeIIT, "IIT");
