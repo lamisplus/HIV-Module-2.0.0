@@ -20,7 +20,7 @@ public class LinkageResponse {
     private String lastName;
     private String otherName;
     private String gender;
-    private LocalDate birthDate;
+    private String birthDate;
     private String facilityName;
     private String datimCode;
     private String stateOfResidence;
@@ -32,8 +32,8 @@ public class LinkageResponse {
     private String phoneNumber;
     private String caregiverSurname;
     private String caregiverOtherName;
-    private LocalDate offerDate;
-    private LocalDate enrollmentDate;
+    private String offerDate;
+    private String enrollmentDate;
     private String ovcUniqueId;
     private String householdUniqueId;
     private YesNo enrolledInOvcProgram;
