@@ -161,10 +161,18 @@ public class ObservationService {
         log.info("oldData:  {}", tbIptScreening);
         log.info("newData:  {}", tbIptScreeningNew);
         if (tbIptScreeningNew != null && tbIptScreening != null) {
-            String newStatus = tbIptScreeningNew.get("status").asText();
-            String newOutcome = tbIptScreeningNew.get("outcome").asText();
-            String oldStatus =  tbIptScreening.get("status").asText();
-            String oldOutcome =  tbIptScreening.get("outcome").asText();
+            String newStatus = tbIptScreeningNew.get("status") != null
+                    ? tbIptScreeningNew.get("status").asText()
+                    : "";
+            String newOutcome = tbIptScreeningNew.get("outcome") != null
+                    ? tbIptScreeningNew.get("outcome").asText()
+                    : "";
+            String oldStatus = tbIptScreening.get("status") != null
+                    ? tbIptScreening.get("status").asText()
+                    : "";
+            String oldOutcome = tbIptScreening.get("outcome") != null
+                    ? tbIptScreening.get("outcome").asText()
+                    : "";
             if ((newStatus != null && newOutcome != null) && (oldStatus != null && oldOutcome != null)) {
                 log.info("statusNew: {} ", newStatus);
                 log.info("outComeNew: {} ", newOutcome);
