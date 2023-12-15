@@ -187,13 +187,13 @@ public class ObservationService {
 
     }
     
-    public Map<String, Boolean> isEligibleForIpt(Long personId) {
-        Person person = getPerson(personId);
-        Optional<String> iptEligiblePatientUuid =
-                observationRepository.getIPTEligiblePatientUuid(person.getFacilityId(), person.getUuid());
-        HashMap<String, Boolean> map = new HashMap<>();
-          map.put("IPTEligibility", iptEligiblePatientUuid.isPresent());
-        return map;
-    }
+//    public Map<String, Boolean> isEligibleForIpt(Long personId) {
+//        Person person = getPerson(personId);
+//        Optional<String> iptEligiblePatientUuid =
+//                observationRepository.getIPTEligiblePatientUuid(person.getFacilityId(), person.getUuid());
+//        HashMap<String, Boolean> map = new HashMap<>();
+//          map.put("IPTEligibility", iptEligiblePatientUuid.isPresent());
+//        return map;
+//    }
     
 }
