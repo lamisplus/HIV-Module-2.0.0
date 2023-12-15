@@ -522,9 +522,9 @@ const Tracking = (props) => {
     temp.dateLastAppointment = objValues.dateLastAppointment
       ? ""
       : "This field is required";
-    temp.dateMissedAppointment = objValues.dateMissedAppointment
-      ? ""
-      : "This field is required";
+    // temp.dateMissedAppointment = objValues.dateMissedAppointment
+    //   ? ""
+    //   : "This field is required";
 
     temp.careInFacilityDiscountinued = objValues.careInFacilityDiscountinued
       ? ""
@@ -944,7 +944,7 @@ const Tracking = (props) => {
                 <FormGroup>
                   <Label for="">
                     Date of Missed Scheduled Appointment{" "}
-                    <span style={{ color: "red" }}> *</span>
+
                   </Label>
                   <Input
                     type="date"

@@ -1,26 +1,15 @@
 package org.lamisplus.modules.hiv.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
-import org.lamisplus.modules.base.controller.apierror.RecordExistException;
 import org.lamisplus.modules.hiv.domain.dto.*;
-import org.lamisplus.modules.hiv.domain.entity.HivEnrollment;
 import org.lamisplus.modules.hiv.domain.entity.PatientInfoProjection;
-import org.lamisplus.modules.hiv.repositories.HivEnrollmentRepository;
 import org.lamisplus.modules.hiv.repositories.ObservationRepository;
-import org.lamisplus.modules.hiv.utility.JsonNodeParser;
-import org.lamisplus.modules.patient.domain.entity.Person;
-import org.lamisplus.modules.patient.repository.PersonRepository;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -41,7 +30,6 @@ public class TreatmentTransferService {
             throw new RuntimeException("Error why retrieving transfer patient info : " + e.getCause());
         }
     }
-
 
     public List<LabReport> retrieveTransferPatientLabResult(Long facilityId, String uuid) {
         try {

@@ -15,10 +15,7 @@ import java.util.Optional;
 
 public interface ObservationRepository extends JpaRepository<Observation, Long> {
     List<Observation> getAllByTypeAndPersonAndFacilityIdAndArchived(String type, Person person, Long facilityId, Integer archived);
-
     List<Observation> getAllByPersonAndFacilityIdAndArchived(Person person, Long facilityId, Integer archived);
-
-    //    List<Observation> getAllByPersonAndFacilityId(Person person, Long facilityId);
     List<Observation> getAllByPersonAndArchived(Person person, Integer archived);
 
     @Query(value = "SELECT * from hiv_observation where (type = 'Clinical evaluation' \n" +
@@ -73,21 +70,6 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
                     "    AND a.facility_id = ?1 " +
                     "    AND a.patient_uuid = ?2")
     List<LabReport> getPatientLabResults(@Param("facilityId") Long facilityId, @Param("patientUuid") String patientUuid);
-
-
-    @Query(nativeQuery = true, value =
-            "SELECT \n" +
-                    "   cast( hap.extra as Text) as medication\n" +
-                    "FROM \n" +
-                    "    hiv_art_pharmacy hap\n" +
-                    "    JOIN patient_person p ON p.uuid = hap.person_uuid\n" +
-                    "WHERE \n" +
-                    "    hap.person_uuid = :personUuid\n" +
-                    "ORDER BY \n" +
-                    "    hap.visit_date DESC\n" +
-                    "LIMIT 1;")
-    List<String> getCurrentMedicationInfo(@Param("personUuid") String personUuid);
-
 
     @Query(nativeQuery = true, value =
             "SELECT \n" +

@@ -111,6 +111,13 @@ function SubMenu(props) {
       route: "intensive-followup",
     });
   };
+  const clientVerficationForm = () => {
+    setActiveItem("clientVerficationForm");
+    props.setActiveContent({
+      ...props.activeContent,
+      route: "client-verfication-form",
+    });
+  };
   const loadTransferForm = () => {
     setActiveItem("transfer");
     props.setActiveContent({ ...props.activeContent, route: "transfer-form" });
@@ -344,6 +351,14 @@ function SubMenu(props) {
                       title="Intensive Follow Up"
                     >
                       Intensive Follow Up
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => clientVerficationForm(patientObj)}
+                      name="clientVerficationForm"
+                      active={activeItem === "clientVerficationForm"}
+                      title="Client Verfication Form"
+                    >
+                      Client Verfication Form
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>

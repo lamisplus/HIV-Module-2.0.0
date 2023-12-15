@@ -27,6 +27,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "react-widgets/dist/css/react-widgets.css";
 import { Modal } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
+import { Form, Input, Label } from "reactstrap";
 //import {Menu,MenuList,MenuButton,MenuItem,} from "@reach/menu-button";
 import "@reach/menu-button/styles.css";
 
@@ -69,6 +70,7 @@ const PatientnHistory = (props) => {
   const [open, setOpen] = React.useState(false);
   const [saving, setSaving] = useState(false);
   const [record, setRecord] = useState(null);
+  const [reason, setReason] = useState({});
   const toggle = () => setOpen(!open);
   useEffect(() => {
     PatientHistory();
@@ -196,10 +198,10 @@ const PatientnHistory = (props) => {
         activeTab: "history",
         actionType: action,
       });
-    } else if (row.path === "Intensive-follow-up") {
+    } else if (row.path === "Client-Verification") {
       props.setActiveContent({
         ...props.activeContent,
-        route: "intensive-follow-up-update",
+        route: "client-verfication-form",
         id: row.id,
         activeTab: "history",
         actionType: action,
@@ -240,8 +242,10 @@ const PatientnHistory = (props) => {
       //Chronic Care
     }
   };
+  const handleInputChangeBasic = (e) => {
+    setReason({ [e.target.name]: e.target.value });
+  };
   const LoadDeletePage = (row) => {
-    console.log(row.path);
     if (row.path === "Mental-health") {
       setSaving(true);
       //props.setActiveContent({...props.activeContent, route:'mental-health-view', id:row.id})
@@ -448,7 +452,7 @@ const PatientnHistory = (props) => {
       setSaving(true);
       //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
       axios
-        .delete(`${baseUrl}hiv/art/clinic-visit/${row.id}`, {
+        .delete(`${baseUrl}hiv/art/clinic-visit/${row.id}/${reason.reason}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
@@ -522,6 +526,32 @@ const PatientnHistory = (props) => {
             toast.error("Something went wrong. Please try again...");
           }
         });
+    }else if (row.path === "Client-Verification") {
+      setSaving(true);
+      //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
+      axios
+          .delete(`${baseUrl}observation/${row.id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then((response) => {
+            toast.success("Record Deleted Successfully");
+            PatientHistory();
+            toggle();
+            setSaving(false);
+          })
+          .catch((error) => {
+            setSaving(false);
+            if (error.response && error.response.data) {
+              let errorMessage =
+                  error.response.data.apierror &&
+                  error.response.data.apierror.message !== ""
+                      ? error.response.data.apierror.message
+                      : "Something went wrong, please try again";
+              toast.error(errorMessage);
+            } else {
+              toast.error("Something went wrong. Please try again...");
+            }
+          });
     } else if (row.path === "client-tracker") {
       setSaving(true);
       //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
@@ -660,23 +690,45 @@ const PatientnHistory = (props) => {
           <h4>
             Are you Sure you want to delete <b>{record && record.name==='Chronic Care' ? 'Care and Support' : record && record.name}</b>
           </h4>
+          <br />
+          <Form>
+            <div className="row">
+              <div className="form-group mb-3 col-md-12">
+                <Label for="reason">
+                  Kindly provide a reason
+                  <span style={{ color: "red" }}> *</span>
+                </Label>
+                <Input
+                  className="form-control"
+                  type="textarea"
+                  name="reason"
+                  id="reason"
+                  onChange={handleInputChangeBasic}
+                  style={{
+                    border: "1px solid #014D88",
+                    borderRadius: "0.2rem",
+                  }}
+                  required
+                />
+              </div>
+            </div>
+            <Button
+              onClick={() => LoadDeletePage(record)}
+              style={{ backgroundColor: "red", color: "#fff" }}
+              disabled={saving}
+            >
+              {saving === false ? "Yes" : "Deleting..."}
+            </Button>
+            <Button
+              onClick={toggle}
+              style={{ backgroundColor: "#014d88", color: "#fff" }}
+              disabled={saving}
+            >
+              No
+            </Button>
+          </Form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button
-            onClick={() => LoadDeletePage(record)}
-            style={{ backgroundColor: "red", color: "#fff" }}
-            disabled={saving}
-          >
-            {saving === false ? "Yes" : "Deleting..."}
-          </Button>
-          <Button
-            onClick={toggle}
-            style={{ backgroundColor: "#014d88", color: "#fff" }}
-            disabled={saving}
-          >
-            No
-          </Button>
-        </Modal.Footer>
+        <Modal.Footer></Modal.Footer>
       </Modal>
     </div>
   );

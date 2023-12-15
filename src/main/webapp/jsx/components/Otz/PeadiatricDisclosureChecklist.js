@@ -87,8 +87,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PeadiatricDisclosureChecklist = (props) => {
+  console.log(props?.activeContent?.actionType)
   const [saving, setSavings] = useState(false);
-  console.log(props)
+  
   const PatientObject= props.patientObj && props.patientObj ? props.patientObj : null
   const submitNewRecord = (values) => {
     const observation = {
@@ -270,6 +271,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                       <Label>Facility Name</Label>
 
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         type="text"
                         name="facilityName"
                         id="facilityName"
@@ -296,7 +298,8 @@ const PeadiatricDisclosureChecklist = (props) => {
                   {/*  <FormGroup>*/}
                   {/*    <Label>Child's Name</Label>*/}
 
-                  {/*    <Input*/}
+                  {/*    <Input
+                  disabled={props?.activeContent?.actionType === 'view'}*/}
                   {/*      type="text"*/}
                   {/*      name="childName"*/}
                   {/*      id="childName"*/}
@@ -321,7 +324,8 @@ const PeadiatricDisclosureChecklist = (props) => {
                   {/*<div className="form-group mb-3 col-md-4">*/}
                   {/*  <FormGroup>*/}
                   {/*    <Label>Sex</Label>*/}
-                  {/*    <Input*/}
+                  {/*    <Input
+                  disabled={props?.activeContent?.actionType === 'view'}*/}
                   {/*      name="sex"*/}
                   {/*      id="sex"*/}
                   {/*      type="select"*/}
@@ -348,6 +352,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                     <FormGroup>
                       <Label>Encounter Date</Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                           name="encounterDate"
                           id="encounterDate"
                           type="date"
@@ -372,6 +377,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                     <FormGroup>
                       <Label>Caregiver's Name</Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="caregiverName"
                         id="caregiverName"
                         type="text"
@@ -397,6 +403,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                     <FormGroup>
                       <Label>CCC Number</Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="cccNumber"
                         id="cccNumber"
                         type="number"
@@ -464,6 +471,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                       <Label>Date Task 1 executed</Label>
 
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         type="date"
                         name="dateTask1Executed"
                         id="dateTask1Executed"
@@ -491,6 +499,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                       <Label>Task facilitator name</Label>
 
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         type="text"
                         name="task1HCW"
                         id="task1HCW"
@@ -518,6 +527,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         Child met the age criteria (between 6 and 10 years)
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task1ChildMetCriteria"
                         id="task1ChildMetCriteria"
                         type="select"
@@ -550,6 +560,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         disclosure
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task1ChildAndCaregiverKnowledgeable"
                         id="task1ChildAndCaregiverKnowledgeable"
                         type="select"
@@ -582,6 +593,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                     <FormGroup>
                       <Label>Caregiver willing to disclose to the child</Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task1CaregiverWilling"
                         id="task1CaregiverWilling"
                         type="select"
@@ -611,6 +623,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                     <FormGroup>
                       <Label>Task 1 comments</Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task1Comments"
                         id="task1Comments"
                         type="textarea"
@@ -677,6 +690,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                       <Label>Date Task 2 executed</Label>
 
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         type="date"
                         name="dateTask2Executed"
                         id="dateTask2Executed"
@@ -704,6 +718,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                       <Label>Task 2 facilitator name</Label>
 
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         type="text"
                         name="task2HCW"
                         id="task2HCW"
@@ -732,6 +747,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         trauma, psychological illness or physical illness
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task2FreeFromPhysicalIllness"
                         id="task2FreeFromPhysicalIllness"
                         type="select"
@@ -764,6 +780,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         support
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task2ChildConsisitentFamilyPeer"
                         id="task2ChildConsisitentFamilyPeer"
                         type="select"
@@ -797,6 +814,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         playing activites
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task2ChildDemostrateInEnvAndPlaying"
                         id="task2ChildDemostrateInEnvAndPlaying"
                         type="select"
@@ -833,6 +851,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         illness and addressed needs and concerns
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task2AssessedWhatChildAlreadyKnows"
                         id="task2AssessedWhatChildAlreadyKnows"
                         type="select"
@@ -867,6 +886,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         community, able to freely discuss school activities)
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="taskAssessedFunctionalSchoolEngagement"
                         id="taskAssessedFunctionalSchoolEngagement"
                         type="select"
@@ -902,6 +922,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         Assessed caregiver readiness for disclosure to the child
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task2assessedCaregiverReadinessForDisclosureToChild"
                         id="task2assessedCaregiverReadinessForDisclosureToChild"
                         type="select"
@@ -942,7 +963,8 @@ const PeadiatricDisclosureChecklist = (props) => {
                   {/*      Assessed what the caregiver has communicated to the*/}
                   {/*      child*/}
                   {/*    </Label>*/}
-                  {/*    <Input*/}
+                  {/*    <Input
+                  disabled={props?.activeContent?.actionType === 'view'}*/}
                   {/*      name="task2AssessedCaregiverCommunicatedToChild"*/}
                   {/*      id="task2AssessedCaregiverCommunicatedToChild"*/}
                   {/*      type="select"*/}
@@ -983,6 +1005,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         regarding one's health with the child and caregiver
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task2DiscussedManagementOfConfidentiality"
                         id="task2DiscussedManagementOfConfidentiality"
                         type="select"
@@ -1020,6 +1043,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                     <FormGroup>
                       <Label>Task 2 comments</Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task2Comments"
                         id="task2Comments"
                         type="textarea"
@@ -1087,6 +1111,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                       <Label>Date Task 3 executed</Label>
 
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         type="date"
                         name="dateTask3Executed"
                         id="dateTask3Executed"
@@ -1114,6 +1139,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                       <Label>Task 3 facilitator name</Label>
 
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         type="text"
                         name="task3HCW"
                         id="task3HCW"
@@ -1139,6 +1165,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                     <FormGroup>
                       <Label>Reassured the caregiver and the child</Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task3ReassuredTheCaregiverAndChild"
                         id="task3ReassuredTheCaregiverAndChild"
                         type="select"
@@ -1168,6 +1195,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                     <FormGroup>
                       <Label>Assessed child and caregiver comfort</Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task3AssessedChildAndCaregiverComfort"
                         id="task3AssessedChildAndCaregiverComfort"
                         type="select"
@@ -1200,6 +1228,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                     <FormGroup>
                       <Label>Assessed safety (environment and timing)</Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task3AssessedSafety"
                         id="task3AssessedSafety"
                         type="select"
@@ -1230,6 +1259,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                     <FormGroup>
                       <Label>Assessed the depth of Child's knowledge</Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task3AssessedTheDepthOfChildKnowledge"
                         id="task3AssessedTheDepthOfChildKnowledge"
                         type="select"
@@ -1266,6 +1296,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         language the child can understand
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task3SupportedCaregiverToDisclose"
                         id="task3SupportedCaregiverToDisclose"
                         type="select"
@@ -1299,6 +1330,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         caregiver and addressed concerns or negative reactions
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task3ObservedTheImmediateReactionOfChildAndCaregiver"
                         id="task3ObservedTheImmediateReactionOfChildAndCaregiver"
                         type="select"
@@ -1339,7 +1371,8 @@ const PeadiatricDisclosureChecklist = (props) => {
                   {/*      Assessed what the caregiver has communicated to the*/}
                   {/*      child*/}
                   {/*    </Label>*/}
-                  {/*    <Input*/}
+                  {/*    <Input
+                  disabled={props?.activeContent?.actionType === 'view'}*/}
                   {/*      name="task2AssessedCaregiverCommunicatedToChild"*/}
                   {/*      id="task2AssessedCaregiverCommunicatedToChild"*/}
                   {/*      type="select"*/}
@@ -1377,6 +1410,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                     <FormGroup>
                       <Label>Invited questions from the child</Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task3InvitedQuestionsFromChild"
                         id="task3InvitedQuestionsFromChild"
                         type="select"
@@ -1410,6 +1444,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         child and caregiver
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task3RevistedBenefitsOfDisclosureWithChild"
                         id="task3RevistedBenefitsOfDisclosureWithChild"
                         type="select"
@@ -1450,6 +1485,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         caregiver
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task3ExplainedCareOptionsAvailable"
                         id="task3ExplainedCareOptionsAvailable"
                         type="select"
@@ -1485,6 +1521,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         caregiver
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task3ConcludedSessionWithReassurance"
                         id="task3ConcludedSessionWithReassurance"
                         type="select"
@@ -1518,6 +1555,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                     <FormGroup>
                       <Label>Task 3 comments</Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task3Comments"
                         id="task3Comments"
                         type="textarea"
@@ -1585,6 +1623,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                       <Label>Date Task 4 executed</Label>
 
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         type="date"
                         name="dateTask4Executed"
                         id="dateTask4Executed"
@@ -1612,6 +1651,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                       <Label>Task 4 facilitator name</Label>
 
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         type="text"
                         name="task4HCW"
                         id="task4HCW"
@@ -1637,6 +1677,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                     <FormGroup>
                       <Label>Assessed functional school engagement</Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task4AssessedFunctionalSchoolEngagement"
                         id="task4AssessedFunctionalSchoolEngagement"
                         type="select"
@@ -1672,6 +1713,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         support after disclosure
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task4AssessedFamilySocialAndPeerRelationship"
                         id="task4AssessedFamilySocialAndPeerRelationship"
                         type="select"
@@ -1711,6 +1753,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         children's activities like playing
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task4AssessedInterestAndEngagementOfChild"
                         id="task4AssessedInterestAndEngagementOfChild"
                         type="select"
@@ -1751,6 +1794,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         self-perception and outlook
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task4AllowedQuestionsFromChild"
                         id="task4AllowedQuestionsFromChild"
                         type="select"
@@ -1783,6 +1827,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         Addressed negative body or self-image issues
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task4AddressedNegativeBodyOrSelfImageIssues"
                         id="task4AddressedNegativeBodyOrSelfImageIssues"
                         type="select"
@@ -1823,6 +1868,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         behaviors
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task4AssessedChildForMoodiness"
                         id="task4AssessedChildForMoodiness"
                         type="select"
@@ -1856,6 +1902,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                         complications developed post disclosure if indicated
                       </Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task4ReferredAppropriately"
                         id="task4ReferredAppropriately"
                         type="select"
@@ -1886,6 +1933,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                     <FormGroup>
                       <Label>Given age-appropriate adherence information</Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task4GivenAppropriateAdherenceInformation"
                         id="task4GivenAppropriateAdherenceInformation"
                         type="select"
@@ -1923,6 +1971,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                     <FormGroup>
                       <Label>Task 4 comments</Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="task4Comments"
                         id="task4Comments"
                         type="textarea"
@@ -1949,6 +1998,7 @@ const PeadiatricDisclosureChecklist = (props) => {
                     <FormGroup>
                       <Label>Final comments</Label>
                       <Input
+                      disabled={props?.activeContent?.actionType === 'view'}
                         name="finalComments"
                         id="finalComments"
                         type="textarea"
