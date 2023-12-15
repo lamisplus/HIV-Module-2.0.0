@@ -677,65 +677,65 @@ const Tracking = (props) => {
           objValues.statusTracker.hivStatus = objValues.biometricStatus;
         }
 
-        console.log(objValues);
-        //setSaving(true);
+        //console.log(objValues);
+        setSaving(true);
 
-        // axios
-        //   .post(`${baseUrl}patient-tracker`, objValues, {
-        //     headers: { Authorization: `Bearer ${token}` },
-        //   })
-        //   .then((response) => {
-        //     setSaving(false);
-        //     //props.TrackingDetails();
-        //     //props.PatientCurrentObject()
-        //     toast.success("Tracking from save successfully", {
-        //       position: toast.POSITION.BOTTOM_CENTER,
-        //     });
-        //     props.setActiveContent({
-        //       ...props.activeContent,
-        //       route: "tracking-form",
-        //       activeTab: "history",
-        //     });
-        //     //props.setActiveContent({...props.activeContent, route:'recent-history'})
-        //     //props.setActiveContent('recent-history')
-        //     if (objValues.reasonForDiscountinuation === "Death") {
-        //       history.push("/");
-        //     }
-        //   })
-        //   .catch((error) => {
-        //     //console.log("error", error);
-        //     setSaving(false);
-        //     if (error.response && error.response.data) {
-        //       let errorMessage =
-        //         error.response.data.apierror &&
-        //         error.response.data.apierror.message !== ""
-        //           ? error.response.data.apierror.message
-        //           : "Something went wrong, please try again";
-        //       if (
-        //         error.response.data.apierror &&
-        //         error.response.data.apierror.message !== "" &&
-        //         error.response.data.apierror &&
-        //         error.response.data.apierror.subErrors[0].message !== ""
-        //       ) {
-        //         toast.error(
-        //           error.response.data.apierror.message +
-        //             " : " +
-        //             error.response.data.apierror.subErrors[0].field +
-        //             " " +
-        //             error.response.data.apierror.subErrors[0].message,
-        //           { position: toast.POSITION.BOTTOM_CENTER }
-        //         );
-        //       } else {
-        //         toast.error(errorMessage, {
-        //           position: toast.POSITION.BOTTOM_CENTER,
-        //         });
-        //       }
-        //     } else {
-        //       toast.error("Something went wrong. Please try again...", {
-        //         position: toast.POSITION.BOTTOM_CENTER,
-        //       });
-        //     }
-        //   });
+        axios
+          .post(`${baseUrl}patient-tracker`, objValues, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then((response) => {
+            setSaving(false);
+            //props.TrackingDetails();
+            //props.PatientCurrentObject()
+            toast.success("Tracking from save successfully", {
+              position: toast.POSITION.BOTTOM_CENTER,
+            });
+            props.setActiveContent({
+              ...props.activeContent,
+              route: "tracking-form",
+              activeTab: "history",
+            });
+            //props.setActiveContent({...props.activeContent, route:'recent-history'})
+            //props.setActiveContent('recent-history')
+            if (objValues.reasonForDiscountinuation === "Death") {
+              history.push("/");
+            }
+          })
+          .catch((error) => {
+            //console.log("error", error);
+            setSaving(false);
+            if (error.response && error.response.data) {
+              let errorMessage =
+                error.response.data.apierror &&
+                error.response.data.apierror.message !== ""
+                  ? error.response.data.apierror.message
+                  : "Something went wrong, please try again";
+              if (
+                error.response.data.apierror &&
+                error.response.data.apierror.message !== "" &&
+                error.response.data.apierror &&
+                error.response.data.apierror.subErrors[0].message !== ""
+              ) {
+                toast.error(
+                  error.response.data.apierror.message +
+                    " : " +
+                    error.response.data.apierror.subErrors[0].field +
+                    " " +
+                    error.response.data.apierror.subErrors[0].message,
+                  { position: toast.POSITION.BOTTOM_CENTER }
+                );
+              } else {
+                toast.error(errorMessage, {
+                  position: toast.POSITION.BOTTOM_CENTER,
+                });
+              }
+            } else {
+              toast.error("Something went wrong. Please try again...", {
+                position: toast.POSITION.BOTTOM_CENTER,
+              });
+            }
+          });
       } else {
         toast.error("Attempt to Contact can not be empty", {
           position: toast.POSITION.BOTTOM_CENTER,
