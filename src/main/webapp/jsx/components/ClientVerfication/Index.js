@@ -337,7 +337,7 @@ const Tracking = (props) =>{
                 <CardBody>
                 <form >
                     <div className="row d-flex">
-                        <h2>Client Verfication Form</h2>
+                        <h2>Client Verification Form</h2>
                             <br/>
                             <br/>
                         <div className="row">
@@ -399,7 +399,7 @@ const Tracking = (props) =>{
 
                             <div className="row">
                                 <hr/>
-                                <h3> Verfication Attempts </h3>
+                                <h3> Verification Attempts </h3>
                                 <div className="form-group mb-3 col-md-4">
                                     <FormGroup>
                                     <Label > Date Of Attempt <span style={{ color:"red"}}> *</span></Label>
