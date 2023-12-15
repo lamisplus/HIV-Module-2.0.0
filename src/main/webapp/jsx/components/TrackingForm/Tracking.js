@@ -669,68 +669,73 @@ const Tracking = (props) => {
           objValues.statusTracker = null;
         }
 
-        if (objValues.biometricStatus !== null) {
+        if (
+          objValues.biometricStatus !== null &&
+          objValues.biometricStatus !== ""
+        ) {
           objValues.statusTracker.biometricStatus = objValues.biometricStatus;
           objValues.statusTracker.hivStatus = objValues.biometricStatus;
         }
-        setSaving(true);
 
-        axios
-          .post(`${baseUrl}patient-tracker`, objValues, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          .then((response) => {
-            setSaving(false);
-            //props.TrackingDetails();
-            //props.PatientCurrentObject()
-            toast.success("Tracking from save successfully", {
-              position: toast.POSITION.BOTTOM_CENTER,
-            });
-            props.setActiveContent({
-              ...props.activeContent,
-              route: "tracking-form",
-              activeTab: "history",
-            });
-            //props.setActiveContent({...props.activeContent, route:'recent-history'})
-            //props.setActiveContent('recent-history')
-            if (objValues.reasonForDiscountinuation === "Death") {
-              history.push("/");
-            }
-          })
-          .catch((error) => {
-            //console.log("error", error);
-            setSaving(false);
-            if (error.response && error.response.data) {
-              let errorMessage =
-                error.response.data.apierror &&
-                error.response.data.apierror.message !== ""
-                  ? error.response.data.apierror.message
-                  : "Something went wrong, please try again";
-              if (
-                error.response.data.apierror &&
-                error.response.data.apierror.message !== "" &&
-                error.response.data.apierror &&
-                error.response.data.apierror.subErrors[0].message !== ""
-              ) {
-                toast.error(
-                  error.response.data.apierror.message +
-                    " : " +
-                    error.response.data.apierror.subErrors[0].field +
-                    " " +
-                    error.response.data.apierror.subErrors[0].message,
-                  { position: toast.POSITION.BOTTOM_CENTER }
-                );
-              } else {
-                toast.error(errorMessage, {
-                  position: toast.POSITION.BOTTOM_CENTER,
-                });
-              }
-            } else {
-              toast.error("Something went wrong. Please try again...", {
-                position: toast.POSITION.BOTTOM_CENTER,
-              });
-            }
-          });
+        console.log(objValues);
+        //setSaving(true);
+
+        // axios
+        //   .post(`${baseUrl}patient-tracker`, objValues, {
+        //     headers: { Authorization: `Bearer ${token}` },
+        //   })
+        //   .then((response) => {
+        //     setSaving(false);
+        //     //props.TrackingDetails();
+        //     //props.PatientCurrentObject()
+        //     toast.success("Tracking from save successfully", {
+        //       position: toast.POSITION.BOTTOM_CENTER,
+        //     });
+        //     props.setActiveContent({
+        //       ...props.activeContent,
+        //       route: "tracking-form",
+        //       activeTab: "history",
+        //     });
+        //     //props.setActiveContent({...props.activeContent, route:'recent-history'})
+        //     //props.setActiveContent('recent-history')
+        //     if (objValues.reasonForDiscountinuation === "Death") {
+        //       history.push("/");
+        //     }
+        //   })
+        //   .catch((error) => {
+        //     //console.log("error", error);
+        //     setSaving(false);
+        //     if (error.response && error.response.data) {
+        //       let errorMessage =
+        //         error.response.data.apierror &&
+        //         error.response.data.apierror.message !== ""
+        //           ? error.response.data.apierror.message
+        //           : "Something went wrong, please try again";
+        //       if (
+        //         error.response.data.apierror &&
+        //         error.response.data.apierror.message !== "" &&
+        //         error.response.data.apierror &&
+        //         error.response.data.apierror.subErrors[0].message !== ""
+        //       ) {
+        //         toast.error(
+        //           error.response.data.apierror.message +
+        //             " : " +
+        //             error.response.data.apierror.subErrors[0].field +
+        //             " " +
+        //             error.response.data.apierror.subErrors[0].message,
+        //           { position: toast.POSITION.BOTTOM_CENTER }
+        //         );
+        //       } else {
+        //         toast.error(errorMessage, {
+        //           position: toast.POSITION.BOTTOM_CENTER,
+        //         });
+        //       }
+        //     } else {
+        //       toast.error("Something went wrong. Please try again...", {
+        //         position: toast.POSITION.BOTTOM_CENTER,
+        //       });
+        //     }
+        //   });
       } else {
         toast.error("Attempt to Contact can not be empty", {
           position: toast.POSITION.BOTTOM_CENTER,
@@ -942,10 +947,7 @@ const Tracking = (props) => {
               </div>
               <div className="form-group mb-3 col-md-4">
                 <FormGroup>
-                  <Label for="">
-                    Date of Missed Scheduled Appointment{" "}
-
-                  </Label>
+                  <Label for="">Date of Missed Scheduled Appointment </Label>
                   <Input
                     type="date"
                     name="dateMissedAppointment"
