@@ -6,5 +6,5 @@ public interface MedicationInfo{
         String getPrescribed();
         String getDispense();
         String getDuration();
-        String getFreqency();
+        String getFrequency();
 }

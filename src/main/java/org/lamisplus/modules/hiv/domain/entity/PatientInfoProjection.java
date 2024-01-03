@@ -9,12 +9,12 @@ public interface PatientInfoProjection {
     LocalDate getDateEnrolledInCare();
     LocalDate getDateEnrolledInTreatment();
     String getRegimenAtStart();
-    LocalDate getDateOfEnrollment();
     String getRegimenLineAtStart();
-    String getBaselineCD4Count();
     Double getLatestHeight();
     Double getLatestWeight();
     Double getViralLoad();
     String getAdherenceLevel();
+    String getCurrentWhoStage();
+    String getPregnancyStatus();
 }
 

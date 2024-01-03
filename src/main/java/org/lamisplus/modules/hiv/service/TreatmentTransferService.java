@@ -1,8 +1,10 @@
 package org.lamisplus.modules.hiv.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
+import org.lamisplus.modules.hiv.controller.exception.NoRecordFoundException;
 import org.lamisplus.modules.hiv.domain.dto.*;
 import org.lamisplus.modules.hiv.domain.entity.PatientInfoProjection;
 import org.lamisplus.modules.hiv.repositories.ObservationRepository;
@@ -18,38 +20,72 @@ import java.util.Optional;
 public class TreatmentTransferService {
 
     private final ObservationRepository observationRepository;
-    private final ObjectMapper objectMapper;
 
-    public Optional<PatientInfoProjection> retrieveTransferPatientInfo(String patientUuid, Long facilityId) {
+    public PatientInfoProjection retrieveTransferPatientInfo(String patientUuid, Long facilityId) {
         try {
-            if (patientUuid == null || facilityId == null) {
-                throw new IllegalArgumentException("Transfer patient uuid or facility id can not be null");
+            if (patientUuid != null && facilityId != null) {
+                return observationRepository.getTransferPatientTreatmentInfo(facilityId, patientUuid)
+                        .orElseThrow(() -> new NoRecordFoundException("Patient record not found"));
+            } else {
+                throw new IllegalArgumentException("patientUuid and facilityId cannot be null");
             }
-            return observationRepository.getTransferPatientTreatmentInfo(facilityId, patientUuid);
         } catch (Exception e) {
-            throw new RuntimeException("Error why retrieving transfer patient info : " + e.getCause());
+            log.info("Error while retrieving transfer patient info", e);
+            throw new NoRecordFoundException("Error while retrieving transfer patient info: " + e.getMessage());
+        }
+    }
+
+    public TransferPatientInfo getTransferPatientInfo(String patientUuid) {
+        try {
+            if (patientUuid != null) {
+                return observationRepository.getTransferPatientInfo(patientUuid)
+                        .orElseThrow(() -> new NoRecordFoundException("Patient record not found"));
+            } else {
+                throw new IllegalArgumentException("patientUuid and facilityId cannot be null");
+            }
+        } catch (Exception e) {
+            log.info("Error while retrieving transfer patient info", e);
+            throw new NoRecordFoundException("Error while retrieving transfer patient info: " + e.getMessage());
         }
     }
 
     public List<LabReport> retrieveTransferPatientLabResult(Long facilityId, String uuid) {
         try {
-            if (uuid == null || facilityId == null) {
+            if (uuid != null && facilityId != null) {
+                return observationRepository.getPatientLabResults(facilityId, uuid);
+            } else {
                 throw new IllegalArgumentException("Transfer patient uuid or facility id can not be null");
             }
-            return observationRepository.getPatientLabResults(facilityId, uuid);
         } catch (Exception e) {
-            throw new RuntimeException("Error why retrieving : " + e.getCause());
+            // Log the exception for troubleshooting
+            log.info("Error while retrieving transfer patient lab results", e);
+            throw new NoRecordFoundException("Error while retrieving transfer patient lab result: " + e.getMessage());
         }
     }
 
     public List<MedicationInfo> getCurrentMedication(String personUuid) {
         try {
-            if (personUuid == null) {
+            if (personUuid != null) {
+              return observationRepository.getTransferPatientTreatmentMedication(personUuid);
+            } else {
                 throw new IllegalArgumentException("Person uuid can not be null");
             }
-            return observationRepository.getTransferPatientTreatmentMedication(personUuid);
         } catch (Exception e) {
-            throw new RuntimeException("Error why retrieving : " + e.getCause());
+            throw new RuntimeException("Error while retrieving patients  current medication: " + e.getCause());
         }
     }
+
+    public PatientCurrentCD4 getPatientCurrentCD4(String patientUuid, Long facilityId) {
+        try {
+            if (patientUuid != null && facilityId != null) {
+                Optional<PatientCurrentCD4> result = observationRepository.getPatientCurrentCD4(patientUuid, facilityId);
+                return result.orElse(null);
+            }else {
+                throw new IllegalArgumentException("Patient uuid or facility id can not be null");
+            }
+        } catch (Exception e) {
+            throw new NoRecordFoundException("Error while retrieving patients current cd4: " + e.getMessage());
+        }
+    }
+
 }
