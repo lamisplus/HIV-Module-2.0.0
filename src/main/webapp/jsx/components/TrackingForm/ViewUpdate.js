@@ -484,7 +484,7 @@ const Tracking = (props) => {
     }
     {
       objValues.reasonForDiscountinuation === "Others" &&
-      (temp.biometricStatus = objValues.biometricStatus
+        (temp.biometricStatus = objValues.biometricStatus
           ? ""
           : "This field is required");
     }
@@ -568,7 +568,11 @@ const Tracking = (props) => {
           objValues.statusTracker.vaCauseOfDeathType =
             objValues.vaCauseOfDeathType;
           objValues.statusTracker.vaCauseOfDeath = objValues.vaCauseOfDeath;
-          if (objValues.biometricStatus !== null) {
+
+          if (
+            objValues.biometricStatus !== null &&
+            objValues.biometricStatus !== ""
+          ) {
             objValues.statusTracker.biometricStatus = objValues.biometricStatus;
             objValues.statusTracker.hivStatus = objValues.biometricStatus;
           }
@@ -852,10 +856,7 @@ const Tracking = (props) => {
               </div>
               <div className="form-group mb-3 col-md-4">
                 <FormGroup>
-                  <Label for="">
-                    Date of Missed Scheduled Appointment{" "}
-
-                  </Label>
+                  <Label for="">Date of Missed Scheduled Appointment </Label>
                   <Input
                     type="date"
                     name="dateMissedAppointment"

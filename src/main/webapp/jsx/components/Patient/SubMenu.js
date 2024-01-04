@@ -358,7 +358,7 @@ function SubMenu(props) {
                       active={activeItem === "clientVerficationForm"}
                       title="Client Verfication Form"
                     >
-                      Client Verfication Form
+                      Client Verification Form
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>

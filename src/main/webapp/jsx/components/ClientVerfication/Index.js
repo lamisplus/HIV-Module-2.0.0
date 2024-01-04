@@ -241,6 +241,7 @@ const Tracking = (props) =>{
     }
     const addAttempt = e => {
         //attempt.anyOfTheFollowing=selected
+        attempt.outcome = attempt.verificationStatus !=="" && attempt.verificationStatus ==="Verification Ongoing" ? "Verification Ongoing" : attempt.outcome;
         attempt.verificationAttempts = selectedOptions.join(', ');
         if(validateAttempt()){ 
             setAttemptList([...attemptList, attempt])
@@ -337,7 +338,7 @@ const Tracking = (props) =>{
                 <CardBody>
                 <form >
                     <div className="row d-flex">
-                        <h2>Client Verfication Form</h2>
+                        <h2>Client Verification Form</h2>
                             <br/>
                             <br/>
                         <div className="row">
@@ -399,7 +400,7 @@ const Tracking = (props) =>{
 
                             <div className="row">
                                 <hr/>
-                                <h3> Verfication Attempts </h3>
+                                <h3> Verification Attempts </h3>
                                 <div className="form-group mb-3 col-md-4">
                                     <FormGroup>
                                     <Label > Date Of Attempt <span style={{ color:"red"}}> *</span></Label>
@@ -487,14 +488,10 @@ const Tracking = (props) =>{
                                         value={attempt.verificationStatus}  
                                     >
                                         <option value=""> Select</option>
-                                        <option value="verificationOngoing">Verification ongoing </option>
-                                        <option value="recordsDiscontinuedArchived"> Records Discontinued & Archived    </option>
-                                        <option value="recordsVerified">Records Verified</option>
-                                        {optionsForCallOutCome.map((value) => (
-                                        <option key={value.code} value={value.display}>
-                                            {value.display}
-                                        </option>   
-                                    ))}
+                                        <option value="Verification Ongoing">Verification ongoing </option>
+                                        <option value="Records Discontinued Archived"> Records Discontinued & Archived    </option>
+                                        <option value="Records Verified">Records Verified</option>
+
                                     </Input>
                                     {errors.verificationStatus !=="" ? (
                                     <span className={classes.error}>{errors.verificationStatus}</span>
@@ -502,36 +499,58 @@ const Tracking = (props) =>{
                                 </FormGroup>
                                 </div>
                             </div>
-                            <div className="form-group mb-3 col-md-3">
-                                <FormGroup>
-                                <Label > Outcome <span style={{ color:"red"}}> *</span></Label>
-                                <Input
-                                    type="select"
-                                    name="outcome"
-                                    id="outcome"
-                                    value={attempt.outcome}
-                                    onChange={handleInputChangeAttempt}
-                                    style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                            {attempt.verificationStatus ==="Verification Ongoing" ? (<>
+                                <div className="form-group mb-3 col-md-3">
+                                    <FormGroup>
+                                    <Label > Outcome <span style={{ color:"red"}}> *</span></Label>
+                                    <Input
+                                        type="select"
+                                        name="outcome"
+                                        id="outcome"
+                                        value={attempt.outcome}
+                                        onChange={handleInputChangeAttempt}
+                                        style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
 
-                                >
-                                        <option value=""> Select </option>
-                                        <option value="valid"> Valid </option>
-                                        <option value="invalid"> invalid</option>  
-                                        {optionsForCallOutCome.map((value) => (
-                                        <option key={value.code} value={value.display}>
-                                            {value.display}
-                                        </option>
-                                        
-                                    ))}
-                                    </Input>
-                                {errors.outcome !=="" ? (
-                                <span className={classes.error}>{errors.outcome}</span>
-                                ) : "" }
-                                </FormGroup>
-                            </div>
+                                    >
+                                            <option value="Verification Ongoing"> Verification Ongoing </option>
+
+                                        </Input>
+                                    {errors.outcome !=="" ? (
+                                    <span className={classes.error}>{errors.outcome}</span>
+                                    ) : "" }
+                                    </FormGroup>
+                                </div>
+                                </>):
+                                (<>
+                                    <div className="form-group mb-3 col-md-3">
+                                        <FormGroup>
+                                        <Label > Outcome <span style={{ color:"red"}}> *</span></Label>
+                                        <Input
+                                            type="select"
+                                            name="outcome"
+                                            id="outcome"
+                                            value={attempt.outcome}
+                                            onChange={handleInputChangeAttempt}
+                                            style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+
+                                        >
+                                                <option value=""> Select </option>
+                                                <option value="valid"> Valid </option>
+                                                <option value="invalid"> invalid</option>
+
+                                            </Input>
+                                        {errors.outcome !=="" ? (
+                                        <span className={classes.error}>{errors.outcome}</span>
+                                        ) : "" }
+                                        </FormGroup>
+                                    </div>
+                            </>)
+
+
+                            }
                             <div className="form-group mb-3 col-md-4">
                                 <FormGroup>
-                                <Label > Comment <span style={{ color:"red"}}> *</span></Label>
+                                <Label > Comment</Label>
                                 <Input
                                     type="text"
                                     name="comment"
@@ -601,7 +620,7 @@ const Tracking = (props) =>{
                                         <option value="Yes"> Yes </option>
                                         <option value="No"> No </option>
 
-                                    ))}
+                                  
                                     </Input>
                                 {errors.discontinuation !=="" ? (
                                 <span className={classes.error}>{errors.discontinuation}</span>
