@@ -154,10 +154,12 @@ function PatientCard(props) {
           />
           <Sticky>
             <SubMenu
-              expandedPatientObj={patientObj1}
               patientObj={patientObj}
-              art={art}
               setActiveContent={setActiveContent}
+              expandedPatientObj={patientObj1}
+              art={art}
+              activeContent={activeContent}
+
             />
           </Sticky>
           <br />
@@ -441,7 +443,12 @@ function PatientCard(props) {
             <OtzServiceForm
               patientObj={patientObj}
               setActiveContent={setActiveContent}
-              activeContent={activeContent}
+              activeContent={{...activeContent,
+                patientId: patientObj?.id || patientObj1?.id,
+              }}
+              expandedPatientObj={patientObj1}
+              art={art}
+
             />
           )}
           {activeContent.route === "otz-enrollment-form" && (

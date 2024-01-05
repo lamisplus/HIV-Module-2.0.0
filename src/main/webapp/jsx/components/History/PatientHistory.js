@@ -102,6 +102,7 @@ const PatientnHistory = (props) => {
         //console.log(error);
       });
   };
+  console.log("patient history ",props)
   const LoadViewPage = (row, action) => {
     if (row.path === "Mental-health") {
       props.setActiveContent({
@@ -122,12 +123,15 @@ const PatientnHistory = (props) => {
         ...props.activeContent,
         route: "otz-peadiatric-disclosure-checklist",
         id: row.id,
+        
         actionType: action,
       });
     } else if (row.path === "Service-OTZ") {
       props.setActiveContent({
         ...props.activeContent,
         route: "otz-service-form",
+        fromPatientHistory: true,
+        patientId: props.patientObj?.id,
         id: row.id,
         actionType: action,
       });

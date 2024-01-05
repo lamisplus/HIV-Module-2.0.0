@@ -211,8 +211,9 @@ const ServiceForm = (props) => {
   }
 
   const getOldRecordIfExists = () => {
+    
     axios
-      .get(`${baseUrl}observation/person/${props?.activeContent?.id}`, {
+      .get(`${baseUrl}observation/person/${props?.activeContent?.patientId || props?.activeContent?.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -311,6 +312,8 @@ const ServiceForm = (props) => {
     const newValue = e.target.value.replace(/\d/g, "");
     setFieldValue(e.target.name, newValue);
   };
+
+  console.log("I am the service form", props)
 
   return (
     <>
