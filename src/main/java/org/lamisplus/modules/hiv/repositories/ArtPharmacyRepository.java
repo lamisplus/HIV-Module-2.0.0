@@ -64,7 +64,8 @@ public interface ArtPharmacyRepository extends JpaRepository<ArtPharmacy, Long> 
 			"    SELECT " +
 			"        h.*, " +
 			"        pharmacy_object ->> 'duration' AS duration, " +
-			"        pharmacy_object ->> 'regimenName'::VARCHAR AS regimen_name " +
+			"        CAST (pharmacy_object ->> 'regimenName' AS VARCHAR) AS regimen_name " +
+//			"        pharmacy_object ->> 'regimenName'::VARCHAR AS regimen_name " +
 			"    FROM hiv_art_pharmacy h, " +
 			"        jsonb_array_elements(h.extra->'regimens') WITH ORDINALITY p(pharmacy_object) " +
 			") AS result " +
