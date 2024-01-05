@@ -174,7 +174,7 @@ const ServiceForm = (props) => {
   };
 
   const handleSubmit = (values, param) => {
-    if (currentRecord?.id || props?.activeContent?.id) {
+    if (currentRecord?.id || props?.activeContent?.patientId || props?.activeContent?.id) {
       updateOldRecord(values, param);
       return;
     } else {
@@ -183,7 +183,7 @@ const ServiceForm = (props) => {
   };
 
   const handleSubmitAdherence = (values, param) => {
-    if (currentRecord?.id || props?.activeContent?.id) {
+    if (currentRecord?.id || props?.activeContent?.patientId || props?.activeContent?.id) {
       updateOldRecord(values, param);
       return;
     } else {
@@ -231,8 +231,8 @@ const ServiceForm = (props) => {
 
   useEffect(() => {
     getOldRecordIfExists();
-
     getOtzOutomes();
+    
   }, []);
 
   const classes = useStyles();
@@ -312,8 +312,10 @@ const ServiceForm = (props) => {
     const newValue = e.target.value.replace(/\d/g, "");
     setFieldValue(e.target.name, newValue);
   };
+  
+const isViewActionType = props?.activeContent?.actionType === "view"
 
-  console.log("I am the service form", props)
+
 
   return (
     <>
@@ -439,6 +441,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="date"
                                     {...{
@@ -465,6 +468,7 @@ const ServiceForm = (props) => {
                                       border: "1px solid #014D88",
                                       borderRadius: "0.2rem",
                                     }}
+                                    
                                   />
                                   {formik?.touched?.acMonth1EacDate1 &&
                                   formik.errors.acMonth1EacDate1 !== "" ? (
@@ -491,6 +495,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="date"
                                       {...{
@@ -540,6 +545,7 @@ const ServiceForm = (props) => {
                                       EAC 3 date
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       type="date"
                                       {...{
                                         min: moment(
@@ -596,6 +602,7 @@ const ServiceForm = (props) => {
                                         </span>{" "}
                                       </Label>
                                       <Input
+                                      readOnly={isViewActionType}
                                         className="form-control"
                                         type="date"
                                         {...{
@@ -655,8 +662,10 @@ const ServiceForm = (props) => {
                                         </span>{" "}
                                       </Label>
                                       <Input
+                                      readOnly={isViewActionType}
                                         className="form-control"
                                         type="number"
+                                        
                                         name="viralLoadMonth1"
                                         id="viralLoadMonth1"
                                         value={formik?.values?.viralLoadMonth1}
@@ -749,6 +758,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="select"
                                     name="maMonth1PositiveLivingChoice"
@@ -797,6 +807,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="date"
                                       {...{
@@ -857,6 +868,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="select"
                                     name="maMonth1LiteracyTreatmentChoice"
@@ -907,6 +919,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="date"
                                       {...{
@@ -968,6 +981,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="select"
                                     name="maMonth1AdolescentsParticipationChoice"
@@ -1020,6 +1034,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="date"
                                       {...{
@@ -1082,6 +1097,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="select"
                                     name="maMonth1leadershipTrainingChoice"
@@ -1133,6 +1149,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="date"
                                       {...{
@@ -1195,6 +1212,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="select"
                                     name="maMonth1PeerToPeerChoice"
@@ -1240,6 +1258,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="date"
                                       {...{
@@ -1296,6 +1315,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="select"
                                     name="maMonth1RoleOfOtzChoice"
@@ -1341,6 +1361,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="date"
                                       {...{
@@ -1397,6 +1418,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="select"
                                     name="maMonth1OtzChampionOrientationChoice"
@@ -1449,6 +1471,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="date"
                                       {...{
@@ -1634,6 +1657,7 @@ const ServiceForm = (props) => {
                                             </span>{" "}
                                           </Label>
                                           <Input
+                                          readOnly={isViewActionType}
                                             className="form-control"
                                             type="date"
                                             {...{
@@ -1688,6 +1712,7 @@ const ServiceForm = (props) => {
                                               </span>{" "}
                                             </Label>
                                             <Input
+                                            readOnly={isViewActionType}
                                               className="form-control"
                                               type="date"
                                               {...{
@@ -1745,6 +1770,7 @@ const ServiceForm = (props) => {
                                               EAC 3 date
                                             </Label>
                                             <Input
+                                            readOnly={isViewActionType}
                                               type="date"
                                               {...{
                                                 min: moment(
@@ -1804,6 +1830,7 @@ const ServiceForm = (props) => {
                                                 </span>{" "}
                                               </Label>
                                               <Input
+                                              readOnly={isViewActionType}
                                                 className="form-control"
                                                 type="date"
                                                 {...{
@@ -1869,6 +1896,7 @@ const ServiceForm = (props) => {
                                                 </span>{" "}
                                               </Label>
                                               <Input
+                                              readOnly={isViewActionType}
                                                 className="form-control"
                                                 type="number"
                                                 name="viralLoadMonth2"
@@ -1990,6 +2018,7 @@ const ServiceForm = (props) => {
                                             </span>{" "}
                                           </Label>
                                           <Input
+                                          readOnly={isViewActionType}
                                             className="form-control"
                                             type="select"
                                             name="maMonth2PositiveLivingChoice"
@@ -2041,6 +2070,7 @@ const ServiceForm = (props) => {
                                               </span>{" "}
                                             </Label>
                                             <Input
+                                            readOnly={isViewActionType}
                                               className="form-control"
                                               type="date"
                                               {...{
@@ -2104,6 +2134,7 @@ const ServiceForm = (props) => {
                                             </span>{" "}
                                           </Label>
                                           <Input
+                                          readOnly={isViewActionType}
                                             className="form-control"
                                             type="select"
                                             name="maMonth2LiteracyTreatmentChoice"
@@ -2156,6 +2187,7 @@ const ServiceForm = (props) => {
                                               </span>{" "}
                                             </Label>
                                             <Input
+                                            readOnly={isViewActionType}
                                               className="form-control"
                                               type="date"
                                               {...{
@@ -2219,6 +2251,7 @@ const ServiceForm = (props) => {
                                             </span>{" "}
                                           </Label>
                                           <Input
+                                          readOnly={isViewActionType}
                                             className="form-control"
                                             type="select"
                                             name="maMonth2AdolescentsParticipationChoice"
@@ -2271,6 +2304,7 @@ const ServiceForm = (props) => {
                                               </span>{" "}
                                             </Label>
                                             <Input
+                                            readOnly={isViewActionType}
                                               className="form-control"
                                               type="date"
                                               {...{
@@ -2334,6 +2368,7 @@ const ServiceForm = (props) => {
                                             </span>{" "}
                                           </Label>
                                           <Input
+                                          readOnly={isViewActionType}
                                             className="form-control"
                                             type="select"
                                             name="maMonth2leadershipTrainingChoice"
@@ -2386,6 +2421,7 @@ const ServiceForm = (props) => {
                                               </span>{" "}
                                             </Label>
                                             <Input
+                                            readOnly={isViewActionType}
                                               className="form-control"
                                               type="date"
                                               {...{
@@ -2449,6 +2485,7 @@ const ServiceForm = (props) => {
                                             </span>{" "}
                                           </Label>
                                           <Input
+                                          readOnly={isViewActionType}
                                             className="form-control"
                                             type="select"
                                             name="maMonth2PeerToPeerChoice"
@@ -2500,6 +2537,7 @@ const ServiceForm = (props) => {
                                               </span>{" "}
                                             </Label>
                                             <Input
+                                            readOnly={isViewActionType}
                                               className="form-control"
                                               type="date"
                                               {...{
@@ -2563,6 +2601,7 @@ const ServiceForm = (props) => {
                                             </span>{" "}
                                           </Label>
                                           <Input
+                                          readOnly={isViewActionType}
                                             className="form-control"
                                             type="select"
                                             name="maMonth2RoleOfOtzChoice"
@@ -2613,6 +2652,7 @@ const ServiceForm = (props) => {
                                               </span>{" "}
                                             </Label>
                                             <Input
+                                            readOnly={isViewActionType}
                                               className="form-control"
                                               type="date"
                                               {...{
@@ -2675,6 +2715,7 @@ const ServiceForm = (props) => {
                                             </span>{" "}
                                           </Label>
                                           <Input
+                                          readOnly={isViewActionType}
                                             className="form-control"
                                             type="select"
                                             name="maMonth2OtzChampionOrientationChoice"
@@ -2727,6 +2768,7 @@ const ServiceForm = (props) => {
                                               </span>{" "}
                                             </Label>
                                             <Input
+                                            readOnly={isViewActionType}
                                               className="form-control"
                                               type="date"
                                               {...{
@@ -2916,6 +2958,7 @@ const ServiceForm = (props) => {
                                             </span>{" "}
                                           </Label>
                                           <Input
+                                          readOnly={isViewActionType}
                                             className="form-control"
                                             type="date"
                                             {...{
@@ -2972,6 +3015,7 @@ const ServiceForm = (props) => {
                                               </span>{" "}
                                             </Label>
                                             <Input
+                                            readOnly={isViewActionType}
                                               className="form-control"
                                               type="date"
                                               {...{
@@ -3029,6 +3073,7 @@ const ServiceForm = (props) => {
                                               EAC 3 date
                                             </Label>
                                             <Input
+                                            readOnly={isViewActionType}
                                               type="date"
                                               {...{
                                                 min: moment(
@@ -3088,6 +3133,7 @@ const ServiceForm = (props) => {
                                                 </span>{" "}
                                               </Label>
                                               <Input
+                                              readOnly={isViewActionType}
                                                 className="form-control"
                                                 type="date"
                                                 {...{
@@ -3149,6 +3195,7 @@ const ServiceForm = (props) => {
                                                 </span>{" "}
                                               </Label>
                                               <Input
+                                              readOnly={isViewActionType}
                                                 className="form-control"
                                                 type="number"
                                                 name="viralLoadMonth3"
@@ -3272,6 +3319,7 @@ const ServiceForm = (props) => {
                                             </span>{" "}
                                           </Label>
                                           <Input
+                                          readOnly={isViewActionType}
                                             className="form-control"
                                             type="select"
                                             name="maMonth3PositiveLivingChoice"
@@ -3323,6 +3371,7 @@ const ServiceForm = (props) => {
                                               </span>{" "}
                                             </Label>
                                             <Input
+                                            readOnly={isViewActionType}
                                               className="form-control"
                                               type="date"
                                               {...{
@@ -3386,6 +3435,7 @@ const ServiceForm = (props) => {
                                             </span>{" "}
                                           </Label>
                                           <Input
+                                          readOnly={isViewActionType}
                                             className="form-control"
                                             type="select"
                                             name="maMonth3LiteracyTreatmentChoice"
@@ -3438,6 +3488,7 @@ const ServiceForm = (props) => {
                                               </span>{" "}
                                             </Label>
                                             <Input
+                                            readOnly={isViewActionType}
                                               className="form-control"
                                               type="date"
                                               {...{
@@ -3501,6 +3552,7 @@ const ServiceForm = (props) => {
                                             </span>{" "}
                                           </Label>
                                           <Input
+                                          readOnly={isViewActionType}
                                             className="form-control"
                                             type="select"
                                             name="maMonth3AdolescentsParticipationChoice"
@@ -3553,6 +3605,7 @@ const ServiceForm = (props) => {
                                               </span>{" "}
                                             </Label>
                                             <Input
+                                            readOnly={isViewActionType}
                                               className="form-control"
                                               type="date"
                                               {...{
@@ -3616,6 +3669,7 @@ const ServiceForm = (props) => {
                                             </span>{" "}
                                           </Label>
                                           <Input
+                                          readOnly={isViewActionType}
                                             className="form-control"
                                             type="select"
                                             name="maMonth3leadershipTrainingChoice"
@@ -3668,6 +3722,7 @@ const ServiceForm = (props) => {
                                               </span>{" "}
                                             </Label>
                                             <Input
+                                            readOnly={isViewActionType}
                                               className="form-control"
                                               type="date"
                                               {...{
@@ -3731,6 +3786,7 @@ const ServiceForm = (props) => {
                                             </span>{" "}
                                           </Label>
                                           <Input
+                                          readOnly={isViewActionType}
                                             className="form-control"
                                             type="select"
                                             name="maMonth3PeerToPeerChoice"
@@ -3781,6 +3837,7 @@ const ServiceForm = (props) => {
                                               </span>{" "}
                                             </Label>
                                             <Input
+                                            readOnly={isViewActionType}
                                               className="form-control"
                                               type="date"
                                               {...{
@@ -3843,6 +3900,7 @@ const ServiceForm = (props) => {
                                             </span>{" "}
                                           </Label>
                                           <Input
+                                          readOnly={isViewActionType}
                                             className="form-control"
                                             type="select"
                                             name="maMonth3RoleOfOtzChoice"
@@ -3893,6 +3951,7 @@ const ServiceForm = (props) => {
                                               </span>{" "}
                                             </Label>
                                             <Input
+                                            readOnly={isViewActionType}
                                               className="form-control"
                                               type="date"
                                               {...{
@@ -3955,6 +4014,7 @@ const ServiceForm = (props) => {
                                             </span>{" "}
                                           </Label>
                                           <Input
+                                          readOnly={isViewActionType}
                                             className="form-control"
                                             type="select"
                                             name="maMonth3OtzChampionOrientationChoice"
@@ -4007,6 +4067,7 @@ const ServiceForm = (props) => {
                                               </span>{" "}
                                             </Label>
                                             <Input
+                                            readOnly={isViewActionType}
                                               className="form-control"
                                               type="date"
                                               {...{
@@ -4185,6 +4246,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="select"
                                     name="maMonth1PositiveLivingChoice"
@@ -4233,6 +4295,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="date"
                                       {...{
@@ -4293,6 +4356,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="select"
                                     name="maMonth1LiteracyTreatmentChoice"
@@ -4343,6 +4407,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="date"
                                       {...{
@@ -4404,6 +4469,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="select"
                                     name="maMonth1AdolescentsParticipationChoice"
@@ -4456,6 +4522,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="date"
                                       {...{
@@ -4518,6 +4585,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="select"
                                     name="maMonth1leadershipTrainingChoice"
@@ -4568,6 +4636,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="date"
                                       {...{
@@ -4629,6 +4698,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="select"
                                     name="maMonth1PeerToPeerChoice"
@@ -4674,6 +4744,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="date"
                                       {...{
@@ -4730,6 +4801,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="select"
                                     name="maMonth1RoleOfOtzChoice"
@@ -4775,6 +4847,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="date"
                                       {...{
@@ -4831,6 +4904,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="select"
                                     name="maMonth1OtzChampionOrientationChoice"
@@ -4883,6 +4957,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="date"
                                       {...{
@@ -5016,6 +5091,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="select"
                                       name="maMonth2PositiveLivingChoice"
@@ -5065,6 +5141,7 @@ const ServiceForm = (props) => {
                                         </span>{" "}
                                       </Label>
                                       <Input
+                                      readOnly={isViewActionType}
                                         className="form-control"
                                         type="date"
                                         {...{
@@ -5126,6 +5203,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="select"
                                       name="maMonth2LiteracyTreatmentChoice"
@@ -5178,6 +5256,7 @@ const ServiceForm = (props) => {
                                         </span>{" "}
                                       </Label>
                                       <Input
+                                      readOnly={isViewActionType}
                                         className="form-control"
                                         type="date"
                                         {...{
@@ -5240,6 +5319,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="select"
                                       name="maMonth2AdolescentsParticipationChoice"
@@ -5292,6 +5372,7 @@ const ServiceForm = (props) => {
                                         </span>{" "}
                                       </Label>
                                       <Input
+                                      readOnly={isViewActionType}
                                         className="form-control"
                                         type="date"
                                         {...{
@@ -5354,6 +5435,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="select"
                                       name="maMonth2leadershipTrainingChoice"
@@ -5406,6 +5488,7 @@ const ServiceForm = (props) => {
                                         </span>{" "}
                                       </Label>
                                       <Input
+                                      readOnly={isViewActionType}
                                         className="form-control"
                                         type="date"
                                         {...{
@@ -5468,6 +5551,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="select"
                                       name="maMonth2PeerToPeerChoice"
@@ -5514,6 +5598,7 @@ const ServiceForm = (props) => {
                                         </span>{" "}
                                       </Label>
                                       <Input
+                                      readOnly={isViewActionType}
                                         className="form-control"
                                         type="date"
                                         {...{
@@ -5571,6 +5656,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="select"
                                       name="maMonth2RoleOfOtzChoice"
@@ -5616,6 +5702,7 @@ const ServiceForm = (props) => {
                                         </span>{" "}
                                       </Label>
                                       <Input
+                                      readOnly={isViewActionType}
                                         className="form-control"
                                         type="date"
                                         {...{
@@ -5672,6 +5759,7 @@ const ServiceForm = (props) => {
                                       </span>{" "}
                                     </Label>
                                     <Input
+                                    readOnly={isViewActionType}
                                       className="form-control"
                                       type="select"
                                       name="maMonth2OtzChampionOrientationChoice"
@@ -5724,6 +5812,7 @@ const ServiceForm = (props) => {
                                         </span>{" "}
                                       </Label>
                                       <Input
+                                      readOnly={isViewActionType}
                                         className="form-control"
                                         type="date"
                                         {...{
@@ -5857,6 +5946,7 @@ const ServiceForm = (props) => {
                                         </span>{" "}
                                       </Label>
                                       <Input
+                                      readOnly={isViewActionType}
                                         className="form-control"
                                         type="select"
                                         name="maMonth3PositiveLivingChoice"
@@ -5907,6 +5997,7 @@ const ServiceForm = (props) => {
                                           </span>{" "}
                                         </Label>
                                         <Input
+                                        readOnly={isViewActionType}
                                           className="form-control"
                                           type="date"
                                           {...{
@@ -5968,6 +6059,7 @@ const ServiceForm = (props) => {
                                         </span>{" "}
                                       </Label>
                                       <Input
+                                      readOnly={isViewActionType}
                                         className="form-control"
                                         type="select"
                                         name="maMonth3LiteracyTreatmentChoice"
@@ -6020,6 +6112,7 @@ const ServiceForm = (props) => {
                                           </span>{" "}
                                         </Label>
                                         <Input
+                                        readOnly={isViewActionType}
                                           className="form-control"
                                           type="date"
                                           {...{
@@ -6082,6 +6175,7 @@ const ServiceForm = (props) => {
                                         </span>{" "}
                                       </Label>
                                       <Input
+                                      readOnly={isViewActionType}
                                         className="form-control"
                                         type="select"
                                         name="maMonth3AdolescentsParticipationChoice"
@@ -6134,6 +6228,7 @@ const ServiceForm = (props) => {
                                           </span>{" "}
                                         </Label>
                                         <Input
+                                        readOnly={isViewActionType}
                                           className="form-control"
                                           type="date"
                                           {...{
@@ -6196,6 +6291,7 @@ const ServiceForm = (props) => {
                                         </span>{" "}
                                       </Label>
                                       <Input
+                                      readOnly={isViewActionType}
                                         className="form-control"
                                         type="select"
                                         name="maMonth3leadershipTrainingChoice"
@@ -6248,6 +6344,7 @@ const ServiceForm = (props) => {
                                           </span>{" "}
                                         </Label>
                                         <Input
+                                        readOnly={isViewActionType}
                                           className="form-control"
                                           type="date"
                                           {...{
@@ -6308,6 +6405,7 @@ const ServiceForm = (props) => {
                                         </span>{" "}
                                       </Label>
                                       <Input
+                                      readOnly={isViewActionType}
                                         className="form-control"
                                         type="select"
                                         name="maMonth3PeerToPeerChoice"
@@ -6357,6 +6455,7 @@ const ServiceForm = (props) => {
                                           </span>{" "}
                                         </Label>
                                         <Input
+                                        readOnly={isViewActionType}
                                           className="form-control"
                                           type="date"
                                           {...{
@@ -6417,6 +6516,7 @@ const ServiceForm = (props) => {
                                         </span>{" "}
                                       </Label>
                                       <Input
+                                      readOnly={isViewActionType}
                                         className="form-control"
                                         type="select"
                                         name="maMonth3RoleOfOtzChoice"
@@ -6466,6 +6566,7 @@ const ServiceForm = (props) => {
                                           </span>{" "}
                                         </Label>
                                         <Input
+                                        readOnly={isViewActionType}
                                           className="form-control"
                                           type="date"
                                           {...{
@@ -6526,6 +6627,7 @@ const ServiceForm = (props) => {
                                         </span>{" "}
                                       </Label>
                                       <Input
+                                      readOnly={isViewActionType}
                                         className="form-control"
                                         type="select"
                                         name="maMonth3OtzChampionOrientationChoice"
@@ -6578,6 +6680,7 @@ const ServiceForm = (props) => {
                                           </span>{" "}
                                         </Label>
                                         <Input
+                                        readOnly={isViewActionType}
                                           className="form-control"
                                           type="date"
                                           {...{
@@ -6717,6 +6820,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="text"
                                     name="sixMonthsResult"
@@ -6753,6 +6857,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="date"
                                     {...{
@@ -6858,6 +6963,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="text"
                                     name="twelveMonthsResult"
@@ -6894,6 +7000,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="date"
                                     {...{
@@ -7000,6 +7107,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="text"
                                     name="eighteenMonthsResult"
@@ -7036,6 +7144,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="date"
                                     {...{
@@ -7142,6 +7251,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="text"
                                     name="twentyFourMonthsResult"
@@ -7179,6 +7289,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="date"
                                     {...{
@@ -7284,6 +7395,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="text"
                                     name="thirtyMonthsResult"
@@ -7320,6 +7432,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="date"
                                     {...{
@@ -7426,6 +7539,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="text"
                                     name="thirtySixMonthsResult"
@@ -7462,6 +7576,7 @@ const ServiceForm = (props) => {
                                     </span>{" "}
                                   </Label>
                                   <Input
+                                  readOnly={isViewActionType}
                                     className="form-control"
                                     type="date"
                                     {...{
@@ -7542,6 +7657,7 @@ const ServiceForm = (props) => {
                           <span style={{ color: "red" }}> *</span>{" "}
                         </Label>
                         <Input
+                        readOnly={isViewActionType}
                           className="form-control"
                           type="select"
                           name="outcomes"
@@ -7579,6 +7695,7 @@ const ServiceForm = (props) => {
                           <span style={{ color: "red" }}> *</span>{" "}
                         </Label>
                         <Input
+                        readOnly={isViewActionType}
                           className="form-control"
                           type="select"
                           name="exitedOtz"
@@ -7618,6 +7735,7 @@ const ServiceForm = (props) => {
                               <span style={{ color: "red" }}> *</span>{" "}
                             </Label>
                             <Input
+                            readOnly={isViewActionType}
                               className="form-control"
                               type="text"
                               name="viralLoadOnOtzExit"
@@ -7648,6 +7766,7 @@ const ServiceForm = (props) => {
                               <span style={{ color: "red" }}> *</span>{" "}
                             </Label>
                             <Input
+                            readOnly={isViewActionType}
                               className="form-control"
                               type="text"
                               name="exitedByName"
@@ -7684,6 +7803,7 @@ const ServiceForm = (props) => {
                               <span style={{ color: "red" }}> *</span>{" "}
                             </Label>
                             <Input
+                            readOnly={isViewActionType}
                               className="form-control"
                               type="text"
                               name="exitedByDesignation"
@@ -7717,6 +7837,7 @@ const ServiceForm = (props) => {
                               <span style={{ color: "red" }}> *</span>{" "}
                             </Label>
                             <Input
+                            readOnly={isViewActionType}
                               className="form-control"
                               type="date"
                               {...{
@@ -7764,6 +7885,7 @@ const ServiceForm = (props) => {
                               <span style={{ color: "red" }}> *</span>{" "}
                             </Label>
                             <Input
+                            readOnly={isViewActionType}
                               className="form-control"
                               type="text"
                               name="exitedBySignature"
@@ -7800,6 +7922,7 @@ const ServiceForm = (props) => {
                               <span style={{ color: "red" }}> *</span>{" "}
                             </Label>
                             <Input
+                            readOnly={isViewActionType}
                               className="form-control"
                               type="date"
                               {...{
@@ -7847,6 +7970,7 @@ const ServiceForm = (props) => {
                             <span style={{ color: "red" }}> *</span>{" "}
                           </Label>
                           <Input
+                          readOnly={isViewActionType}
                             className="form-control"
                             type="date"
                             {...{
