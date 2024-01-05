@@ -33,6 +33,8 @@ const RecentHistory = (props) => {
   const [loading, setLoading] = useState(true);
   const [loadingRecent, setLoadingRecent] = useState(true);
   const [loadingLab, setLoadingLab] = useState(true);
+  const [toggleFacSelect, settoggleFacSelect] = useState(false);
+
   const [loadingPharmacy, setLoadingPharmacy] = useState(true);
   const [notToBeUpdated, setNotToBeUpdated] = useState([
     "eac",
@@ -258,6 +260,14 @@ const RecentHistory = (props) => {
         activeTab: "history",
         actionType: action,
       });
+    } else if (row.path === "Client-verfication-form") {
+      props.setActiveContent({
+        ...props.activeContent,
+        route: "client-verfication-form-update",
+        id: row.id,
+        activeTab: "history",
+        actionType: action,
+      });
     } else if (row.path === "client-tracker") {
       props.setActiveContent({
         ...props.activeContent,
@@ -282,10 +292,26 @@ const RecentHistory = (props) => {
         activeTab: "history",
         actionType: action,
       });
+    } else if (row.path === "Client-Verification") {
+      props.setActiveContent({
+        ...props.activeContent,
+        route: "client-verfication-form",
+        id: row.id,
+        activeTab: "history",
+        actionType: action,
+      });
     } else if (row.path === "Chronic-Care") {
       props.setActiveContent({
         ...props.activeContent,
         route: "chronic-care",
+        id: row.id,
+        activeTab: "home",
+        actionType: action,
+      });
+    } else if (row.path === "Transfer") {
+      props.setActiveContent({
+        ...props.activeContent,
+        route: "filled-transferForm",
         id: row.id,
         activeTab: "home",
         actionType: action,
@@ -522,6 +548,33 @@ const RecentHistory = (props) => {
             toast.error("Something went wrong. Please try again...");
           }
         });
+    } else if (row.path === "Client-Verification") {
+      //Client-Verification
+      setSaving(true);
+      //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
+      axios
+        .delete(`${baseUrl}observation/${row.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          toast.success("Record Deleted Successfully");
+          RecentActivities();
+          toggle();
+          setSaving(false);
+        })
+        .catch((error) => {
+          setSaving(false);
+          if (error.response && error.response.data) {
+            let errorMessage =
+              error.response.data.apierror &&
+              error.response.data.apierror.message !== ""
+                ? error.response.data.apierror.message
+                : "Something went wrong, please try again";
+            toast.error(errorMessage);
+          } else {
+            toast.error("Something went wrong. Please try again...");
+          }
+        });
     } else if (row.path === "Chronic-Care") {
       setSaving(true);
       //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
@@ -549,6 +602,32 @@ const RecentHistory = (props) => {
           }
         });
     } else if (row.path === "Cervical-cancer") {
+      setSaving(true);
+      //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
+      axios
+        .delete(`${baseUrl}observation/${row.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          toast.success("Record Deleted Successfully");
+          RecentActivities();
+          toggle();
+          setSaving(false);
+        })
+        .catch((error) => {
+          setSaving(false);
+          if (error.response && error.response.data) {
+            let errorMessage =
+              error.response.data.apierror &&
+              error.response.data.apierror.message !== ""
+                ? error.response.data.apierror.message
+                : "Something went wrong, please try again";
+            toast.error(errorMessage);
+          } else {
+            toast.error("Something went wrong. Please try again...");
+          }
+        });
+    } else if (row.path === "Transfer") {
       setSaving(true);
       //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
       axios
@@ -985,7 +1064,12 @@ const RecentHistory = (props) => {
         </Modal.Header>
         <Modal.Body>
           <h4>
-            Are you Sure you want to delete <b>{record && record.name}</b>
+            Are you Sure you want to delete{" "}
+            <b>
+              {record && record.name === "Chronic Care"
+                ? "Care and Support"
+                : record && record.name}
+            </b>
           </h4>
         </Modal.Body>
         <Modal.Footer>

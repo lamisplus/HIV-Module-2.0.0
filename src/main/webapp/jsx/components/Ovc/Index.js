@@ -76,6 +76,11 @@ function Index(props) {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
+        localStorage.setItem(
+          "faciltyId",
+          response.data.currentOrganisationUnitId
+        );
+
         setPermissions(response.data.permissions);
       })
       .catch((error) => {});
