@@ -2,7 +2,6 @@ package org.lamisplus.modules.hiv.repositories;
 
 import org.lamisplus.modules.hiv.domain.dto.*;
 import org.lamisplus.modules.hiv.domain.entity.Observation;
-import org.lamisplus.modules.hiv.domain.entity.PatientInfoProjection;
 import org.lamisplus.modules.patient.domain.entity.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -72,56 +71,7 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
                     "    AND a.patient_uuid = ?2")
     List<LabReport> getPatientLabResults(@Param("facilityId") Long facilityId, @Param("patientUuid") String patientUuid);
 
-    @Query(nativeQuery = true, value="SELECT\n" +
-            "    facility.name AS facilityName,\n" +
-            "    facility_lga.name AS lga,\n" +
-            "    facility_state.name AS state,\n" +
-            "    h.date_confirmed_hiv AS dateConfirmed_Hiv,\n" +
-            "    h.date_of_registration AS dateEnrolledInCare,\n" +
-            "    CASE\n" +
-            "        WHEN hac.is_commencement = true THEN hac.visit_date\n" +
-            "        ELSE null\n" +
-            "    END AS dateEnrolledInTreatment,\n" +
-            "    CASE\n" +
-            "        WHEN hac.is_commencement = true THEN hac.pregnancy_status\n" +
-            "        ELSE null\n" +
-            "    END AS pregnancyStatus,\n" +
-            "    hr.description AS regimenAtStart,\n" +
-            "    ecareEntry.display AS careEntry,\n" +
-            "    hrt.description AS regimenLineAtStart,\n" +
-            "    tvs.height AS latestHeight,\n" +
-            "    tvs.body_weight AS latestWeight,\n" +
-            "    eac.last_viral_load AS viralLoad,\n" +
-            "    hac.adherence_level AS adherenceLevel,\n" +
-            "    hac.who_staging_id AS currentWhoStage\n" +
-            "FROM\n" +
-            "    patient_person p\n" +
-            "    INNER JOIN base_organisation_unit facility ON facility.id = facility_id\n" +
-            "    INNER JOIN base_organisation_unit facility_lga ON facility_lga.id = facility.parent_organisation_unit_id\n" +
-            "    INNER JOIN base_organisation_unit facility_state ON facility_state.id = facility_lga.parent_organisation_unit_id\n" +
-            "    INNER JOIN base_organisation_unit_identifier boui ON boui.organisation_unit_id = facility_id\n" +
-            "    AND boui.name = 'DATIM_ID'\n" +
-            "    INNER JOIN hiv_enrollment h ON h.person_uuid = p.uuid\n" +
-            "    LEFT JOIN base_application_codeset tgroup ON tgroup.id = h.target_group_id\n" +
-            "    LEFT JOIN base_application_codeset eSetting ON eSetting.id = h.enrollment_setting_id\n" +
-            "    LEFT JOIN base_application_codeset ecareEntry ON ecareEntry.id = h.entry_point_id\n" +
-            "    LEFT JOIN hiv_art_clinical hac ON hac.hiv_enrollment_uuid = h.uuid\n" +
-            "    AND hac.archived = 0\n" +
-            "    AND hac.is_commencement = true\n" +
-            "    LEFT JOIN hiv_regimen hr ON hr.id = hac.regimen_id\n" +
-            "    LEFT JOIN hiv_regimen_type hrt ON hrt.id = hac.regimen_type_id\n" +
-            "    LEFT JOIN triage_vital_sign tvs ON tvs.visit_id = hac.visit_id\n" +
-            "    LEFT JOIN hiv_eac eac ON eac.person_uuid = p.uuid\n" +
-            "WHERE\n" +
-            "    h.archived = 0\n" +
-            "    AND p.archived = 0\n" +
-            "    AND h.facility_id = :facilityId\n" +
-            "    AND p.uuid = :uuid\n" +
-            "    AND (hac.hiv_enrollment_uuid IS NOT NULL OR tvs.visit_id IS NOT NULL OR eac.person_uuid IS NOT NULL)\n" +
-            "ORDER BY\n" +
-            "    hac.visit_date DESC\n" +
-            "LIMIT 1;")
-    Optional<PatientInfoProjection> getTransferPatientTreatmentInfo(@Param("facilityId") Long facilityId, @Param("uuid") String uuid);
+
 
     @Query(nativeQuery = true, value = "SELECT\n" +
             "  obj.value->>'name' AS regimenName,\n" +
@@ -176,7 +126,9 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
 
    @Query(nativeQuery = true, value ="WITH transferForm AS (\n" +
            "\tSELECT\n" +
+           "\t\tp.id as patientId,\n" +
            "\t\tp.uuid as personUuid,\n" +
+           "\t\th.facility_id as facilityId,\n"+
            "\t\tfacility.name AS facilityName,\n" +
            "\t\tfacility_lga.name AS lga,\n" +
            "\t\tfacility_state.name AS state,\n" +
@@ -249,11 +201,10 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
            "\t\tis_commencement IS TRUE\n" +
            "\t\tAND archived = 0\n" +
            "\t\tAND cd_4 != 0\n" +
-
            "\t) bcd4\ton bcd4.person_uuid = p.uuid\t\n" +
            "\t left JOIN hiv_enrollment h ON h.person_uuid = p.uuid\n" +
            "\t) \n" +
-           "\tselect personUuid, (select min(visit_date) from hiv_art_clinical where person_uuid = personUuid) as dateEnrolledInTreatment, facilityName, lga, state, weight, height, pregnancyStatus, dateEnrolledIncare, dateConfirmedHiv,\n" +
+           "\tselect patientId, personUuid,facilityId, (select min(visit_date) from hiv_art_clinical where person_uuid = personUuid) as dateEnrolledInTreatment, facilityName, lga, state, weight, height, pregnancyStatus, dateEnrolledIncare, dateConfirmedHiv,\n" +
            "\tadherenceLevel, currentWhoClinical, currentCD4Count, baselineCD4, viralLoad, currentRegimenLine , firstLineArtRegimen\n" +
            "\tfrom transferForm where personUuid = :uuid\n" +
            "\n")

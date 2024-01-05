@@ -3,7 +3,9 @@ package org.lamisplus.modules.hiv.domain.dto;
 import java.time.LocalDate;
 
 public interface TransferPatientInfo {
+    Long getPatientId();
     String getPersonUuid();
+    Long getFacilityId();
     String getFacilityName();
     String getLga();
     String getState();

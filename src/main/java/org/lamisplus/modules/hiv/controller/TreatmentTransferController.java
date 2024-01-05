@@ -3,14 +3,12 @@ package org.lamisplus.modules.hiv.controller;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.lamisplus.modules.hiv.domain.dto.*;
-import org.lamisplus.modules.hiv.domain.entity.PatientInfoProjection;
+import org.lamisplus.modules.hiv.domain.entity.Observation;
 import org.lamisplus.modules.hiv.service.TreatmentTransferService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,9 +42,15 @@ public class TreatmentTransferController {
         return ResponseEntity.ok(treatmentTransferService.getCurrentMedication(personUuid));
     }
 
+    @PostMapping("/save")
+    @ApiOperation(value = "Save patient treatment transfer information..")
+    public ResponseEntity<ObservationDto> saveTransferPatientInformation(@RequestBody TransferPatientDto dto) throws Exception {
+        return ResponseEntity.ok(treatmentTransferService.registerTransferPatientInfo(dto));
+    }
+
 //    @GetMapping("/patient_current_cd4/{facilityId}/{patientUuid}")
 //    @ApiOperation(value = "Get patient current CD4")
-//    public ResponseEntity<PatientCurrentCD4> getPatientCurrentCD4(@PathVariable("patientUuid") String uuid, @PathVariable("facilityId") Long facilityId) {
+//    public ResponseEntity<PatientCurrentCD4> getPatientCurrentCD4(@PathVariable("patient,Uuid") String uuid, @PathVariable("facilityId") Long facilityId) {
 //        return ResponseEntity.ok(treatmentTransferService.getPatientCurrentCD4(uuid, facilityId));
 //    }
 //
