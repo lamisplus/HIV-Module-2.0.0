@@ -7,7 +7,9 @@ function SubMenu(props) {
   //const classes = useStyles();
   const [activeItem, setActiveItem] = useState("recent-history");
   const patientObj = props.patientObj;
-
+  const [saving, setSavings] = useState(false);
+  const [isOtzEnrollementDone, setIsOtzEnrollementDone] = useState(null);
+  const [labResult, setLabResult] = useState(null);
   const patientCurrentStatus =
     props.patientObj && props.patientObj.currentStatus === "Died (Confirmed)"
       ? true
@@ -16,7 +18,9 @@ function SubMenu(props) {
   useEffect(() => {
     if (props.patientObj && props.patientObj !== null) {
       Observation();
+      getOldRecordIfExists();
     }
+    LabOrders();
   }, [props.patientObj]);
 
   //Get list
@@ -25,20 +29,25 @@ function SubMenu(props) {
       .get(`${baseUrl}observation/person/${props.patientObj.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then((response) => {
-        //const observation = response.data
-        // const mental= observation.filter((x)=> x.type==='mental health')
-        // const evaluation= observation.filter((x)=> x.type==='initial evaluation')
-        // if(mental.length > 1){
-        //     mentalStatus=true
-        // }
-        // if(evaluation.length > 1){
-        //     initialEvaluationStatus=true
-        // }
-      })
+      .then((response) => {})
       .catch((error) => {
         //console.log(error);
       });
+  };
+
+  const LabOrders = () => {
+    axios
+      .get(`${baseUrl}laboratory/vl-results/patients/${props.patientObj.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        const dynamicArray = response?.data;
+        if (dynamicArray?.length > 0) {
+          let lastItem = dynamicArray[dynamicArray.length - 1];
+          setLabResult(lastItem);
+        }
+      })
+      .catch((error) => {});
   };
 
   const loadEAC = (row) => {
@@ -111,13 +120,6 @@ function SubMenu(props) {
       route: "intensive-followup",
     });
   };
-  const clientVerficationForm = () => {
-    setActiveItem("clientVerficationForm");
-    props.setActiveContent({
-      ...props.activeContent,
-      route: "client-verfication-form",
-    });
-  };
   const loadTransferForm = () => {
     setActiveItem("transfer");
     props.setActiveContent({ ...props.activeContent, route: "transfer-form" });
@@ -141,6 +143,15 @@ function SubMenu(props) {
       route: "otz-service-form",
     });
   };
+  const loadOtzEnrollmentForm = () => {
+    setActiveItem("otz-enrollment-form");
+    props.setActiveContent({
+      ...props.activeContent,
+      ...props.expandedPatientObj,
+      currentLabResult: labResult,
+      route: "otz-enrollment-form",
+    });
+  };
   const loadOtzCheckList = () => {
     setActiveItem("otz-peadiatric-disclosure-checklist");
     props.setActiveContent({
@@ -152,7 +163,29 @@ function SubMenu(props) {
     setActiveItem("otz-register");
     props.setActiveContent({ ...props.activeContent, route: "otz-register" });
   };
-  //
+
+  const getOldRecordIfExists = () => {
+    axios
+      .get(`${baseUrl}observation/person/${props?.patientObj?.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        const patientDTO = response?.data;
+        const otzData =
+          patientDTO?.filter?.((item) => item?.type === "Service OTZ")?.[0] ||
+          null;
+          if(otzData) {
+            setIsOtzEnrollementDone(true);
+          }
+          else{
+            setIsOtzEnrollementDone(false);
+          }
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsOtzEnrollementDone(false);
+      });
+  };
 
   return (
     <div>
@@ -160,7 +193,7 @@ function SubMenu(props) {
         <Segment inverted>
           {/*!props.art && patientObj.commenced!==true && patientObj.enrollment.targetGroupId===473) || (!props.art && (patientObj.commenced!==true || patientObj.commenced===true)  && patientObj.mentalHealth!==true) */}
           {(patientObj.commenced === false ||
-            patientObj.createBy.toUpperCase() !== "LAMIS DATA MIGRATION SYSTEM") &&
+            patientObj.createBy !== "Lamis data migration system") &&
           (patientObj.commenced !== true ||
             patientObj.clinicalEvaluation !== true ||
             (patientObj.targetGroupId !== 473
@@ -352,44 +385,60 @@ function SubMenu(props) {
                     >
                       Intensive Follow Up
                     </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={() => clientVerficationForm(patientObj)}
-                      name="clientVerficationForm"
-                      active={activeItem === "clientVerficationForm"}
-                      title="Client Verfication Form"
-                    >
-                      Client Verification Form
-                    </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
                 <Dropdown item text="OTZ">
                   <Dropdown.Menu>
-                    <Dropdown.Item
-                      onClick={() => loadOtzServiceForm(patientObj)}
-                      name="OTZ Service Form"
-                      active={activeItem === "otz-service-form"}
-                      title="Tracking Form"
-                    >
-                      OTZ Service Form
-                    </Dropdown.Item>
-                    {patientObj.age <=17 && (
-                    <Dropdown.Item
-                      onClick={() => loadOtzCheckList(patientObj)}
-                      name="Peadiatric Disclosure Checklist"
-                      active={
-                        activeItem === "otz-peadiatric-disclosure-checklist"
-                      }
-                      title="Peadiatric Disclosure Checklist"
-                    >
-                      Peadiatric Disclosure Checklist
-                    </Dropdown.Item>
+                    {patientObj?.age >= 10 && patientObj?.age <= 24 && (
+                      <>
+                        {isOtzEnrollementDone === null ? (
+                          <Dropdown.Item>
+                            Checking patient enrollment...
+                          </Dropdown.Item>
+                        ) : isOtzEnrollementDone === false ? (
+                          <Dropdown.Item
+                            onClick={() => loadOtzEnrollmentForm(patientObj)}
+                            name="OTZ Enrollment Form"
+                            active={activeItem === "otz-enrollment-form"}
+                            title="Enrollment Form"
+                          >
+                            OTZ Enrollment Form
+                          </Dropdown.Item>
+                        ) : null}
+
+                        {isOtzEnrollementDone ? (
+                          <Dropdown.Item
+                            onClick={() => loadOtzServiceForm(patientObj)}
+                            name="OTZ Service Form"
+                            active={activeItem === "otz-service-form"}
+                            title="Tracking Form"
+                          >
+                            OTZ Service Form
+                          </Dropdown.Item>
+                        ) 
+                        
+                        : null}
+                      </>
+                    )}
+
+                    {patientObj.age <= 19 && (
+                      <Dropdown.Item
+                        onClick={() => loadOtzCheckList(patientObj)}
+                        name="Peadiatric Disclosure Checklist"
+                        active={
+                          activeItem === "otz-peadiatric-disclosure-checklist"
+                        }
+                        title="Peadiatric Disclosure Checklist"
+                      >
+                        Peadiatric Disclosure Checklist
+                      </Dropdown.Item>
                     )}
                   </Dropdown.Menu>
                 </Dropdown>
               </Menu.Menu>
 
-              <Menu.Item onClick={() => loadTransferForm(patientObj)} name='transfer'
-                    active={activeItem === 'transfer'} title="Transfer">Transfer</Menu.Item>
+              {/* <Menu.Item onClick={() => loadTransferForm(patientObj)} name='transfer'
+                    active={activeItem === 'transfer'} title="Transfer">Transfer</Menu.Item> */}
               <Menu.Item
                 onClick={() => loadPatientHistory(patientObj)}
                 name="history"

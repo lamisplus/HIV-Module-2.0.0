@@ -869,28 +869,6 @@ const UserRegistration = (props) => {
         setObjValues({ ...objValues, [e.target.name]: e.target.value });
       }
     }
-      // if (e.target.name === "uniqueId" && e.target.value !== "") {
-      //   async function getUniqueId() {
-      //     const uniqueId = e.target.value;
-      //     const response = await axios.get(
-      //         `${baseUrl}hiv/patient/enrollment/unique-id-exists?uniqueId=${uniqueId}`,
-      //         {
-      //           headers: { Authorization: `Bearer ${token}` },
-      //         });
-      //         if (response.data !== true) {
-      //           setUniqueIdNumStatus(false);
-      //           errors.uniqueId = "";
-      //           setObjValues({ ...objValues, uniqueId: e.target.value });
-      //           setHospitalNumStatus2(true);
-      //         } else {
-      //           errors.uniqueId = "";
-      //           toast.error("Error! Unique Number already exist");
-      //           setUniqueIdNumStatus(true);
-      //           setUniqueIdNumStatus2(false);
-      //         }
-      //   }
-      //   getUniqueId();
-      // }
   };
 
   const checkPhoneNumber = (e, inputName) => {
