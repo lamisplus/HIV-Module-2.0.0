@@ -15,7 +15,7 @@ import RecentHistory from "./../History/RecentHistory";
 import ClinicVisit from "../Consultation/Index";
 import Pharmacy from "./../Pharmacy/Index";
 import Laboratory from "./../Laboratory/index";
-
+import DashboardFilledTransferForm from "./DashboardFilledTransferForm";
 import EnhancedAdherenceCounseling from "../EnhancedAdherenceCounseling/Index";
 import CervicalCancer from "./../CervicalCancer/Index";
 import CervicalCancerUpdate from "./../CervicalCancer/ViewPage";
@@ -127,7 +127,6 @@ function PatientCard(props) {
       })
       .catch((error) => {});
   };
-
 
   return (
     <div className={classes.root}>
@@ -453,6 +452,14 @@ function PatientCard(props) {
           )}
           {activeContent.route === "otz-register" && (
             <OtzRegister
+              patientObj={patientObj}
+              setActiveContent={setActiveContent}
+              activeContent={activeContent}
+            />
+          )}
+
+          {activeContent.route === "filled-transferForm" && (
+            <DashboardFilledTransferForm
               patientObj={patientObj}
               setActiveContent={setActiveContent}
               activeContent={activeContent}

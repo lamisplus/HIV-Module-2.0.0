@@ -362,30 +362,30 @@ function SubMenu(props) {
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
-                <Dropdown item text="OTZ">
-                  <Dropdown.Menu>
-                    <Dropdown.Item
-                      onClick={() => loadOtzServiceForm(patientObj)}
-                      name="OTZ Service Form"
-                      active={activeItem === "otz-service-form"}
-                      title="Tracking Form"
-                    >
-                      OTZ Service Form
-                    </Dropdown.Item>
-                    {patientObj.age <=17 && (
-                    <Dropdown.Item
-                      onClick={() => loadOtzCheckList(patientObj)}
-                      name="Peadiatric Disclosure Checklist"
-                      active={
-                        activeItem === "otz-peadiatric-disclosure-checklist"
-                      }
-                      title="Peadiatric Disclosure Checklist"
-                    >
-                      Peadiatric Disclosure Checklist
-                    </Dropdown.Item>
-                    )}
-                  </Dropdown.Menu>
-                </Dropdown>
+                {/*<Dropdown item text="OTZ">*/}
+                {/*  <Dropdown.Menu>*/}
+                {/*    <Dropdown.Item*/}
+                {/*      onClick={() => loadOtzServiceForm(patientObj)}*/}
+                {/*      name="OTZ Service Form"*/}
+                {/*      active={activeItem === "otz-service-form"}*/}
+                {/*      title="Tracking Form"*/}
+                {/*    >*/}
+                {/*      OTZ Service Form*/}
+                {/*    </Dropdown.Item>*/}
+                {/*    {patientObj.age <=17 && (*/}
+                {/*    <Dropdown.Item*/}
+                {/*      onClick={() => loadOtzCheckList(patientObj)}*/}
+                {/*      name="Peadiatric Disclosure Checklist"*/}
+                {/*      active={*/}
+                {/*        activeItem === "otz-peadiatric-disclosure-checklist"*/}
+                {/*      }*/}
+                {/*      title="Peadiatric Disclosure Checklist"*/}
+                {/*    >*/}
+                {/*      Peadiatric Disclosure Checklist*/}
+                {/*    </Dropdown.Item>*/}
+                {/*    )}*/}
+                {/*  </Dropdown.Menu>*/}
+                {/*</Dropdown>*/}
               </Menu.Menu>
 
               <Menu.Item onClick={() => loadTransferForm(patientObj)} name='transfer'
