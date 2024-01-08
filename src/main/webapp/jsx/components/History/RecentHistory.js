@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 const RecentHistory = (props) => {
   const classes = useStyles();
-  const [viralLoad, setViralLoad] = useState([]);
+  const [vitaLoad, setViralLoad] = useState([]);
   const [refillList, setRefillList] = useState([]);
   const [clinicVisitList, setClinicVisitList] = useState([]);
   const [recentActivities, setRecentActivities] = useState([]);
@@ -873,9 +873,9 @@ const RecentHistory = (props) => {
                     className="widget-timeline dz-scroll height370 ps ps--active-y"
                   >
                     <ul className="timeline">
-                      {viralLoad.length > 0 ? (
+                      {vitaLoad.length > 0 ? (
                         <>
-                          {viralLoad.map((test, index) => (
+                          {vitaLoad.map((test, index) => (
                             <>
                               <li key={index}>
                                 <div
