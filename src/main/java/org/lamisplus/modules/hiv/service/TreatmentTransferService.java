@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.LocalDateTime;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
 import org.lamisplus.modules.hiv.controller.exception.ApiError;
 import org.lamisplus.modules.hiv.controller.exception.NoRecordFoundException;
@@ -16,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -94,24 +96,19 @@ public class TreatmentTransferService {
         if (dto == null) {
             throw new IllegalArgumentException("TransferPatientInfo is null");
         }
-        System.out.println("********************** Here 1 **********************");
-
-        HIVStatusTrackerDto hivStatusTracker = hivStatusTrackerService.getHIVStatusTrackerById(dto.getPatientId());
-
-        System.out.println("********************** Here 1 **********************");
+//       patient hiv status is "Died(Confirmed)"
+        if(dto.getHivStatus().equalsIgnoreCase("Died(Confirmed)")){
+            throw new Exception("Patient is confirmed dead");
+        }
+        HIVStatusTrackerDto hivStatusTracker = hivStatusTrackerService.getHIVStatusTrackerById(dto.getHivStatusId());
         if (hivStatusTracker == null) {
             throw new Exception("Patient tracker not found");
         }
-        log.info( "patient hiv status {}" ,hivStatusTracker.getHivStatus());
-        if ("Dead".equalsIgnoreCase(hivStatusTracker.getHivStatus())) {
-            throw new Exception("Patient status is Dead");
-        }
-        System.out.println("********************** Here 2 **********************");
         // Create observation
         ObservationDto createdObservation = createObservation(dto);
-        System.out.println("********************** Here 3 **********************");
-        // Update HIVStatusTracker
+        // Update HIVStatusTracker and set status transfer date to today
         hivStatusTracker.setHivStatus("Transfer");
+        hivStatusTracker.setStatusDate(LocalDate.now());
         hivStatusTrackerService.updateHIVStatusTracker(hivStatusTracker.getId(), hivStatusTracker);
 
         return createdObservation;
@@ -125,19 +122,6 @@ public class TreatmentTransferService {
             throw new EntityNotFoundException(Observation.class, "Person uuid", transferPatientDto.getPersonUuid());
         }
         BeanUtils.copyProperties(transferPatientInfo, transferPatientDto);
-        // get patient medication and labReport
-//        List<MedicationInfo> medicationInfoList = getCurrentMedication(transferPatientDto.getPersonUuid());
-//        List<LabReport> labReportList = retrieveTransferPatientLabResult(transferPatientDto.getFacilityId(), transferPatientInfo.getPersonUuid());
-//        if (transferPatientDto.getLabReports() == null) {
-//            transferPatientDto.setLabReports(new ArrayList<>());
-//        }
-//        if (transferPatientDto.getCurrentMedication() == null) {
-//            transferPatientDto.setCurrentMedication(new ArrayList<>());
-//        }
-//        // Add retrieved data to the transferPatientDto
-//        transferPatientDto.getLabReports().addAll(labReportList);
-//        transferPatientDto.getCurrentMedication().addAll(medicationInfoList);
-
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.valueToTree(transferPatientDto);
     }
@@ -145,15 +129,13 @@ public class TreatmentTransferService {
     private ObservationDto createObservation(TransferPatientDto transferPatientDto) {
         log.info("Inside createObservation");
         ObservationDto observationDto = new ObservationDto();
-        System.out.println("********************** Here 5 **********************");
         observationDto.setPersonId(transferPatientDto.getPatientId());
         observationDto.setVisitId(null);
+        observationDto.setType("Transfer");
+        observationDto.setDateOfObservation(LocalDate.now());
         observationDto.setFacilityId(transferPatientDto.getFacilityId());
         observationDto.setData(mapTransferPatientInfoToDto(transferPatientDto));
-        System.out.println("********************** Here 6 **********************");
         return observationService.createAnObservation(observationDto);
     }
-
-
 
 }

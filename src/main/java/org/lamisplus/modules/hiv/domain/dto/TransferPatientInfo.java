@@ -22,5 +22,7 @@ public interface TransferPatientInfo {
     Integer getViralLoad();
     String getCurrentRegimenLine();
     String getFirstLineArtRegimen();
+   Long getHivStatusId();
+   String getHivStatus();
 }
 

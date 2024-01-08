@@ -32,6 +32,8 @@ public class TransferPatientDto {
     private Integer viralLoad;
     private String currentRegimenLine;
     private String firstLineArtRegimen;
+    private Long hivStatusId;
+    private String hivStatus;
 //    private List<MedicationInfo> currentMedication;
 //    private List<LabReport> labReports;
 }

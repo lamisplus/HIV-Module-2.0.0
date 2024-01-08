@@ -115,6 +115,8 @@ const Tracking = (props) => {
     const [payload, setPayload] = useState({
         patientId: '',
         personUuid: '',
+        hivStatus:'',
+        hivStatusId:'',
         facilityId: '',
         height: "",
         weight: "",
