@@ -13,11 +13,8 @@ import java.util.Optional;
 
 public interface ObservationRepository extends JpaRepository<Observation, Long> {
     List<Observation> getAllByTypeAndPersonAndFacilityIdAndArchived(String type, Person person, Long facilityId, Integer archived);
-
     List<Observation> getAllByPersonAndFacilityIdAndArchived(Person person, Long facilityId, Integer archived);
-
     List<Observation> getAllByPersonAndArchived(Person person, Integer archived);
-
     @Query(value = "SELECT * from hiv_observation where (type = 'Clinical evaluation' \n" +
             "            OR type = 'Mental health' )\n" +
             "            AND person_uuid = ?1  AND archived = 0", nativeQuery = true)
@@ -33,7 +30,7 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
     List<Observation> getAllDueForServerUpload(LocalDateTime dateLastSync, Long facilityId);
 
     Optional<Observation> findByUuid(String uuid);
-
+    
     @Query(value = "SELECT tbTreatmentPersonUuid FROM (SELECT \n" +
             "COALESCE(NULLIF(CAST(data->'tbIptScreening'->>'eligibleForTPT' AS text), ''), '') as eligibleForTPT,\n" +
             "person_uuid as tbTreatmentPersonUuid,\n" +
@@ -43,7 +40,7 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
             ") tbTreatment WHERE row_number = 1 AND  eligibleForTPT IS NOT NULL \n" +
             "AND eligibleForTPT = 'Yes'\n" +
             "AND tbTreatmentPersonUuid = ?2", nativeQuery = true)
-    Optional<String> getIPTEligiblePatientUuid(Long facilityId, String uuid);
+    Optional<String>  getIPTEligiblePatientUuid(Long facilityId, String uuid);
 
     List<Observation> getAllByPersonAndFacilityId(Person person, Long orgId);
 

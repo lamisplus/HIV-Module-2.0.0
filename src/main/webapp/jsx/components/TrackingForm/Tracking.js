@@ -522,9 +522,9 @@ const Tracking = (props) => {
     temp.dateLastAppointment = objValues.dateLastAppointment
       ? ""
       : "This field is required";
-    // temp.dateMissedAppointment = objValues.dateMissedAppointment
-    //   ? ""
-    //   : "This field is required";
+    temp.dateMissedAppointment = objValues.dateMissedAppointment
+      ? ""
+      : "This field is required";
 
     temp.careInFacilityDiscountinued = objValues.careInFacilityDiscountinued
       ? ""
@@ -669,15 +669,10 @@ const Tracking = (props) => {
           objValues.statusTracker = null;
         }
 
-        if (
-          objValues.biometricStatus !== null &&
-          objValues.biometricStatus !== ""
-        ) {
+        if (objValues.biometricStatus !== null) {
           objValues.statusTracker.biometricStatus = objValues.biometricStatus;
           objValues.statusTracker.hivStatus = objValues.biometricStatus;
         }
-
-        //console.log(objValues);
         setSaving(true);
 
         axios
@@ -947,7 +942,10 @@ const Tracking = (props) => {
               </div>
               <div className="form-group mb-3 col-md-4">
                 <FormGroup>
-                  <Label for="">Date of Missed Scheduled Appointment </Label>
+                  <Label for="">
+                    Date of Missed Scheduled Appointment{" "}
+                    <span style={{ color: "red" }}> *</span>
+                  </Label>
                   <Input
                     type="date"
                     name="dateMissedAppointment"

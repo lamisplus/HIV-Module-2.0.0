@@ -31,54 +31,34 @@ public interface ArtPharmacyRepository extends JpaRepository<ArtPharmacy, Long> 
 	Page<ArtPharmacy> getArtPharmaciesByPersonAndArchived(Person person, Integer archived, Pageable pageable);
 	
 	List<ArtPharmacy> getArtPharmaciesByPersonAndArchived(Person person, Integer archived);
-
-	@Query(value = "SELECT *, MAX(visit_date) OVER (PARTITION BY person_uuid ORDER BY visit_date DESC) " +
-			"from hiv_art_pharmacy  " +
-			"where person_uuid = ?1  " +
-			"and archived = ?2  LIMIT 1", nativeQuery = true)
-	Optional<ArtPharmacy> getOneArtPharmaciesByPersonAndArchived(String personUuid, Integer archived);
-
-
+	
 	@Query(value = "SELECT sum(refill_Period) " +
 			"from hiv_art_pharmacy  " +
 			"where person_uuid = ?1  " +
 			"and archived = 0  " +
 			"and visit_date BETWEEN ?2 and ?3 ", nativeQuery = true)
 	Integer sumRefillPeriodsByPersonAndDateRange(String personUuid, LocalDate startDate, LocalDate endDate);
-
-	@Query(nativeQuery = true, value = "SELECT DISTINCT ON (p.uuid, result.next_appointment) " +
-			"    result.id, " +
-			"    result.facility_id AS facilityId, " +
-			"    oi.code AS datimId, " +
-			"    org.name AS facilityName, " +
-			"    p.uuid AS patientId, " +
-			"    p.hospital_number AS hospitalNum, " +
-			"    hrt.description AS regimenLine, " +
-			"    result.mmd_type AS mmdType, " +
-			"    result.next_appointment AS nextAppointment, " +
-			"    result.dsd_model AS dsdModel, " +
-			"    result.visit_date AS dateVisit, " +
-			"    result.duration AS refillPeriod, " +
-			"    result.regimen_name AS regimens " +
-			"FROM ( " +
-			"    SELECT " +
-			"        h.*, " +
-			"        pharmacy_object ->> 'duration' AS duration, " +
-			"        pharmacy_object ->> 'regimenName'::VARCHAR AS regimen_name " +
-			"    FROM hiv_art_pharmacy h, " +
-			"        jsonb_array_elements(h.extra->'regimens') WITH ORDINALITY p(pharmacy_object) " +
-			") AS result " +
-			"INNER JOIN patient_person p ON p.uuid = result.person_uuid " +
-			"INNER JOIN base_organisation_unit org ON org.id = result.facility_id " +
-			"INNER JOIN base_organisation_unit_identifier oi ON oi.organisation_unit_id = result.facility_id " +
-			"INNER JOIN hiv_regimen hr ON hr.description = result.regimen_name " +
-			"INNER JOIN hiv_regimen_type hrt ON hrt.id = hr.regimen_type_id " +
-			"WHERE result.facility_id = :facilityId " +
-			"ORDER BY p.uuid, result.next_appointment, result.visit_date DESC;")
+	
+	@Query(value = "SELECT DISTINCT result.id, result.facility_id as facilityId, oi.code as datimId, org.name as facilityName,\n" +
+			"p.uuid as patientId,p.hospital_number as hospitalNum, hrt.description as regimenLine,\n" +
+			"result.mmd_type as mmdType, result.next_appointment as nextAppointment , result.dsd_model as dsdModel,\n" +
+			"result.visit_date as dateVisit,  result.duration as refillPeriod, result.regimen_name as regimens\n" +
+			"FROM (SELECT h.*,pharmacy_object ->> 'duration' AS duration,\n" +
+			"      pharmacy_object ->> 'regimenName'\\:\\:VARCHAR AS regimen_name\n" +
+			"      \n" +
+			"FROM hiv_art_pharmacy h,\n" +
+			"jsonb_array_elements(h.extra->'regimens') with ordinality p(pharmacy_object)) as result\n" +
+			"     INNER JOIN patient_person p ON p.uuid=result.person_uuid\n" +
+			"     INNER JOIN base_organisation_unit org ON org.id=result.facility_id\n" +
+			"     INNER JOIN base_organisation_unit_identifier oi ON oi.organisation_unit_id=result.facility_id\n" +
+			"     \n" +
+			"     INNER JOIN hiv_regimen hr ON hr.description=result.regimen_name\n" +
+			"     INNER JOIN hiv_regimen_type hrt ON hrt.id = hr.regimen_type_id\n" +
+			"     WHERE  result.facility_id = ?1 order by p.uuid, result.visit_date ASC;",
+			nativeQuery = true)
 	List<PharmacyReport> getArtPharmacyReport(Long facilityId);
 	
-	@Query(value = "SELECT * FROM hiv_art_pharmacy p " +
-			"inner join hiv_art_pharmacy_regimens pr On p.id = pr.art_pharmacy_id " +
+	@Query(value = "SELECT * FROM hiv_art_pharmacy p inner join hiv_art_pharmacy_regimens pr On p.id = pr.art_pharmacy_id " +
 			"INNER JOIN hiv_regimen r ON r.id = pr.regimens_id WHERE visit_date <=  ?2  " +
 			"AND r.regimen_type_id IN (1,2,3,4,14) AND person_uuid = ?1 " +
 			"AND archived = 0 ORDER BY visit_date DESC LIMIT 1" ,

@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Tracking = (props) => {
+const DashboardFilledTransferForm = (props) => {
   const patientObj = props.patientObj;
   const [errors, setErrors] = useState({});
   let temp = { ...errors };
@@ -98,17 +98,9 @@ const Tracking = (props) => {
   const [baselineCDCount, setBaselineCDCount] = useState("");
   const [currentCD4, setCurrentCD4] = useState("");
   const [BMI, setBMI] = useState("");
+  const [showSelectdropdown, setShowSelectdropdown] = useState(false);
 
   const [currentMedication, setCurrentMedication] = useState([]);
-
-  const [observation, setObservation] = useState({
-    data: {},
-    dateOfObservation: "yyyy-MM-dd",
-    facilityId: null,
-    personId: 0,
-    type: "Tracking form",
-    visitId: null,
-  });
 
   const [info, setInfo] = useState({});
 
@@ -158,35 +150,35 @@ const Tracking = (props) => {
     acknowlegdeReceiveDate: "",
     // acknowlegdeTelephoneNumber: "",
   });
-  const [objValues, setObjValues] = useState({
-    durationOnART: "",
-    dsdStatus: "",
-    dsdModel: "",
-    reasonForTracking: "",
-    dateLastAppointment: "",
-    dateMissedAppointment: "",
-    careInFacilityDiscountinued: "",
-    dateOfDiscontinuation: "",
-    reasonForDiscountinuation: "",
-    reasonForLossToFollowUp: "",
-    causeOfDeath: "",
-    dateReturnToCare: "",
-    referredFor: "",
-    referredForOthers: "",
-    reasonForTrackingOthers: "",
-    causeOfDeathOthers: "",
-    reasonForLossToFollowUpOthers: "",
-    attempts: "",
-    patientId: props.patientObj.id,
+  const [defaultFacility, setDefaultFacility] = useState({
+    value: "",
+    label: "",
   });
+  console.log(defaultFacility);
 
-  console.log(
-    "this is the patient obj",
-    patientObj,
-    localStorage.getItem("faciltyId")
-  );
+  console.log(props);
+  // props.activeContent.actionType
 
-  console.log("that is good ", payload);
+  //FETCH THE FORM INFO FOR VIEW FUNCTIONALITY
+
+  const getTransferFormInfo = () => {
+    let facId = localStorage.getItem("faciltyId");
+    //  .get(`${baseUrl}treatment-transfers/${facId}/${patientObj.personUuid}`
+    axios
+      .get(`${baseUrl}observation/${props.activeContent.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        setPayload({ ...response.data.data });
+        setDefaultFacility({
+          value: "",
+          label: response.data.data.facilityTransferTo,
+        });
+        //   setPatientObj1(response.data);
+      })
+      .catch((error) => {});
+  };
+
   // fetch info for the form
   const getTreatmentInfo = () => {
     let facId = localStorage.getItem("faciltyId");
@@ -272,7 +264,7 @@ const Tracking = (props) => {
   const postTransferForm = (load) => {
     //    treatment-transfers/patient_current_cd4/{facilityId}/{patientUuid}
     axios
-      .post(`${baseUrl}observation`, load, {
+      .put(`${baseUrl}observation/${props.activeContent.id}`, load, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -314,8 +306,6 @@ const Tracking = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        console.log(response.data);
-
         let updatedFaclilties = response.data.map((each, id) => {
           return {
             ...each,
@@ -328,20 +318,20 @@ const Tracking = (props) => {
       })
       .catch((error) => {});
   };
-  // submit transfer info
+  const getAllSelectedFacility = () => {
+    let defaultFacilityValue = allFacilities.filter((each, id) => {
+      if (each.name == payload.facilityTransferTo) {
+        return each;
+        // {
+        //   ...each,
+        //   value: each.id,
+        //   label: each.name,
+        // };
+      }
+    });
 
-  // const submitHandler = () => {
-  //   axios
-  //     .post(`${baseUrl}observation`, observation, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     })
-  //     .then((response) => {
-  //       console.log(response.data);
-  //       setPatientObj1(response.data);
-  //     })
-  //     .catch((error) => {});
-  // };
-
+    setDefaultFacility(defaultFacilityValue[0]);
+  };
   const calculateBMI = () => {
     let squareH = Number(transferInfo?.height) * Number(transferInfo?.height);
     let value = Number(transferInfo.weight) / squareH;
@@ -362,14 +352,18 @@ const Tracking = (props) => {
     getCurrentMedication();
     getBasedlineCD4Count();
     getCurrentCD4Count();
+    getTransferFormInfo();
   }, []);
 
+  console.log("The Payload", payload);
+
   useEffect(() => {
-    setPayload({ ...payload, ...transferInfo });
+    // setPayload({ ...transferInfo });
     calculateBMI();
 
     // calculateBMI();
-  }, [transferInfo]);
+  }, [transferInfo.height, transferInfo.weight]);
+
   const handleInputChange = (e) => {
     setErrors({ ...temp, [e.target.name]: "" });
     setPayload({ ...payload, [e.target.name]: e.target.value });
@@ -626,22 +620,83 @@ const Tracking = (props) => {
                       Facility Name To <span style={{ color: "red" }}> *</span>
                     </Label>
 
-                    <Select
-                      //value={selectedOption}
-                      onChange={handleInputChangeObject}
-                      name="facilityTransferTo"
-                      options={allFacilities}
-                      theme={(theme) => ({
-                        ...theme,
-                        borderRadius: "0.25rem",
-                        border: "1px solid #014D88",
-                        colors: {
-                          ...theme.colors,
-                          primary25: "#014D88",
-                          primary: "#014D88",
-                        },
-                      })}
-                    />
+                    {/* props.activeContent.actionType */}
+                    {props.activeContent.actionType === "view" ? (
+                      <Input
+                        type="text"
+                        name="stateTransferTo"
+                        id="stateTransferTo"
+                        disabled={true}
+                        // onChange={handleInputChange}
+                        value={payload.facilityTransferTo}
+                      ></Input>
+                    ) : props.activeContent.actionType === "update" &&
+                      showSelectdropdown ? (
+                      <Select
+                        //value={selectedOption}
+                        onChange={handleInputChangeObject}
+                        name="facilityTransferTo"
+                        plcaceHolder={"hgeheh"}
+                        defaultValue={defaultFacility}
+                        options={allFacilities}
+                        theme={(theme) => ({
+                          ...theme,
+                          borderRadius: "0.25rem",
+                          border: "1px solid #014D88",
+                          colors: {
+                            ...theme.colors,
+                            primary25: "#014D88",
+                            primary: "#014D88",
+                          },
+                        })}
+                      />
+                    ) : (
+                      <Input
+                        type="text"
+                        name="stateTransferTo"
+                        id="stateTransferTo"
+                        onClick={(e) => {
+                          setShowSelectdropdown(true);
+                        }}
+                        // disabled={true}
+                        // onChange={handleInputChange}
+                        value={payload.facilityTransferTo}
+                      ></Input>
+                    )}
+
+                    {/* {props.activeContent.actionType === "update" &&
+                    showSelectdropdown ? (
+                      <Select
+                      
+                        onChange={handleInputChangeObject}
+                        name="facilityTransferTo"
+                        plcaceHolder={"hgeheh"}
+                        defaultValue={defaultFacility}
+                        options={allFacilities}
+                        theme={(theme) => ({
+                          ...theme,
+                          borderRadius: "0.25rem",
+                          border: "1px solid #014D88",
+                          colors: {
+                            ...theme.colors,
+                            primary25: "#014D88",
+                            primary: "#014D88",
+                          },
+                        })}
+                      />
+                    ) : (
+                      <Input
+                        type="text"
+                        name="stateTransferTo"
+                        id="stateTransferTo"
+                        onClick={(e) => {
+                          setShowSelectdropdown(true);
+                        }}
+                     
+                        value={payload.facilityTransferTo}
+                      ></Input>
+                    )} */}
+
                     {errors.facilityTransferTo !== "" ? (
                       <span className={classes.error}>
                         {errors.facilityTransferTo}
@@ -661,7 +716,7 @@ const Tracking = (props) => {
                       id="stateTransferTo"
                       disabled={true}
                       // onChange={handleInputChange}
-                      value={selectedState}
+                      value={payload.stateTransferTo}
                     ></Input>
                     {/* {errors.dsdStatus !== "" ? (
                       <span className={classes.error}>{errors.dsdStatus}</span>
@@ -680,7 +735,7 @@ const Tracking = (props) => {
                       id="lgaTransferTo"
                       disabled={true}
                       // onChange={handleInputChange}
-                      value={selectedState}
+                      value={payload.lgaTransferTo}
                     ></Input>
                   </FormGroup>
                 </div>
@@ -697,6 +752,9 @@ const Tracking = (props) => {
                       onChange={handleInputChange}
                       value={payload?.clinicalNote}
                       style={{ height: "70px" }}
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
                     ></Input>
                     {/* {errors.reasonForTracking !== "" ? (
                       <span className={classes.error}>
@@ -741,6 +799,9 @@ const Tracking = (props) => {
                       name="modeOfHIVTest"
                       id="modeOfHIVTest"
                       onChange={handleInputChange}
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
                       value={payload.modeOfHIVTest}
                     >
                       <option value="">Select Mode of HIV </option>
@@ -974,7 +1035,7 @@ const Tracking = (props) => {
                       name="bmi"
                       id="bmi"
                       onChange={handleInputChange}
-                      value={BMI}
+                      value={payload.bmi}
                     />
                   </FormGroup>
                 </div>
@@ -1223,6 +1284,9 @@ const Tracking = (props) => {
                       name="reasonForTransfer"
                       id="reasonForTransfer"
                       onChange={handleInputChange}
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
                       value={payload.reasonForTransfer}
                       //min= {moment(payload.dateOfLastViralLoad).format("YYYY-MM-DD") }
                       max={moment(new Date()).format("YYYY-MM-DD")}
@@ -1257,6 +1321,9 @@ const Tracking = (props) => {
                       type="text"
                       name="nameOfTreatmentSupporter"
                       id="nameOfTreatmentSupporter"
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
                       onChange={handleInputChange}
                       value={payload.nameOfTreatmentSupporter}
                       //min= {moment(payload.dateOfLastViralLoad).format("YYYY-MM-DD") }
@@ -1282,6 +1349,9 @@ const Tracking = (props) => {
                     </Label>
                     <Input
                       type="text"
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
                       name="contactAddressOfTreatmentSupporter"
                       id="contactAddressOfTreatmentSupporter"
                       onChange={handleInputChange}
@@ -1309,6 +1379,9 @@ const Tracking = (props) => {
                     <Input
                       type="number"
                       name="phoneNumberOfTreatmentSupporter"
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
                       id="phoneNumberOfTreatmentSupporter"
                       onChange={handleInputChange}
                       value={payload.phoneNumberOfTreatmentSupporter}
@@ -1336,6 +1409,9 @@ const Tracking = (props) => {
                       type="text"
                       name="relationshipWithClients"
                       id="relationshipWithClients"
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
                       onChange={handleInputChange}
                       value={payload.relationshipWithClients}
                       //min= {moment(payload.dateOfLastViralLoad).format("YYYY-MM-DD") }
@@ -1364,6 +1440,9 @@ const Tracking = (props) => {
                       type="textarea"
                       name="recommendations"
                       id="recommendations"
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
                       onChange={handleInputChange}
                       value={payload.recommendations}
                       //min= {moment(payload.dateOfLastViralLoad).format("YYYY-MM-DD") }
@@ -1390,6 +1469,9 @@ const Tracking = (props) => {
                       type="text"
                       name="cliniciansName"
                       id="cliniciansName"
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
                       onChange={handleInputChange}
                       value={payload.cliniciansName}
                       //min= {moment(payload.dateOfLastViralLoad).format("YYYY-MM-DD") }
@@ -1418,6 +1500,9 @@ const Tracking = (props) => {
                       type="date"
                       name="dateOfClinicVisitAtTransferringSite"
                       id="dateOfClinicVisitAtTransferringSite"
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
                       onChange={handleInputChange}
                       value={payload.dateOfClinicVisitAtTransferringSite}
                       //min= {moment(payload.dateOfLastViralLoad).format("YYYY-MM-DD") }
@@ -1446,6 +1531,9 @@ const Tracking = (props) => {
                       type="date"
                       name="dateOfFirstConfirmedScheduleApp"
                       id="dateOfFirstConfirmedScheduleApp"
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
                       onChange={handleInputChange}
                       value={payload.dateOfFirstConfirmedScheduleApp}
                       //min= {moment(payload.dateOfLastViralLoad).format("YYYY-MM-DD") }
@@ -1473,6 +1561,9 @@ const Tracking = (props) => {
                       type="text"
                       name="personEffectingTheTransfer"
                       id="personEffectingTheTransfer"
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
                       onChange={handleInputChange}
                       value={payload.personEffectingTheTransfer}
                       //min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
@@ -1532,6 +1623,9 @@ const Tracking = (props) => {
                       type="select"
                       name="patientCameWithTransferForm"
                       id="patientCameWithTransferForm"
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
                       onChange={handleInputChange}
                       value={payload.patientCameWithTransferForm}
                       //min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
@@ -1557,6 +1651,9 @@ const Tracking = (props) => {
                     <Input
                       type="select"
                       name="patientAttendedHerFirstVisit"
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
                       id="patientAttendedHerFirstVisit"
                       onChange={handleInputChange}
                       value={payload.patientAttendedHerFirstVisit}
@@ -1586,6 +1683,9 @@ const Tracking = (props) => {
                     <Input
                       type="text"
                       name="acknowlegdeReceiveDate"
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
                       id="acknowlegdeReceiveDate"
                       onChange={handleInputChange}
                       value={payload.acknowlegdeReceiveDate}
@@ -1611,6 +1711,9 @@ const Tracking = (props) => {
                     <Input
                       type="text"
                       name="acknowledgementDateOfVisit"
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
                       id="acknowledgementDateOfVisit"
                       onChange={handleInputChange}
                       value={payload.acknowledgementDateOfVisit}
@@ -1662,6 +1765,9 @@ const Tracking = (props) => {
                     <Input
                       type="text"
                       name="nameOfClinicianReceivingTheTransfer"
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
                       id="nameOfClinicianReceivingTheTransfer"
                       onChange={handleInputChange}
                       value={payload.nameOfClinicianReceivingTheTransfer}
@@ -1689,6 +1795,9 @@ const Tracking = (props) => {
                       name="clinicianTelephoneNumber"
                       id="clinicianTelephoneNumber"
                       onChange={handleInputChange}
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
                       value={payload.clinicianTelephoneNumber}
                       //min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
                       max={moment(new Date()).format("YYYY-MM-DD")}
@@ -1709,57 +1818,33 @@ const Tracking = (props) => {
               </div>
             </div>
           </form>
-          <div>
-            {saving ? <Spinner /> : ""}
-            <br />
+          {props.activeContent.actionType === "update" && (
+            <div>
+              {saving ? <Spinner /> : ""}
+              <br />
 
-            <MatButton
-              type="button"
-              variant="contained"
-              color="primary"
-              className={classes.button}
-              startIcon={<SaveIcon />}
-              onClick={handleSubmit}
-              style={{ backgroundColor: "#014d88" }}
-              // disabled={objValues.dateOfEac1 === "" ? true : false}
-            >
-              {!saving ? (
-                <span style={{ textTransform: "capitalize" }}>Save</span>
-              ) : (
-                <span style={{ textTransform: "capitalize" }}>Saving...</span>
-              )}
-            </MatButton>
-          </div>
+              <MatButton
+                type="button"
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                startIcon={<SaveIcon />}
+                onClick={handleSubmit}
+                style={{ backgroundColor: "#014d88" }}
+                // disabled={objValues.dateOfEac1 === "" ? true : false}
+              >
+                {!saving ? (
+                  <span style={{ textTransform: "capitalize" }}>Update</span>
+                ) : (
+                  <span style={{ textTransform: "capitalize" }}>Saving...</span>
+                )}
+              </MatButton>
+            </div>
+          )}
         </CardBody>
       </Card>
     </div>
   );
 };
 
-function AttemptedLists({ attemptObj, index, removeAttempt }) {
-  return (
-    <tr>
-      <th>{attemptObj.attemptDate}</th>
-      <th>{attemptObj.whoAttemptedContact}</th>
-      <th>{attemptObj.modeOfConatct}</th>
-      <th>{attemptObj.personContacted}</th>
-      <th>
-        {attemptObj.reasonForDefaulting === ""
-          ? attemptObj.reasonForDefaultingOthers
-          : attemptObj.reasonForDefaulting}
-      </th>
-      <th></th>
-      <th>
-        <IconButton
-          aria-label="delete"
-          size="small"
-          color="error"
-          onClick={() => removeAttempt(index)}
-        >
-          <DeleteIcon fontSize="inherit" />
-        </IconButton>
-      </th>
-    </tr>
-  );
-}
-export default Tracking;
+export default DashboardFilledTransferForm;
