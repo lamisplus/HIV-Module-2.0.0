@@ -4,23 +4,21 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.joda.time.LocalDateTime;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
-import org.lamisplus.modules.hiv.controller.exception.ApiError;
+import org.lamisplus.modules.base.domain.entities.ApplicationCodeSet;
+import org.lamisplus.modules.base.domain.repositories.ApplicationCodesetRepository;
 import org.lamisplus.modules.hiv.controller.exception.NoRecordFoundException;
 import org.lamisplus.modules.hiv.domain.dto.*;
 import org.lamisplus.modules.hiv.domain.entity.Observation;
-import org.lamisplus.modules.hiv.domain.entity.PatientTracker;
 import org.lamisplus.modules.hiv.repositories.ObservationRepository;
-import org.lamisplus.modules.hiv.repositories.PatientTrackerRepository;
+import org.lamisplus.modules.hiv.utility.AppConstants;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -31,6 +29,9 @@ public class TreatmentTransferService {
     private final ObservationRepository observationRepository;
     private final ObservationService observationService;
     private final HIVStatusTrackerService hivStatusTrackerService;
+    private final StatusManagementService statusManagementService;
+    private final ApplicationCodesetRepository applicationCodesetRepository;
+    private final HivEnrollmentService hivEnrollmentService;
 
     public TransferPatientInfo getTransferPatientInfo(String patientUuid) {
         try {
@@ -87,38 +88,45 @@ public class TreatmentTransferService {
 
 
     /**
-     * check patient hiv status before form is submitted
+     * check patient hiv status before form was submitted
      * if dead, return a message that patient is dead
      * if not  register form, save information in the observation table
-     * change the patient hiv_status_tracker to transfer
+     * change the patient hiv_status_tracker to transfer out
      */
     public ObservationDto registerTransferPatientInfo(TransferPatientDto dto) throws Exception {
         if (dto == null) {
             throw new IllegalArgumentException("TransferPatientInfo is null");
         }
-//       patient hiv status is "Died(Confirmed)"
-        if(dto.getHivStatus().equalsIgnoreCase("Died(Confirmed)")){
+        Optional<HivEnrollmentDTO> enrollment = hivEnrollmentService.getHivEnrollmentByPersonIdAndArchived(dto.getPatientId());
+        ApplicationCodeSet codeSet = applicationCodesetRepository.findByDisplay(AppConstants.TRANSFER_OUT_DISPLAY);
+        if (codeSet == null) {
+            throw new EntityNotFoundException(ApplicationCodeSet.class, "display", AppConstants.TRANSFER_OUT_DISPLAY);
+        }
+        String currentStatus = statusManagementService.getCurrentStatus(dto.getPatientId());
+        if (currentStatus.equalsIgnoreCase(AppConstants.DEAD_CONFIRMED_DISPLAY)) {
             throw new Exception("Patient is confirmed dead");
         }
+        // get the current person
         HIVStatusTrackerDto hivStatusTracker = hivStatusTrackerService.getHIVStatusTrackerById(dto.getHivStatusId());
         if (hivStatusTracker == null) {
             throw new Exception("Patient tracker not found");
         }
         // Create observation
-        ObservationDto createdObservation = createObservation(dto);
-        // Update HIVStatusTracker and set status transfer date to today
-        hivStatusTracker.setHivStatus("Transfer");
+        ObservationDto createdObservation = createObservation(dto, codeSet);
+        // update the statusAtRegistrationId of enrollment
+        enrollment.get().setStatusAtRegistrationId(codeSet.getId());
+        // Update HIVStatusTracker and set status transfer date to current date
+        hivStatusTracker.setHivStatus(codeSet.getDisplay());
         hivStatusTracker.setStatusDate(LocalDate.now());
         hivStatusTrackerService.updateHIVStatusTracker(hivStatusTracker.getId(), hivStatusTracker);
-
+        hivEnrollmentService.updateHivEnrollment(enrollment.get().getId(), enrollment.get());
         return createdObservation;
     }
 
 
-
     private JsonNode mapTransferPatientInfoToDto(TransferPatientDto transferPatientDto) {
         TransferPatientInfo transferPatientInfo = getTransferPatientInfo(transferPatientDto.getPersonUuid());
-        if(transferPatientInfo == null) {
+        if (transferPatientInfo == null) {
             throw new EntityNotFoundException(Observation.class, "Person uuid", transferPatientDto.getPersonUuid());
         }
         BeanUtils.copyProperties(transferPatientInfo, transferPatientDto);
@@ -126,16 +134,15 @@ public class TreatmentTransferService {
         return objectMapper.valueToTree(transferPatientDto);
     }
 
-    private ObservationDto createObservation(TransferPatientDto transferPatientDto) {
+    private ObservationDto createObservation(TransferPatientDto transferPatientDto, ApplicationCodeSet codeSet) {
         log.info("Inside createObservation");
         ObservationDto observationDto = new ObservationDto();
         observationDto.setPersonId(transferPatientDto.getPatientId());
         observationDto.setVisitId(null);
-        observationDto.setType("Transfer");
+        observationDto.setType(codeSet.getDisplay());
         observationDto.setDateOfObservation(LocalDate.now());
         observationDto.setFacilityId(transferPatientDto.getFacilityId());
         observationDto.setData(mapTransferPatientInfoToDto(transferPatientDto));
         return observationService.createAnObservation(observationDto);
     }
-
 }

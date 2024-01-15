@@ -187,6 +187,7 @@ const Tracking = (props) => {
   );
 
   console.log("that is good ", payload);
+  console.log("the person uuid", patientObj.personUuid)
   // fetch info for the form
   const getTreatmentInfo = () => {
     let facId = localStorage.getItem("faciltyId");
@@ -196,6 +197,7 @@ const Tracking = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
+        console.log(`peson uuid: ${patientObj.personUuid}`)
         setTransferInfo(response.data);
         console.log("getTreatmentInfo", response.data);
         //   setPatientObj1(response.data);
@@ -272,9 +274,12 @@ const Tracking = (props) => {
   const postTransferForm = (load) => {
     //    treatment-transfers/patient_current_cd4/{facilityId}/{patientUuid}
     axios
-      .post(`${baseUrl}observation`, load, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      // .post(`${baseUrl}observation`, load, {
+      //   headers: { Authorization: `Bearer ${token}` },
+      // })
+      .post(`${baseUrl}treatment-transfers/save`, load, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
       .then((response) => {
         setSaving(false);
         toast.success("Transfer Form Submitted Successfully");
@@ -524,17 +529,18 @@ const Tracking = (props) => {
       payload.currentMedication = currentMedication;
       payload.labResult = labResult;
 
-      let today = moment().format("YYYY-MM-DD");
-      let updatePayload = {
-        data: payload,
-        dateOfObservation: today,
-        facilityId: facId,
-        personId: patientObj.id,
-        type: "Transfer",
-        visitId: "",
-      };
-      console.log(updatePayload);
-      postTransferForm(updatePayload);
+      // let today = moment().format("YYYY-MM-DD");
+      // let updatePayload = {
+      //   data: payload,
+      //   dateOfObservation: today,
+      //   facilityId: facId,
+      //   personId: patientObj.id,
+      //   type: "Transfer",
+      //   visitId: "",
+      // };
+      // console.log(updatePayload);
+      // postTransferForm(updatePayload);
+      postTransferForm(payload)
     } else {
       window.scroll(0, 0);
     }

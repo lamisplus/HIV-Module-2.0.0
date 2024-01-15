@@ -187,6 +187,12 @@ function SubMenu(props) {
       });
   };
 
+  const patientIsConfirmedDeadOrIsTransfered = (patient) => {
+    
+
+    return false;
+  }
+
   return (
     <div>
       {props.patientObj && props.patientObj !== null && (
@@ -277,7 +283,11 @@ function SubMenu(props) {
                     Initial Evaluation
                   </Menu.Item>
                 )}
-              <Menu.Item
+
+                {/*  */}
+         {   patientObj?.currentStatus === "ART TRANSFER OUT" ? "":  
+          <>
+          <Menu.Item
                 onClick={() => loadChronicCare(patientObj)}
                 name="chronic care"
                 active={activeItem === "chronic-care"}
@@ -437,16 +447,19 @@ function SubMenu(props) {
                 </Dropdown>
               </Menu.Menu>
 
-              {/* <Menu.Item onClick={() => loadTransferForm(patientObj)} name='transfer'
-                    active={activeItem === 'transfer'} title="Transfer">Transfer</Menu.Item> */}
-              <Menu.Item
+              <Menu.Item onClick={() => loadTransferForm(patientObj)} name='transfer'
+                    active={activeItem === 'transfer'} title="Transfer">Transfer</Menu.Item>
+         </>}
+             
+             {/*  */}
+              {!patientIsConfirmedDeadOrIsTransfered(patientObj) && <Menu.Item
                 onClick={() => loadPatientHistory(patientObj)}
                 name="history"
                 active={activeItem === "history"}
                 title="History"
               >
                 History
-              </Menu.Item>
+              </Menu.Item>}
             </Menu>
           )}
         </Segment>
