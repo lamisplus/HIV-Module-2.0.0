@@ -17,13 +17,6 @@ public class TreatmentTransferController {
 
     private final TreatmentTransferService treatmentTransferService;
 
-//    @GetMapping("/{facilityId}/{patientUuid}")
-//    @ApiOperation(value = "Get transfer patient information")
-//    public ResponseEntity<PatientInfoProjection> getPatientInformation(@PathVariable("patientUuid") String uuid,
-//                                                                                                  @PathVariable("facilityId") Long facilityId ) {
-//        return ResponseEntity.ok(treatmentTransferService.retrieveTransferPatientInfo(uuid, facilityId));
-//    }
-
     @GetMapping("/info/{patientUuid}")
     @ApiOperation(value = "Get patient treatment transfer information.")
     public ResponseEntity<TransferPatientInfo> getTransferPatientInformation(@PathVariable("patientUuid") String uuid) {
@@ -47,17 +40,5 @@ public class TreatmentTransferController {
     public ResponseEntity<ObservationDto> saveTransferPatientInformation(@RequestBody TransferPatientDto dto) throws Exception {
         return ResponseEntity.ok(treatmentTransferService.registerTransferPatientInfo(dto));
     }
-
-//    @GetMapping("/patient_current_cd4/{facilityId}/{patientUuid}")
-//    @ApiOperation(value = "Get patient current CD4")
-//    public ResponseEntity<PatientCurrentCD4> getPatientCurrentCD4(@PathVariable("patient,Uuid") String uuid, @PathVariable("facilityId") Long facilityId) {
-//        return ResponseEntity.ok(treatmentTransferService.getPatientCurrentCD4(uuid, facilityId));
-//    }
-//
-//    @GetMapping("/patient_baseline_cd4/{facilityId}/{patientUuid}")
-//    @ApiOperation(value = "Get patient baseline CD4")
-//    public ResponseEntity<BaseLineCd4Count> getPatientBaselineCD4(@PathVariable("patientUuid") String uuid, @PathVariable("facilityId") Long facilityId) {
-//        return ResponseEntity.ok(treatmentTransferService.getPatientBaselineCD4(uuid, facilityId));
-//    }
 
 }
