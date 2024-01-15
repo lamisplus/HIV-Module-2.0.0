@@ -360,9 +360,7 @@ function SubMenu(props) {
                   </Menu.Item>
                 )}
 
-              {props.patientObj.sex === "Female" ||
-              props.patientObj.sex === "FEMALE" ||
-              props.patientObj.sex === "female" ? (
+              {props?.patientObj?.sex?.toLowerCase() === "female" ? (
                 <>
                   <Menu.Item
                     onClick={() => loadCervicalCancer(patientObj)}
@@ -399,7 +397,7 @@ function SubMenu(props) {
                 </Dropdown>
                 <Dropdown item text="OTZ">
                   <Dropdown.Menu>
-                    {patientObj?.age >= 10 && patientObj?.age <= 24 && (
+                    {(patientObj?.age >= 10 && patientObj?.age <= 24) && (
                       <>
                         {isOtzEnrollementDone === null ? (
                           <Dropdown.Item>
