@@ -51,13 +51,13 @@ import LabOrderResult from "./../Laboratory/LabOrderResult/index";
 import ViralLoadOrderResult from "./../Laboratory/ViralLoadOrderResult/index";
 import IntensiveFollowUpUpdate from "./../IntensiveFollowUp/ViewUpdate";
 import IntensiveFollowUp from "./../IntensiveFollowUp/Index";
-import ClientVerficationForm from "./../ClientVerfication/Index";
 import TransferForm from "./../TransferForm/Index";
 import ViewUpdateLabOrderResult from "./../Laboratory/LabOrderResult/UpdateLabOrderResult";
 import UpdateViewViralLoadOrderResult from "./../Laboratory/ViralLoadOrderResult/UpdateViewViralLoadOrderResult";
 import OtzServiceForm from "./../Otz/ServiceForm";
 import OtzPeadiatricDisclosureChecklist from "./../Otz/PeadiatricDisclosureChecklist";
 import OtzRegister from "./../Otz/Register";
+import EnrollmentOtz from "../Otz/Enrollment";
 
 const styles = (theme) => ({
   root: {
@@ -153,10 +153,12 @@ function PatientCard(props) {
           />
           <Sticky>
             <SubMenu
-              expandedPatientObj={patientObj1}
               patientObj={patientObj}
-              art={art}
               setActiveContent={setActiveContent}
+              expandedPatientObj={patientObj1}
+              art={art}
+              activeContent={activeContent}
+
             />
           </Sticky>
           <br />
@@ -405,13 +407,6 @@ function PatientCard(props) {
               activeContent={activeContent}
             />
           )}
-          {activeContent.route === "client-verfication-form" && (
-            <ClientVerficationForm
-              patientObj={patientObj}
-              setActiveContent={setActiveContent}
-              activeContent={activeContent}
-            />
-          )}
           {activeContent.route === "intensive-follow-up-update" && (
             <IntensiveFollowUpUpdate
               patientObj={patientObj}
@@ -445,6 +440,18 @@ function PatientCard(props) {
 
           {activeContent.route === "otz-service-form" && (
             <OtzServiceForm
+              patientObj={patientObj}
+              setActiveContent={setActiveContent}
+              activeContent={{...activeContent,
+                patientId: patientObj?.id || patientObj1?.id,
+              }}
+              expandedPatientObj={patientObj1}
+              art={art}
+
+            />
+          )}
+          {activeContent.route === "otz-enrollment-form" && (
+            <EnrollmentOtz
               patientObj={patientObj}
               setActiveContent={setActiveContent}
               activeContent={activeContent}

@@ -102,6 +102,7 @@ const PatientnHistory = (props) => {
         //console.log(error);
       });
   };
+  console.log("patient history ",props)
   const LoadViewPage = (row, action) => {
     if (row.path === "Mental-health") {
       props.setActiveContent({
@@ -122,12 +123,15 @@ const PatientnHistory = (props) => {
         ...props.activeContent,
         route: "otz-peadiatric-disclosure-checklist",
         id: row.id,
+        
         actionType: action,
       });
     } else if (row.path === "Service-OTZ") {
       props.setActiveContent({
         ...props.activeContent,
         route: "otz-service-form",
+        fromPatientHistory: true,
+        patientId: props.patientObj?.id,
         id: row.id,
         actionType: action,
       });
@@ -198,10 +202,10 @@ const PatientnHistory = (props) => {
         activeTab: "history",
         actionType: action,
       });
-    } else if (row.path === "Client-Verification") {
+    } else if (row.path === "Intensive-follow-up") {
       props.setActiveContent({
         ...props.activeContent,
-        route: "client-verfication-form",
+        route: "intensive-follow-up-update",
         id: row.id,
         activeTab: "history",
         actionType: action,
@@ -246,6 +250,7 @@ const PatientnHistory = (props) => {
     setReason({ [e.target.name]: e.target.value });
   };
   const LoadDeletePage = (row) => {
+    console.log(row.path);
     if (row.path === "Mental-health") {
       setSaving(true);
       //props.setActiveContent({...props.activeContent, route:'mental-health-view', id:row.id})
@@ -526,32 +531,6 @@ const PatientnHistory = (props) => {
             toast.error("Something went wrong. Please try again...");
           }
         });
-    }else if (row.path === "Client-Verification") {
-      setSaving(true);
-      //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
-      axios
-          .delete(`${baseUrl}observation/${row.id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          .then((response) => {
-            toast.success("Record Deleted Successfully");
-            PatientHistory();
-            toggle();
-            setSaving(false);
-          })
-          .catch((error) => {
-            setSaving(false);
-            if (error.response && error.response.data) {
-              let errorMessage =
-                  error.response.data.apierror &&
-                  error.response.data.apierror.message !== ""
-                      ? error.response.data.apierror.message
-                      : "Something went wrong, please try again";
-              toast.error(errorMessage);
-            } else {
-              toast.error("Something went wrong. Please try again...");
-            }
-          });
     } else if (row.path === "client-tracker") {
       setSaving(true);
       //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
@@ -688,7 +667,7 @@ const PatientnHistory = (props) => {
         </Modal.Header>
         <Modal.Body>
           <h4>
-            Are you Sure you want to delete <b>{record && record.name==='Chronic Care' ? 'Care and Support' : record && record.name}</b>
+            Are you Sure you want to delete <b>{record && record.name}</b>
           </h4>
           <br />
           <Form>
