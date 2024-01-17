@@ -38,4 +38,8 @@ public interface ARTClinicalRepository extends JpaRepository<ARTClinical, Long> 
 
     Optional<ARTClinical> findByUuid(String uuid);
 
+    @Query("SELECT ac.person.uuid AS personUuid, MAX(ac.visitDate) AS maxVisitDate " +
+            "FROM ARTClinical ac WHERE ac.archived = 0 " +
+            "GROUP BY ac.person.uuid")
+    List<Object[]> findMaxVisitDateAndPersonUuid();
 }

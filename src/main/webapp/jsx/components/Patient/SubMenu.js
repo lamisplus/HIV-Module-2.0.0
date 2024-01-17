@@ -7,6 +7,7 @@ function SubMenu(props) {
   //const classes = useStyles();
   const [activeItem, setActiveItem] = useState("recent-history");
   const patientObj = props.patientObj;
+
   const patientCurrentStatus =
     props.patientObj && props.patientObj.currentStatus === "Died (Confirmed)"
       ? true
@@ -110,6 +111,13 @@ function SubMenu(props) {
       route: "intensive-followup",
     });
   };
+  const clientVerficationForm = () => {
+    setActiveItem("clientVerficationForm");
+    props.setActiveContent({
+      ...props.activeContent,
+      route: "client-verfication-form",
+    });
+  };
   const loadTransferForm = () => {
     setActiveItem("transfer");
     props.setActiveContent({ ...props.activeContent, route: "transfer-form" });
@@ -152,7 +160,7 @@ function SubMenu(props) {
         <Segment inverted>
           {/*!props.art && patientObj.commenced!==true && patientObj.enrollment.targetGroupId===473) || (!props.art && (patientObj.commenced!==true || patientObj.commenced===true)  && patientObj.mentalHealth!==true) */}
           {(patientObj.commenced === false ||
-            patientObj.createBy !== "Lamis data migration system") &&
+            patientObj.createBy.toUpperCase() !== "LAMIS DATA MIGRATION SYSTEM") &&
           (patientObj.commenced !== true ||
             patientObj.clinicalEvaluation !== true ||
             (patientObj.targetGroupId !== 473
@@ -237,9 +245,9 @@ function SubMenu(props) {
                   </Menu.Item>
                 )}
               <Menu.Item
-                  onClick={() => loadChronicCare(patientObj)}
-                  name="chronic care"
-                  active={activeItem === "chronic-care"}
+                onClick={() => loadChronicCare(patientObj)}
+                name="chronic care"
+                active={activeItem === "chronic-care"}
               >
                 Care & Support
               </Menu.Item>
@@ -344,34 +352,44 @@ function SubMenu(props) {
                     >
                       Intensive Follow Up
                     </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-                <Dropdown item text="OTZ">
-                  <Dropdown.Menu>
                     <Dropdown.Item
-                      onClick={() => loadOtzServiceForm(patientObj)}
-                      name="OTZ Service Form"
-                      active={activeItem === "otz-service-form"}
-                      title="Tracking Form"
+                      onClick={() => clientVerficationForm(patientObj)}
+                      name="clientVerficationForm"
+                      active={activeItem === "clientVerficationForm"}
+                      title="Client Verfication Form"
                     >
-                      OTZ Service Form
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={() => loadOtzCheckList(patientObj)}
-                      name="Peadiatric Disclosure Checklist"
-                      active={
-                        activeItem === "otz-peadiatric-disclosure-checklist"
-                      }
-                      title="Peadiatric Disclosure Checklist"
-                    >
-                      Peadiatric Disclosure Checklist
+                      Client Verification Form
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
+                {/*<Dropdown item text="OTZ">*/}
+                {/*  <Dropdown.Menu>*/}
+                {/*    <Dropdown.Item*/}
+                {/*      onClick={() => loadOtzServiceForm(patientObj)}*/}
+                {/*      name="OTZ Service Form"*/}
+                {/*      active={activeItem === "otz-service-form"}*/}
+                {/*      title="Tracking Form"*/}
+                {/*    >*/}
+                {/*      OTZ Service Form*/}
+                {/*    </Dropdown.Item>*/}
+                {/*    {patientObj.age <=17 && (*/}
+                {/*    <Dropdown.Item*/}
+                {/*      onClick={() => loadOtzCheckList(patientObj)}*/}
+                {/*      name="Peadiatric Disclosure Checklist"*/}
+                {/*      active={*/}
+                {/*        activeItem === "otz-peadiatric-disclosure-checklist"*/}
+                {/*      }*/}
+                {/*      title="Peadiatric Disclosure Checklist"*/}
+                {/*    >*/}
+                {/*      Peadiatric Disclosure Checklist*/}
+                {/*    </Dropdown.Item>*/}
+                {/*    )}*/}
+                {/*  </Dropdown.Menu>*/}
+                {/*</Dropdown>*/}
               </Menu.Menu>
 
-              {/* <Menu.Item onClick={() => loadTransferForm(patientObj)} name='transfer'
-                    active={activeItem === 'transfer'} title="Transfer">Transfer</Menu.Item> */}
+              <Menu.Item onClick={() => loadTransferForm(patientObj)} name='transfer'
+                    active={activeItem === 'transfer'} title="Transfer">Transfer</Menu.Item>
               <Menu.Item
                 onClick={() => loadPatientHistory(patientObj)}
                 name="history"

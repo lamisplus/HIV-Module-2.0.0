@@ -9,12 +9,14 @@ import org.lamisplus.modules.hiv.service.HivEnrollmentService;
 import org.lamisplus.modules.hiv.service.HivPatientService;
 import org.lamisplus.modules.hiv.service.PatientActivityService;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -119,6 +121,15 @@ public class HivEnrollmentController {
     @GetMapping("/patients/{patientId}/history/activities")
     public List<PatientActivity> getActivitiesHistory(@PathVariable Long patientId) {
         return patientActivityService.getActivities (patientId);
+    }
+
+    @GetMapping(value = "patient/enrollment/unique-id-exists")
+    public ResponseEntity<?> uniqueIdExists(@RequestParam("personUuid") Optional<String> personUuid, @RequestParam("uniqueId") String uniqueId){
+
+        return hivEnrollmentService.uniqueIdExists(
+                personUuid,
+                uniqueId).isPresent()
+                ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 }
