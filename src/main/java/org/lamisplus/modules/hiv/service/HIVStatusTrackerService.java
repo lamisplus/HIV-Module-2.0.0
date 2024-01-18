@@ -30,14 +30,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class HIVStatusTrackerService {
-
-	public static final LocalDate INVALID_DATE = LocalDate.of(1970, 01, 01);
-	public static final String NOT_ENROLLED = "Not Enrolled";
-	public static final String HIV_NEGATIVE = "HIV_NEGATIVE";
-	public static final String HIV_PLUS_NON_ART = "HIV+ NON ART";
-	public static final String IIT = "IIT";
-	public static final int TWENTY_NINE_DAYS = 29;
-	public static final String ACTIVE_ON_TREATMENT = "Active on Treatment";
+	
 	private final HIVStatusTrackerRepository hivStatusTrackerRepository;
 	
 	
@@ -94,7 +87,7 @@ public class HIVStatusTrackerService {
 				.stream()
 				.max(personStatusDateComparator);
 		List<ArtPharmacy> pharmacyRefills = artPharmacyRepository.getArtPharmaciesByPersonAndArchived(person, 0);
-		StatusDto statusDto = new StatusDto(HIV_PLUS_NON_ART, null);
+		StatusDto statusDto = new StatusDto("HIV+ NON ART", null);
 		if (!pharmacyRefills.isEmpty()) {
 			return currentStatus.map(this::calculatePatientCurrentStatus)
 					.orElse(statusDto);
@@ -119,7 +112,7 @@ public class HIVStatusTrackerService {
 								&& status.getStatusDate().isBefore(endDate.plusDays(1)))
 				.max(personStatusDateComparator);
 		List<ArtPharmacy> pharmacyRefills = artPharmacyRepository.getArtPharmaciesByPersonAndArchived(person, 0);
-		StatusDto statusDto = new StatusDto(HIV_PLUS_NON_ART, null);
+		StatusDto statusDto = new StatusDto("HIV+ NON ART", null);
 		if (!pharmacyRefills.isEmpty()) {
 			return currentStatus.map(this::calculatePatientCurrentStatus)
 					.orElse(statusDto);
@@ -137,41 +130,32 @@ public class HIVStatusTrackerService {
 	
 	
 	private StatusDto calculatePatientCurrentStatus(HIVStatusTracker statusTracker) {
-		if(statusTracker.getStatusDate() == null)statusTracker.setStatusDate(INVALID_DATE);
 		AtomicReference<LocalDate> statusDate = new AtomicReference<>(statusTracker.getStatusDate());
 		Comparator<ArtPharmacy> refilledComparator = Comparator.comparing(ArtPharmacy::getNextAppointment);
-		//log.info("status tracker {}", statusTracker);
-		/*Optional<ArtPharmacy> artPharmacy =
+		Optional<ArtPharmacy> artPharmacy =
 				artPharmacyRepository
 						.getArtPharmaciesByPersonAndArchived(statusTracker.getPerson(),0)
 						.stream()
-						.max(refilledComparator);*/
-		Optional<ArtPharmacy> artPharmacy = artPharmacyRepository
-				.getOneArtPharmaciesByPersonAndArchived(statusTracker.getPerson().getUuid(), 0);
-
+						.max(refilledComparator);
+				
 		artPharmacy.ifPresent(p -> statusDate.set(p.getNextAppointment()));
 		List<String> staticStatus = Arrays.asList("Stopped Treatment", "Died (Confirmed)", "ART Transfer Out", "HIV_NEGATIVE");
 		if (staticStatus.contains(statusTracker.getHivStatus())) {
-			if(statusTracker.getHivStatus().equalsIgnoreCase(HIV_NEGATIVE)){
-				return new StatusDto(NOT_ENROLLED, statusTracker.getStatusDate());
+			if(statusTracker.getHivStatus().equalsIgnoreCase("HIV_NEGATIVE")){
+				return new StatusDto("Not Enrolled", statusTracker.getStatusDate());
 			}
 			return new StatusDto(statusTracker.getHivStatus(), statusTracker.getStatusDate());
 		} else {
-			LocalDate dateStatus;
-			if(statusDate.get() == null) {
-				dateStatus=INVALID_DATE;
-			} else {
-				dateStatus = statusDate.get();
-			}
-			if (statusDate.get() != null && dateStatus != null && dateStatus.isBefore(LocalDate.now())) {
-				long days = ChronoUnit.DAYS.between(dateStatus, LocalDate.now());
+			log.info("next appointment {}", statusDate.get());
+			if (statusDate.get().isBefore(LocalDate.now())) {
+				long days = ChronoUnit.DAYS.between(statusDate.get(), LocalDate.now());
 				if (days >= 29) {
-					return new StatusDto(IIT, dateStatus.plusDays(TWENTY_NINE_DAYS));
+					return new StatusDto("IIT", statusDate.get().plusDays(29));
 				}
-				return new StatusDto(ACTIVE_ON_TREATMENT, dateStatus);
+				return new StatusDto("Active on Treatment", statusDate.get());
 			}
 			}
-		return new StatusDto(ACTIVE_ON_TREATMENT, statusDate.get());
+		return new StatusDto("Active on Treatment", statusDate.get());
 		}
 		
 	

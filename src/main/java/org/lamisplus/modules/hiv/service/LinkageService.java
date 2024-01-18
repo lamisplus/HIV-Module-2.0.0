@@ -1,6 +1,5 @@
 package org.lamisplus.modules.hiv.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
@@ -9,15 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.IOUtils;
-import org.lamisplus.modules.hiv.domain.dto.LinkageResponse;
-import org.lamisplus.modules.hiv.domain.dto.LinkageResponseInterface;
 import org.lamisplus.modules.hiv.domain.entity.OvcLinkage;
 import org.lamisplus.modules.hiv.repositories.LinkageRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
@@ -27,7 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -245,111 +237,5 @@ public class LinkageService {
             }
         }
     }
-
-
-    public LinkageResponse convertToLinkageResponseDto(OvcLinkage ovcLinkage) {
-        LinkageResponse response = new LinkageResponse();
-        response.setArtNumber(ovcLinkage.getArtNumber());
-        response.setLastName(ovcLinkage.getLastName());
-        response.setOtherName(ovcLinkage.getOtherName());
-        response.setGender(ovcLinkage.getGender());
-
-        // Format birthDate
-        response.setBirthDate(formatDate(ovcLinkage.getBirthDate()));
-
-        response.setFacilityName(ovcLinkage.getFacilityName());
-        response.setDatimCode(ovcLinkage.getDatimCode());
-        response.setStateOfResidence(ovcLinkage.getStateOfResidence());
-        response.setLgaOfResidence(ovcLinkage.getLgaOfResidence());
-        response.setEntryPoint(ovcLinkage.getEntryPoint());
-        response.setShareContactWithOvc(ovcLinkage.getShareContactWithOvc());
-        response.setReasonForDecline(ovcLinkage.getReasonForDecline());
-        response.setDrugRefillNotification(ovcLinkage.getDrugRefillNotification());
-        response.setPhoneNumber(ovcLinkage.getPhoneNumber());
-        response.setCaregiverSurname(ovcLinkage.getCaregiverSurname());
-        response.setCaregiverOtherName(ovcLinkage.getCaregiverOtherName());
-        response.setOfferDate(formatDate(ovcLinkage.getOfferDate()));
-        response.setEnrollmentDate(formatDate(ovcLinkage.getEnrollmentDate()));
-
-        response.setOvcUniqueId(ovcLinkage.getOvcUniqueId());
-        response.setHouseholdUniqueId(ovcLinkage.getHouseholdUniqueId());
-        response.setEnrolledInOvcProgram(ovcLinkage.getEnrolledInOvcProgram());
-        response.setArchived(ovcLinkage.getArchived());
-        response.setCboName(ovcLinkage.getCboName());
-        response.setFacilityStaffName(ovcLinkage.getFacilityStaffName());
-
-        return response;
-    }
-
-    private String formatDate(LocalDate date) {
-        return date != null ? date.toString() : null;
-    }
-
-    /**
-     * Convert response to list
-     */
-    public List<LinkageResponse> convertToResponseList(List<OvcLinkage> ovcLinkages) {
-        return ovcLinkages.stream()
-                .map(this::convertToLinkageResponseDto)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Export OvcLinkage records to a JSON file.
-     *
-     * @return Success message, or "None" if no records were found.
-     */
-    public String exportRecordsToJson() {
-        try {
-            List<LinkageResponseInterface> linkageList = getAllEnrolledOvcClients();
-            if (!linkageList.isEmpty()) {
-                String filePath = LINKAGE_EXPORT + File.separator + "ovc_linkage_" + df.format(new java.util.Date()) + ".json";
-                String json = objectToJson(linkageList);
-                writeObjectToFile(json, filePath);
-                return "File exported successfully.";
-            } else {
-                return "No records found to export";
-            }
-        } catch (IOException exception) {
-            log.error("Error exporting records to JSON: {}", exception.getMessage());
-            return "Error exporting records to JSON: " + exception.getMessage();
-        }
-    }
-
-
-    private String objectToJson(Object object) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS, false);
-        try {
-            // Convert the object to a JSON string using the correct collection type
-            CollectionType javaType = objectMapper.getTypeFactory().constructCollectionType(List.class, LinkageResponse.class);
-            return objectMapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
-            log.error("Error converting object to JSON: {}", e.getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * get the list of enrolled ovc patients
-     */
-    @Transactional(readOnly = true)
-    public Page<LinkageResponseInterface> getPagedEnrolledOvcClients(Pageable pageable) {
-        List<LinkageResponseInterface> enrolledClients = getAllEnrolledOvcClients();
-
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), enrolledClients.size());
-
-        return new PageImpl<>(enrolledClients.subList(start, end), pageable, enrolledClients.size());
-    }
-
-
-    public List<LinkageResponseInterface> getAllEnrolledOvcClients() {
-        return repository.findAllEnrolledOvcClients();
-    }
-
-
+    
 }

@@ -110,8 +110,7 @@ const ChronicCare = (props) => {
   const [showTpt, setShowTpt] = useState(false);
   const [enrollDate, setEnrollDate] = useState("");
   const [chronicDateExist, setChronicDateExist] = useState(null);
-  const [lastDateOfObservation, setlastDateOfObservation] = useState(null);
-  const [isUpdate, setIsUpdate] = useState(false);
+  const [lastDateOfObservation, setlastDateOfObservation] = useState(null)
   //GenderBase Object
   const [genderBase, setGenderBase] = useState({
     partnerEverPhysically: "",
@@ -237,10 +236,9 @@ const ChronicCare = (props) => {
       props.activeContent.id !== null
     ) {
       setSisabledField(
-        props.activeContent.actionType === "view"
+        props.activeContent.actionType === "view" ? true : false
       );
     }
-    setIsUpdate(props.activeContent && props.activeContent.actionType === "update");
   }, [props.activeContent.id]);
   //GET  Patients
   async function PatientCurrentObject() {
@@ -326,24 +324,14 @@ const ChronicCare = (props) => {
     return Object.values(temp).every((x) => x === "");
   };
 
-  const showErrorMessage = (message) =>{
-    toast.error(message,
-      { position: toast.POSITION.BOTTOM_CENTER }
-    );
-  }
-
-  const showSuccessMessage = (message) =>{
-    toast.success(message,
-          { position: toast.POSITION.BOTTOM_CENTER }
-        );
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
 
     if (tbObj.tbTreatment === "") {
-      showErrorMessage("TB & IPT Screening is not filled for patient");
+      toast.error("TB & IPT Screening is not filled for patient", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
       setSaving(false);
     } else {
       observation.personId = patientObj.id;
@@ -356,15 +344,27 @@ const ChronicCare = (props) => {
       observationObj.tptMonitoring = tpt;
       observation.data = observationObj;
       if (validate()) {//Validate function check
-        if (isUpdate) {
+          
+        if (
+            props.activeContent &&
+            props.activeContent.actionType === "update"
+          ) {
+            //Perform operation for updation action)
             const hasObservationDateChanged = lastDateOfObservation !== observation.dateOfObservation
+
+          //if(hasObservationDateChanged && chronicCaredate === observation.observationDate)
             if(hasObservationDateChanged && chronicDateExist !== null &&
               chronicDateExist.find(
                 (x) => x.dateOfObservation === observation.dateOfObservation
               )
             ) 
               {
-                showErrorMessage("Chronic Care visit date " + observation.dateOfObservation + " already exist. ")
+                toast.error(
+                  "Chronic Care visit date " +
+                    observation.dateOfObservation +
+                    " already exist. ",
+                  { position: toast.POSITION.BOTTOM_CENTER }
+                );
                 setSaving(false);
               }
             else{
@@ -376,7 +376,9 @@ const ChronicCare = (props) => {
               )
               .then((response) => {
                 setSaving(false);
-                showSuccessMessage("Chronic Care Save successful");
+                toast.success("Chronic Care Save successful", {
+                  position: toast.POSITION.BOTTOM_CENTER,
+                });
                 props.setActiveContent({
                   ...props.activeContent,
                   route: "recent-history",
@@ -389,9 +391,13 @@ const ChronicCare = (props) => {
                     error.response.data.apierror &&
                     error.response.data.apierror.message !== ""
                   ) {
-                    showErrorMessage(error.response.data.apierror.message);
+                    toast.error(error.response.data.apierror.message, {
+                      position: toast.POSITION.BOTTOM_CENTER,
+                    });
                   } else {
-                    showErrorMessage("Something went wrong. Please try again...");
+                    toast.error("Something went wrong. Please try again...", {
+                      position: toast.POSITION.BOTTOM_CENTER,
+                    });
                   }
                 }
               });
@@ -405,7 +411,12 @@ const ChronicCare = (props) => {
               )
             ) 
             {
-              showErrorMessage("Chronic Care visit date " + observation.dateOfObservation + " already exist. ");
+              toast.error(
+                "Chronic Care visit date " +
+                  observation.dateOfObservation +
+                  " already exist. ",
+                { position: toast.POSITION.BOTTOM_CENTER }
+              );
               setSaving(false);
             }else{
               axios
@@ -414,7 +425,9 @@ const ChronicCare = (props) => {
               })
               .then((response) => {
                 setSaving(false);
-                showSuccessMessage("Chronic Care Save successful");
+                toast.success("Chronic Care Save successful", {
+                  position: toast.POSITION.BOTTOM_CENTER,
+                });
                 props.setActiveContent({
                   ...props.activeContent,
                   route: "recent-history",
@@ -427,9 +440,13 @@ const ChronicCare = (props) => {
                     error.response.data.apierror &&
                     error.response.data.apierror.message !== ""
                   ) {
-                    showErrorMessage(error.response.data.apierror.message);
+                    toast.error(error.response.data.apierror.message, {
+                      position: toast.POSITION.BOTTOM_CENTER,
+                    });
                   } else {
-                    showErrorMessage("Something went wrong. Please try again...");
+                    toast.error("Something went wrong. Please try again...", {
+                      position: toast.POSITION.BOTTOM_CENTER,
+                    });
                   }
                 }
               });
@@ -439,7 +456,9 @@ const ChronicCare = (props) => {
         
       //End of the ecnounter date validation check
       } else {
-        showErrorMessage("All fields are required");
+        toast.error("All fields are required", {
+          position: toast.POSITION.BOTTOM_CENTER,
+        });
         setSaving(false);
       }
     }
@@ -924,7 +943,7 @@ const ChronicCare = (props) => {
               {saving ? <Spinner /> : ""}
 
               <br />
-              {isUpdate ? (
+              {props.activeContent && props.activeContent.actionType ? (
                 <>
                   <MatButton
                     type="submit"

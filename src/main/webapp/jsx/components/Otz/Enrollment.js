@@ -89,7 +89,7 @@ const EnrollmentOtz = (props) => {
   const [saving, setSavings] = useState(false);
   const [currentRecord, setCurrentRecord] = useState(null);
   const [otzOutcomesArray, setOtzOutcomes] = useState([]);
-  console.log(Number(props?.activeContent?.currentLabResult?.result));
+  // console.log(Number(props?.activeContent?.currentLabResult?.result));
   const submitNewRecord = (values, param) => {
     const observation = {
       data: values,
