@@ -98,7 +98,6 @@ const Tracking = (props) => {
   const [baselineCDCount, setBaselineCDCount] = useState("");
   const [currentCD4, setCurrentCD4] = useState("");
   const [BMI, setBMI] = useState("");
-
   const [currentMedication, setCurrentMedication] = useState([]);
 
   const [observation, setObservation] = useState({
@@ -186,21 +185,70 @@ const Tracking = (props) => {
     localStorage.getItem("faciltyId")
   );
 
+  // get all facilities
+  const getAllFacilities = () => {
+    axios
+      .get(`${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/4/hierarchy`,
+       {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        console.log(response.data);
+
+        let updatedFaclilties = response.data.map((each, id) => {
+          return {
+            ...each,
+            value: each.id,
+            label: each.name,
+          };
+        });
+        setAllFacilities(updatedFaclilties);
+      })
+      .catch((error) => { });
+  };
+
+
+
+
+
+  const fetchOrgUnitByParentId = (parentId, levelId, setData) => {
+    axios
+      .get(`${baseUrl}organisation-units/hierarchy/${parentId}/${levelId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+      .then((response) => {
+        const c = response.data.map(x => ({
+          ...x,
+          label: x.name,
+          value: x.id,
+        }));
+
+        setData(c);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+
+
   console.log("that is good ", payload);
+  console.log("the person uuid", patientObj.personUuid)
   // fetch info for the form
   const getTreatmentInfo = () => {
     let facId = localStorage.getItem("faciltyId");
-    //  .get(`${baseUrl}treatment-transfers/${facId}/${patientObj.personUuid}`
     axios
       .get(`${baseUrl}treatment-transfers/info/${patientObj.personUuid}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
+        console.log(`peson uuid: ${patientObj.personUuid}`)
         setTransferInfo(response.data);
         console.log("getTreatmentInfo", response.data);
         //   setPatientObj1(response.data);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   // get current Medication dose
@@ -214,7 +262,7 @@ const Tracking = (props) => {
         console.log("getCurrentMedication", response.data);
         setCurrentMedication(response.data);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   // get Lab Result
@@ -233,7 +281,7 @@ const Tracking = (props) => {
         console.log("getLabResult", response.data);
         setLabResult(response.data);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   const getBasedlineCD4Count = () => {
@@ -248,12 +296,11 @@ const Tracking = (props) => {
         console.log("baselineCDCount", response.data);
         // setLabResult(response.data);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   const getCurrentCD4Count = () => {
     let facId = localStorage.getItem("faciltyId");
-    //    treatment-transfers/patient_current_cd4/{facilityId}/{patientUuid}
     axios
       .get(
         `${baseUrl}treatment-transfers/patient_current_cd4/${facId}/${patientObj.personUuid}`,
@@ -266,13 +313,12 @@ const Tracking = (props) => {
         console.log("currentCD4", response.data);
         // setLabResult(response.data);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   const postTransferForm = (load) => {
-    //    treatment-transfers/patient_current_cd4/{facilityId}/{patientUuid}
     axios
-      .post(`${baseUrl}observation`, load, {
+      .post(`${baseUrl}treatment-transfers/save`, load, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -295,52 +341,6 @@ const Tracking = (props) => {
       });
   };
 
-  // const getPatientInfo = () => {
-  //   axios
-  //     .get(`${baseUrl}patient/${patientObj.id}`, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     })
-  //     .then((response) => {
-  //       console.log(response.data);
-  //         setPatientObj1(response.data);
-  //     })
-  //     .catch((error) => {});
-  // };
-
-  // get all facilities
-  const getAllFacilities = () => {
-    axios
-      .get(`${baseUrl}organisation-unit-levels/v2/4/organisation-units`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        console.log(response.data);
-
-        let updatedFaclilties = response.data.map((each, id) => {
-          return {
-            ...each,
-            value: each.id,
-            label: each.name,
-          };
-        });
-
-        setAllFacilities(updatedFaclilties);
-      })
-      .catch((error) => {});
-  };
-  // submit transfer info
-
-  // const submitHandler = () => {
-  //   axios
-  //     .post(`${baseUrl}observation`, observation, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     })
-  //     .then((response) => {
-  //       console.log(response.data);
-  //       setPatientObj1(response.data);
-  //     })
-  //     .catch((error) => {});
-  // };
 
   const calculateBMI = () => {
     let squareH = Number(transferInfo?.height) * Number(transferInfo?.height);
@@ -367,7 +367,6 @@ const Tracking = (props) => {
   useEffect(() => {
     setPayload({ ...payload, ...transferInfo });
     calculateBMI();
-
     // calculateBMI();
   }, [transferInfo]);
   const handleInputChange = (e) => {
@@ -382,10 +381,11 @@ const Tracking = (props) => {
       ...payload,
       facilityTransferTo: e.name,
       stateTransferTo: e.parentParentOrganisationUnitName,
-      lgaTransferTo: e.parentParentOrganisationUnitName,
+      lgaTransferTo: e.parentOrganisationUnitName,
     });
     setErrors({ ...errors, facilityTransferTo: "" });
     setSelectedState(e.parentParentOrganisationUnitName);
+    setSelectedLga(e.parentOrganisationUnitName)
     // setSelectedOption(e);
   };
   const [attempt, setAttempt] = useState({
@@ -398,6 +398,7 @@ const Tracking = (props) => {
   });
   const [attemptList, setAttemptList] = useState([]);
   const [selectedState, setSelectedState] = useState("");
+  const [selectedLga, setSelectedLga] = useState("");
   const [reasonForTransfer, setReasonForTransfer] = useState([
     "Relocating",
     "Closeness to new facility",
@@ -488,31 +489,6 @@ const Tracking = (props) => {
     setAttemptList([...attemptList]);
   };
 
-  // const postPayload = () => {
-  //   axios
-  //     .post(`${baseUrl}observation`, testOrderList, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     })
-  //     .then((response) => {
-  //       setSaving(false);
-  //       toast.success("Transfer Form Submitted Successfully");
-  //       props.setActiveContent({
-  //         ...props.activeContent,
-  //         route: "recent-history",
-  //       });
-  //     })
-  //     .catch((error) => {
-  //       setSaving(false);
-  //       if (error.response && error.response.data) {
-  //         let errorMessage =
-  //           error.response.data && error.response.data.apierror.message !== ""
-  //             ? error.response.data.apierror.message
-  //             : "Something went wrong, please try again";
-  //         toast.error(errorMessage);
-  //       }
-  //     });
-  // };
-
   /**** Submit Button Processing  */
   const handleSubmit = (e) => {
     let facId = localStorage.getItem("faciltyId");
@@ -523,18 +499,7 @@ const Tracking = (props) => {
       payload.bmi = BMI;
       payload.currentMedication = currentMedication;
       payload.labResult = labResult;
-
-      let today = moment().format("YYYY-MM-DD");
-      let updatePayload = {
-        data: payload,
-        dateOfObservation: today,
-        facilityId: facId,
-        personId: patientObj.id,
-        type: "Transfer",
-        visitId: "",
-      };
-      console.log(updatePayload);
-      postTransferForm(updatePayload);
+      postTransferForm(payload)
     } else {
       window.scroll(0, 0);
     }
@@ -593,33 +558,6 @@ const Tracking = (props) => {
                 </div>
               </div>
               <div className="row">
-                {/* <div className="form-group mb-3 col-md-4">
-                  <FormGroup>
-                    <Label for="">Facility Name To</Label>
-
-                    <Input
-                      type="select"
-                      name="durationOnART"
-                      id="durationOnART"
-                      onChange={handleInputChange}
-                      value={objValues?.durationOnART}
-                    >
-                      <option value="Not devolved">Select Facility</option>
-
-                      {allFacilities.map((each, index) => {
-                        return <option value="Devolved">Devolved</option>;
-                      })}
-                    </Input>
-                    {errors.durationOnART !== "" ? (
-                      <span className={classes.error}>
-                        {errors.durationOnART}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </FormGroup>
-                </div> */}
-
                 <div className="form-group mb-3 col-md-4">
                   <FormGroup>
                     <Label for="testGroup">
@@ -660,7 +598,6 @@ const Tracking = (props) => {
                       name="stateTransferTo"
                       id="stateTransferTo"
                       disabled={true}
-                      // onChange={handleInputChange}
                       value={selectedState}
                     ></Input>
                     {/* {errors.dsdStatus !== "" ? (
@@ -679,8 +616,8 @@ const Tracking = (props) => {
                       name="lgaTransferTo"
                       id="lgaTransferTo"
                       disabled={true}
-                      // onChange={handleInputChange}
-                      value={selectedState}
+                      value={selectedLga}
+                      // value={lgaTransferTo}
                     ></Input>
                   </FormGroup>
                 </div>
@@ -698,13 +635,6 @@ const Tracking = (props) => {
                       value={payload?.clinicalNote}
                       style={{ height: "70px" }}
                     ></Input>
-                    {/* {errors.reasonForTracking !== "" ? (
-                      <span className={classes.error}>
-                        {errors.reasonForTracking}
-                      </span>
-                    ) : (
-                      ""
-                    )} */}
                   </FormGroup>
                 </div>
               </div>
@@ -1172,11 +1102,11 @@ const Tracking = (props) => {
                               <FormGroup className="col-md-6">
                                 <Input
                                   type="text"
-                                  // name="facilityName"
-                                  // id="facilityName"
-                                  // onChange={handleInputChange}
-                                  // disabled={true}
-                                  // value={payload?.facilityName}
+                                // name="facilityName"
+                                // id="facilityName"
+                                // onChange={handleInputChange}
+                                // disabled={true}
+                                // value={payload?.facilityName}
                                 ></Input>
                               </FormGroup>
                             </td>
@@ -1534,7 +1464,7 @@ const Tracking = (props) => {
                       id="patientCameWithTransferForm"
                       onChange={handleInputChange}
                       value={payload.patientCameWithTransferForm}
-                      //min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
+                    //min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
                     >
                       <option value=""></option>
                       <option value="Yes">Yes</option>
@@ -1721,7 +1651,7 @@ const Tracking = (props) => {
               startIcon={<SaveIcon />}
               onClick={handleSubmit}
               style={{ backgroundColor: "#014d88" }}
-              // disabled={objValues.dateOfEac1 === "" ? true : false}
+            // disabled={objValues.dateOfEac1 === "" ? true : false}
             >
               {!saving ? (
                 <span style={{ textTransform: "capitalize" }}>Save</span>

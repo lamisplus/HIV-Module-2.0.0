@@ -418,9 +418,9 @@ const Tracking = (props) => {
     temp.dateLastAppointment = objValues.dateLastAppointment
       ? ""
       : "This field is required";
-    // temp.dateMissedAppointment = objValues.dateMissedAppointment
-    //   ? ""
-    //   : "This field is required";
+    temp.dateMissedAppointment = objValues.dateMissedAppointment
+      ? ""
+      : "This field is required";
 
     temp.careInFacilityDiscountinued = objValues.careInFacilityDiscountinued
       ? ""
@@ -484,7 +484,7 @@ const Tracking = (props) => {
     }
     {
       objValues.reasonForDiscountinuation === "Others" &&
-        (temp.biometricStatus = objValues.biometricStatus
+      (temp.biometricStatus = objValues.biometricStatus
           ? ""
           : "This field is required");
     }
@@ -568,11 +568,7 @@ const Tracking = (props) => {
           objValues.statusTracker.vaCauseOfDeathType =
             objValues.vaCauseOfDeathType;
           objValues.statusTracker.vaCauseOfDeath = objValues.vaCauseOfDeath;
-
-          if (
-            objValues.biometricStatus !== null &&
-            objValues.biometricStatus !== ""
-          ) {
+          if (objValues.biometricStatus !== null) {
             objValues.statusTracker.biometricStatus = objValues.biometricStatus;
             objValues.statusTracker.hivStatus = objValues.biometricStatus;
           }
@@ -856,7 +852,10 @@ const Tracking = (props) => {
               </div>
               <div className="form-group mb-3 col-md-4">
                 <FormGroup>
-                  <Label for="">Date of Missed Scheduled Appointment </Label>
+                  <Label for="">
+                    Date of Missed Scheduled Appointment{" "}
+                    <span style={{ color: "red" }}> *</span>
+                  </Label>
                   <Input
                     type="date"
                     name="dateMissedAppointment"
