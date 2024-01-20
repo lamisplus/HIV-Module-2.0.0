@@ -11,8 +11,8 @@ import org.lamisplus.modules.hiv.controller.exception.NoRecordFoundException;
 import org.lamisplus.modules.hiv.domain.dto.*;
 import org.lamisplus.modules.hiv.domain.entity.Observation;
 import org.lamisplus.modules.hiv.repositories.ObservationRepository;
-//import org.lamisplus.modules.hiv.utility.AppConstants;
 
+import org.lamisplus.modules.hiv.utility.Constants;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -85,12 +85,12 @@ public class TreatmentTransferService {
             throw new IllegalArgumentException("TransferPatientInfo is null");
         }
         Optional<HivEnrollmentDTO> enrollment = hivEnrollmentService.getHivEnrollmentByPersonIdAndArchived(dto.getPatientId());
-        ApplicationCodeSet codeSet = applicationCodesetRepository.findByDisplay(AppConstants.TRANSFER_OUT_DISPLAY);
+        ApplicationCodeSet codeSet = applicationCodesetRepository.findByDisplay(Constants.TRANSFER_OUT_DISPLAY);
         if (codeSet == null) {
-            throw new EntityNotFoundException(ApplicationCodeSet.class, "display", AppConstants.TRANSFER_OUT_DISPLAY);
+            throw new EntityNotFoundException(ApplicationCodeSet.class, "display", Constants.TRANSFER_OUT_DISPLAY);
         }
         String currentStatus = statusManagementService.getCurrentStatus(dto.getPatientId());
-        if (currentStatus.equalsIgnoreCase(AppConstants.DEAD_CONFIRMED_DISPLAY)) {
+        if (currentStatus.equalsIgnoreCase(Constants.DEAD_CONFIRMED_DISPLAY)) {
             throw new Exception("Patient is confirmed dead");
         }
         // get the current person
