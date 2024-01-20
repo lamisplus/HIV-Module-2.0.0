@@ -110,8 +110,6 @@ const Tracking = (props) => {
     visitId: null,
   });
 
-  const [info, setInfo] = useState({});
-
   const [payload, setPayload] = useState({
     height: "",
     weight: "",
@@ -157,27 +155,6 @@ const Tracking = (props) => {
     patientAttendedHerFirstVisit: "",
     acknowlegdeReceiveDate: "",
     // acknowlegdeTelephoneNumber: "",
-  });
-  const [objValues, setObjValues] = useState({
-    durationOnART: "",
-    dsdStatus: "",
-    dsdModel: "",
-    reasonForTracking: "",
-    dateLastAppointment: "",
-    dateMissedAppointment: "",
-    careInFacilityDiscountinued: "",
-    dateOfDiscontinuation: "",
-    reasonForDiscountinuation: "",
-    reasonForLossToFollowUp: "",
-    causeOfDeath: "",
-    dateReturnToCare: "",
-    referredFor: "",
-    referredForOthers: "",
-    reasonForTrackingOthers: "",
-    causeOfDeathOthers: "",
-    reasonForLossToFollowUpOthers: "",
-    attempts: "",
-    patientId: props.patientObj.id,
   });
 
   console.log(
@@ -236,20 +213,6 @@ const Tracking = (props) => {
       .catch((error) => {});
   };
 
-  const getBasedlineCD4Count = () => {
-    let facId = localStorage.getItem("faciltyId");
-    // /patient_baseline_cd4/{facilityId}/{patientUuid
-    axios
-      .get(`${baseUrl}patient_baseline_cd4/${facId}/${patientObj.personUuid}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        setBaselineCDCount(response.data);
-        console.log("baselineCDCount", response.data);
-        // setLabResult(response.data);
-      })
-      .catch((error) => {});
-  };
 
   const getCurrentCD4Count = () => {
     let facId = localStorage.getItem("faciltyId");
@@ -295,17 +258,6 @@ const Tracking = (props) => {
       });
   };
 
-  // const getPatientInfo = () => {
-  //   axios
-  //     .get(`${baseUrl}patient/${patientObj.id}`, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     })
-  //     .then((response) => {
-  //       console.log(response.data);
-  //         setPatientObj1(response.data);
-  //     })
-  //     .catch((error) => {});
-  // };
 
   // get all facilities
   const getAllFacilities = () => {
@@ -328,19 +280,6 @@ const Tracking = (props) => {
       })
       .catch((error) => {});
   };
-  // submit transfer info
-
-  // const submitHandler = () => {
-  //   axios
-  //     .post(`${baseUrl}observation`, observation, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     })
-  //     .then((response) => {
-  //       console.log(response.data);
-  //       setPatientObj1(response.data);
-  //     })
-  //     .catch((error) => {});
-  // };
 
   const calculateBMI = () => {
     let squareH = Number(transferInfo?.height) * Number(transferInfo?.height);
@@ -488,30 +427,6 @@ const Tracking = (props) => {
     setAttemptList([...attemptList]);
   };
 
-  // const postPayload = () => {
-  //   axios
-  //     .post(`${baseUrl}observation`, testOrderList, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     })
-  //     .then((response) => {
-  //       setSaving(false);
-  //       toast.success("Transfer Form Submitted Successfully");
-  //       props.setActiveContent({
-  //         ...props.activeContent,
-  //         route: "recent-history",
-  //       });
-  //     })
-  //     .catch((error) => {
-  //       setSaving(false);
-  //       if (error.response && error.response.data) {
-  //         let errorMessage =
-  //           error.response.data && error.response.data.apierror.message !== ""
-  //             ? error.response.data.apierror.message
-  //             : "Something went wrong, please try again";
-  //         toast.error(errorMessage);
-  //       }
-  //     });
-  // };
 
   /**** Submit Button Processing  */
   const handleSubmit = (e) => {
@@ -580,7 +495,6 @@ const Tracking = (props) => {
                 <div className="form-group mb-3 col-md-4">
                   <FormGroup>
                     <Label for="">LGA Transfer From</Label>
-
                     <Input
                       type="text"
                       name="lga"
@@ -593,33 +507,6 @@ const Tracking = (props) => {
                 </div>
               </div>
               <div className="row">
-                {/* <div className="form-group mb-3 col-md-4">
-                  <FormGroup>
-                    <Label for="">Facility Name To</Label>
-
-                    <Input
-                      type="select"
-                      name="durationOnART"
-                      id="durationOnART"
-                      onChange={handleInputChange}
-                      value={objValues?.durationOnART}
-                    >
-                      <option value="Not devolved">Select Facility</option>
-
-                      {allFacilities.map((each, index) => {
-                        return <option value="Devolved">Devolved</option>;
-                      })}
-                    </Input>
-                    {errors.durationOnART !== "" ? (
-                      <span className={classes.error}>
-                        {errors.durationOnART}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </FormGroup>
-                </div> */}
-
                 <div className="form-group mb-3 col-md-4">
                   <FormGroup>
                     <Label for="testGroup">
