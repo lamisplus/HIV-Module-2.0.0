@@ -66,7 +66,7 @@ const PharmacyHistory = (props) => {
         const calculatePillBalances = (currentDate, refillList) => {
             return refillList.map((refill) => {
                 return refill.extra.regimens.map((prescription) => {
-                    const daysDifference = Math.ceil((currentDate - new Date(refill.visitDate)) / (1000 * 60 * 60 * 24));
+                    const daysDifference = Math.ceil((currentDate - new Date(refill.visitDate)) / (1000 * 60 * 60 * 24) );
                     const expectedQuantity = Math.min(prescription.dispense, daysDifference * prescription.frequency);
                     const pillBalance = prescription.dispense - expectedQuantity;
                     return pillBalance;
