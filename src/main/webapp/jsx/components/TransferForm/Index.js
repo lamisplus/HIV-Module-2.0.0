@@ -214,28 +214,13 @@ const Tracking = (props) => {
   };
 
 
-  const getCurrentCD4Count = () => {
-    let facId = localStorage.getItem("faciltyId");
-    //    treatment-transfers/patient_current_cd4/{facilityId}/{patientUuid}
-    axios
-      .get(
-        `${baseUrl}treatment-transfers/patient_current_cd4/${facId}/${patientObj.personUuid}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
-      .then((response) => {
-        setCurrentCD4(response.data);
-        console.log("currentCD4", response.data);
-        // setLabResult(response.data);
-      })
-      .catch((error) => {});
-  };
 
   const postTransferForm = (load) => {
-    //    treatment-transfers/patient_current_cd4/{facilityId}/{patientUuid}
     axios
-      .post(`${baseUrl}observation`, load, {
+      // .post(`${baseUrl}observation`, load, {
+      //   headers: { Authorization: `Bearer ${token}` },
+      // })
+      .post(`${baseUrl}treatment-transfers/save`, load, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -262,7 +247,7 @@ const Tracking = (props) => {
   // get all facilities
   const getAllFacilities = () => {
     axios
-      .get(`${baseUrl}organisation-unit-levels/v2/4/organisation-units`, {
+      .get(`${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/4/hierarchy`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -299,8 +284,6 @@ const Tracking = (props) => {
     getTreatmentInfo();
     getLabResult();
     getCurrentMedication();
-    getBasedlineCD4Count();
-    getCurrentCD4Count();
   }, []);
 
   useEffect(() => {
@@ -321,11 +304,11 @@ const Tracking = (props) => {
       ...payload,
       facilityTransferTo: e.name,
       stateTransferTo: e.parentParentOrganisationUnitName,
-      lgaTransferTo: e.parentParentOrganisationUnitName,
+      lgaTransferTo: e.parentOrganisationUnitName,
     });
     setErrors({ ...errors, facilityTransferTo: "" });
     setSelectedState(e.parentParentOrganisationUnitName);
-    // setSelectedOption(e);
+    setSelectedLga(e.parentOrganisationUnitName);
   };
   const [attempt, setAttempt] = useState({
     attemptDate: "",
@@ -337,6 +320,7 @@ const Tracking = (props) => {
   });
   const [attemptList, setAttemptList] = useState([]);
   const [selectedState, setSelectedState] = useState("");
+  const [selectedLga, setSelectedLga] = useState("");
   const [reasonForTransfer, setReasonForTransfer] = useState([
     "Relocating",
     "Closeness to new facility",
@@ -438,18 +422,7 @@ const Tracking = (props) => {
       payload.bmi = BMI;
       payload.currentMedication = currentMedication;
       payload.labResult = labResult;
-
-      let today = moment().format("YYYY-MM-DD");
-      let updatePayload = {
-        data: payload,
-        dateOfObservation: today,
-        facilityId: facId,
-        personId: patientObj.id,
-        type: "Transfer",
-        visitId: "",
-      };
-      console.log(updatePayload);
-      postTransferForm(updatePayload);
+      postTransferForm(payload);
     } else {
       window.scroll(0, 0);
     }
@@ -567,7 +540,7 @@ const Tracking = (props) => {
                       id="lgaTransferTo"
                       disabled={true}
                       // onChange={handleInputChange}
-                      value={selectedState}
+                      value={selectedLga}
                     ></Input>
                   </FormGroup>
                 </div>
