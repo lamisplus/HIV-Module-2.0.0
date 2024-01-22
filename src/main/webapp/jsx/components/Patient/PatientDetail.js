@@ -57,8 +57,6 @@ import UpdateViewViralLoadOrderResult from "./../Laboratory/ViralLoadOrderResult
 import OtzServiceForm from "./../Otz/ServiceForm";
 import OtzPeadiatricDisclosureChecklist from "./../Otz/PeadiatricDisclosureChecklist";
 import OtzRegister from "./../Otz/Register";
-import EnrollmentOtz from "../Otz/Enrollment";
-import Tracking from "../ClientVerfication/ClientVerification";
 
 const styles = (theme) => ({
   root: {
@@ -156,9 +154,6 @@ function PatientCard(props) {
             <SubMenu
               patientObj={patientObj}
               setActiveContent={setActiveContent}
-              expandedPatientObj={patientObj1}
-              art={art}
-              activeContent={activeContent}
             />
           </Sticky>
           <br />
@@ -408,11 +403,12 @@ function PatientCard(props) {
             />
           )}
           {activeContent.route === "client-verfication-form" && (
-            <Tracking patientObj={patientObj}
+            <ClientVerficationForm
+              patientObj={patientObj}
               setActiveContent={setActiveContent}
               activeContent={activeContent}
             />
-            )}
+          )}
           {activeContent.route === "intensive-follow-up-update" && (
             <IntensiveFollowUpUpdate
               patientObj={patientObj}
@@ -446,18 +442,6 @@ function PatientCard(props) {
 
           {activeContent.route === "otz-service-form" && (
             <OtzServiceForm
-              patientObj={patientObj}
-              setActiveContent={setActiveContent}
-              activeContent={{
-                ...activeContent,
-                patientId: patientObj?.id || patientObj1?.id,
-              }}
-              expandedPatientObj={patientObj1}
-              art={art}
-            />
-          )}
-          {activeContent.route === "otz-enrollment-form" && (
-            <EnrollmentOtz
               patientObj={patientObj}
               setActiveContent={setActiveContent}
               activeContent={activeContent}
