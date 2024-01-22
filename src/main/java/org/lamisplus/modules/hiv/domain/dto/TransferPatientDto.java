@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -19,6 +18,9 @@ public class TransferPatientDto {
     private String facilityName;
     private String lga;
     private String state;
+    private String lgaTransferTo;
+    private String stateTransferTo;
+    private String facilityTransferTo;
     private Double weight;
     private Double height;
     private String pregnancyStatus;
@@ -34,6 +36,27 @@ public class TransferPatientDto {
     private String firstLineArtRegimen;
     private Long hivStatusId;
     private String hivStatus;
-//    private List<MedicationInfo> currentMedication;
-//    private List<LabReport> labReports;
+    private String gaInWeeks;
+    private String bmi;
+    private String clinicalNote;
+    private String modeOfHIVTest;
+    private List<ConcreteMedicationInfo> currentMedication;
+    private List<ConcreteLabReport> labResult;
+    private String reasonForTransfer;
+    private String nameOfTreatmentSupporter;
+    private String contactAddressOfTreatmentSupporter;
+    private String phoneNumberOfTreatmentSupporter;
+    private String relationshipWithClients;
+    private String recommendations;
+    private String cliniciansName;
+    private String dateOfClinicVisitAtTransferringSite;
+    private String dateOfFirstConfirmedScheduleApp;
+    private String personEffectingTheTransfer;
+    private String acknowlegdeReceiveDate;
+    private String acknowlegdeTelephoneNumber;
+    private String acknowledgementReceivedDate;
+    private String nameOfClinicianReceivingTheTransfer;
+    private String clinicianTelephoneNumber;
+    private String patientCameWithTransferForm;
+    private String patientAttendedHerFirstVisit;
 }

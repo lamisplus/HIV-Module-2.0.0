@@ -11,8 +11,8 @@ import org.lamisplus.modules.hiv.controller.exception.NoRecordFoundException;
 import org.lamisplus.modules.hiv.domain.dto.*;
 import org.lamisplus.modules.hiv.domain.entity.Observation;
 import org.lamisplus.modules.hiv.repositories.ObservationRepository;
-import org.lamisplus.modules.hiv.utility.AppConstants;
 
+import org.lamisplus.modules.hiv.utility.Constants;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -73,19 +73,6 @@ public class TreatmentTransferService {
         }
     }
 
-    public PatientCurrentCD4 getPatientCurrentCD4(String patientUuid, Long facilityId) {
-        try {
-            if (patientUuid != null && facilityId != null) {
-                Optional<PatientCurrentCD4> result = observationRepository.getPatientCurrentCD4(patientUuid, facilityId);
-                return result.orElse(null);
-            } else {
-                throw new IllegalArgumentException("Patient uuid or facility id can not be null");
-            }
-        } catch (Exception e) {
-            throw new NoRecordFoundException("Error while retrieving patients current cd4: " + e.getMessage());
-        }
-    }
-
 
     /**
      * check patient hiv status before form was submitted
@@ -98,12 +85,12 @@ public class TreatmentTransferService {
             throw new IllegalArgumentException("TransferPatientInfo is null");
         }
         Optional<HivEnrollmentDTO> enrollment = hivEnrollmentService.getHivEnrollmentByPersonIdAndArchived(dto.getPatientId());
-        ApplicationCodeSet codeSet = applicationCodesetRepository.findByDisplay(AppConstants.TRANSFER_OUT_DISPLAY);
+        ApplicationCodeSet codeSet = applicationCodesetRepository.findByDisplay(Constants.TRANSFER_OUT_DISPLAY);
         if (codeSet == null) {
-            throw new EntityNotFoundException(ApplicationCodeSet.class, "display", AppConstants.TRANSFER_OUT_DISPLAY);
+            throw new EntityNotFoundException(ApplicationCodeSet.class, "display", Constants.TRANSFER_OUT_DISPLAY);
         }
         String currentStatus = statusManagementService.getCurrentStatus(dto.getPatientId());
-        if (currentStatus.equalsIgnoreCase(AppConstants.DEAD_CONFIRMED_DISPLAY)) {
+        if (currentStatus.equalsIgnoreCase(Constants.DEAD_CONFIRMED_DISPLAY)) {
             throw new Exception("Patient is confirmed dead");
         }
         // get the current person
@@ -130,6 +117,27 @@ public class TreatmentTransferService {
             throw new EntityNotFoundException(Observation.class, "Person uuid", transferPatientDto.getPersonUuid());
         }
         BeanUtils.copyProperties(transferPatientInfo, transferPatientDto);
+        transferPatientDto.setLgaTransferTo(transferPatientDto.getLgaTransferTo());
+        transferPatientDto.setStateTransferTo(transferPatientDto.getStateTransferTo());
+        transferPatientDto.setFacilityTransferTo(transferPatientDto.getFacilityTransferTo());
+        transferPatientDto.setBmi(transferPatientDto.getBmi());
+        transferPatientDto.setGaInWeeks(transferPatientDto.getGaInWeeks());
+        transferPatientDto.setClinicalNote(transferPatientDto.getClinicalNote());
+        transferPatientDto.setModeOfHIVTest(transferPatientDto.getModeOfHIVTest());
+        transferPatientDto.setCurrentMedication(transferPatientDto.getCurrentMedication());
+        transferPatientDto.setLabResult(transferPatientDto.getLabResult());
+        transferPatientDto.setReasonForTransfer(transferPatientDto.getReasonForTransfer());
+        transferPatientDto.setNameOfTreatmentSupporter(transferPatientDto.getNameOfTreatmentSupporter());
+        transferPatientDto.setContactAddressOfTreatmentSupporter(transferPatientDto.getContactAddressOfTreatmentSupporter());
+        transferPatientDto.setPhoneNumberOfTreatmentSupporter(transferPatientDto.getPhoneNumberOfTreatmentSupporter());
+        transferPatientDto.setRelationshipWithClients(transferPatientDto.getRelationshipWithClients());
+        transferPatientDto.setRecommendations(transferPatientDto.getRecommendations());
+        transferPatientDto.setCliniciansName(transferPatientDto.getCliniciansName());
+        transferPatientDto.setDateOfClinicVisitAtTransferringSite(transferPatientDto.getDateOfClinicVisitAtTransferringSite());
+        transferPatientDto.setDateOfFirstConfirmedScheduleApp(transferPatientDto.getDateOfFirstConfirmedScheduleApp());
+        transferPatientDto.setPersonEffectingTheTransfer(transferPatientDto.getPersonEffectingTheTransfer());
+        transferPatientDto.setAcknowlegdeReceiveDate(transferPatientDto.getAcknowlegdeReceiveDate());
+        transferPatientDto.setAcknowlegdeTelephoneNumber(transferPatientDto.getAcknowlegdeTelephoneNumber());
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.valueToTree(transferPatientDto);
     }
@@ -146,3 +154,5 @@ public class TreatmentTransferService {
         return observationService.createAnObservation(observationDto);
     }
 }
+
+
