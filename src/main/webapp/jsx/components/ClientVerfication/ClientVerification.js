@@ -761,7 +761,7 @@ const ClientVerification = (props) =>{
               startIcon={<SaveIcon />}
               hidden={props.activeContent.actionType === "view" ? true : false}
               onClick={handleSubmit}
-              style={{ backgroundColor: "#014d88" }}
+              style={{ backgroundColor: "#014d88", color: "#ffffff" }}
               disabled={attemptList.length <= 0 && !saving ? true : false}
             >
               {!saving ? (
