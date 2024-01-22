@@ -163,6 +163,20 @@ const Tracking = (props) => {
     localStorage.getItem("faciltyId")
   );
 
+  
+  const checkNumberLimit = (e) => {
+    const limit = 11;
+    const acceptedNumber = e.slice(0, limit);
+    return acceptedNumber;
+  };
+
+  const handleInputChangePhoneNumber = (e, inputName) => {
+    const limit = 11;
+    const NumberValue = checkNumberLimit(e.target.value.replace(/\D/g, ""));
+    setBasicInfo({ ...payload, [inputName]: NumberValue });
+  };
+
+
   console.log("that is good ", payload);
   console.log("the person uuid", patientObj.personUuid)
   // fetch info for the form
