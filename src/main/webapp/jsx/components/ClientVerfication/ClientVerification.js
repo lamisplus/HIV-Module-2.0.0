@@ -108,7 +108,7 @@ const MenuProps = {
     };
   }
 
-const Tracking = (props) =>{
+const ClientVerification = (props) =>{
     const theme = useTheme();
     const [selectedOptions, setSelectedOptions] = useState([]);
     const patientObj = props.patientObj;
@@ -811,4 +811,4 @@ function AttemptedLists({
             </tr> 
     );
   }
-export default Tracking;
+export default ClientVerification;

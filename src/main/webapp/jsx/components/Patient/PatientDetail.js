@@ -57,6 +57,8 @@ import UpdateViewViralLoadOrderResult from "./../Laboratory/ViralLoadOrderResult
 import OtzServiceForm from "./../Otz/ServiceForm";
 import OtzPeadiatricDisclosureChecklist from "./../Otz/PeadiatricDisclosureChecklist";
 import OtzRegister from "./../Otz/Register";
+import Tracking from "../ClientVerfication/ClientVerification";
+import ClientVerification from "../ClientVerfication/ClientVerification";
 
 const styles = (theme) => ({
   root: {
@@ -403,7 +405,7 @@ function PatientCard(props) {
             />
           )}
           {activeContent.route === "client-verfication-form" && (
-            <ClientVerficationForm
+            <ClientVerification
               patientObj={patientObj}
               setActiveContent={setActiveContent}
               activeContent={activeContent}

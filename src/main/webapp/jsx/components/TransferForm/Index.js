@@ -163,8 +163,20 @@ const Tracking = (props) => {
     localStorage.getItem("faciltyId")
   );
 
+  const checkNumberLimit = (e) => {
+    const limit = 11;
+    const acceptedNumber = e.slice(0, limit);
+    return acceptedNumber;
+  };
+
+  const handleInputChangePhoneNumber = (e, inputName) => {
+    const limit = 11;
+    const NumberValue = checkNumberLimit(e.target.value.replace(/\D/g, ""));
+    setBasicInfo({ ...payload, [inputName]: NumberValue });
+  };
+
   console.log("that is good ", payload);
-  console.log("the person uuid", patientObj.personUuid)
+  console.log("the person uuid", patientObj.personUuid);
   // fetch info for the form
   const getTreatmentInfo = () => {
     let facId = localStorage.getItem("faciltyId");
@@ -174,7 +186,7 @@ const Tracking = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        console.log(`peson uuid: ${patientObj.personUuid}`)
+        console.log(`peson uuid: ${patientObj.personUuid}`);
         setTransferInfo(response.data);
         console.log("getTreatmentInfo", response.data);
         //   setPatientObj1(response.data);
@@ -215,8 +227,6 @@ const Tracking = (props) => {
       .catch((error) => {});
   };
 
-
-
   const postTransferForm = (load) => {
     axios
       // .post(`${baseUrl}observation`, load, {
@@ -245,13 +255,15 @@ const Tracking = (props) => {
       });
   };
 
-
   // get all facilities
   const getAllFacilities = () => {
     axios
-      .get(`${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/4/hierarchy`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      .get(
+        `${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/4/hierarchy`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
       .then((response) => {
         console.log(response.data);
 
@@ -412,7 +424,6 @@ const Tracking = (props) => {
     attemptList.splice(index, 1);
     setAttemptList([...attemptList]);
   };
-
 
   /**** Submit Button Processing  */
   const handleSubmit = (e) => {
