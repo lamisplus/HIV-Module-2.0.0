@@ -112,8 +112,8 @@ function SubMenu(props) {
       route: "intensive-followup",
     });
   };
-  const clientVerficationForm = () => {
-    setActiveItem("clientVerficationForm");
+  const clientVerificationForm = () => {
+    setActiveItem("clientVerificationForm");
     props.setActiveContent({
       ...props.activeContent,
       route: "client-verfication-form",
