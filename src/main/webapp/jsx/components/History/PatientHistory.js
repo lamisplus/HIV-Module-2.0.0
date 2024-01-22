@@ -227,7 +227,7 @@ const PatientnHistory = (props) => {
         actionType: action,
       });
     } else if (row.path === "eac-session") {
-      props.setActiveContent({
+      props.setActiveContent({ 
         ...props.activeContent,
         route: "eac-session-update",
         id: row.id,
