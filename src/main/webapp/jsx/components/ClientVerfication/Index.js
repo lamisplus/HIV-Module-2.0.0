@@ -132,8 +132,9 @@ const Tracking = (props) =>{
             verificationStatus:"",
             outcome:"",
             comment:"",
-            verificationAttempts:""
-    
+            verificationAttempts:"",
+
+
     });
     const [clientVerificationObj, setClientVerificationObj] = useState({
         attempt:"",
@@ -142,7 +143,8 @@ const Tracking = (props) =>{
         returnedToCare:"",
         referredTo:"",
         serialEnrollmentNo:"",
-        anyOfTheFollowing:""
+        anyOfTheFollowing:"",
+        ClientVerificationOther:""
 
     });
 
@@ -210,6 +212,7 @@ const Tracking = (props) =>{
         setAttempt ({...attempt,  [e.target.name]: e.target.value});
         
     }
+
     const handleInputChangeDiscontinuation = e => {
         //console.log(e.target.value)
         setErrors({...temp, [e.target.name]:""})
@@ -268,11 +271,12 @@ const Tracking = (props) =>{
         e.preventDefault();
         clientVerificationObj.attempt=attemptList // Assgining all the attempted list to the ClientVerifiction Object 
         observation.data=clientVerificationObj
+        selected.includes('Others')===true ? clientVerificationObj.ClientVerificationOther===clientVerificationObj.ClientVerificationOther : clientVerificationObj.ClientVerificationOther=""
         if(clientVerificationFormObj()) {
             if (attemptList.length > 0) {
                 observation.dateOfObservation = observation.dateOfObservation !== "" ? observation.dateOfObservation : moment(new Date()).format("YYYY-MM-DD")
                 observation.personId = patientObj.id
-                // observation.data=attemptList        
+
                 setSaving(true);
                 if(props.activeContent && props.activeContent.actionType==='update'){//If the the action type is update
                     axios.put(`${baseUrl}observation/${props.activeContent.id}`, observation,
@@ -397,7 +401,27 @@ const Tracking = (props) =>{
                                 ) : "" }   
                                 </FormGroup>
                             </div>
+                            {selected.includes('Others') && (<>
+                                <div className="form-group mb-3 col-md-12">
+                                    <FormGroup>
+                                        <Label >Indication For Client Verification-Others </Label>
+                                        <Input
+                                            type="text"
+                                            name="ClientVerificationOther"
+                                            id="ClientVerificationOther"
+                                            value={clientVerificationObj.ClientVerificationOther}
+                                            onChange={handleInputChangeDiscontinuation}
+                                            style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                                        >
 
+                                        </Input>
+                                        {errors.ClientVerificationOther  !=="" ? (
+                                            <span className={classes.error}>{errors.ClientVerificationOther }</span>
+                                        ) : "" }
+                                    </FormGroup>
+                                </div>
+                            </>)
+                            }
                             <div className="row">
                                 <hr/>
                                 <h3> Verification Attempts </h3>
@@ -419,6 +443,7 @@ const Tracking = (props) =>{
                                     ) : "" }   
                                     </FormGroup>
                                 </div>
+
                                 {/* <div className="form-group mb-3 col-md-4">
                                      <FormGroup>
                                     <Label > Verification Attempts<span style={{ color:"red"}}> *</span></Label>

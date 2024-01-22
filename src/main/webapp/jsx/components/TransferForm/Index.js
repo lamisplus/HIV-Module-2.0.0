@@ -164,6 +164,7 @@ const Tracking = (props) => {
   );
 
   console.log("that is good ", payload);
+  console.log("the person uuid", patientObj.personUuid)
   // fetch info for the form
   const getTreatmentInfo = () => {
     let facId = localStorage.getItem("faciltyId");
@@ -173,6 +174,7 @@ const Tracking = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
+        console.log(`peson uuid: ${patientObj.personUuid}`)
         setTransferInfo(response.data);
         console.log("getTreatmentInfo", response.data);
         //   setPatientObj1(response.data);

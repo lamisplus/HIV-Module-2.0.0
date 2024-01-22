@@ -3,6 +3,7 @@ package org.lamisplus.modules.hiv.controller;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.lamisplus.modules.hiv.domain.dto.*;
+import org.lamisplus.modules.hiv.domain.entity.Observation;
 import org.lamisplus.modules.hiv.service.TreatmentTransferService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
