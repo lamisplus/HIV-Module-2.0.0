@@ -113,7 +113,6 @@ function PatientCard(props) {
   const [patientObj1, setPatientObj1] = useState(null);
   useEffect(() => {
     PatientCurrentObject();
-    //CheckBiometric();
   }, []);
 
   ///GET Patient

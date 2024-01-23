@@ -295,7 +295,7 @@ const EnrollmentOtz = (props) => {
     const newValue = e.target.value.replace(/\d/g, "");
     setFieldValue(e.target.name, newValue);
   };
-  console.log(formik.errors);
+  
   return (
     <>
       <ToastContainer autoClose={3000} hideProgressBar />
