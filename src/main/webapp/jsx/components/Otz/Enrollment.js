@@ -295,7 +295,7 @@ const EnrollmentOtz = (props) => {
     const newValue = e.target.value.replace(/\d/g, "");
     setFieldValue(e.target.name, newValue);
   };
-  
+  console.log(props?.activeContent);
   return (
     <>
       <ToastContainer autoClose={3000} hideProgressBar />
@@ -303,11 +303,6 @@ const EnrollmentOtz = (props) => {
         className="row page-titles mx-0"
         style={{ marginTop: "0px", marginBottom: "-10px" }}
       >
-        {/* <ol className="breadcrumb">
-          <li className="breadcrumb-item active">
-            <h2> OTZ Enrollment Form</h2>
-          </li>
-        </ol> */}
       </div>
 
       <Card className={classes.root}>
@@ -327,7 +322,6 @@ const EnrollmentOtz = (props) => {
                   <h5 className="card-title" style={{ color: "#fff" }}>
                     OTZ enrollment form
                   </h5>
-
                   <>
                     <span className="float-end" style={{ cursor: "pointer" }}>
                       <FaPlus />

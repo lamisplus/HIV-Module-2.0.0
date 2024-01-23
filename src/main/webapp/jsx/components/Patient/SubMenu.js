@@ -161,6 +161,9 @@ function SubMenu(props) {
       route: "otz-enrollment-form",
     });
   };
+
+ 
+
   const loadOtzCheckList = () => {
     setActiveItem("otz-peadiatric-disclosure-checklist");
     props.setActiveContent({
@@ -416,6 +419,58 @@ function SubMenu(props) {
                         </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
+
+                    <Dropdown item text="OTZ">
+                      <Dropdown.Menu>
+                        {patientObj?.age >= 10 && patientObj?.age <= 24 && (
+                          <>
+                            {isOtzEnrollementDone === null ? (
+                              <Dropdown.Item>
+                                Checking patient enrollment...
+                              </Dropdown.Item>
+                            ) : isOtzEnrollementDone === false ? (
+                              <Dropdown.Item
+                                onClick={() =>
+                                  loadOtzEnrollmentForm(patientObj)
+                                }
+                                name="OTZ Enrollment Form"
+                                active={activeItem === "otz-enrollment-form"}
+                                title="Enrollment Form"
+                              >
+                                OTZ Enrollment Form
+                              </Dropdown.Item>
+                            ) : null}
+
+                            {isOtzEnrollementDone ? (
+                              <Dropdown.Item
+                                onClick={() => loadOtzServiceForm(patientObj)}
+                                name="OTZ Service Form"
+                                active={activeItem === "otz-service-form"}
+                                title="Tracking Form"
+                              >
+                                OTZ Service Form
+                              </Dropdown.Item>
+                            ) : null}
+                          </>
+                        )}
+
+                        {patientObj.age <= 19 && (
+                          <Dropdown.Item
+                            onClick={() => loadOtzCheckList(patientObj)}
+                            name="Peadiatric Disclosure Checklist"
+                            active={
+                              activeItem ===
+                              "otz-peadiatric-disclosure-checklist"
+                            }
+                            title="Peadiatric Disclosure Checklist"
+                          >
+                            Peadiatric Disclosure Checklist
+                          </Dropdown.Item>
+                        )}
+                      </Dropdown.Menu>
+                    </Dropdown>
+
+
                   </Menu.Menu>
                   <Menu.Item
                     onClick={() => loadTransferForm(patientObj)}
