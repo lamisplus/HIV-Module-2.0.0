@@ -188,8 +188,6 @@ function SubMenu(props) {
   };
 
   const patientIsConfirmedDeadOrIsTransfered = (patient) => {
-    
-
     return false;
   }
 
