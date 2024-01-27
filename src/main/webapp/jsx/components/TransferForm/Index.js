@@ -157,14 +157,14 @@ const Tracking = (props) => {
     // acknowlegdeTelephoneNumber: "",
   });
 
-  console.log(
-    "this is the patient obj",
-    patientObj,
-    localStorage.getItem("faciltyId")
-  );
+  // console.log(
+  //   "this is the patient obj",
+  //   patientObj,
+  //   localStorage.getItem("faciltyId")
+  // );
 
-  console.log("that is good ", payload);
-  console.log("the person uuid", patientObj.personUuid)
+  // console.log("that is good ", payload);
+  // console.log("the person uuid", patientObj.personUuid)
   // fetch info for the form
   const getTreatmentInfo = () => {
     let facId = localStorage.getItem("faciltyId");
@@ -174,9 +174,9 @@ const Tracking = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        console.log(`peson uuid: ${patientObj.personUuid}`)
+        // console.log(`peson uuid: ${patientObj.personUuid}`)
         setTransferInfo(response.data);
-        console.log("getTreatmentInfo", response.data);
+        // console.log("getTreatmentInfo", response.data);
         //   setPatientObj1(response.data);
       })
       .catch((error) => {});
@@ -190,7 +190,7 @@ const Tracking = (props) => {
       })
       .then((response) => {
         // setTransferInfo(response.data);
-        console.log("getCurrentMedication", response.data);
+        // console.log("getCurrentMedication", response.data);
         setCurrentMedication(response.data);
       })
       .catch((error) => {});
@@ -209,7 +209,7 @@ const Tracking = (props) => {
       )
       .then((response) => {
         // setTransferInfo(response.data);
-        console.log("getLabResult", response.data);
+        // console.log("getLabResult", response.data);
         setLabResult(response.data);
       })
       .catch((error) => {});
@@ -253,7 +253,7 @@ const Tracking = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
 
         let updatedFaclilties = response.data.map((each, id) => {
           return {
@@ -271,12 +271,12 @@ const Tracking = (props) => {
   const calculateBMI = () => {
     let squareH = Number(transferInfo?.height) * Number(transferInfo?.height);
     let value = Number(transferInfo.weight) / squareH;
-    console.log(
-      "calculating BMI",
-      Number(transferInfo?.height),
-      Number(transferInfo.weight),
-      value
-    );
+    // console.log(
+    //   "calculating BMI",
+    //   Number(transferInfo?.height),
+    //   Number(transferInfo.weight),
+    //   value
+    // );
     setBMI(value);
   };
   // when component mounts
@@ -301,7 +301,7 @@ const Tracking = (props) => {
 
   // handle Facility Name to slect drop down
   const handleInputChangeObject = (e) => {
-    console.log(e);
+    // console.log(e);
     setPayload({
       ...payload,
       facilityTransferTo: e.name,
