@@ -669,15 +669,10 @@ const Tracking = (props) => {
           objValues.statusTracker = null;
         }
 
-        if (
-          objValues.biometricStatus !== null &&
-          objValues.biometricStatus !== ""
-        ) {
+        if (objValues.biometricStatus !== null) {
           objValues.statusTracker.biometricStatus = objValues.biometricStatus;
           objValues.statusTracker.hivStatus = objValues.biometricStatus;
         }
-
-        //console.log(objValues);
         setSaving(true);
 
         axios
@@ -947,7 +942,10 @@ const Tracking = (props) => {
               </div>
               <div className="form-group mb-3 col-md-4">
                 <FormGroup>
-                  <Label for="">Date of Missed Scheduled Appointment </Label>
+                  <Label for="">
+                    Date of Missed Scheduled Appointment{" "}
+                    {/*<span style={{ color: "red" }}> *</span>*/}
+                  </Label>
                   <Input
                     type="date"
                     name="dateMissedAppointment"
@@ -961,13 +959,13 @@ const Tracking = (props) => {
                       borderRadius: "0.25rem",
                     }}
                   />
-                  {errors.dateMissedAppointment !== "" ? (
-                    <span className={classes.error}>
-                      {errors.dateMissedAppointment}
-                    </span>
-                  ) : (
-                    ""
-                  )}
+                  {/*{errors.dateMissedAppointment !== "" ? (*/}
+                  {/*  <span className={classes.error}>*/}
+                  {/*    {errors.dateMissedAppointment}*/}
+                  {/*  </span>*/}
+                  {/*) : (*/}
+                  {/*  ""*/}
+                  {/*)}*/}
                 </FormGroup>
               </div>
               <div className="row">

@@ -31,14 +31,7 @@ public interface ArtPharmacyRepository extends JpaRepository<ArtPharmacy, Long> 
 	Page<ArtPharmacy> getArtPharmaciesByPersonAndArchived(Person person, Integer archived, Pageable pageable);
 	
 	List<ArtPharmacy> getArtPharmaciesByPersonAndArchived(Person person, Integer archived);
-
-	@Query(value = "SELECT *, MAX(visit_date) OVER (PARTITION BY person_uuid ORDER BY visit_date DESC) " +
-			"from hiv_art_pharmacy  " +
-			"where person_uuid = ?1  " +
-			"and archived = ?2  LIMIT 1", nativeQuery = true)
-	Optional<ArtPharmacy> getOneArtPharmaciesByPersonAndArchived(String personUuid, Integer archived);
-
-
+	
 	@Query(value = "SELECT sum(refill_Period) " +
 			"from hiv_art_pharmacy  " +
 			"where person_uuid = ?1  " +
@@ -78,8 +71,7 @@ public interface ArtPharmacyRepository extends JpaRepository<ArtPharmacy, Long> 
 			"ORDER BY p.uuid, result.next_appointment, result.visit_date DESC;")
 	List<PharmacyReport> getArtPharmacyReport(Long facilityId);
 	
-	@Query(value = "SELECT * FROM hiv_art_pharmacy p " +
-			"inner join hiv_art_pharmacy_regimens pr On p.id = pr.art_pharmacy_id " +
+	@Query(value = "SELECT * FROM hiv_art_pharmacy p inner join hiv_art_pharmacy_regimens pr On p.id = pr.art_pharmacy_id " +
 			"INNER JOIN hiv_regimen r ON r.id = pr.regimens_id WHERE visit_date <=  ?2  " +
 			"AND r.regimen_type_id IN (1,2,3,4,14) AND person_uuid = ?1 " +
 			"AND archived = 0 ORDER BY visit_date DESC LIMIT 1" ,
