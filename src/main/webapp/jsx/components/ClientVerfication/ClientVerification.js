@@ -742,7 +742,7 @@ const ClientVerification = (props) =>{
                           {" "}
                           Adherence Counselling
                         </option>
-                        <option value="TB Screen"> TB scrren </option>
+                        <option value="TB Screen"> TB screen </option>
                         <option value="Others"> Others </option>
                       </Input>
                     </div>
