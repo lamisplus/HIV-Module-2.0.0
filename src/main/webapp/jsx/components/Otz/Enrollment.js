@@ -200,7 +200,7 @@ const EnrollmentOtz = (props) => {
   };
 
   const handleSubmitAdherence = (values, param) => {
-    console.log(currentRecord, props?.activeContent?.id);
+    // console.log(currentRecord, props?.activeContent?.id);
     if (currentRecord?.id || props?.activeContent?.id) {
       updateOldRecord(values, param);
       return;
@@ -295,7 +295,7 @@ const EnrollmentOtz = (props) => {
     const newValue = e.target.value.replace(/\d/g, "");
     setFieldValue(e.target.name, newValue);
   };
-  console.log(props?.activeContent);
+  // console.log(formik.errors);
   return (
     <>
       <ToastContainer autoClose={3000} hideProgressBar />
