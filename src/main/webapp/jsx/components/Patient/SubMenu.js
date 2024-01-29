@@ -418,11 +418,11 @@ function SubMenu(props) {
                       </Dropdown.Menu>
                     </Dropdown>
 
-                    {(patientObj?.age >= 10 && patientObj?.age <= 24) ||
+                    {(patientObj?.age >= 10 && patientObj?.age <= 23) ||
                     patientObj.age <= 19 ? (
                       <Dropdown item text="OTZ">
                         <Dropdown.Menu>
-                          {patientObj?.age >= 10 && patientObj?.age <= 24 && (
+                          {patientObj?.age >= 10 && patientObj?.age <= 23 && (
                             <>
                               {isOtzEnrollementDone === null ? (
                                 <Dropdown.Item>
