@@ -175,7 +175,7 @@ const ClientVerification = (props) => {
     "Biometric recapture",
     "Facility Visit",
   ];
-
+//Trigers for indication
   const indicationForClientVerification = [
     {
       value: "No initial fingerprint was captured",
