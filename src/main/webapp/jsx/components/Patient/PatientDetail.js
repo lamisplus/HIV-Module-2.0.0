@@ -51,6 +51,7 @@ import LabOrderResult from "./../Laboratory/LabOrderResult/index";
 import ViralLoadOrderResult from "./../Laboratory/ViralLoadOrderResult/index";
 import IntensiveFollowUpUpdate from "./../IntensiveFollowUp/ViewUpdate";
 import IntensiveFollowUp from "./../IntensiveFollowUp/Index";
+import ClientVerficationForm from "./../ClientVerfication/ClientVerification";
 import TransferForm from "./../TransferForm/Index";
 import ViewUpdateLabOrderResult from "./../Laboratory/LabOrderResult/UpdateLabOrderResult";
 import UpdateViewViralLoadOrderResult from "./../Laboratory/ViralLoadOrderResult/UpdateViewViralLoadOrderResult";
