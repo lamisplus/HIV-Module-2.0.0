@@ -296,19 +296,62 @@ const ClinicVisit = (props) => {
     }
   }, [patientObj.id, props.activeContent.id, objValues.adherenceLevel]); // objValues.viralLoadOrder
   const calculate_age = (dob) => {
-    var today = new Date();
-    var dateParts = dob.split("-");
-    var dateObject = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
-    var birthDate = new Date(dateObject); // create a date object directlyfrom`dob1`argument
-    var age_now = today.getFullYear() - birthDate.getFullYear();
-    var m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age_now--;
+    if (dob !== null && dob != "") {
+      //Check if the DOB is not null or empty
+      const today = new Date();
+      const dateParts = dob.split("-");
+      const birthDate = new Date(dob);
+
+      // get the day, month and year of today
+      let todayMonth = today.getMonth();
+      let todayYear = today.getFullYear();
+      let todayDate = today.getDate();
+
+      // console.log(todayMonth, todayYear);
+
+      // get the day, month and year from date of birth
+      let birthDateMonth = birthDate.getMonth();
+      let birthDateYear = birthDate.getFullYear();
+      let birthdateDate = birthDate.getDate();
+
+      // substract birthdate year from today year  ie todayYear - birthdateYear which  will give  "AssumedAge" is the age  we assume the patient will clock this year
+
+      let assumedAge = todayYear - birthDateYear;
+      if (assumedAge > 0) {
+        //Checking the month to confirm if the age has been cloocked
+
+        let monthGap = todayMonth - birthDateMonth;
+        // console.log("monthGap", monthGap);
+
+        // If 'monthGap'> 0, the age has been clocked, 'monthGap'< 0, the age has not been clocked, 'monthGap'= 0, we are in the month then check date to confirm clocked age
+
+        if (monthGap > 0) {
+          return assumedAge + " year(s)";
+        } else if (monthGap < 0) {
+          let confirmedAge = assumedAge - 1;
+          return confirmedAge + " year(s)";
+        } else if (monthGap === 0) {
+          let dateGap = todayDate - birthdateDate;
+          // console.log("date gap", todayDate, birthdateDate, dateGap);
+
+          if (dateGap > 0) {
+            return assumedAge + " year(s)";
+          } else if (dateGap < 0) {
+            let confirmedAge = assumedAge - 1;
+            return confirmedAge + " year(s)";
+          }
+        }
+      } else {
+        let monthGap = todayMonth - birthDateMonth;
+        let dateGap = todayDate - birthdateDate;
+
+        let monthOld = monthGap > 0 ? monthGap : 0;
+        let DayOld = dateGap > 0 ? dateGap : 0;
+
+        let result = monthOld ? monthOld + "month(s)" : DayOld + "day(s)";
+        return result;
+      }
     }
-    if (age_now === 0) {
-      return m;
-    }
-    return age_now;
   };
   const patientAge = calculate_age(
     moment(patientObj.dateOfBirth).format("DD-MM-YYYY")
