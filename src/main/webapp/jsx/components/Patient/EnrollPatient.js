@@ -1094,7 +1094,7 @@ const UserRegistration = (props) => {
                     ) : (
                       ""
                     )}
-                    {basicInfo.age <= 17 && (
+                    {basicInfo.age <= 20 && (
                       <div className="form-group mb-3 col-md-3">
                         <div className="form-check custom-checkbox ml-1 ">
                           <input
@@ -1249,53 +1249,7 @@ const UserRegistration = (props) => {
                                             ) : "" }  */}
                             </FormGroup>
                           </div>
-                          <div className="row">
-                            <h3>OVC Service Provided</h3>
-                            <div className="form-group mb-3 col-md-4">
-                              <FormGroup>
-                                <Label>Service Domain</Label>
-                                <Input
-                                  type="select"
-                                  name="dateReferredFromOVCPartner"
-                                  id="dateReferredFromOVCPartner"
-                                  min={basicInfo.dob}
-                                  max={objValues.dateOfRegistration}
-                                  onChange={handleInputChange}
-                                  value={objValues.dateReferredFromOVCPartner}
-                                  style={{
-                                    border: "1px solid #014D88",
-                                    borderRadius: "0.2rem",
-                                  }}
-                                />
-                              </FormGroup>
-                            </div>
-                            <div className="form-group mb-3 col-md-4">
-                              <FormGroup>
-                                <Label>Avialable Services</Label>
-                                <Input
-                                  type="text"
-                                  name="services"
-                                  id="services"
-                                  onChange={handleInputChange}
-                                  value={objValues.services}
-                                  style={{
-                                    border: "1px solid #014D88",
-                                    borderRadius: "0.2rem",
-                                  }}
-                                />
-                              </FormGroup>
-                            </div>
-                            <div className="form-group mb-3 col-md-2">
-                              <LabelSui
-                                as="a"
-                                color="black"
-                                size="tiny"
-                                style={{ marginTop: 35 }}
-                              >
-                                <Icon name="plus" /> Add
-                              </LabelSui>
-                            </div>
-                          </div>
+
                         </div>
                       </>
                     )}
