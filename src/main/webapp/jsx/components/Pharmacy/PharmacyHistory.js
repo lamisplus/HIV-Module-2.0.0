@@ -56,10 +56,41 @@ const PharmacyHistory = (props) => {
     const [open, setOpen] = React.useState(false)
     const [saving, setSaving] = useState(false)
     const [record, setRecord] = useState(null)
+    const [pillBalances, setPillBalances] = useState([]);
      const toggle = () => setOpen(!open);
     useEffect(() => {
 
       }, [props.patientObj.id, props.refillList]);
+
+
+
+      useEffect(() => {
+        const calculatePillBalances = (currentDate, refillList) => {
+            return refillList.map((refill) => {
+                return refill.extra.regimens.map((prescription) => {
+                    let pillBalance
+                    const visitDate = new Date(refill.visitDate);
+                    const daysDifference = Math.ceil((currentDate - visitDate) / (1000 * 60 * 60 * 24));
+                    const pillsTaken = Math.min(daysDifference - 1, prescription.duration) * prescription.frequency;
+                    // console.log('prescribed: Taken: dispense', prescription.prescribed  + ": "+ pillsTaken + ":" + prescription.dispense)
+                    if (prescription.dispense  > prescription.prescribed) {
+                        // If dispensed is greater than prescribed, set pillBalance to 0
+                        pillBalance = 0;
+                    }
+                     else {
+                        // Otherwise, calculate the pill balance as prescribed minus pillsTaken
+                        pillBalance = prescription.prescribed - pillsTaken;
+                    }
+                    return pillBalance;
+                });
+            })
+        };
+    
+        const getCurrentDate = () => new Date();
+        const currentDate = getCurrentDate();
+        const calculatedPillBalances = calculatePillBalances(currentDate, props.refillList);
+        setPillBalances(calculatedPillBalances);
+    }, [props.refillList]);   
 
     const onClickHome = (row, actionType) =>{  
        // props.setActiveContent({...props.activeContent, route:'pharmacy', activeTab:"hsitory"})
@@ -115,6 +146,14 @@ const PharmacyHistory = (props) => {
                 { title: "Refill Period", field: "refillPeriod", filtering: false },
                 { title: "Next Appointment", field: "nextAppointment", filtering: false },
                 { title: "Regimen Name", field: "regimenName", filtering: false },
+                {
+                  title: "Pill Balance",
+                  field: "pillBalance",
+                  render: rowData => (
+                      <span>{Array.isArray(rowData.pillBalance) ? rowData.pillBalance.join(', ') : rowData.pillBalance}</span>
+                  ),
+                  filtering: false,
+              },
                // { title: "Quantity", field: "regimenQuantity", filtering: false },
                 // { title: "isDevolve", field: "isDevolve", filtering: false },
                 // { title: "DSDModel", field: "dsdModel", filtering: false },
@@ -125,10 +164,11 @@ const PharmacyHistory = (props) => {
 
               ]}
               isLoading={props.loading}
-              data={ props.refillList.map((row) => ({
+              data={ props.refillList.map((row, index) => ({
                   //Id: manager.id,
                   visitDate:row.visitDate,
                   refillPeriod: row.refillPeriod,
+                  pillBalance: pillBalances[index],
                   nextAppointment: row.nextAppointment,
                   regimenName: (
                                 <ul>
