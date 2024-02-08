@@ -1,31 +1,27 @@
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-export const useServiceFormValidationSchema = (onSubmit, inititalBaselineViralLoad) => {
+export const useServiceFormValidationSchema = (onSubmit, initialValues) => {
   const serviceFormInitialValues = {
-    // artStartDate: "",
+    artStartDate: "",
     dateEnrolledIntoOtz: "",
     otzPlus: "",
-    // baselineViralLoadAtEnrollment: "",
+    baselineViralLoadAtEnrollment: "",
     dateDone: "",
   };
 
-  const ServiceFormValidationSchema = yup.object().shape({
-    // artStartDate: yup.date().when("question", {
-    //   is: "yes",
-    //   then: yup.date().required("Date is required"),
-    // }),
+  const mergedInitialValues = initialValues
+    ? { ...serviceFormInitialValues, ...initialValues }
+    : serviceFormInitialValues;
+
+  const ServiceFormValidationSchema = yup.object({
     dateEnrolledIntoOtz: yup.date().required("This field is required"),
     otzPlus: yup.string(),
-    // baselineViralLoadAtEnrollment: yup
-    //   .number(),
     dateDone: yup.date().required("This field is required"),
-
-    
   });
 
   const formik = useFormik({
-    initialValues: serviceFormInitialValues,
+    initialValues: mergedInitialValues,
     onSubmit,
     validationSchema: ServiceFormValidationSchema,
   });

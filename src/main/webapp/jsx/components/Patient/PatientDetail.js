@@ -15,7 +15,7 @@ import RecentHistory from "./../History/RecentHistory";
 import ClinicVisit from "../Consultation/Index";
 import Pharmacy from "./../Pharmacy/Index";
 import Laboratory from "./../Laboratory/index";
-
+import DashboardFilledTransferForm from "./DashboardFilledTransferForm";
 import EnhancedAdherenceCounseling from "../EnhancedAdherenceCounseling/Index";
 import CervicalCancer from "./../CervicalCancer/Index";
 import CervicalCancerUpdate from "./../CervicalCancer/ViewPage";
@@ -51,13 +51,16 @@ import LabOrderResult from "./../Laboratory/LabOrderResult/index";
 import ViralLoadOrderResult from "./../Laboratory/ViralLoadOrderResult/index";
 import IntensiveFollowUpUpdate from "./../IntensiveFollowUp/ViewUpdate";
 import IntensiveFollowUp from "./../IntensiveFollowUp/Index";
-import ClientVerficationForm from "./../ClientVerfication/Index";
+import ClientVerficationForm from "./../ClientVerfication/ClientVerification";
 import TransferForm from "./../TransferForm/Index";
 import ViewUpdateLabOrderResult from "./../Laboratory/LabOrderResult/UpdateLabOrderResult";
 import UpdateViewViralLoadOrderResult from "./../Laboratory/ViralLoadOrderResult/UpdateViewViralLoadOrderResult";
 import OtzServiceForm from "./../Otz/ServiceForm";
 import OtzPeadiatricDisclosureChecklist from "./../Otz/PeadiatricDisclosureChecklist";
 import OtzRegister from "./../Otz/Register";
+import Tracking from "../ClientVerfication/ClientVerification";
+import ClientVerification from "../ClientVerfication/ClientVerification";
+import EnrollmentOtz from "../Otz/Enrollment";
 
 const styles = (theme) => ({
   root: {
@@ -112,7 +115,6 @@ function PatientCard(props) {
   const [patientObj1, setPatientObj1] = useState(null);
   useEffect(() => {
     PatientCurrentObject();
-    //CheckBiometric();
   }, []);
 
   ///GET Patient
@@ -127,7 +129,6 @@ function PatientCard(props) {
       })
       .catch((error) => {});
   };
-
 
   return (
     <div className={classes.root}>
@@ -154,10 +155,11 @@ function PatientCard(props) {
           />
           <Sticky>
             <SubMenu
-              expandedPatientObj={patientObj1}
               patientObj={patientObj}
-              art={art}
               setActiveContent={setActiveContent}
+              expandedPatientObj={patientObj1}
+              art={art}
+              activeContent={activeContent}
             />
           </Sticky>
           <br />
@@ -407,7 +409,7 @@ function PatientCard(props) {
             />
           )}
           {activeContent.route === "client-verfication-form" && (
-            <ClientVerficationForm
+            <ClientVerification
               patientObj={patientObj}
               setActiveContent={setActiveContent}
               activeContent={activeContent}
@@ -448,11 +450,33 @@ function PatientCard(props) {
             <OtzServiceForm
               patientObj={patientObj}
               setActiveContent={setActiveContent}
-              activeContent={activeContent}
+              activeContent={{
+                ...activeContent,
+                patientId: patientObj?.id || patientObj1?.id,
+              }}
+              expandedPatientObj={patientObj1}
+              art={art}
+            />
+          )}
+          {activeContent.route === "otz-enrollment-form" && (
+            <EnrollmentOtz
+              patientObj={patientObj}
+              setActiveContent={setActiveContent}
+              activeContent={{
+                ...activeContent,
+                patientId: patientObj?.id || patientObj1?.id,
+              }}
             />
           )}
           {activeContent.route === "otz-register" && (
             <OtzRegister
+              patientObj={patientObj}
+              setActiveContent={setActiveContent}
+              activeContent={activeContent}
+            />
+          )}
+          {activeContent.route === "filled-transferForm" && (
+            <DashboardFilledTransferForm
               patientObj={patientObj}
               setActiveContent={setActiveContent}
               activeContent={activeContent}
