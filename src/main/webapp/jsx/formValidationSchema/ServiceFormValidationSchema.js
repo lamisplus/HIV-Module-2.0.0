@@ -102,7 +102,7 @@ export const useServiceFormValidationSchema = (onSubmit) => {
     exitedBySignature: "",
   };
 
-  const ServiceFormValidationSchema = yup.object().shape({
+  const ServiceFormValidationSchema = yup.object({
     // facilityName: yup.string(),
     // lga: yup.string(),
     // state: yup.string(),
