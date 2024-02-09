@@ -23,6 +23,7 @@ import "react-summernote/dist/react-summernote.css"; // import styles
 import { Spinner } from "reactstrap";
 //import { DateTimePicker } from "react-widgets";
 import { Message } from "semantic-ui-react";
+import { calculate_age_to_number } from "../../../utils";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -164,66 +165,8 @@ const ArtCommencement = (props) => {
     temperature: "",
     respiratoryRate: "",
   });
-  const calculate_age = (dob) => {
-    if (dob !== null && dob != "") {
-      //Check if the DOB is not null or empty
-      const today = new Date();
-      const dateParts = dob.split("-");
-      const birthDate = new Date(dob);
 
-      // get the day, month and year of today
-      let todayMonth = today.getMonth();
-      let todayYear = today.getFullYear();
-      let todayDate = today.getDate();
-
-      
-
-      // get the day, month and year from date of birth
-      let birthDateMonth = birthDate.getMonth();
-      let birthDateYear = birthDate.getFullYear();
-      let birthdateDate = birthDate.getDate();
-
-      // substract birthdate year from today year  ie todayYear - birthdateYear which  will give  "AssumedAge" is the age  we assume the patient will clock this year
-
-      let assumedAge = todayYear - birthDateYear;
-      if (assumedAge > 0) {
-        //Checking the month to confirm if the age has been cloocked
-
-        let monthGap = todayMonth - birthDateMonth;
-      
-
-        // If 'monthGap'> 0, the age has been clocked, 'monthGap'< 0, the age has not been clocked, 'monthGap'= 0, we are in the month then check date to confirm clocked age
-
-        if (monthGap > 0) {
-          return assumedAge + " year(s)";
-        } else if (monthGap < 0) {
-          let confirmedAge = assumedAge - 1;
-          return confirmedAge + " year(s)";
-        } else if (monthGap === 0) {
-          let dateGap = todayDate - birthdateDate;
-        
-
-          if (dateGap > 0) {
-            return assumedAge + " year(s)";
-          } else if (dateGap < 0) {
-            let confirmedAge = assumedAge - 1;
-            return confirmedAge + " year(s)";
-          }
-        }
-      } else {
-        let monthGap = todayMonth - birthDateMonth;
-        let dateGap = todayDate - birthdateDate;
-
-        let monthOld = monthGap > 0 ? monthGap : 0;
-        let DayOld = dateGap > 0 ? dateGap : 0;
-
-        let result = monthOld ? monthOld + "month(s)" : DayOld + "day(s)";
-        return result;
-      }
-    }
-  };
-
-  const patientAge = calculate_age(patientObj.dateOfBirth);
+  const patientAge = calculate_age_to_number(patientObj.dateOfBirth);
   const [patientObject, setPatientObject] = useState(null);
   useEffect(() => {
     FunctionalStatus();
@@ -254,7 +197,7 @@ const ArtCommencement = (props) => {
         );
         setPatientObject(response.data);
         objValues.pregnancyStatus = response.data.enrollment.pregnancyStatusId;
-      
+
         setObjValues({
           ...objValues,
           pregnancyStatus: response.data.enrollment.pregnancyStatusId,
@@ -275,9 +218,7 @@ const ArtCommencement = (props) => {
         );
         setAdultRegimenLine(artRegimen);
       })
-      .catch((error) => {
-     
-      });
+      .catch((error) => {});
   };
   //GET ChildRegimenLine
   const ChildRegimenLine = () => {
@@ -291,9 +232,7 @@ const ArtCommencement = (props) => {
         );
         setChildRegimenLine(artRegimenChildren);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //Get list of WhoStaging
   const WhoStaging = () => {
@@ -302,12 +241,9 @@ const ArtCommencement = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-       
         setClinicalStage(response.data);
       })
-      .catch((error) => {
-       
-      });
+      .catch((error) => {});
   };
   const InitialClinicEvaluation = () => {
     axios
@@ -319,7 +255,6 @@ const ArtCommencement = (props) => {
           (x) => x.type === "Clinical evaluation"
         );
 
-       
         objValues.cd4Type = obj1.data.plan.cd4Type;
         objValues.cd4Count = obj1.data.plan.cd4Count;
         objValues.whoStagingId = obj1.data.who.stage;
@@ -328,9 +263,7 @@ const ArtCommencement = (props) => {
         objValues.regimenId = obj1.data.regimen.regimen;
         setVitalSignDto({ ...obj1.data.physicalExamination });
       })
-      .catch((error) => {
-      
-      });
+      .catch((error) => {});
   };
   //Get list of RegimenLine
   const RegimenLine = () => {
@@ -338,12 +271,8 @@ const ArtCommencement = (props) => {
       .get(`${baseUrl}hiv/regimen/types`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then((response) => {
-       
-      })
-      .catch((error) => {
-       
-      });
+      .then((response) => {})
+      .catch((error) => {});
   };
   //Get list of RegimenLine
   const RegimenType = (id) => {
@@ -352,12 +281,9 @@ const ArtCommencement = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-       
         setRegimenType(response.data);
       })
-      .catch((error) => {
-       
-      });
+      .catch((error) => {});
   };
   //Get list of PREGANACY_STATUS
   const PreganacyStatus = () => {
@@ -366,12 +292,9 @@ const ArtCommencement = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-      
         setpregnancyStatus(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   ///GET LIST OF FUNCTIONAL%20_STATUS
   async function FunctionalStatus() {
@@ -385,7 +308,6 @@ const ArtCommencement = (props) => {
       })
       .catch((error) => {});
   }
-  
 
   const handleInputChange = (e) => {
     setErrors({ ...temp, [e.target.name]: "" });
