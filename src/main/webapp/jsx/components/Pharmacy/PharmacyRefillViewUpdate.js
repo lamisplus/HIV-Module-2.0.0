@@ -169,12 +169,9 @@ const Pharmacy = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        
         setIPT_TYPE(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   const GetIptEligibilty = () => {
     //GET IPT ELIGIBILITY
@@ -185,9 +182,7 @@ const Pharmacy = (props) => {
       .then((response) => {
         setIptEligibilty(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //GET Other Drugd
   const OtherDrugs = () => {
@@ -203,9 +198,7 @@ const Pharmacy = (props) => {
           }))
         );
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   const calculate_age = (dob) => {
     if (dob !== null && dob != "") {
@@ -219,8 +212,6 @@ const Pharmacy = (props) => {
       let todayYear = today.getFullYear();
       let todayDate = today.getDate();
 
-     
-
       // get the day, month and year from date of birth
       let birthDateMonth = birthDate.getMonth();
       let birthDateYear = birthDate.getFullYear();
@@ -233,7 +224,6 @@ const Pharmacy = (props) => {
         //Checking the month to confirm if the age has been cloocked
 
         let monthGap = todayMonth - birthDateMonth;
-        
 
         // If 'monthGap'> 0, the age has been clocked, 'monthGap'< 0, the age has not been clocked, 'monthGap'= 0, we are in the month then check date to confirm clocked age
 
@@ -241,28 +231,28 @@ const Pharmacy = (props) => {
           return assumedAge + " year(s)";
         } else if (monthGap < 0) {
           let confirmedAge = assumedAge - 1;
-          return confirmedAge + " year(s)";
+          return confirmedAge;
         } else if (monthGap === 0) {
           let dateGap = todayDate - birthdateDate;
-         
 
           if (dateGap > 0) {
-            return assumedAge + " year(s)";
+            return assumedAge;
           } else if (dateGap < 0) {
             let confirmedAge = assumedAge - 1;
-            return confirmedAge + " year(s)";
+            return confirmedAge;
           }
         }
-      } else {
-        let monthGap = todayMonth - birthDateMonth;
-        let dateGap = todayDate - birthdateDate;
-
-        let monthOld = monthGap > 0 ? monthGap : 0;
-        let DayOld = dateGap > 0 ? dateGap : 0;
-
-        let result = monthOld ? monthOld + "month(s)" : DayOld + "day(s)";
-        return result;
       }
+      // else {
+      //   let monthGap = todayMonth - birthDateMonth;
+      //   let dateGap = todayDate - birthdateDate;
+
+      //   let monthOld = monthGap > 0 ? monthGap : 0;
+      //   let DayOld = dateGap > 0 ? dateGap : 0;
+
+      //   let result = monthOld ? monthOld + "month(s)" : DayOld + "day(s)";
+      //   return result;
+      // }
     }
   };
   const patientAge = calculate_age(patientObj.dateOfBirth);
@@ -281,9 +271,7 @@ const Pharmacy = (props) => {
         );
         setChildrenTB(response.data.filter((x) => x.id === 11));
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //Get Pharmacy refill Detail
   const PharmacyRefillDetail = () => {
@@ -293,16 +281,14 @@ const Pharmacy = (props) => {
       })
       .then((response) => {
         const data = response.data;
-       
+
         setObjValues(data);
         setRegimenDrugList(data && data.extra ? data.extra.regimens : []);
         DsdModelType(objValues.dsdModel);
         objValues.dsdModelType = data.dsdModelType;
         //}
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //Get list of DSD Model Type
   function DsdModelType(dsdmodel) {
@@ -315,9 +301,7 @@ const Pharmacy = (props) => {
       .then((response) => {
         setDsdModelType(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   }
   //GET AdultRegimenLine
   const AdultRegimenLine = () => {
@@ -342,9 +326,7 @@ const Pharmacy = (props) => {
         setTbRegimenLine(tbRegimen);
         setOIRegimenLine(oIRegimen);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
 
   //Check for the last Vital Signs
@@ -355,7 +337,7 @@ const Pharmacy = (props) => {
       })
       .then((response) => {
         const lastVitalSigns = response.data[response.data.length - 1];
-        
+
         if (
           lastVitalSigns.captureDate >= moment(new Date()).format("YYYY-MM-DD")
         ) {
@@ -363,9 +345,7 @@ const Pharmacy = (props) => {
           setShowCurrentVitalSigns(true);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //Get EAC Status
   const CheckEACStatus = () => {
@@ -374,12 +354,9 @@ const Pharmacy = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        
         setEacStatusObj(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //Get list of RegimenLine
   const RegimenLine = () => {
@@ -390,9 +367,7 @@ const Pharmacy = (props) => {
       .then((response) => {
         setRegimen(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //Get list of PrepSideEffect
   const PrepSideEffect = () => {
@@ -401,7 +376,6 @@ const Pharmacy = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        
         setPrepSideEffect(
           Object.entries(response.data).map(([key, value]) => ({
             label: value.display,
@@ -409,9 +383,7 @@ const Pharmacy = (props) => {
           }))
         );
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   function RegimenType(id) {
     async function getCharacters() {
@@ -478,7 +450,6 @@ const Pharmacy = (props) => {
           setSelectedCombinedRegimen(response.data);
           const regimenName = regimenType.find((x) => {
             if (x.value == parseInt(drugId)) {
-              
               return x;
             }
           });
@@ -512,7 +483,6 @@ const Pharmacy = (props) => {
           setSelectedCombinedRegimen(response.data);
           const regimenName = regimenTypeOI.find((x) => {
             if (x.value == parseInt(drugId)) {
-              
               return x;
             }
           });
@@ -546,7 +516,6 @@ const Pharmacy = (props) => {
           setSelectedCombinedRegimen(response.data);
           const regimenName = regimenTypeTB.find((x) => {
             if (x.value == parseInt(drugId)) {
-              
               return x;
             }
           });
@@ -580,7 +549,6 @@ const Pharmacy = (props) => {
           setSelectedCombinedRegimen(response.data);
           const regimenName = regimenTypeOther.find((x) => {
             if (x.value == parseInt(drugId)) {
-            
               return x;
             }
           });
@@ -641,7 +609,7 @@ const Pharmacy = (props) => {
   };
   const handleSelectedRegimenOther = (e) => {
     const regimenId = e.target.value;
-  
+
     if (regimenId !== "") {
       RegimenTypeOther(regimenId);
     } else {
@@ -795,7 +763,6 @@ const Pharmacy = (props) => {
   };
   const handleCheckBox = (e) => {
     if (e.target.checked) {
-     
       setObjValues({ ...objValues, [e.target.name]: true });
     }
   };

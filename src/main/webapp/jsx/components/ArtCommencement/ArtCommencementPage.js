@@ -176,8 +176,6 @@ const ArtCommencement = (props) => {
       let todayYear = today.getFullYear();
       let todayDate = today.getDate();
 
-      
-
       // get the day, month and year from date of birth
       let birthDateMonth = birthDate.getMonth();
       let birthDateYear = birthDate.getFullYear();
@@ -190,7 +188,6 @@ const ArtCommencement = (props) => {
         //Checking the month to confirm if the age has been cloocked
 
         let monthGap = todayMonth - birthDateMonth;
-      
 
         // If 'monthGap'> 0, the age has been clocked, 'monthGap'< 0, the age has not been clocked, 'monthGap'= 0, we are in the month then check date to confirm clocked age
 
@@ -198,28 +195,28 @@ const ArtCommencement = (props) => {
           return assumedAge + " year(s)";
         } else if (monthGap < 0) {
           let confirmedAge = assumedAge - 1;
-          return confirmedAge + " year(s)";
+          return confirmedAge;
         } else if (monthGap === 0) {
           let dateGap = todayDate - birthdateDate;
-        
 
           if (dateGap > 0) {
-            return assumedAge + " year(s)";
+            return assumedAge;
           } else if (dateGap < 0) {
             let confirmedAge = assumedAge - 1;
-            return confirmedAge + " year(s)";
+            return confirmedAge;
           }
         }
-      } else {
-        let monthGap = todayMonth - birthDateMonth;
-        let dateGap = todayDate - birthdateDate;
-
-        let monthOld = monthGap > 0 ? monthGap : 0;
-        let DayOld = dateGap > 0 ? dateGap : 0;
-
-        let result = monthOld ? monthOld + "month(s)" : DayOld + "day(s)";
-        return result;
       }
+      // else {
+      //   let monthGap = todayMonth - birthDateMonth;
+      //   let dateGap = todayDate - birthdateDate;
+
+      //   let monthOld = monthGap > 0 ? monthGap : 0;
+      //   let DayOld = dateGap > 0 ? dateGap : 0;
+
+      //   let result = monthOld ? monthOld + "month(s)" : DayOld + "day(s)";
+      //   return result;
+      // }
     }
   };
 
@@ -254,7 +251,7 @@ const ArtCommencement = (props) => {
         );
         setPatientObject(response.data);
         objValues.pregnancyStatus = response.data.enrollment.pregnancyStatusId;
-      
+
         setObjValues({
           ...objValues,
           pregnancyStatus: response.data.enrollment.pregnancyStatusId,
@@ -275,9 +272,7 @@ const ArtCommencement = (props) => {
         );
         setAdultRegimenLine(artRegimen);
       })
-      .catch((error) => {
-     
-      });
+      .catch((error) => {});
   };
   //GET ChildRegimenLine
   const ChildRegimenLine = () => {
@@ -291,9 +286,7 @@ const ArtCommencement = (props) => {
         );
         setChildRegimenLine(artRegimenChildren);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //Get list of WhoStaging
   const WhoStaging = () => {
@@ -302,12 +295,9 @@ const ArtCommencement = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-       
         setClinicalStage(response.data);
       })
-      .catch((error) => {
-       
-      });
+      .catch((error) => {});
   };
   const InitialClinicEvaluation = () => {
     axios
@@ -319,7 +309,6 @@ const ArtCommencement = (props) => {
           (x) => x.type === "Clinical evaluation"
         );
 
-       
         objValues.cd4Type = obj1.data.plan.cd4Type;
         objValues.cd4Count = obj1.data.plan.cd4Count;
         objValues.whoStagingId = obj1.data.who.stage;
@@ -328,9 +317,7 @@ const ArtCommencement = (props) => {
         objValues.regimenId = obj1.data.regimen.regimen;
         setVitalSignDto({ ...obj1.data.physicalExamination });
       })
-      .catch((error) => {
-      
-      });
+      .catch((error) => {});
   };
   //Get list of RegimenLine
   const RegimenLine = () => {
@@ -338,12 +325,8 @@ const ArtCommencement = (props) => {
       .get(`${baseUrl}hiv/regimen/types`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then((response) => {
-       
-      })
-      .catch((error) => {
-       
-      });
+      .then((response) => {})
+      .catch((error) => {});
   };
   //Get list of RegimenLine
   const RegimenType = (id) => {
@@ -352,12 +335,9 @@ const ArtCommencement = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-       
         setRegimenType(response.data);
       })
-      .catch((error) => {
-       
-      });
+      .catch((error) => {});
   };
   //Get list of PREGANACY_STATUS
   const PreganacyStatus = () => {
@@ -366,12 +346,9 @@ const ArtCommencement = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-      
         setpregnancyStatus(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   ///GET LIST OF FUNCTIONAL%20_STATUS
   async function FunctionalStatus() {
@@ -385,7 +362,6 @@ const ArtCommencement = (props) => {
       })
       .catch((error) => {});
   }
-  
 
   const handleInputChange = (e) => {
     setErrors({ ...temp, [e.target.name]: "" });

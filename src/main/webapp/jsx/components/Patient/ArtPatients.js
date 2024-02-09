@@ -130,7 +130,6 @@ const Patients = (props) => {
       let todayYear = today.getFullYear();
       let todayDate = today.getDate();
 
-
       // get the day, month and year from date of birth
       let birthDateMonth = birthDate.getMonth();
       let birthDateYear = birthDate.getFullYear();
@@ -142,7 +141,7 @@ const Patients = (props) => {
       if (assumedAge > 0) {
         //Checking the month to confirm if the age has been cloocked
 
-   
+        let monthGap = todayMonth - birthDateMonth;
 
         // If 'monthGap'> 0, the age has been clocked, 'monthGap'< 0, the age has not been clocked, 'monthGap'= 0, we are in the month then check date to confirm clocked age
 
@@ -153,7 +152,6 @@ const Patients = (props) => {
           return confirmedAge + " year(s)";
         } else if (monthGap === 0) {
           let dateGap = todayDate - birthdateDate;
-
 
           if (dateGap > 0) {
             return assumedAge + " year(s)";
@@ -177,7 +175,6 @@ const Patients = (props) => {
 
   return (
     <div>
-
       <MaterialTable
         icons={tableIcons}
         title="ART Patients"
@@ -238,7 +235,6 @@ const Patients = (props) => {
                     uniqueId: row.uniqueId,
                     sex: row.sex,
                     age: calculate_age(row.dateOfBirth),
-
 
                     status: (
                       <Label color="blue" size="mini">

@@ -371,8 +371,7 @@ const TbScreening = (props) => {
       .then((response) => {
         setTbTreatmentType(response.data);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   const TB_TREATMENT_OUTCOME = () => {
     axios
@@ -382,12 +381,10 @@ const TbScreening = (props) => {
       .then((response) => {
         setTbTreatmentOutCome(response.data);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
 
   const handleInputChange = (e) => {
-   
     props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.value });
 
     //making some fields to be empty once the selection logic is apply(skip logic)
@@ -512,7 +509,7 @@ const TbScreening = (props) => {
                       <FormGroup>
                         <Label>
                           Treatment Type{" "}
-                          <span style={{ color: "red" }}> *</span>
+                          {/* <span style={{ color: "red" }}> *</span> */}
                         </Label>
                         <InputGroup>
                           <Input
