@@ -222,6 +222,7 @@ const ArtCommencement = (props) => {
       }
     }
   };
+
   const patientAge = calculate_age(patientObj.dateOfBirth);
   const [patientObject, setPatientObject] = useState(null);
   useEffect(() => {

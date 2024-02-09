@@ -227,7 +227,7 @@ const ArtCommencement = (props) => {
       }
     }
   };
-
+ 
   const patientAge = calculate_age(patientObj.dateOfBirth);
 
   useEffect(() => {
