@@ -63,10 +63,9 @@ function PatientCard(props) {
   const { classes } = props;
   //const patientCurrentStatus=props.patientObj && props.patientObj.currentStatus==="Died (Confirmed)" ? true : false ;
   const patientObject = props.patientObj1;
-  
 
   const calculate_age = (dob) => {
-    console.log("calculating on dashboard", dob);
+    // console.log("calculating on dashboard", dob);
     if (dob !== null && dob != "") {
       //Check if the DOB is not null or empty
       const today = new Date();
@@ -77,8 +76,6 @@ function PatientCard(props) {
       let todayMonth = today.getMonth();
       let todayYear = today.getFullYear();
       let todayDate = today.getDate();
-
-      
 
       // get the day, month and year from date of birth
       let birthDateMonth = birthDate.getMonth();
@@ -92,7 +89,6 @@ function PatientCard(props) {
         //Checking the month to confirm if the age has been cloocked
 
         let monthGap = todayMonth - birthDateMonth;
-        
 
         // If 'monthGap'> 0, the age has been clocked, 'monthGap'< 0, the age has not been clocked, 'monthGap'= 0, we are in the month then check date to confirm clocked age
 
@@ -103,7 +99,6 @@ function PatientCard(props) {
           return confirmedAge + " year(s)";
         } else if (monthGap === 0) {
           let dateGap = todayDate - birthdateDate;
-          
 
           if (dateGap > 0) {
             return assumedAge + " year(s)";
