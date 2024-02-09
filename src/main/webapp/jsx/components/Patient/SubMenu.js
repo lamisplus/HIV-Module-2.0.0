@@ -227,6 +227,7 @@ function SubMenu(props) {
                 {" "}
                 Home
               </Menu.Item>
+
               {!patientObj.clinicalEvaluation && (
                 <Menu.Item
                   onClick={() => loadAdultEvaluation()}

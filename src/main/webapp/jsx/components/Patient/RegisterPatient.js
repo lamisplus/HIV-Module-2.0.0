@@ -2483,7 +2483,7 @@ const UserRegistration = (props) => {
                         )}
                       </>
                     )}
-                    {basicInfo.age !== "" && basicInfo.age <= 17 && (
+                    {basicInfo.age !== "" && basicInfo.age <= 20 && (
                       <div className="form-group mb-3 col-md-3">
                         <div className="form-check custom-checkbox ml-1 ">
                           <input
