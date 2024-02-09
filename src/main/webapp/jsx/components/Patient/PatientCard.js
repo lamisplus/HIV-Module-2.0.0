@@ -63,24 +63,7 @@ function PatientCard(props) {
   const { classes } = props;
   //const patientCurrentStatus=props.patientObj && props.patientObj.currentStatus==="Died (Confirmed)" ? true : false ;
   const patientObject = props.patientObj1;
-  //const [patientObject, setPatientObject] = useState(props.patientObj1);
-  //console.log(props.patientObj1)
-  // useEffect(() => {
-  //   PatientCurrentObject();
-  //   //CheckBiometric();
-  // }, [props.patientObj]);
-  //   //GET  Patients
-  //   async function PatientCurrentObject() {
-  //       axios
-  //           .get(`${baseUrl}hiv/patient/${props.patientObj.id}`,
-  //           { headers: {"Authorization" : `Bearer ${token}`} }
-  //           )
-  //           .then((response) => {
-  //             setPatientObject(response.data);
-  //           })
-  //           .catch((error) => {
-  //           });
-  //   }
+  
 
   const calculate_age = (dob) => {
     console.log("calculating on dashboard", dob);
@@ -95,7 +78,7 @@ function PatientCard(props) {
       let todayYear = today.getFullYear();
       let todayDate = today.getDate();
 
-      // console.log(todayMonth, todayYear);
+      
 
       // get the day, month and year from date of birth
       let birthDateMonth = birthDate.getMonth();
@@ -109,7 +92,7 @@ function PatientCard(props) {
         //Checking the month to confirm if the age has been cloocked
 
         let monthGap = todayMonth - birthDateMonth;
-        // console.log("monthGap", monthGap);
+        
 
         // If 'monthGap'> 0, the age has been clocked, 'monthGap'< 0, the age has not been clocked, 'monthGap'= 0, we are in the month then check date to confirm clocked age
 
@@ -120,7 +103,7 @@ function PatientCard(props) {
           return confirmedAge + " year(s)";
         } else if (monthGap === 0) {
           let dateGap = todayDate - birthdateDate;
-          // console.log("date gap", todayDate, birthdateDate, dateGap);
+          
 
           if (dateGap > 0) {
             return assumedAge + " year(s)";

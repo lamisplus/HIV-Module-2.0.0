@@ -118,11 +118,11 @@ const BasicInfo = (props) => {
             { headers: {"Authorization" : `Bearer ${token}`} }
         )
         .then((response) => {
-            //console.log(response.data);
+            
             setClinicalStage(response.data);
         })
         .catch((error) => {
-        //console.log(error);
+        
         });
     
     } 
@@ -160,7 +160,7 @@ const BasicInfo = (props) => {
         if(validate()){  
             props.observation.data.assesment = assesment
             props.observation.data.who=who 
-            //console.log(props.observation)
+            
             handleItemClick('plan', 'who' )  
         }              
     }

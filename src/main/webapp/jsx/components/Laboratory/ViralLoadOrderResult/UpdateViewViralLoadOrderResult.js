@@ -138,8 +138,7 @@ const Laboratory = (props) => {
             setDisabledField(true)
         } 
     }, [props.patientObj.id, props.activeContent.obj]);
-    //console.log(props.activeContent.obj)
-     //Get list of LabNumbers
+    
     const LabNumbers =()=>{
         axios
             .get(`${baseUrl}laboratory/lab-numbers`,
@@ -149,7 +148,7 @@ const Laboratory = (props) => {
                 setLabNumbers(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     }
@@ -163,7 +162,7 @@ const Laboratory = (props) => {
                 setPcrs(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     }
@@ -177,7 +176,7 @@ const Laboratory = (props) => {
                 setLabTestDetail(response.data.sampleType);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     }  
@@ -198,7 +197,7 @@ const Laboratory = (props) => {
                     setButtonHidden(true)
                 }
             }).catch((error) => {
-            //console.log(error);
+            
             });
         
     }  
@@ -212,7 +211,7 @@ const Laboratory = (props) => {
                 setVLIndication(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });        
     }
     const handleInputChange = e => {

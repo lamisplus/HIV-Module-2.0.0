@@ -137,7 +137,7 @@ const NEWEACSESSION = (props) => {
         GetPatientDTOObj();
         CheckEACStatus();
     }, [props.activeContent]);
-    console.log(props.activeContent.obj)
+    
     //Get EAC Status
     const CheckEACStatus =()=>{
         axios
@@ -147,13 +147,13 @@ const NEWEACSESSION = (props) => {
            .then((response) => {
                setEacStatusObj(response.data);
                const newEacDate= response.data && response.data.eacsession && response.data.eacsession!=='Default' ? moment(response.data.eacsessionDate, "YYYY-MM-DD").add(30, 'days').calendar() : null
-               //console.log(moment(response.data.eacsessionDate, "YYYY-MM-DD").add(30, 'days').toDate())
-               console.log(newEacDate)
+              
+            
                setLastEACDate(newEacDate) 
                setEnrollDate(props.activeContent.obj.dateOfLastViralLoad)
            })
            .catch((error) => {
-           //console.log(error);
+           
            });
        
     }
@@ -164,12 +164,10 @@ const NEWEACSESSION = (props) => {
            )
            .then((response) => {
                const patientDTO= response.data.enrollment
-               //setEnrollDate (patientDTO && patientDTO.dateOfRegistration ? patientDTO.dateOfRegistration :"")
-               //setEacStatusObj(response.data);
-               //console.log(enrollDate)
+               
            })
            .catch((error) => {
-           //console.log(error);
+           
            });
       }
     ///GET LIST OF EAC
@@ -184,7 +182,7 @@ const NEWEACSESSION = (props) => {
     //         setObjValues(response.data)
     //         })
     //         .catch((error) => {
-    //         //console.log(error);
+    //         
     //         });    
     // }
     const handleInputChange = e => {

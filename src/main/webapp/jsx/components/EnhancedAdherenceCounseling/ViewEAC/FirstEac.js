@@ -88,7 +88,7 @@ const EAC = (props) => {
                 setObjValues({...objValues, ...response.data})
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
         }

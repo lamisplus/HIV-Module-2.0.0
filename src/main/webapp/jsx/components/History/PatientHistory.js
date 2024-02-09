@@ -83,23 +83,14 @@ const PatientnHistory = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        console.log(response.data);
+        
         setLoading(false);
-        // let HistoryObject= []
-        // response.data.forEach(function(value, index, array) {
-        //     const dataObj = value.activities
-        //     console.log(dataObj)
-        //     if(dataObj[index]) {
-        //         dataObj.forEach(function(value, index, array) {
-        //             HistoryObject.push(value)
-        //         })
-        //     }
-        // });
+        
         setRecentActivities(response.data);
       })
 
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   const LoadViewPage = (row, action) => {
@@ -238,7 +229,16 @@ const PatientnHistory = (props) => {
         activeTab: "home",
         actionType: action,
       });
-    } else {
+    }  else if (row.path === "ART-Transfer-Out") {
+      props.setActiveContent({
+        ...props.activeContent,
+        route: "filled-transferForm",
+        id: row.id,
+        activeTab: "home",
+        actionType: action,
+      });
+    }
+    else {
       //Chronic Care
     }
   };
@@ -526,7 +526,7 @@ const PatientnHistory = (props) => {
             toast.error("Something went wrong. Please try again...");
           }
         });
-    }else if (row.path === "Client-Verification") {
+    } else if (row.path === "Client-Verification") {
       setSaving(true);
       //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
       axios
@@ -552,7 +552,62 @@ const PatientnHistory = (props) => {
               toast.error("Something went wrong. Please try again...");
             }
           });
+    } else if (row.path === "Service-OTZ") {
+      setSaving(true);
+      axios
+          .delete(`${baseUrl}observation/${row.id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then((response) => {
+            toast.success("OTZ record Deleted Successfully");
+            PatientHistory();
+            toggle();
+            setSaving(false);
+          })
+          .catch((error) => {
+            setSaving(false);
+            if (error.response && error.response.data) {
+              let errorMessage =
+                  error.response.data.apierror &&
+                  error.response.data.apierror.message !== ""
+                      ? error.response.data.apierror.message
+                      : "Something went wrong, please try again";
+              toast.error(errorMessage);
+            } else {
+              toast.error("Something went wrong. Please try again...");
+            }
+          });
     } else if (row.path === "client-tracker") {
+    } 
+    else if (row.path === "ART-Transfer-Out") {
+      setSaving(true);
+      //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
+      axios
+        .delete(`${baseUrl}observation/${row.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          toast.success("Record Deleted Successfully");
+          PatientHistory();
+          toggle();
+          setSaving(false);
+        })
+        .catch((error) => {
+          setSaving(false);
+          toggle();
+          if (error.response && error.response.data) {
+            let errorMessage =
+              error.response.data.apierror &&
+              error.response.data.apierror.message !== ""
+                ? error.response.data.apierror.message
+                : "Something went wrong, please try again";
+            toast.error(errorMessage);
+          } else {
+            toast.error("Something went wrong. Please try again...");
+          }
+        });
+    }
+    else if (row.path === "client-tracker") {
       setSaving(true);
       //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
       axios

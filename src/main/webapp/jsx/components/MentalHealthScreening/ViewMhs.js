@@ -116,7 +116,7 @@ const ViewMentalHealthScreening = (props) => {
         //
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //Get Mental Health Object
@@ -127,14 +127,13 @@ const ViewMentalHealthScreening = (props) => {
       })
       .then((response) => {
         const mentalObj = response.data.find((x) => x.type === "Mental health");
-        // console.log(mentalObj);
+        
         setObjValues({ ...mentalObj.data });
         setObservation(mentalObj);
-        //objValues.dateOfObservation=observation.dateOfObservation
-        //setViralLoad(LabObject)
+        
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   const handleInputChangeKP = (e) => {

@@ -241,12 +241,12 @@ const ChronicCare = (props) => {
                 setTpt({...tpt, ...response.data.data.tptMonitoring})
            })
            .catch((error) => {
-           //console.log(response.data.data);
+           
            });
        
     }
-    const handleInputChange = e => {//Handle input fields changes
-        //console.log(e.target.value)
+    const handleInputChange = e => {
+        
         setErrors({...temp, [e.target.name]:""})
         setObservation ({...observation,  [e.target.name]: e.target.value});
     }
@@ -323,7 +323,7 @@ const ChronicCare = (props) => {
         }
     }
     
-    //console.log(eligibility)
+   
     const onClickEligibility =() =>{
         setShowEligibility(!showEligibility)
     }

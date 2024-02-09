@@ -128,7 +128,7 @@ const Tracking = (props) => {
                //
            })
            .catch((error) => {
-           //console.log(error);
+           
            });
           
     } 
@@ -141,7 +141,7 @@ const Tracking = (props) => {
                 setOptionsForSelection(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });        
     }
     const CALL_OUTCOME =()=>{
@@ -153,7 +153,7 @@ const Tracking = (props) => {
                 setOptionsForCallOutCome(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });        
     }  
     //Get list of PrepSideEffect
@@ -170,17 +170,17 @@ const Tracking = (props) => {
                 })));
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     }     
     const handleInputChangeAttempt = e => {
-        //console.log(e.target.value)
+        
         setErrors({...temp, [e.target.name]:""})
         setAttempt ({...attempt,  [e.target.name]: e.target.value});
     }
     const handleInputChange = e => {
-        //console.log(e.target.value)
+        
         setErrors({...temp, [e.target.name]:""})
         setObservation ({...observation,  [e.target.name]: e.target.value});
     }

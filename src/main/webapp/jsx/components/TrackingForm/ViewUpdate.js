@@ -156,7 +156,6 @@ const Tracking = (props) => {
     GetPatientDTOObj();
     //GetFormDetail();
     if (props.activeContent && props.activeContent.obj) {
-      console.log(props.activeContent.obj);
       setObjValues({ ...props.activeContent.obj });
       setAttemptList(props.activeContent.obj.attempts);
     }
@@ -175,7 +174,7 @@ const Tracking = (props) => {
 
   //        })
   //        .catch((error) => {
-  //        //console.log(error);
+  //        
   //        });
 
   // }
@@ -188,7 +187,7 @@ const Tracking = (props) => {
         setCurrentBiometricStatus(response.data);
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
   const GetPatientDTOObj = () => {
@@ -204,10 +203,10 @@ const Tracking = (props) => {
             : ""
         );
         //setEacStatusObj(response.data);
-        //console.log(enrollDate)
+        //
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   const ReasonForTracking = () => {
@@ -219,7 +218,7 @@ const Tracking = (props) => {
         setReasonTracking(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //TRACKING_DSD_STATUS
@@ -232,7 +231,7 @@ const Tracking = (props) => {
         setdsdStatus(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //MODE_OF_COMMUNICATION
@@ -245,7 +244,7 @@ const Tracking = (props) => {
         setmodeCommunication(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   }; //MODE_OF_COMMUNICATION
   const PersonContact = () => {
@@ -257,7 +256,7 @@ const Tracking = (props) => {
         setpersonContact(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //
@@ -270,7 +269,7 @@ const Tracking = (props) => {
         setreasonDefaulting(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   const ReasonForDiscountinuation = () => {
@@ -283,7 +282,7 @@ const Tracking = (props) => {
         //setreasonDiscountinuation(response.data.filter((x)=> x.code!=='REASON_DISCONTINUATION_INTERRUPTION_IN_TREATMENT'));
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   const CauseOfDeath = () => {
@@ -295,7 +294,7 @@ const Tracking = (props) => {
         setcauseDeath(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   const LostToFollowUp = () => {
@@ -307,7 +306,7 @@ const Tracking = (props) => {
         setreasonLostToFollowUp(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   const handleInputChange = (e) => {
@@ -398,7 +397,7 @@ const Tracking = (props) => {
   });
 
   const handleInputChangeAttempt = (e) => {
-    //console.log(e.target.value)
+    
     setErrors({ ...temp, [e.target.name]: "" });
     setAttempt({ ...attempt, [e.target.name]: e.target.value });
   };

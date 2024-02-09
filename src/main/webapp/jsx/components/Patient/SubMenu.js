@@ -32,7 +32,7 @@ function SubMenu(props) {
       })
       .then((response) => {})
       .catch((error) => {
-        //console.log(error);
+      
       });
   };
 
@@ -150,6 +150,8 @@ function SubMenu(props) {
       ...props.activeContent,
       ...props.expandedPatientObj,
       route: "otz-service-form",
+      actionType: "create"
+      
     });
   };
   const loadOtzEnrollmentForm = () => {
@@ -159,6 +161,7 @@ function SubMenu(props) {
       ...props.expandedPatientObj,
       currentLabResult: labResult,
       route: "otz-enrollment-form",
+      actionType: "create"
     });
   };
 
@@ -167,6 +170,7 @@ function SubMenu(props) {
     props.setActiveContent({
       ...props.activeContent,
       route: "otz-peadiatric-disclosure-checklist",
+      actionType: "create"
     });
   };
   const loadOtzRegister = () => {
@@ -191,7 +195,7 @@ function SubMenu(props) {
         }
       })
       .catch((error) => {
-        // console.log(error);
+        // 
         setIsOtzEnrollementDone(false);
       });
   };
@@ -223,6 +227,7 @@ function SubMenu(props) {
                 {" "}
                 Home
               </Menu.Item>
+
               {!patientObj.clinicalEvaluation && (
                 <Menu.Item
                   onClick={() => loadAdultEvaluation()}

@@ -98,17 +98,15 @@ const TPT = (props) => {
             { headers: {"Authorization" : `Bearer ${token}`} }
         )
         .then((response) => {
-            //console.log(response.data);
+            
             setAdherence(response.data);
         })
         .catch((error) => {
-        //console.log(error);
+       
         });
     
     }
-    //let temp = { ...errors }
-
-    //Handle CheckBox 
+    
     const handleTpt =e =>{
         props.setErrors({...props.errors, [e.target.name]: ""})            
         props.setTpt({...props.tpt, [e.target.name]: e.target.value})

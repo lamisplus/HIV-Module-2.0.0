@@ -140,11 +140,10 @@ const CervicalCancer = (props) => {
            .then((response) => {
                const patientDTO= response.data.enrollment
                setEnrollDate (patientDTO && patientDTO.dateOfRegistration ? patientDTO.dateOfRegistration :"")
-               //setEacStatusObj(response.data);
-               //console.log(enrollDate)
+             
            })
            .catch((error) => {
-           //console.log(error);
+
            });
        
     }
@@ -154,11 +153,9 @@ const CervicalCancer = (props) => {
             { headers: {"Authorization" : `Bearer ${token}`} }
         )
         .then((response) => {
-            //console.log(response.data);
             setMethod(response.data);
         })
         .catch((error) => {
-        //console.log(error);
         });
     
     }
@@ -168,11 +165,11 @@ const CervicalCancer = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                //console.log(response.data);
+
                 setScreeningType(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+
             });
         
     }
@@ -182,11 +179,11 @@ const CervicalCancer = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                //console.log(response.data);
+
                 setGross(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+
             });
         
     }
@@ -196,11 +193,11 @@ const CervicalCancer = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                //console.log(response.data);
+
                 setAreas(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+
             });
         
     }
@@ -210,11 +207,11 @@ const CervicalCancer = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                //console.log(response.data);
+
                 setVisible(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+
             });
         
     }
@@ -224,11 +221,11 @@ const CervicalCancer = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                //console.log(response.data);
+
                 setReferrals(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+
             });
         
     }
@@ -238,11 +235,11 @@ const CervicalCancer = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                //console.log(response.data);
+
                 setType(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+
             });
         
     }
@@ -252,11 +249,11 @@ const CervicalCancer = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                //console.log(response.data);
+
                 setResult(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+
             });
         
     }

@@ -148,22 +148,7 @@ const List = (props) => {
           { title: "Actions", field: "actions", filtering: false },
         ]}
         data={[]}
-        // data={(query) =>
-        //   new Promise((resolve, reject) =>
-        //     axios
-        //       .get(`${baseUrl}linkages`, {
-        //         headers: { Authorization: `Bearer ${token}` },
-        //       })
-        //       .then((response) => console.log(response))
-        //       .then((result) => {
-        //         resolve({
-        //           data: result.data.records.map((row) => ({})),
-        //           page: query.page,
-        //           totalCount: result.data.totalRecords,
-        //         });
-        //       })
-        //   )
-        // }
+        
         options={{
           search: true,
           headerStyle: {

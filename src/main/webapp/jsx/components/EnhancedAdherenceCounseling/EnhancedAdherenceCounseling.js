@@ -80,11 +80,11 @@ const EAC = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                //console.log(response.data);
+              
                 setEacObj(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
         }

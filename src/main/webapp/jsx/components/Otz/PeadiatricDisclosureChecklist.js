@@ -87,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PeadiatricDisclosureChecklist = (props) => {
-  // console.log(props?.activeContent?.actionType)
+ 
   const [saving, setSavings] = useState(false);
   
   const PatientObject= props.patientObj && props.patientObj ? props.patientObj : null
@@ -195,7 +195,7 @@ const PeadiatricDisclosureChecklist = (props) => {
         //props.setActiveContent({...props.activeContent, route:'recent-history'})//Redirect to patient home page
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   }
 

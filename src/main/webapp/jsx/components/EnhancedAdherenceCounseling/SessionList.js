@@ -99,7 +99,7 @@ const useStyles = makeStyles(theme => ({
 
 
 const LabHistory = (props) => {    
-    //console.log(props.activeContent)
+    
     const [sessionList, setSessionList] = useState([])
     const [loading, setLoading] = useState(true)
     const [artModal, setArtModal] = useState(false);
@@ -121,7 +121,7 @@ const LabHistory = (props) => {
                 if(sessionList.length>=3){
                     setShowOutComeButton(true)
                 }
-                //console.log(ThirdEac)             
+                   
             })
             .catch((error) => {  
                 setLoading(false)  

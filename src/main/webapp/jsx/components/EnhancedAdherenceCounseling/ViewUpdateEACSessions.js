@@ -77,7 +77,6 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const NEWEACSESSION = (props) => {
-    console.log(props.activeContent)
     const classes = useStyles()
     const [saving, setSaving] = useState(false);
     const [errors, setErrors] = useState({});
@@ -157,7 +156,7 @@ const NEWEACSESSION = (props) => {
     //             //setAttemptList(Obj.data)
     //        })
     //        .catch((error) => {
-    //        //console.log(error);
+    //        
     //        });
        
     // } 
@@ -171,7 +170,7 @@ const NEWEACSESSION = (props) => {
                setEacStatusObj(response.data);
            })
            .catch((error) => {
-           //console.log(error);
+           
            });
        
     }
@@ -183,11 +182,10 @@ const NEWEACSESSION = (props) => {
            .then((response) => {
                const patientDTO= response.data.enrollment
                setEnrollDate (patientDTO && patientDTO.dateOfRegistration ? patientDTO.dateOfRegistration :"")
-               //setEacStatusObj(response.data);
-               //console.log(enrollDate)
+               
            })
            .catch((error) => {
-           //console.log(error);
+           
            });
        
       }
@@ -203,7 +201,7 @@ const NEWEACSESSION = (props) => {
     //         setObjValues(response.data)
     //         })
     //         .catch((error) => {
-    //         //console.log(error);
+    //         
     //         });    
     // }
     const handleInputChange = e => {

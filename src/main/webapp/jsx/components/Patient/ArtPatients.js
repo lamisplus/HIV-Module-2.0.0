@@ -179,6 +179,7 @@ const Patients = (props) => {
 
   return (
     <div>
+
       <MaterialTable
         icons={tableIcons}
         title="ART Patients"
@@ -240,6 +241,7 @@ const Patients = (props) => {
                     uniqueId: row.uniqueId,
                     sex: row.sex,
                     age: calculate_age(row.dateOfBirth),
+
 
                     status: (
                       <Label color="blue" size="mini">
