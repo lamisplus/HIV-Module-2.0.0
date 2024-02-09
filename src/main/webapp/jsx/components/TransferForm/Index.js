@@ -285,9 +285,13 @@ const Tracking = (props) => {
     };
 
     const calculateBMI = () => {
-        let squareH = Number(transferInfo?.height) * Number(transferInfo?.height);
-        let value = Number(transferInfo.weight) / squareH;
-        setBMI(value);
+        // let squareH = Number(transferInfo?.height) * Number(transferInfo?.height);
+        // let value = Number(transferInfo.weight) / squareH;
+        // setBMI(value);
+        let result = Number(transferInfo?.weight) * Number(transferInfo?.height) * Number(transferInfo?.height) ;
+        let value = result / 10000
+        setBMI(value)
+    
     };
     // when component mounts
 
