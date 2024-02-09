@@ -92,7 +92,7 @@ const EnrollmentOtz = (props) => {
   const [otzOutcomesArray, setOtzOutcomes] = useState([]);
   const [otzPlusCapture, setOtzCapture] = useState("");
 
-  const submitNewRecord = (values, param) => {
+  const submitNewRecord = (values) => {
     const observation = {
       data: values,
       dateOfObservation:
@@ -113,7 +113,7 @@ const EnrollmentOtz = (props) => {
         toast.success("Service OTZ enrollment save successful.");
         props.setActiveContent({
           ...props?.activeContent,
-          route: "otz-service-form",
+          route: "recent-history",
         });
       })
       .catch((error) => {
@@ -137,44 +137,9 @@ const EnrollmentOtz = (props) => {
       });
   };
 
-  const updateOldRecord = (values) => {
-    const observation = {
-      data: values,
-      dateOfObservation:
-        values?.dateDone != ""
-          ? values?.dateDone
-          : moment(new Date()).format("YYYY-MM-DD"),
-      facilityId: null,
-      personId: currentRecord?.personId,
-      type: "Service OTZ",
-      visitId: null,
-    };
-    axios
-      .put(`${baseUrl}observation/${currentRecord?.id}`, observation, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        setSavings(false);
+  
 
-        toast.success("Service OTZ enrollment update successful.");
-
-        props.setActiveContent({
-          ...props?.activeContent,
-          route: "otz-service-form",
-        });
-      })
-      .catch((error) => {
-        setSavings(false);
-        let errorMessage =
-          error?.response?.data &&
-          error?.response?.data?.apierror?.message !== ""
-            ? error?.response?.data?.apierror?.message
-            : "Something went wrong, please try again";
-        toast.error(errorMessage);
-      });
-  };
-
-  const handleSubmit = (values) => {
+  const handleSubmit = async() => {
     const artStartDate = props?.activeContent?.artCommence?.visitDate;
     const baselineViralLoadAtEnrollment = Number(
       props?.activeContent?.currentLabResult?.result
@@ -195,22 +160,23 @@ const EnrollmentOtz = (props) => {
       toast.error("Otz Plus field is required prefilled");
       return;
     }
-    if (currentRecord?.id) {
-      updateOldRecord({
-        ...values,
-        artStartDate,
-        baselineViralLoadAtEnrollment,
-        otzPlus: otzPlusCapture !== "" ? otzPlusCapture : undefined,
-      });
-      return;
-    } else {
+
+    Object.keys(formik?.initialValues).forEach((fieldName) => {
+      formik?.setFieldTouched(fieldName, true);
+    });
+    const errorObj = await formik.validateForm();
+    const isValid = Object.keys(errorObj).length === 0;
+    if (isValid) {
       submitNewRecord({
-        ...values,
+        ...formik?.values,
         artStartDate,
         baselineViralLoadAtEnrollment,
         otzPlus: otzPlusCapture !== "" ? otzPlusCapture : undefined,
       });
     }
+  
+   
+    
   };
 
   const handleSubmitAdherence = (values, param) => {
@@ -514,7 +480,7 @@ const EnrollmentOtz = (props) => {
                   style={{ backgroundColor: "#014d88" }}
                   startIcon={<SaveIcon />}
                   disabled={saving}
-                  onClick={formik?.handleSubmit}
+                  onClick={handleSubmit}
                 >
                   {!saving ? (
                     <span style={{ textTransform: "capitalize" }}>Submit</span>
