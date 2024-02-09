@@ -97,7 +97,7 @@ const UserRegistration = (props) => {
         //setPatientObj(response.data)
       })
       .catch((error) => {
-        //console.log(response.data.data);
+        
       });
   };
   const calculate_age = (dob) => {
@@ -112,9 +112,7 @@ const UserRegistration = (props) => {
       let todayYear = today.getFullYear();
       let todayDate = today.getDate();
 
-      // console.log(todayMonth, todayYear);
-
-      // get the day, month and year from date of birth
+     
       let birthDateMonth = birthDate.getMonth();
       let birthDateYear = birthDate.getFullYear();
       let birthdateDate = birthDate.getDate();
@@ -126,7 +124,7 @@ const UserRegistration = (props) => {
         //Checking the month to confirm if the age has been cloocked
 
         let monthGap = todayMonth - birthDateMonth;
-        // console.log("monthGap", monthGap);
+        
 
         // If 'monthGap'> 0, the age has been clocked, 'monthGap'< 0, the age has not been clocked, 'monthGap'= 0, we are in the month then check date to confirm clocked age
 
@@ -137,7 +135,7 @@ const UserRegistration = (props) => {
           return confirmedAge + " year(s)";
         } else if (monthGap === 0) {
           let dateGap = todayDate - birthdateDate;
-          // console.log("date gap", todayDate, birthdateDate, dateGap);
+          
 
           if (dateGap > 0) {
             return assumedAge + " year(s)";
@@ -160,9 +158,9 @@ const UserRegistration = (props) => {
   };
 
   const patientAge = calculate_age(
-    moment(props.patientObj.dateOfBirth).format("DD-MM-YYYY")
+    props.patientObj.dateOfBirth
   );
-  //console.log(props)
+  
 
   return (
     <>
@@ -170,7 +168,7 @@ const UserRegistration = (props) => {
         <CardBody>
           <div className="row">
             {calculate_age(
-              moment(props.patientObj.dateOfBirth).format("DD-MM-YYYY")
+              props.patientObj.dateOfBirth
             ) <= 14 ? (
               <h2>Pediatric- Initial Clinical Evaluation ssd</h2>
             ) : (
@@ -393,7 +391,7 @@ const UserRegistration = (props) => {
                 {activeItem === "regimen" && (
                   <>
                     {calculate_age(
-                      moment(props.patientObj.dateOfBirth).format("DD-MM-YYYY")
+                    props.patientObj.dateOfBirth
                     ) <= 14 ? (
                       <ChildRegimenNextAppointment
                         handleItemClick={handleItemClick}

@@ -101,11 +101,11 @@ const MedicalHistory = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                //console.log(response.data);
+                
                 setAllergies(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
         }
@@ -127,7 +127,7 @@ const MedicalHistory = (props) => {
                //setEnrollDate (patientDTO.dateOfRegistration)
            })
            .catch((error) => {
-           //console.log(error);
+           
            });          
     }
     const [visit, setVisit] = useState({visitDate:""})

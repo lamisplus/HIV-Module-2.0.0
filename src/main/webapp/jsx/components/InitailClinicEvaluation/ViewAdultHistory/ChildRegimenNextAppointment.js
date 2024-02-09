@@ -130,7 +130,7 @@ const ChildRegimenNextAppointment = (props) => {
                 setAdultRegimenLine(artRegimenChildren);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });        
     }
     //Get list of RegimenLine
@@ -140,11 +140,11 @@ const ChildRegimenNextAppointment = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                //console.log(response.data);
+                
                 setRegimenType(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     }

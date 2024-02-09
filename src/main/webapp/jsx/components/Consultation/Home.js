@@ -293,7 +293,6 @@ const ClinicVisit = (props) => {
         );
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
   const GetCareSupport =()=>{
@@ -302,11 +301,10 @@ const ClinicVisit = (props) => {
             { headers: {"Authorization" : `Bearer ${token}`} }
         )
         .then((response) => {
-          //console.log(response.data.filter((x)=> x.type==='Chronic Care'))
           setCareSupportObj(response.data.filter((x)=> x.type==='Chronic Care'))
         })
         .catch((error) => {
-          //console.log(error);
+
         });
 
   }
@@ -324,7 +322,6 @@ const ClinicVisit = (props) => {
         arvDrugObj.regimenDrug = currentRegimenObj.id;
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
   const calculate_age = (dob) => {
@@ -339,7 +336,7 @@ const ClinicVisit = (props) => {
       let todayYear = today.getFullYear();
       let todayDate = today.getDate();
 
-      // console.log(todayMonth, todayYear);
+      
 
       // get the day, month and year from date of birth
       let birthDateMonth = birthDate.getMonth();
@@ -353,7 +350,7 @@ const ClinicVisit = (props) => {
         //Checking the month to confirm if the age has been cloocked
 
         let monthGap = todayMonth - birthDateMonth;
-        // console.log("monthGap", monthGap);
+        
 
         // If 'monthGap'> 0, the age has been clocked, 'monthGap'< 0, the age has not been clocked, 'monthGap'= 0, we are in the month then check date to confirm clocked age
 
@@ -364,7 +361,7 @@ const ClinicVisit = (props) => {
           return confirmedAge + " year(s)";
         } else if (monthGap === 0) {
           let dateGap = todayDate - birthdateDate;
-          // console.log("date gap", todayDate, birthdateDate, dateGap);
+          
 
           if (dateGap > 0) {
             return assumedAge + " year(s)";
@@ -386,7 +383,7 @@ const ClinicVisit = (props) => {
     }
   };
   const patientAge = calculate_age(
-    moment(patientObj.dateOfBirth).format("DD-MM-YYYY")
+  patientObj.dateOfBirth
   );
   // CRYPTOCOCCAL_SCREENING_STATUS
   const CRYPTOCOCCAL_SCREENING_STATUS = () => {
@@ -398,7 +395,6 @@ const ClinicVisit = (props) => {
         setCryptococcal(response.data);
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
   // CERVICAL_CANCER_SCREENING_STATUS
@@ -412,7 +408,6 @@ const ClinicVisit = (props) => {
         setCervicalStatus(response.data);
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
   // CERVICAL_CANCER_TREATMENT
@@ -425,7 +420,6 @@ const ClinicVisit = (props) => {
         setCervicalTreatment(response.data);
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
   // HEPATITIS_SCREENING_RESULT
@@ -438,7 +432,6 @@ const ClinicVisit = (props) => {
         setHepatitis(response.data);
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
   // FAMILY_PLANNING_METHOD
@@ -451,7 +444,6 @@ const ClinicVisit = (props) => {
         setFamilyPlaining(response.data);
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
   // PREGANACY_STATUS
@@ -464,7 +456,6 @@ const ClinicVisit = (props) => {
         setPregnancyStatus(response.data);
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
   //GET VIRAL LOAD INDICATION
@@ -477,7 +468,6 @@ const ClinicVisit = (props) => {
         setVLIndication(response.data);
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
   //GET AdultRegimenLine
@@ -492,7 +482,6 @@ const ClinicVisit = (props) => {
         );
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
   //GET ChildRegimenLine
@@ -507,7 +496,6 @@ const ClinicVisit = (props) => {
         );
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
   //Get list of Test Group
@@ -528,12 +516,11 @@ const ClinicVisit = (props) => {
               sampleType: x2.sampleType,
             });
           });
-          //console.log(testsOptions)
+          
         });
         setLabTestOptions(testsOptions);
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
   //GET LIST Drug Refill
@@ -563,7 +550,7 @@ const ClinicVisit = (props) => {
       .then((response) => {
         setLoadVitalHistory(false);
         const lastVitalSigns = response.data[response.data.length - 1];
-        //console.log(lastVitalSigns)
+        
         if (
           lastVitalSigns.captureDate >= moment(new Date()).format("YYYY-MM-DD")
         ) {
@@ -573,7 +560,6 @@ const ClinicVisit = (props) => {
       })
       .catch((error) => {
         setLoadVitalHistory(false);
-        //console.log(error);
       });
   };
   //Check for the Patient Object
@@ -587,7 +573,6 @@ const ClinicVisit = (props) => {
         patientObj = response.data;
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
 
@@ -598,11 +583,9 @@ const ClinicVisit = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
         setClinicalStage(response.data);
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
   ///GET LIST OF FUNCTIONAL%20_STATUS
@@ -613,11 +596,9 @@ const ClinicVisit = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
         setTbStatus(response.data);
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
 
@@ -977,7 +958,7 @@ const ClinicVisit = (props) => {
       objValues.viralLoadOrder = testOrderList;
       objValues.arvdrugsRegimen = arvDrugOrderList;
       objValues["vitalSignDto"] = vital;
-      //console.log(objValues.tbStatus);
+     
 
       axios
         .post(`${baseUrl}hiv/art/clinic-visit/`, objValues, {
@@ -1046,7 +1027,7 @@ const ClinicVisit = (props) => {
     }
   }
 
-  //console.log(errors);
+
   return (
     <div className={classes.root}>
       <div className="row">

@@ -101,6 +101,7 @@ const DashboardFilledTransferForm = (props) => {
   const [showSelectdropdown, setShowSelectdropdown] = useState(false);
 
   const [currentMedication, setCurrentMedication] = useState([]);
+  const [facId, setFacId] = useState(localStorage.getItem("facId"))
 
   const [info, setInfo] = useState({});
 
@@ -154,15 +155,12 @@ const DashboardFilledTransferForm = (props) => {
     value: "",
     label: "",
   });
-  // console.log(defaultFacility);
+  
 
-  // console.log(props);
-  // props.activeContent.actionType
-
-  //FETCH THE FORM INFO FOR VIEW FUNCTIONALITY
+ 
 
   const getTransferFormInfo = () => {
-    let facId = localStorage.getItem("faciltyId");
+    // let facId = localStorage.getItem("faciltyId");
     //  .get(`${baseUrl}treatment-transfers/${facId}/${patientObj.personUuid}`
     axios
       .get(`${baseUrl}observation/${props.activeContent.id}`, {
@@ -181,8 +179,6 @@ const DashboardFilledTransferForm = (props) => {
 
   // fetch info for the form
   const getTreatmentInfo = () => {
-    let facId = localStorage.getItem("faciltyId");
-    //  .get(`${baseUrl}treatment-transfers/${facId}/${patientObj.personUuid}`
     axios
       .get(`${baseUrl}treatment-transfers/info/${patientObj.personUuid}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -202,7 +198,7 @@ const DashboardFilledTransferForm = (props) => {
       })
       .then((response) => {
         // setTransferInfo(response.data);
-        console.log("getCurrentMedication", response.data);
+      
         setCurrentMedication(response.data);
       })
       .catch((error) => {});
@@ -210,8 +206,6 @@ const DashboardFilledTransferForm = (props) => {
 
   // get Lab Result
   const getLabResult = () => {
-    let facId = localStorage.getItem("faciltyId");
-
     axios
       .get(
         `${baseUrl}treatment-transfers/patient_result/${facId}/${patientObj.personUuid}`,
@@ -241,7 +235,7 @@ const DashboardFilledTransferForm = (props) => {
   };
 
   const getCurrentCD4Count = () => {
-    let facId = localStorage.getItem("faciltyId");
+    // let facId = localStorage.getItem("faciltyId");
     //    treatment-transfers/patient_current_cd4/{facilityId}/{patientUuid}
     axios
       .get(
@@ -252,8 +246,6 @@ const DashboardFilledTransferForm = (props) => {
       )
       .then((response) => {
         setCurrentCD4(response.data);
-        console.log("currentCD4", response.data);
-        // setLabResult(response.data);
       })
       .catch((error) => {});
   };
@@ -290,7 +282,7 @@ const DashboardFilledTransferForm = (props) => {
   //       headers: { Authorization: `Bearer ${token}` },
   //     })
   //     .then((response) => {
-  //       console.log(response.data);
+  //       
   //         setPatientObj1(response.data);
   //     })
   //     .catch((error) => {});
@@ -389,7 +381,7 @@ const DashboardFilledTransferForm = (props) => {
   ]);
 
   const handleInputChangeAttempt = (e) => {
-    //console.log(e.target.value)
+    
     setErrors({ ...temp, [e.target.name]: "" });
     setAttempt({ ...attempt, [e.target.name]: e.target.value });
   };
@@ -1101,7 +1093,7 @@ const DashboardFilledTransferForm = (props) => {
                     </thead>
                     <tbody>
                       {currentMedication &&
-                        currentMedication.map((each, index) => {
+                        currentMedication.slice(0,5).map((each, index) => {
                           return (
                             <tr>
                               <td scope="row">{each?.regimenName}</td>
@@ -1123,68 +1115,6 @@ const DashboardFilledTransferForm = (props) => {
               <div className="row">
                 <div className="mb-5 col-md-12 mt-0">
                   <h3>Latest lab results </h3>
-                  {/* {currentMedication.map((each, index) => {
-                      return (
-                        <div className="row px-3 py-2 mt-3" key={index}>
-                          <div className="col-md-4">
-                            <h5>Regimen Name</h5>
-                            <Input
-                              type="text"
-                              name="reasonForTrackingOthers"
-                              id="reasonForTrackingOthers"
-                              onChange={handleInputChange}
-                              disabled={true}
-                              value={each?.regimenName}
-                            />
-                          </div>{" "}
-                          <div className="col-md-2">
-                            <h5>Frequency</h5>
-                            <Input
-                              type="text"
-                              name="reasonForTrackingOthers"
-                              id="reasonForTrackingOthers"
-                              onChange={handleInputChange}
-                              disabled={true}
-                              value={each?.frequency}
-                            />
-                          </div>{" "}
-                          <div className="col-md-2">
-                            <h5>Duration</h5>
-                            <Input
-                              type="text"
-                              name="reasonForTrackingOthers"
-                              id="reasonForTrackingOthers"
-                              onChange={handleInputChange}
-                              disabled={true}
-                              value={each?.duration}
-                            />
-                          </div>
-                          <div className="col-md-2">
-                            <h5>Quantity Prescribed</h5>
-                            <Input
-                              type="text"
-                              name="reasonForTrackingOthers"
-                              id="reasonForTrackingOthers"
-                              onChange={handleInputChange}
-                              disabled={true}
-                              value={each?.prescribed}
-                            />
-                          </div>
-                          <div className="col-md-2">
-                            <h5>Dispense</h5>
-                            <Input
-                              type="text"
-                              name="reasonForTrackingOthers"
-                              id="reasonForTrackingOthers"
-                              onChange={handleInputChange}
-                              disabled={true}
-                              value={each?.dispense}
-                            />
-                          </div>{" "}
-                        </div>
-                      );
-                    })} */}
-
                   <table
                     class="table px-5 pt-2 mt-3 pb-0 table-bordered"
                     style={{
@@ -1209,7 +1139,7 @@ const DashboardFilledTransferForm = (props) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {labResult.map((each, index) => {
+                      {labResult.slice(0,5).map((each, index) => {
                         return (
                           <tr>
                             <td scope="row">{each.dateReported}</td>
@@ -1668,7 +1598,7 @@ const DashboardFilledTransferForm = (props) => {
                   <FormGroup>
                     <Label for="">Received date</Label>
                     <Input
-                      type="text"
+                      type="date"
                       name="acknowlegdeReceiveDate"
                       disabled={
                         props.activeContent.actionType === "view" ? true : false
@@ -1696,7 +1626,7 @@ const DashboardFilledTransferForm = (props) => {
                   <FormGroup>
                     <Label for="">Date of visit</Label>
                     <Input
-                      type="text"
+                      type="date"
                       name="acknowledgementDateOfVisit"
                       disabled={
                         props.activeContent.actionType === "view" ? true : false
@@ -1705,7 +1635,7 @@ const DashboardFilledTransferForm = (props) => {
                       onChange={handleInputChange}
                       value={payload.acknowledgementDateOfVisit}
                       //min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
-                      // max={moment(new Date()).format("YYYY-MM-DD")}
+                      max={moment(new Date()).format("YYYY-MM-DD")}
                       style={{
                         border: "1px solid #014D88",
                         borderRadius: "0.25rem",
@@ -1747,7 +1677,7 @@ const DashboardFilledTransferForm = (props) => {
                 <div className="form-group mb-3 col-md-4">
                   <FormGroup>
                     <Label for="">
-                      Name of the Clinician receiving the transfer
+                      Name of the Clinician receiving the transfere
                     </Label>
                     <Input
                       type="text"

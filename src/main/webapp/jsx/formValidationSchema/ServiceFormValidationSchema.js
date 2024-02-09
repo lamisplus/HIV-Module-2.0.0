@@ -103,18 +103,10 @@ export const useServiceFormValidationSchema = (onSubmit) => {
   };
 
   const ServiceFormValidationSchema = yup.object({
-    // facilityName: yup.string(),
-    // lga: yup.string(),
-    // state: yup.string(),
-    // clientName: yup.string(),
-    // patienttId: yup.string(),
-    // sex: yup.string(),
     artStartDate: yup.date().when('question', {
       is: "yes",
       then: yup.date().required("Date is required")
     }),
-    // ageAtArtStart: yup.string(),
-    // telephone: yup.string(),
     dateEnrolledIntoOtz: yup.date(),
     OtzPlus: yup.string(),
     baselineViralLoadAtEnrollment: yup.string(),
