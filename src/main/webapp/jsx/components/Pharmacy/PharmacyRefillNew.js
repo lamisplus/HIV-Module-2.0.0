@@ -24,7 +24,7 @@ import { url as baseUrl, token } from "../../../api";
 import { toast } from "react-toastify";
 import { Icon, List, Label as LabelSui } from "semantic-ui-react";
 //import { Icon,Button, } from 'semantic-ui-react'
-
+import { calculate_age_to_number } from "../../../utils";
 const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(1),
@@ -191,9 +191,7 @@ const Pharmacy = (props) => {
             : ""
         );
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //
   const ChronicCare = () => {
@@ -207,9 +205,7 @@ const Pharmacy = (props) => {
         setLastChronicCare(obj1);
         //const lastobj;
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   const GetIptEligibilty = () => {
     axios
@@ -219,9 +215,7 @@ const Pharmacy = (props) => {
       .then((response) => {
         setIptEligibilty(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //Get the patient current regimen
   const PatientCurrentRegimen = () => {
@@ -242,67 +236,9 @@ const Pharmacy = (props) => {
         setShowRegimen(true);
         //regimenDrug
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
-  const calculate_age = (dob) => {
-    if (dob !== null && dob != "") {
-      //Check if the DOB is not null or empty
-      const today = new Date();
-      const dateParts = dob.split("-");
-      const birthDate = new Date(dob);
-
-      // get the day, month and year of today
-      let todayMonth = today.getMonth();
-      let todayYear = today.getFullYear();
-      let todayDate = today.getDate();
-
-     
-      let birthDateMonth = birthDate.getMonth();
-      let birthDateYear = birthDate.getFullYear();
-      let birthdateDate = birthDate.getDate();
-
-      // substract birthdate year from today year  ie todayYear - birthdateYear which  will give  "AssumedAge" is the age  we assume the patient will clock this year
-
-      let assumedAge = todayYear - birthDateYear;
-      if (assumedAge > 0) {
-        //Checking the month to confirm if the age has been cloocked
-
-        let monthGap = todayMonth - birthDateMonth;
-        
-
-        // If 'monthGap'> 0, the age has been clocked, 'monthGap'< 0, the age has not been clocked, 'monthGap'= 0, we are in the month then check date to confirm clocked age
-
-        if (monthGap > 0) {
-          return assumedAge + " year(s)";
-        } else if (monthGap < 0) {
-          let confirmedAge = assumedAge - 1;
-          return confirmedAge + " year(s)";
-        } else if (monthGap === 0) {
-          let dateGap = todayDate - birthdateDate;
-        
-
-          if (dateGap > 0) {
-            return assumedAge + " year(s)";
-          } else if (dateGap < 0) {
-            let confirmedAge = assumedAge - 1;
-            return confirmedAge + " year(s)";
-          }
-        }
-      } else {
-        let monthGap = todayMonth - birthDateMonth;
-        let dateGap = todayDate - birthdateDate;
-
-        let monthOld = monthGap > 0 ? monthGap : 0;
-        let DayOld = dateGap > 0 ? dateGap : 0;
-
-        let result = monthOld ? monthOld + "month(s)" : DayOld + "day(s)";
-        return result;
-      }
-    }
-  };
-  const patientAge = calculate_age(patientObj.dateOfBirth); //Age calculation
+  const patientAge = calculate_age_to_number(patientObj.dateOfBirth); //Age calculation
   //GET ChildRegimenLine
   const ChildRegimenLine = () => {
     axios
@@ -318,9 +254,7 @@ const Pharmacy = (props) => {
         );
         setChildrenTB(response.data.filter((x) => x.id === 11));
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //GET Other Drugd
   const OtherDrugs = () => {
@@ -336,9 +270,7 @@ const Pharmacy = (props) => {
           }))
         );
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   const IPT_TYPE = () => {
     axios
@@ -346,12 +278,9 @@ const Pharmacy = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        
         setIPT_TYPE(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //IPT_TYPE
   //GET AdultRegimenLine
@@ -369,14 +298,12 @@ const Pharmacy = (props) => {
         const oIRegimen = response.data.filter(
           (x) => x.id === 9 || x.id === 15 || x.id === 8
         );
-        
+
         setAdultArtRegimenLine(artRegimen);
         setTbRegimenLine(tbRegimen);
         setOIRegimenLine(oIRegimen);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
 
   //Check for the last Vital Signs
@@ -387,7 +314,7 @@ const Pharmacy = (props) => {
       })
       .then((response) => {
         const lastVitalSigns = response.data[response.data.length - 1];
-       
+
         if (
           lastVitalSigns.captureDate >= moment(new Date()).format("YYYY-MM-DD")
         ) {
@@ -395,9 +322,7 @@ const Pharmacy = (props) => {
           setShowCurrentVitalSigns(true);
         }
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //Get EAC Status
   const CheckEACStatus = () => {
@@ -408,9 +333,7 @@ const Pharmacy = (props) => {
       .then((response) => {
         setEacStatusObj(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //Get list of RegimenLine
   const RegimenLine = () => {
@@ -421,9 +344,7 @@ const Pharmacy = (props) => {
       .then((response) => {
         setRegimen(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //Get list of PrepSideEffect
   const PrepSideEffect = () => {
@@ -432,7 +353,6 @@ const Pharmacy = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        
         setPrepSideEffect(
           Object.entries(response.data).map(([key, value]) => ({
             label: value.display,
@@ -440,9 +360,7 @@ const Pharmacy = (props) => {
           }))
         );
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //Get list of DSD Model Type
   function DsdModelType(dsdmodel) {
@@ -453,12 +371,9 @@ const Pharmacy = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        
         setDsdModelType(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   }
   function RegimenType(id) {
     async function getCharacters() {
@@ -516,13 +431,13 @@ const Pharmacy = (props) => {
   }
   function RegimenDrug(id) {
     let drugId = id;
-    
+
     async function getCharacters(drugId) {
       try {
         const response = await axios.get(`${baseUrl}hiv/regimen/drugs/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        
+
         if (response.data.length > 0) {
           setSelectedCombinedRegimen(response.data);
           const regimenName = regimenType.find((x) => {
@@ -563,7 +478,6 @@ const Pharmacy = (props) => {
             setSelectedCombinedRegimen(response.data);
             const regimenName = regimenTypeOI.find((x) => {
               if (x.value == parseInt(drugId)) {
-                
                 return x;
               }
             });
@@ -600,7 +514,6 @@ const Pharmacy = (props) => {
           setSelectedCombinedRegimen(response.data);
           const regimenName = regimenTypeTB.find((x) => {
             if (x.value == parseInt(drugId)) {
-              
               return x;
             }
           });
@@ -649,11 +562,9 @@ const Pharmacy = (props) => {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (response.data) {
-          
           setSelectedCombinedRegimen(response.data);
           const regimenName = regimenTypeOther.find((x) => {
             if (x.value == parseInt(drugId)) {
-              
               return x;
             }
           });
@@ -772,7 +683,7 @@ const Pharmacy = (props) => {
 
   const handleCheckBoxRegimen = (e) => {
     const originalCombination = regimenDrug;
-    
+
     if (e.target.checked) {
       const newObjCombination = selectedCombinedRegimen.map((x) => {
         x["dispense"] = "";
@@ -859,7 +770,6 @@ const Pharmacy = (props) => {
   };
   const addDrug = (e) => {
     if (validateDrugDispense()) {
-      
       setRegimenDrugList([...regimenDrugList, ...regimenDrug]);
       const drugObj = [
         {
@@ -881,7 +791,6 @@ const Pharmacy = (props) => {
   };
   const addDrugTB = (e) => {
     if (validateDrugDispense()) {
-      
       setRegimenDrugList([...regimenDrugList, ...regimenDrug]);
       const drugObj = [
         {
@@ -904,7 +813,6 @@ const Pharmacy = (props) => {
 
   const addDrugOI = (e) => {
     if (validateDrugDispense()) {
-      
       setRegimenDrugList([...regimenDrugList, ...regimenDrug]);
       const drugObj = [
         {
@@ -926,7 +834,6 @@ const Pharmacy = (props) => {
   };
   const addDrugOthers = (e) => {
     if (validateDrugDispense()) {
-      
       setRegimenDrugList([...regimenDrugList, ...regimenDrug]);
       const drugObj = [
         {
@@ -1010,7 +917,7 @@ const Pharmacy = (props) => {
               error.response.data.apierror.message !== ""
                 ? error.response.data.apierror.message
                 : "Something went wrong, please try again";
-          
+
             if (errorMessage !== "") {
               toast.error(errorMessage, {
                 position: toast.POSITION.BOTTOM_CENTER,
