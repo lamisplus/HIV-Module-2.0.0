@@ -221,7 +221,7 @@ const DashboardFilledTransferForm = (props) => {
   };
 
   const getBasedlineCD4Count = () => {
-    let facId = localStorage.getItem("faciltyId");
+    // let facId = localStorage.getItem("faciltyId");
     // /patient_baseline_cd4/{facilityId}/{patientUuid
     axios
       .get(`${baseUrl}patient_baseline_cd4/${facId}/${patientObj.personUuid}`, {
@@ -504,7 +504,7 @@ const DashboardFilledTransferForm = (props) => {
         dateOfObservation: today,
         facilityId: facId,
         personId: patientObj.id,
-        type: "Transfer",
+        type: "ART Transfer Out",
         visitId: "",
       };
       postTransferForm(updatePayload);
