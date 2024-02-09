@@ -353,7 +353,7 @@ const ClinicVisit = (props) => {
     }
   };
   const patientAge = calculate_age(
-    moment(patientObj.dateOfBirth).format("DD-MM-YYYY")
+   patientObj.dateOfBirth
   );
   //Get list of Test Group
   const TestGroup = () => {

@@ -66,6 +66,7 @@ function PatientCard(props) {
   
 
   const calculate_age = (dob) => {
+    console.log("calculating on dashboard", dob);
     if (dob !== null && dob != "") {
       //Check if the DOB is not null or empty
       const today = new Date();
@@ -214,11 +215,7 @@ function PatientCard(props) {
                           {" "}
                           Age :{" "}
                           <b style={{ color: "#0B72AA" }}>
-                            {calculate_age(
-                              moment(patientObject.dateOfBirth).format(
-                                "DD-MM-YYYY"
-                              )
-                            )}
+                            {calculate_age(patientObject.dateOfBirth)}
                           </b>
                         </span>
                       </Col>
