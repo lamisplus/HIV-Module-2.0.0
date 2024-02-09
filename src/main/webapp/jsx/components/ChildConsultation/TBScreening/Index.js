@@ -82,11 +82,11 @@ useEffect(() => {
             { headers: {"Authorization" : `Bearer ${token}`} }
         )
         .then((response) => {
-            //console.log(response.data);
+            
             setClinicalStage(response.data);
         })
         .catch((error) => {
-        //console.log(error);
+       
         });
     
     }
@@ -99,11 +99,11 @@ useEffect(() => {
             { headers: {"Authorization" : `Bearer ${token}`} }
         )
         .then((response) => {
-            //console.log(response.data);
+            
             setTbStatus(response.data);
         })
         .catch((error) => {
-        //console.log(error);
+        
         });
     
     }

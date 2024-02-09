@@ -169,11 +169,11 @@ const Pharmacy = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
+        
         setIPT_TYPE(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   const GetIptEligibilty = () => {
@@ -186,7 +186,7 @@ const Pharmacy = (props) => {
         setIptEligibilty(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //GET Other Drugd
@@ -204,7 +204,7 @@ const Pharmacy = (props) => {
         );
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   const calculate_age = (dob) => {
@@ -219,7 +219,7 @@ const Pharmacy = (props) => {
       let todayYear = today.getFullYear();
       let todayDate = today.getDate();
 
-      // console.log(todayMonth, todayYear);
+     
 
       // get the day, month and year from date of birth
       let birthDateMonth = birthDate.getMonth();
@@ -233,7 +233,7 @@ const Pharmacy = (props) => {
         //Checking the month to confirm if the age has been cloocked
 
         let monthGap = todayMonth - birthDateMonth;
-        // console.log("monthGap", monthGap);
+        
 
         // If 'monthGap'> 0, the age has been clocked, 'monthGap'< 0, the age has not been clocked, 'monthGap'= 0, we are in the month then check date to confirm clocked age
 
@@ -244,7 +244,7 @@ const Pharmacy = (props) => {
           return confirmedAge + " year(s)";
         } else if (monthGap === 0) {
           let dateGap = todayDate - birthdateDate;
-          // console.log("date gap", todayDate, birthdateDate, dateGap);
+         
 
           if (dateGap > 0) {
             return assumedAge + " year(s)";
@@ -284,7 +284,7 @@ const Pharmacy = (props) => {
         setChildrenTB(response.data.filter((x) => x.id === 11));
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //Get Pharmacy refill Detail
@@ -295,7 +295,7 @@ const Pharmacy = (props) => {
       })
       .then((response) => {
         const data = response.data;
-        console.log(data);
+       
         setObjValues(data);
         setRegimenDrugList(data && data.extra ? data.extra.regimens : []);
         DsdModelType(objValues.dsdModel);
@@ -303,7 +303,7 @@ const Pharmacy = (props) => {
         //}
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //Get list of DSD Model Type
@@ -318,7 +318,7 @@ const Pharmacy = (props) => {
         setDsdModelType(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   }
   //GET AdultRegimenLine
@@ -345,7 +345,7 @@ const Pharmacy = (props) => {
         setOIRegimenLine(oIRegimen);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
 
@@ -357,7 +357,7 @@ const Pharmacy = (props) => {
       })
       .then((response) => {
         const lastVitalSigns = response.data[response.data.length - 1];
-        //console.log(lastVitalSigns)
+        
         if (
           lastVitalSigns.captureDate >= moment(new Date()).format("YYYY-MM-DD")
         ) {
@@ -366,7 +366,7 @@ const Pharmacy = (props) => {
         }
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //Get EAC Status
@@ -376,11 +376,11 @@ const Pharmacy = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        console.log(response.data);
+        
         setEacStatusObj(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //Get list of RegimenLine
@@ -393,7 +393,7 @@ const Pharmacy = (props) => {
         setRegimen(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //Get list of PrepSideEffect
@@ -403,7 +403,7 @@ const Pharmacy = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
+        
         setPrepSideEffect(
           Object.entries(response.data).map(([key, value]) => ({
             label: value.display,
@@ -412,7 +412,7 @@ const Pharmacy = (props) => {
         );
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   function RegimenType(id) {
@@ -480,7 +480,7 @@ const Pharmacy = (props) => {
           setSelectedCombinedRegimen(response.data);
           const regimenName = regimenType.find((x) => {
             if (x.value == parseInt(drugId)) {
-              console.log(x);
+              
               return x;
             }
           });
@@ -514,7 +514,7 @@ const Pharmacy = (props) => {
           setSelectedCombinedRegimen(response.data);
           const regimenName = regimenTypeOI.find((x) => {
             if (x.value == parseInt(drugId)) {
-              console.log(x);
+              
               return x;
             }
           });
@@ -548,7 +548,7 @@ const Pharmacy = (props) => {
           setSelectedCombinedRegimen(response.data);
           const regimenName = regimenTypeTB.find((x) => {
             if (x.value == parseInt(drugId)) {
-              console.log(x);
+              
               return x;
             }
           });
@@ -582,7 +582,7 @@ const Pharmacy = (props) => {
           setSelectedCombinedRegimen(response.data);
           const regimenName = regimenTypeOther.find((x) => {
             if (x.value == parseInt(drugId)) {
-              //console.log(x)
+            
               return x;
             }
           });
@@ -643,7 +643,7 @@ const Pharmacy = (props) => {
   };
   const handleSelectedRegimenOther = (e) => {
     const regimenId = e.target.value;
-    //console.log(regimenId)
+  
     if (regimenId !== "") {
       RegimenTypeOther(regimenId);
     } else {
@@ -797,7 +797,7 @@ const Pharmacy = (props) => {
   };
   const handleCheckBox = (e) => {
     if (e.target.checked) {
-      console.log(e.target.value);
+     
       setObjValues({ ...objValues, [e.target.name]: true });
     }
   };

@@ -154,12 +154,9 @@ const DashboardFilledTransferForm = (props) => {
     value: "",
     label: "",
   });
-  // console.log(defaultFacility);
+  
 
-  // console.log(props);
-  // props.activeContent.actionType
-
-  //FETCH THE FORM INFO FOR VIEW FUNCTIONALITY
+ 
 
   const getTransferFormInfo = () => {
     let facId = localStorage.getItem("faciltyId");
@@ -202,7 +199,7 @@ const DashboardFilledTransferForm = (props) => {
       })
       .then((response) => {
         // setTransferInfo(response.data);
-        console.log("getCurrentMedication", response.data);
+      
         setCurrentMedication(response.data);
       })
       .catch((error) => {});
@@ -252,8 +249,6 @@ const DashboardFilledTransferForm = (props) => {
       )
       .then((response) => {
         setCurrentCD4(response.data);
-        console.log("currentCD4", response.data);
-        // setLabResult(response.data);
       })
       .catch((error) => {});
   };
@@ -290,7 +285,7 @@ const DashboardFilledTransferForm = (props) => {
   //       headers: { Authorization: `Bearer ${token}` },
   //     })
   //     .then((response) => {
-  //       console.log(response.data);
+  //       
   //         setPatientObj1(response.data);
   //     })
   //     .catch((error) => {});
@@ -389,7 +384,7 @@ const DashboardFilledTransferForm = (props) => {
   ]);
 
   const handleInputChangeAttempt = (e) => {
-    //console.log(e.target.value)
+    
     setErrors({ ...temp, [e.target.name]: "" });
     setAttempt({ ...attempt, [e.target.name]: e.target.value });
   };

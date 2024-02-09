@@ -146,7 +146,7 @@ const AdultRegimenNextAppointment = (props) => {
                 setAdultRegimenLine(artRegimen);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });        
     }
     //Get list of RegimenLine
@@ -156,11 +156,11 @@ const AdultRegimenNextAppointment = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                //console.log(response.data);
+                
                 setRegimenType(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     } 

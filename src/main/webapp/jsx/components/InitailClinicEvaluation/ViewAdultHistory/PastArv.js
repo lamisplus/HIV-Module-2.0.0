@@ -90,13 +90,12 @@ const useStyles = makeStyles((theme) => ({
 
 
 const BasicInfo = (props) => {
-    console.log(props.observation)
+
     const classes = useStyles();
     const history = useHistory();
     const [errors, setErrors] = useState({});
     let temp = { ...errors }
     useEffect(() => { 
-        //console.log(props.observation.data.pastArvMedical)
         if(props.observation.data ){
             setPastArvMedicalMedical(props.observation.data.pastArvMedical)           
         }

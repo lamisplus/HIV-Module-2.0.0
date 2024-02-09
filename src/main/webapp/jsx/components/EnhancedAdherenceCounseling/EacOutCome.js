@@ -130,7 +130,7 @@ const EAC = (props) => {
     //         //setObjValues(response.data)
     //         })
     //         .catch((error) => {
-    //         //console.log(error);
+    //         
     //         });    
     // }
     ///GET CURRENT LAB RESULT
@@ -145,7 +145,7 @@ const EAC = (props) => {
             setCurrentViralLoad(response.data)
             })
             .catch((error) => {
-            //console.log(error);
+            
             });    
     }
     ///GET CURRENT LAB RESULT
@@ -161,7 +161,7 @@ const EAC = (props) => {
             setRegimenLine(filterRegimen)
             })
             .catch((error) => {
-            //console.log(error);
+            
             });    
     }
     ///GET CURRENT Regimen
@@ -186,16 +186,16 @@ const EAC = (props) => {
                     
                     })
                     .catch((error) => {
-                    //console.log(error);
+                    
                     }); 
             }
             })
             .catch((error) => {
-            //console.log(error);
+            
             });    
     }
     const handleInputSwitchChange = e => {//this function is to handle form input
-        //console.log(switchs)
+        
         setSwitchs ({...switchs,  [e.target.name]: e.target.value});
     }
     const handleInputSubstituteChange = e => {//this function is to handle form input

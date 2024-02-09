@@ -99,11 +99,11 @@ const TPT = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                //console.log(response.data);
+               
                 setAdherence(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
         }

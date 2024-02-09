@@ -155,14 +155,10 @@ const Tracking = (props) => {
         patientCameWithTransferForm: "",
         patientAttendedHerFirstVisit: "",
         acknowlegdeReceiveDate: "",
-        // acknowlegdeTelephoneNumber: "",
+        
     });
 
-    // console.log(
-    //   "this is the patient obj",
-    //   patientObj,
-    //   localStorage.getItem("faciltyId")
-    // );
+    
 
     const checkNumberLimit = (e) => {
         const limit = 11;
@@ -178,19 +174,7 @@ const Tracking = (props) => {
 
  
 
-    // const fetchFacilityId = () => {
-    //     console.log('loadding')
-    //     axios
-    //         .get(`${baseUrl}account`, {
-    //             headers: { Authorization: `Bearer ${token}` },
-    //         })
-    //         .then((response) => {
-    //             console.log(response.data)
-    //             const organisationUnitId = response.data.currentOrganisationUnitId;
-    //             setFacId(organisationUnitId);
-    //         })
-    //         .catch((error) => {});
-    // };
+    
 
  
     const getTreatmentInfo = () => {
@@ -201,7 +185,7 @@ const Tracking = (props) => {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
-                // console.log(`peson uuid: ${patientObj.personUuid}`);
+                
                 setTransferInfo(response.data);
             })
             .catch((error) => {});
@@ -269,7 +253,7 @@ const Tracking = (props) => {
                 }
             )
             .then((response) => {
-                // console.log(response.data);
+                // 
 
                 let updatedFaclilties = response.data.map((each, id) => {
                     return {
@@ -312,7 +296,6 @@ const Tracking = (props) => {
 
     // handle Facility Name to slect drop down
     const handleInputChangeObject = (e) => {
-        // console.log(e);
         setPayload({
             ...payload,
             facilityTransferTo: e.name,
@@ -343,7 +326,7 @@ const Tracking = (props) => {
     ]);
 
     const handleInputChangeAttempt = (e) => {
-        //console.log(e.target.value)
+        
         setErrors({ ...temp, [e.target.name]: "" });
         setAttempt({ ...attempt, [e.target.name]: e.target.value });
     };

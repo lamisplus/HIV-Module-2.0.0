@@ -107,11 +107,11 @@ const MedicalHistory = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                //console.log(response.data);
+                
                 setAllergies(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
         }
@@ -121,9 +121,7 @@ const MedicalHistory = (props) => {
             setobjValues(props.observation.data.medicalHistory) 
             visit.visitDate=moment(props.observation.dateOfObservation).format("YYYY-MM-DD")          
         }
-        // else{
-        //     console.log(props.observation)
-        // }
+        
     }, [props.observation.data, props.patientObj]);
     const GetPatientDTOObj =()=>{
         axios
@@ -136,7 +134,7 @@ const MedicalHistory = (props) => {
                setEnrollDate(patientDTO.entryPointId===21 ? patientDTO.dateConfirmedHiv : patientDTO.dateOfRegistration)
            })
            .catch((error) => {
-           //console.log(error);
+           
            });          
     }
     const [objValues, setobjValues] = useState({Nausea:"", 

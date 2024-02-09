@@ -112,11 +112,9 @@ const Eligibility = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
         setClientType(response.data);
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
   const ART_STATUS = () => {
@@ -125,11 +123,9 @@ const Eligibility = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
         setArtStatus(response.data);
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
   const PREGNANCY_STATUS = () => {
@@ -138,11 +134,9 @@ const Eligibility = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
         setPregnancyStatus(response.data);
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
   const WHO_STAGING_CRITERIA = () => {
@@ -151,11 +145,9 @@ const Eligibility = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
         setWho(response.data);
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
   const calculate_age = (dob) => {
@@ -170,9 +162,7 @@ const Eligibility = (props) => {
       let todayYear = today.getFullYear();
       let todayDate = today.getDate();
 
-      // console.log(todayMonth, todayYear);
-
-      // get the day, month and year from date of birth
+    
       let birthDateMonth = birthDate.getMonth();
       let birthDateYear = birthDate.getFullYear();
       let birthdateDate = birthDate.getDate();
@@ -184,7 +174,7 @@ const Eligibility = (props) => {
         //Checking the month to confirm if the age has been cloocked
 
         let monthGap = todayMonth - birthDateMonth;
-        // console.log("monthGap", monthGap);
+        
 
         // If 'monthGap'> 0, the age has been clocked, 'monthGap'< 0, the age has not been clocked, 'monthGap'= 0, we are in the month then check date to confirm clocked age
 
@@ -195,7 +185,7 @@ const Eligibility = (props) => {
           return confirmedAge + " year(s)";
         } else if (monthGap === 0) {
           let dateGap = todayDate - birthdateDate;
-          // console.log("date gap", todayDate, birthdateDate, dateGap);
+         
 
           if (dateGap > 0) {
             return assumedAge + " year(s)";

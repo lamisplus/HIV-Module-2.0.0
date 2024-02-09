@@ -100,11 +100,10 @@ const Eligibility = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                //console.log(response.data);
+                
                 setAllergies(response.data);
             })
             .catch((error) => {
-            //console.log(error);
             });
         
         }

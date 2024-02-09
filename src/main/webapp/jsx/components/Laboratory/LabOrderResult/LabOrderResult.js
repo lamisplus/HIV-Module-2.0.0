@@ -128,10 +128,10 @@ const Laboratory = (props) => {
                    const patientDTO= response.data.enrollment
                    setEnrollDate (patientDTO && patientDTO.dateOfRegistration ? patientDTO.dateOfRegistration :"")
                    //setEacStatusObj(response.data);
-                   //console.log(enrollDate)
+                   //
                })
                .catch((error) => {
-               //console.log(error);
+               
                });
            
     } 
@@ -145,7 +145,7 @@ const Laboratory = (props) => {
                 setLabNumbers(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     }
@@ -159,7 +159,7 @@ const Laboratory = (props) => {
                setEacStatusObj(response.data);
            })
            .catch((error) => {
-           //console.log(error);
+           
            });
        
     }
@@ -175,12 +175,12 @@ const Laboratory = (props) => {
                     x.labTests.map((x2)=>{
                         testsOptions.push({ value: x2.id, label: x2.labTestName,testGroupId:x.id, testGroupName:x.groupName, sampleType:x2.sampleType },)
                     })
-                    //console.log(testsOptions)
+                   
                 })
                 setLabTestOptions(testsOptions)
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     }
@@ -195,7 +195,7 @@ const Laboratory = (props) => {
                 setPriority(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     }
@@ -216,7 +216,7 @@ const Laboratory = (props) => {
                     setButtonHidden(true)
                 }
             }).catch((error) => {
-            //console.log(error);
+            
             });
         
     }
@@ -231,7 +231,7 @@ const Laboratory = (props) => {
                 setVLIndication(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });        
     }
     // const handleSelectedTestGroup = e =>{
@@ -321,7 +321,7 @@ const Laboratory = (props) => {
     };
     /* Remove ADR  function **/
     const editTestOrder = (order, index) => { 
-        //console.log(order)
+        
         setTests({...order})      
         testOrderList.splice(index, 1);
         setTestOrderList([...testOrderList]);

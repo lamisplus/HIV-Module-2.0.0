@@ -141,12 +141,12 @@ const LabHistory = (props) => {
                 setButtonHidden(true)
             }
         }).catch((error) => {
-        //console.log(error);
+        
         });
     
   }
     const labStatus =(status)=> {
-        console.log(status)
+      
           if(status===0){
             return "blue"
           }else if(status===1){

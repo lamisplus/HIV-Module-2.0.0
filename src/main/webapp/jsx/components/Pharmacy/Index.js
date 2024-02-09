@@ -21,9 +21,7 @@ const PharmacyModule = (props) => {
       PharmacyList()
       setKey(props.activeContent.activeTab)
     }, [props.activeContent.id,  props.activeContent.activeTab]);
-    //console.log(key)
-
-        //GET LIST Drug Refill
+    
         const PharmacyList =() =>{
           setLoading(true)
           axios

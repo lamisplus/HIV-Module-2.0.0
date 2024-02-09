@@ -17,27 +17,17 @@ function SubMenu(props) {
             Observation();
         }
     }, [props.patientObj]);
-    console.log(patientObj)
-     //Get list of RegimenLine
+    
     const Observation =()=>{
         axios
             .get(`${baseUrl}observation/person/${props.patientObj.id}`,
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                //const observation = response.data
-                // const mental= observation.filter((x)=> x.type==='mental health')
-                // const evaluation= observation.filter((x)=> x.type==='initial evaluation')
-                // if(mental.length > 1){
-                //     mentalStatus=true
-                // }
-                // if(evaluation.length > 1){
-                //     initialEvaluationStatus=true
-                // }
-
+               
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     }

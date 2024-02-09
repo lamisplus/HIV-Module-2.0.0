@@ -369,11 +369,9 @@ const TbScreening = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
         setTbTreatmentType(response.data);
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
   const TB_TREATMENT_OUTCOME = () => {
@@ -382,16 +380,14 @@ const TbScreening = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
         setTbTreatmentOutCome(response.data);
       })
       .catch((error) => {
-        //console.log(error);
       });
   };
 
   const handleInputChange = (e) => {
-    // console.log(e.target.name, e.target.value);
+   
     props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.value });
 
     //making some fields to be empty once the selection logic is apply(skip logic)
@@ -454,7 +450,6 @@ const TbScreening = (props) => {
   };
 
   const handleInputChangeContrain = (e) => {
-    //console.log(e.target.name, e.target.checked);
     if (e.target.checked) {
       props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.checked });
     } else {
