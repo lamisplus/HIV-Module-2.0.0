@@ -247,7 +247,7 @@ const PatientnHistory = (props) => {
     setReason({ [e.target.name]: e.target.value });
   };
   const LoadDeletePage = (row) => {
-    console.log(row.path)
+  
     if (row.path === "Mental-health") {
       setSaving(true);
       //props.setActiveContent({...props.activeContent, route:'mental-health-view', id:row.id})
