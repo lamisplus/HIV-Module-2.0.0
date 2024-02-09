@@ -216,9 +216,7 @@ const Eligibility = (props) => {
       }
     }
   };
-  const patientAge = calculate_age(
-    moment(props.patientObj.dateOfBirth).format("DD-MM-YYYY")
-  );
+  const patientAge = calculate_age(props.patientObj.dateOfBirth);
 
   return (
     <>

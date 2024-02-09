@@ -304,9 +304,7 @@ const Pharmacy = (props) => {
       }
     }
   };
-  const patientAge = calculate_age(
-    moment(patientObj.dateOfBirth).format("DD-MM-YYYY")
-  ); //Age calculation
+  const patientAge = calculate_age(patientObj.dateOfBirth); //Age calculation
   //GET ChildRegimenLine
   const ChildRegimenLine = () => {
     axios

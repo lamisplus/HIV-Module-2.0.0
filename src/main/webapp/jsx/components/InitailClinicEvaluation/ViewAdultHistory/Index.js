@@ -160,7 +160,7 @@ const UserRegistration = (props) => {
   };
 
   const patientAge = calculate_age(
-    moment(props.patientObj.dateOfBirth).format("DD-MM-YYYY")
+    props.patientObj.dateOfBirth
   );
   //console.log(props)
 
@@ -170,7 +170,7 @@ const UserRegistration = (props) => {
         <CardBody>
           <div className="row">
             {calculate_age(
-              moment(props.patientObj.dateOfBirth).format("DD-MM-YYYY")
+              props.patientObj.dateOfBirth
             ) <= 14 ? (
               <h2>Pediatric- Initial Clinical Evaluation ssd</h2>
             ) : (
@@ -393,7 +393,7 @@ const UserRegistration = (props) => {
                 {activeItem === "regimen" && (
                   <>
                     {calculate_age(
-                      moment(props.patientObj.dateOfBirth).format("DD-MM-YYYY")
+                    props.patientObj.dateOfBirth
                     ) <= 14 ? (
                       <ChildRegimenNextAppointment
                         handleItemClick={handleItemClick}

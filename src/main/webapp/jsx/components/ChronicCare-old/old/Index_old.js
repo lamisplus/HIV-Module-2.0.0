@@ -124,9 +124,7 @@ const ChronicCare = (props) => {
       }
     }
   };
-  const patientAge = calculate_age(
-    moment(patientObj.dateOfBirth).format("DD-MM-YYYY")
-  );
+  const patientAge = calculate_age(patientObj.dateOfBirth);
 
   return (
     <>
