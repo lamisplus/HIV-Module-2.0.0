@@ -139,8 +139,8 @@ const TbScreening = (props) => {
             props.setTbObj({...props.tbObj, ['outcome']: "Presumptive TB case (TB suspect)"})
             props.tbObj.eligibleForTPT="No"
             
-            //props.setTbObj({...props.tbObj, ['eligibleForTPT']: "No"})
-            //console.log("last yes")
+            
+            
         }else if(  props.tbObj.coughing==="No" 
                 &&  props.tbObj.fever==="No"
                 &&  props.tbObj.losingWeight==="No"
@@ -204,11 +204,11 @@ const TbScreening = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                //console.log(response.data);
+                
                 setTbTreatmentType(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+           
             });
         
     }
@@ -218,11 +218,11 @@ const TbScreening = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                //console.log(response.data);
+                
                 setTbTreatmentOutCome(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+           
             });
         
     }

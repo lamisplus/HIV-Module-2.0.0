@@ -288,7 +288,7 @@ const ChronicCare = (props) => {
         setlastDateOfObservation(response.data.dateOfObservation);//set the date of onservation into this variable
       })
       .catch((error) => {
-        //console.log(response.data.data);
+       
       });
   };
   const GetChronicCareData = () => {
@@ -304,12 +304,10 @@ const ChronicCare = (props) => {
         }
       })
       .catch((error) => {
-        //console.log(response.data.data);
+        
       });
   };
   const handleInputChange = (e) => {
-    //Handle input fields changes
-    //console.log(e.target.value)
     setErrors({ ...temp, [e.target.name]: "" });
     setObservation({ ...observation, [e.target.name]: e.target.value });
   };
@@ -445,7 +443,7 @@ const ChronicCare = (props) => {
     }
   };
 
-  //console.log(eligibility)
+  
   const onClickEligibility = () => {
     setShowEligibility(!showEligibility);
   };

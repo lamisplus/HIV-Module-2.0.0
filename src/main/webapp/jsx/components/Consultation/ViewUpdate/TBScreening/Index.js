@@ -114,30 +114,20 @@ const TBScreeningForm = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
+       
         setTbStatus(response.data);
-        //actualTbSTatus=response.data
+       
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
 
   const handleInputChange = (e) => {
-    // props.setErrors({ ...props.errors, [e.target.name]: "" });
-    // if (e.target.name === "antiTBDrug" && e.target.value !== "") {
-    //   if (
-    //     e.target.value === "NO" &&
-    //     (props.tbObj.currentOnIpt === "" || props.tbObj.currentOnIpt === null)
-    //   ) {
-    //     props.tbObj.tbStatusId = "";
-    //   } else if (e.target.value === "YES") {
-    //     props.tbObj.tbStatusId = 70;
-    //   }
-    // }
+    
     props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.value });
   };
-  //console.log(props.errors)
+  
 
   return (
     <div>

@@ -37,11 +37,11 @@ const ADR = (props) => {
             { headers: {"Authorization" : `Bearer ${token}`} }
         )
         .then((response) => {
-            //console.log(response.data);
+            
             setPrepSideEffect(response.data);
         })
         .catch((error) => {
-        //console.log(error);
+        
         });
     
   }

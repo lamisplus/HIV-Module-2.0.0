@@ -61,7 +61,6 @@ let newDate = new Date()
 
 const PostPatient = (props) => {
     const patientObj = props.patientObj;
-    //console.log(patientObj)
     const [selectedOption, setSelectedOption] = useState();
     let history = useHistory();
     const classes = useStyles()

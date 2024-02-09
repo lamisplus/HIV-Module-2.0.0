@@ -117,7 +117,7 @@ const ClientStatusUpdate = (props) => {
                setHivStatus(response.data.filter((x)=> x.display!=='Lost to Follow Up' && x.display!=='ART Transfer In' && x.display!=='ART Start' && x.display!=='ART Restart' && x.display!=='Pre-ART Transfer In' && x.display!==patientObj.currentStatus && x.display!=='HIV Exposed Status Unknown' && x.display!=='HIV Negative' && x.display!=='HIV+ non ART'));
            })
            .catch((error) => {
-           //console.log(error);
+           
            });
        
     }
@@ -128,11 +128,11 @@ const ClientStatusUpdate = (props) => {
                { headers: {"Authorization" : `Bearer ${token}`} }
            )
            .then((response) => {
-               //console.log(response.data);
+               
                setReasonForInteruption(response.data);
            })
            .catch((error) => {
-           //console.log(error);
+           
            });
        
     }
@@ -143,11 +143,11 @@ const ClientStatusUpdate = (props) => {
                { headers: {"Authorization" : `Bearer ${token}`} }
            )
            .then((response) => {
-               //console.log(response.data);
+               
                setCauseDeath(response.data);
            })
            .catch((error) => {
-           //console.log(error);
+           
            });
        
     }

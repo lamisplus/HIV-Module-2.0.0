@@ -92,7 +92,7 @@ const BasicInfo = (props) => {
                 })));
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     }
@@ -110,7 +110,7 @@ const BasicInfo = (props) => {
                 })));
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     }
@@ -169,7 +169,7 @@ const BasicInfo = (props) => {
             />
             )      
         }else if( bmi >= 25){
-            //console.log("test")
+           
             <Message        
                 size='mini'
                 color='blue'

@@ -124,7 +124,6 @@ function PatientCard(props) {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log("patient obj 1" + JSON.stringify(response.data));
         setPatientObj1(response.data);
       })
       .catch((error) => {});

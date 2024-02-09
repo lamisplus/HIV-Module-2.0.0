@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const EnrollmentOtz = (props) => {
-  console.log(props?.activeContent);
+ 
   const [saving, setSavings] = useState(false);
   const [currentRecord, setCurrentRecord] = useState(null);
   const [otzOutcomesArray, setOtzOutcomes] = useState([]);
@@ -222,7 +222,7 @@ const EnrollmentOtz = (props) => {
         return response.data;
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
 

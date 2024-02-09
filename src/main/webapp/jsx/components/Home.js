@@ -22,13 +22,13 @@ const Home = () => {
   // tab
 
   const fetchFacilityId = () => {
-    console.log('loadding')
+    
     axios
         .get(`${baseUrl}account`, {
             headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
-            console.log(response.data)
+           
             const organisationUnitId = response.data.currentOrganisationUnitId;
     localStorage.setItem('facId', organisationUnitId)
         })

@@ -32,7 +32,7 @@ function SubMenu(props) {
       })
       .then((response) => {})
       .catch((error) => {
-        //console.log(error);
+      
       });
   };
 
@@ -195,7 +195,7 @@ function SubMenu(props) {
         }
       })
       .catch((error) => {
-        // console.log(error);
+        // 
         setIsOtzEnrollementDone(false);
       });
   };

@@ -144,11 +144,11 @@ const ArtCommencement = (props) => {
                { headers: {"Authorization" : `Bearer ${token}`} }
            )
            .then((response) => {
-               //console.log(response.data);
+               
                setClinicalStage(response.data);
            })
            .catch((error) => {
-           //console.log(error);
+          
            });
        
         }
@@ -159,11 +159,11 @@ const ArtCommencement = (props) => {
                { headers: {"Authorization" : `Bearer ${token}`} }
            )
            .then((response) => {
-               //console.log(response.data);
+               
                setRegimenLine(response.data);
            })
            .catch((error) => {
-           //console.log(error);
+           
            });
        
         }
@@ -174,11 +174,11 @@ const ArtCommencement = (props) => {
                    { headers: {"Authorization" : `Bearer ${token}`} }
                )
                .then((response) => {
-                   //console.log(response.data);
+                 
                    setRegimenType(response.data);
                })
                .catch((error) => {
-               //console.log(error);
+               
                });
            
             }
@@ -189,11 +189,11 @@ const ArtCommencement = (props) => {
                { headers: {"Authorization" : `Bearer ${token}`} }
            )
            .then((response) => {
-               //console.log(response.data);
+               
                setPregancyStatus(response.data);
            })
            .catch((error) => {
-           //console.log(error);
+         
            });
        
         }
@@ -218,11 +218,11 @@ const ArtCommencement = (props) => {
                    { headers: {"Authorization" : `Bearer ${token}`} }
                )
                .then((response) => {
-                   //console.log(response.data);
+                  
                    setTbStatus(response.data);
                })
                .catch((error) => {
-               //console.log(error);
+             
                });
            
          }

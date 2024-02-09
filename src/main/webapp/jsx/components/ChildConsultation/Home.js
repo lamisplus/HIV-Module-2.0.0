@@ -119,11 +119,9 @@ const Widget = (props) => {
              { headers: {"Authorization" : `Bearer ${token}`} }
          )
          .then((response) => {
-             //console.log(response.data);
              setClinicalStage(response.data);
          })
          .catch((error) => {
-         //console.log(error);
          });
      
       }
@@ -134,12 +132,10 @@ const Widget = (props) => {
              { headers: {"Authorization" : `Bearer ${token}`} }
          )
          .then((response) => {
-             //console.log(response.data);
              setPrepSideEffect(response.data);
              adherenceLevelObj=response.data
          })
          .catch((error) => {
-         //console.log(error);
          });
      
       }
@@ -151,11 +147,9 @@ const Widget = (props) => {
              { headers: {"Authorization" : `Bearer ${token}`} }
          )
          .then((response) => {
-             //console.log(response.data);
              setTbStatus(response.data);
          })
          .catch((error) => {
-         //console.log(error);
          });
      
       }

@@ -69,7 +69,7 @@ const RecentHistory = (props) => {
       })
       .catch((error) => {
         setLoadingRecent(false);
-        //console.log(error);
+     
       });
   };
   //Get list of LaboratoryHistory
@@ -80,22 +80,14 @@ const RecentHistory = (props) => {
         { headers: { Authorization: `Bearer ${token}` } }
       )
       .then((response) => {
-        //console.log(response.data)
+        
         setLoadingLab(false);
-        //  let LabObject= []
-        //       response.data.forEach(function(value, index, array) {
-        //           const dataOrders = value.labOrder.tests
-        //           if(dataOrders[index]) {
-        //               dataOrders.forEach(function(value, index, array) {
-        //                   LabObject.push(value)
-        //               })
-        //           }
-        //       });
+        
         setViralLoad(response.data);
       })
       .catch((error) => {
         setLoadingLab(false);
-        //console.log(error);
+       
       });
   };
   //GET LIST Drug Refill
@@ -107,7 +99,7 @@ const RecentHistory = (props) => {
         { headers: { Authorization: `Bearer ${token}` } }
       )
       .then((response) => {
-        //console.log(response.data)
+       
         setLoading(false);
         setLoadingPharmacy(false);
         setRefillList(response.data);
@@ -152,7 +144,6 @@ const RecentHistory = (props) => {
     }
   };
   const ActivityName = (name) => {
-    console.log("name", name);
     if (name === "HIV Enrollment") {
       return "HE";
     } else if (name === "Pharmacy refill") {
@@ -172,11 +163,10 @@ const RecentHistory = (props) => {
     }
   };
   const regimenName = (regimenObj) => {
-    //console.log(regimenObj)
+  
     let regimenArr = [];
     regimenObj &&
       regimenObj.forEach(function (value, index, array) {
-        //console.log(value)
         regimenArr.push(value["name"]);
       });
     return regimenArr.toString();
@@ -561,9 +551,9 @@ const RecentHistory = (props) => {
           }
         });
     } else if (row.path === "Client-Verification") {
-      //Client-Verification
+      
       setSaving(true);
-      //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
+    
       axios
         .delete(`${baseUrl}observation/${row.id}`, {
           headers: { Authorization: `Bearer ${token}` },

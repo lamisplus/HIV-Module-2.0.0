@@ -83,23 +83,14 @@ const PatientnHistory = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        console.log(response.data);
+        
         setLoading(false);
-        // let HistoryObject= []
-        // response.data.forEach(function(value, index, array) {
-        //     const dataObj = value.activities
-        //     console.log(dataObj)
-        //     if(dataObj[index]) {
-        //         dataObj.forEach(function(value, index, array) {
-        //             HistoryObject.push(value)
-        //         })
-        //     }
-        // });
+        
         setRecentActivities(response.data);
       })
 
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   const LoadViewPage = (row, action) => {

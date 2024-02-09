@@ -143,7 +143,7 @@ const CreateServiceForm = (props) => {
       formik?.setFieldTouched(fieldName, true);
     });
     const errorObj = await formik.validateForm();
-    console.log(formik.errors);
+   
     const isValid = Object.keys(errorObj).length === 0;
     if (isValid) {
       submitNewRecord(formik.values);
@@ -195,7 +195,7 @@ const CreateServiceForm = (props) => {
         setCurrentRecord(otzData);
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
 

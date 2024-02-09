@@ -115,11 +115,11 @@ const BasicInfo = (props) => {
             { headers: {"Authorization" : `Bearer ${token}`} }
         )
         .then((response) => {
-            //console.log(response.data);
+            
             setClinicalStage(response.data);
         })
         .catch((error) => {
-        //console.log(error);
+        
         });
     
     } 
@@ -131,7 +131,7 @@ const BasicInfo = (props) => {
         
     }
     const handleWho =e =>{
-        //console.log(e.target.value)
+        
         setWho({...who, [e.target.name]: e.target.value})
     }
     const handleItemClick =(page, completedMenu)=>{

@@ -111,7 +111,7 @@ const Laboratory = (props) => {
                 setTest(getTestList[0].labTests)
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     }
@@ -133,7 +133,7 @@ const Laboratory = (props) => {
                     setButtonHidden(true)
                 }
             }).catch((error) => {
-            //console.log(error);
+            
             });
         
     }
@@ -157,7 +157,7 @@ const Laboratory = (props) => {
 
             })
             .catch((error) => {
-            //console.log(error);
+            
             });        
     }
     //Get list of Test Group
@@ -170,7 +170,7 @@ const Laboratory = (props) => {
                 setVLIndication(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });        
     }
     const handleSelectedTestGroup = e =>{

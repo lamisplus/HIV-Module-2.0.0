@@ -111,10 +111,10 @@ const Laboratory = (props) => {
                    const patientDTO= response.data.enrollment
                    setEnrollDate (patientDTO && patientDTO.dateOfRegistration ? patientDTO.dateOfRegistration :"")
                    //setEacStatusObj(response.data);
-                   console.log(enrollDate)
+                   
                })
                .catch((error) => {
-               //console.log(error);
+               
                });
            
         } 
@@ -130,7 +130,7 @@ const Laboratory = (props) => {
                 tests.labTestId= response.data.id 
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     }
@@ -152,7 +152,7 @@ const Laboratory = (props) => {
                     setButtonHidden(true)
                 }
             }).catch((error) => {
-            //console.log(error);
+            
             });
         
     }
@@ -167,7 +167,7 @@ const Laboratory = (props) => {
                 setVLIndication(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });        
     }
    
@@ -227,7 +227,7 @@ const Laboratory = (props) => {
             .then(response => {
                 setSaving(false);
                 props.LabOrders();
-                console.log(props.activeContent)
+                
                 toast.success("Viral load order created successful");
                 props.setActiveContent({...props.activeContent, route:'laboratoryViralLoadOrderResult', activeTab:"history"})
             })

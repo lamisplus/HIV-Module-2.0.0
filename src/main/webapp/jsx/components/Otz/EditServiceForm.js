@@ -143,7 +143,7 @@ const EditServiceForm = (props) => {
       formik?.setFieldTouched(fieldName, true);
     });
     const errorObj = await formik.validateForm();
-    console.log(formik.errors);
+   
     const isValid = Object.keys(errorObj).length === 0;
     if (isValid) {
       updateOldRecord(formik.values);
@@ -191,7 +191,7 @@ const EditServiceForm = (props) => {
         setCurrentRecord(otzData);
       })
       .catch((error) => {
-        console.log(error);
+        
       });
   };
 

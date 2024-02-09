@@ -113,7 +113,7 @@ const Laboratory = (props) => {
                 setTestGroup(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     }
@@ -127,7 +127,7 @@ const Laboratory = (props) => {
                 setPriority(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
         }
@@ -148,7 +148,7 @@ const Laboratory = (props) => {
                     setButtonHidden(true)
                 }
             }).catch((error) => {
-            //console.log(error);
+            
             });
         
     }
@@ -172,7 +172,7 @@ const Laboratory = (props) => {
 
     //         })
     //         .catch((error) => {
-    //         //console.log(error);
+    //         
     //         });        
     // }
     //Get list of Test Group
@@ -185,7 +185,7 @@ const Laboratory = (props) => {
                 setVLIndication(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });        
     }
     const handleSelectedTestGroup = e =>{
@@ -231,7 +231,7 @@ const Laboratory = (props) => {
     }
 
     const addOrder = e => {  
-        console.log(errors) 
+         
         if(validate()){
             
             tests.visitId=visitId
