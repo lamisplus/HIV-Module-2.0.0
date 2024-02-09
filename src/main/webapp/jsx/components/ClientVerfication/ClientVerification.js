@@ -175,7 +175,7 @@ const ClientVerification = (props) => {
     "Biometric recapture",
     "Facility Visit",
   ];
-
+//Trigers for indication
   const indicationForClientVerification = [
     {
       value: "No initial fingerprint was captured",
@@ -309,7 +309,8 @@ const ClientVerification = (props) => {
         outcome: "",
         comment: "",
         verificationAttempts: "",
-      });
+      })
+
       setSelectedOptions([]);
     } else {
       toast.error("Please fill the required fields");
@@ -356,6 +357,31 @@ const ClientVerification = (props) => {
               toast.success("Client Verfication form Save successful", {
                 position: toast.POSITION.BOTTOM_CENTER,
               });
+              //Set the value to default object value
+                setObservation({
+                  data: {},
+                  dateOfObservation: "",
+                  facilityId: null,
+                  personId: 0,
+                  type: "Client Verification",
+                  visitId: null,
+                });
+                setAttempt({
+                  dateOfAttempt: "",
+                  verificationStatus: "",
+                  outcome: "",
+                  comment: "",
+                  verificationAttempts: "",
+                });
+                setClientVerificationObj({
+                  attempt: "",
+                  dateOfDiscontinuation: "",
+                  discontinuation: "",
+                  returnedToCare: "",
+                  referredTo: "",
+                  serialEnrollmentNo: "",
+                  anyOfTheFollowing: "",
+                });
               props.setActiveContent({
                 ...props.activeContent,
                 route: "recent-history",
@@ -397,8 +423,6 @@ const ClientVerification = (props) => {
         } else {
           //this is to call the POST API
 
-          console.log("Observation", observation);
-
           axios
             .post(`${baseUrl}observation`, observation, {
               headers: { Authorization: `Bearer ${token}` },
@@ -408,6 +432,30 @@ const ClientVerification = (props) => {
               setSaving(false);
               toast.success("Client Verfication form Save successful", {
                 position: toast.POSITION.BOTTOM_CENTER,
+              });
+              setObservation({
+                data: {},
+                dateOfObservation: "",
+                facilityId: null,
+                personId: 0,
+                type: "Client Verification",
+                visitId: null,
+              });
+              setAttempt({
+                dateOfAttempt: "",
+                verificationStatus: "",
+                outcome: "",
+                comment: "",
+                verificationAttempts: "",
+              });
+              setClientVerificationObj({
+                attempt: "",
+                dateOfDiscontinuation: "",
+                discontinuation: "",
+                returnedToCare: "",
+                referredTo: "",
+                serialEnrollmentNo: "",
+                anyOfTheFollowing: "",
               });
               props.setActiveContent({
                 ...props.activeContent,
