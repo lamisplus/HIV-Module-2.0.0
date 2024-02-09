@@ -106,7 +106,7 @@ const MentalHealthScreening = (props) => {
                //
            })
            .catch((error) => {
-           //console.log(error);
+           
            });          
     } 
     const handleInputChangeKP = e => {

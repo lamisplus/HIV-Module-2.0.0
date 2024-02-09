@@ -165,7 +165,7 @@ const ClientVerification = (props) => {
         setSelected([...Obj.data.anyOfTheFollowing]);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   const optionsForCallOutCome = [
@@ -226,7 +226,7 @@ const ClientVerification = (props) => {
   ];
 
   const handleInputChangeAttempt = (e) => {
-    // console.log('checking for date',e.target.value)
+    
     setErrors({ ...temp, [e.target.name]: "" });
     setAttempt({ ...attempt, [e.target.name]: e.target.value });
   };
@@ -239,7 +239,7 @@ const ClientVerification = (props) => {
   };
 
   const handleInputChange = (e) => {
-    //console.log(e.target.value)
+    
     setErrors({ ...temp, [e.target.name]: "" });
     setAttempt({ ...attempt, [e.target.name]: e.target.value });
   };
@@ -329,7 +329,7 @@ const ClientVerification = (props) => {
 
     // Object
     observation.data = clientVerificationObj;
-    // console.log("Observation", observation);
+    
     if (clientVerificationFormObj()) {
       if (attemptList.length > 0) {
         observation.dateOfObservation =
@@ -428,7 +428,7 @@ const ClientVerification = (props) => {
               headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
-              console.log(response.data);
+            
               setSaving(false);
               toast.success("Client Verfication form Save successful", {
                 position: toast.POSITION.BOTTOM_CENTER,

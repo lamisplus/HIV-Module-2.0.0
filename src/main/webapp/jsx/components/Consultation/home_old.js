@@ -162,13 +162,12 @@ const ClinicVisit = (props) => {
 
         const lastVitalSigns = response.data[response.data.length - 1]
         if (lastVitalSigns.encounterDate === moment(new Date()).format("YYYY-MM-DD") === true) {
-          console.log(lastVitalSigns)
           setcurrentVitalSigns(lastVitalSigns)
           setShowCurrentVitalSigns(true)
         }
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   }
     //Get The updated patient objeect
@@ -183,7 +182,7 @@ const ClinicVisit = (props) => {
           setGetPatientObj(patObJ[0])
         })
         .catch((error) => {
-          //console.log(error);
+          
         });
     }
 
@@ -194,11 +193,11 @@ const ClinicVisit = (props) => {
         { headers: { "Authorization": `Bearer ${token}` } }
       )
       .then((response) => {
-        //console.log(response.data);
+        
         setClinicalStage(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
 
   }
@@ -210,11 +209,10 @@ const ClinicVisit = (props) => {
         { headers: { "Authorization": `Bearer ${token}` } }
       )
       .then((response) => {
-        //console.log(response.data);
         setTbStatus(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
 
   }
@@ -274,8 +272,7 @@ const ClinicVisit = (props) => {
   //Handle CheckBox 
   const handleCheckBox = e => {
     if (e.target.checked) {
-      //currentVitalSigns.personId === null ? props.patientObj.id : currentVitalSigns.personId
-      console.log(currentVitalSigns)
+      
       setVitalSignDto({ ...currentVitalSigns })
     } else {
       setVitalSignDto({
@@ -338,7 +335,6 @@ const ClinicVisit = (props) => {
   /**** Submit Button Processing  */
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(getPatientObj)
     if(validate()){
     setSaving(true)
     objValues.visitDate = vital.encounterDate

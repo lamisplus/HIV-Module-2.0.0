@@ -192,7 +192,7 @@ const Pharmacy = (props) => {
         );
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //
@@ -208,7 +208,7 @@ const Pharmacy = (props) => {
         //const lastobj;
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   const GetIptEligibilty = () => {
@@ -220,7 +220,7 @@ const Pharmacy = (props) => {
         setIptEligibilty(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //Get the patient current regimen
@@ -243,7 +243,7 @@ const Pharmacy = (props) => {
         //regimenDrug
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   const calculate_age = (dob) => {
@@ -258,9 +258,7 @@ const Pharmacy = (props) => {
       let todayYear = today.getFullYear();
       let todayDate = today.getDate();
 
-      // console.log(todayMonth, todayYear);
-
-      // get the day, month and year from date of birth
+     
       let birthDateMonth = birthDate.getMonth();
       let birthDateYear = birthDate.getFullYear();
       let birthdateDate = birthDate.getDate();
@@ -272,7 +270,7 @@ const Pharmacy = (props) => {
         //Checking the month to confirm if the age has been cloocked
 
         let monthGap = todayMonth - birthDateMonth;
-        // console.log("monthGap", monthGap);
+        
 
         // If 'monthGap'> 0, the age has been clocked, 'monthGap'< 0, the age has not been clocked, 'monthGap'= 0, we are in the month then check date to confirm clocked age
 
@@ -283,7 +281,7 @@ const Pharmacy = (props) => {
           return confirmedAge + " year(s)";
         } else if (monthGap === 0) {
           let dateGap = todayDate - birthdateDate;
-          // console.log("date gap", todayDate, birthdateDate, dateGap);
+        
 
           if (dateGap > 0) {
             return assumedAge + " year(s)";
@@ -321,7 +319,7 @@ const Pharmacy = (props) => {
         setChildrenTB(response.data.filter((x) => x.id === 11));
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //GET Other Drugd
@@ -339,7 +337,7 @@ const Pharmacy = (props) => {
         );
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   const IPT_TYPE = () => {
@@ -348,11 +346,11 @@ const Pharmacy = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
+        
         setIPT_TYPE(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //IPT_TYPE
@@ -371,14 +369,13 @@ const Pharmacy = (props) => {
         const oIRegimen = response.data.filter(
           (x) => x.id === 9 || x.id === 15 || x.id === 8
         );
-        //const othersRegimen=response.data.filter((x)=> (x.id!==1 && x.id!==2 && x.id!==14 && x.id!==10 && x.id!==9 && x.id!==15 && x.id!==8 ))
-        //console.log(othersRegimen)
+        
         setAdultArtRegimenLine(artRegimen);
         setTbRegimenLine(tbRegimen);
         setOIRegimenLine(oIRegimen);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
 
@@ -390,7 +387,7 @@ const Pharmacy = (props) => {
       })
       .then((response) => {
         const lastVitalSigns = response.data[response.data.length - 1];
-        //console.log(lastVitalSigns)
+       
         if (
           lastVitalSigns.captureDate >= moment(new Date()).format("YYYY-MM-DD")
         ) {
@@ -399,7 +396,7 @@ const Pharmacy = (props) => {
         }
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //Get EAC Status
@@ -412,7 +409,7 @@ const Pharmacy = (props) => {
         setEacStatusObj(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //Get list of RegimenLine
@@ -425,7 +422,7 @@ const Pharmacy = (props) => {
         setRegimen(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //Get list of PrepSideEffect
@@ -435,7 +432,7 @@ const Pharmacy = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
+        
         setPrepSideEffect(
           Object.entries(response.data).map(([key, value]) => ({
             label: value.display,
@@ -444,7 +441,7 @@ const Pharmacy = (props) => {
         );
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //Get list of DSD Model Type
@@ -456,11 +453,11 @@ const Pharmacy = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        console.log(response.data);
+        
         setDsdModelType(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   }
   function RegimenType(id) {
@@ -519,13 +516,13 @@ const Pharmacy = (props) => {
   }
   function RegimenDrug(id) {
     let drugId = id;
-    //console.log("The regimen drug ID -- "+  drugId)
+    
     async function getCharacters(drugId) {
       try {
         const response = await axios.get(`${baseUrl}hiv/regimen/drugs/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        //console.log("The API to get Drug name "+ response.data)
+        
         if (response.data.length > 0) {
           setSelectedCombinedRegimen(response.data);
           const regimenName = regimenType.find((x) => {
@@ -566,7 +563,7 @@ const Pharmacy = (props) => {
             setSelectedCombinedRegimen(response.data);
             const regimenName = regimenTypeOI.find((x) => {
               if (x.value == parseInt(drugId)) {
-                console.log(x);
+                
                 return x;
               }
             });
@@ -603,7 +600,7 @@ const Pharmacy = (props) => {
           setSelectedCombinedRegimen(response.data);
           const regimenName = regimenTypeTB.find((x) => {
             if (x.value == parseInt(drugId)) {
-              console.log(x);
+              
               return x;
             }
           });
@@ -652,11 +649,11 @@ const Pharmacy = (props) => {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (response.data) {
-          console.log(response.data);
+          
           setSelectedCombinedRegimen(response.data);
           const regimenName = regimenTypeOther.find((x) => {
             if (x.value == parseInt(drugId)) {
-              //console.log(x)
+              
               return x;
             }
           });
@@ -721,7 +718,6 @@ const Pharmacy = (props) => {
   };
   const handleSelectedRegimenOther = (e) => {
     const regimenId = e.target.value;
-    //console.log(regimenId)
     if (regimenId !== "") {
       RegimenTypeOther(regimenId);
     } else {
@@ -730,7 +726,6 @@ const Pharmacy = (props) => {
   };
   const handleSelectedRegimenCombination = (e) => {
     const regimenId = e.target.value;
-    //console.log(regimenId)
     if (regimenId !== "") {
       RegimenDrug(regimenId);
       setShowRegimen(true);
@@ -777,7 +772,7 @@ const Pharmacy = (props) => {
 
   const handleCheckBoxRegimen = (e) => {
     const originalCombination = regimenDrug;
-    //console.log(selectedCombinedRegimen)
+    
     if (e.target.checked) {
       const newObjCombination = selectedCombinedRegimen.map((x) => {
         x["dispense"] = "";
@@ -864,7 +859,7 @@ const Pharmacy = (props) => {
   };
   const addDrug = (e) => {
     if (validateDrugDispense()) {
-      //console.log(regimenDrug)
+      
       setRegimenDrugList([...regimenDrugList, ...regimenDrug]);
       const drugObj = [
         {
@@ -886,7 +881,7 @@ const Pharmacy = (props) => {
   };
   const addDrugTB = (e) => {
     if (validateDrugDispense()) {
-      //console.log(regimenDrug)
+      
       setRegimenDrugList([...regimenDrugList, ...regimenDrug]);
       const drugObj = [
         {
@@ -909,7 +904,7 @@ const Pharmacy = (props) => {
 
   const addDrugOI = (e) => {
     if (validateDrugDispense()) {
-      //console.log(regimenDrug)
+      
       setRegimenDrugList([...regimenDrugList, ...regimenDrug]);
       const drugObj = [
         {
@@ -931,7 +926,7 @@ const Pharmacy = (props) => {
   };
   const addDrugOthers = (e) => {
     if (validateDrugDispense()) {
-      //console.log(regimenDrug)
+      
       setRegimenDrugList([...regimenDrugList, ...regimenDrug]);
       const drugObj = [
         {
@@ -1015,7 +1010,7 @@ const Pharmacy = (props) => {
               error.response.data.apierror.message !== ""
                 ? error.response.data.apierror.message
                 : "Something went wrong, please try again";
-            //console.log(errorMessage)
+          
             if (errorMessage !== "") {
               toast.error(errorMessage, {
                 position: toast.POSITION.BOTTOM_CENTER,

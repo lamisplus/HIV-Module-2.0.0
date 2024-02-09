@@ -133,7 +133,7 @@ const Laboratory = (props) => {
                 setLabNumbers(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     }
@@ -146,10 +146,10 @@ const Laboratory = (props) => {
                const patientDTO= response.data.enrollment
                setEnrollDate (patientDTO && patientDTO.dateOfRegistration ? patientDTO.dateOfRegistration :"")
                //setEacStatusObj(response.data);
-               console.log(enrollDate)
+               
            })
            .catch((error) => {
-           //console.log(error);
+           
            });
        
 } 
@@ -163,7 +163,7 @@ const Laboratory = (props) => {
                 setPcrs(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     }
@@ -177,7 +177,7 @@ const Laboratory = (props) => {
                setEacStatusObj(response.data);
            })
            .catch((error) => {
-           //console.log(error);
+           
            });
        
     }
@@ -193,7 +193,7 @@ const Laboratory = (props) => {
                 tests.labTestId= response.data.id 
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     }  
@@ -214,7 +214,7 @@ const Laboratory = (props) => {
                     setButtonHidden(true)
                 }
             }).catch((error) => {
-            //console.log(error);
+            
             });
         
     }
@@ -238,7 +238,7 @@ const Laboratory = (props) => {
 
     //         })
     //         .catch((error) => {
-    //         //console.log(error);
+    //         
     //         });        
     // }
     //Get list of Test Group
@@ -251,7 +251,7 @@ const Laboratory = (props) => {
                 setVLIndication(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });        
     }
     const handleSelectedTestGroup = e =>{

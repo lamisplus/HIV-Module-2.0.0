@@ -234,12 +234,12 @@ const OtzRegister = (props) => {
                 setTpt({...tpt, ...response.data.data.tptMonitoring})
            })
            .catch((error) => {
-           //console.log(response.data.data);
+           
            });
        
     }
     const handleInputChange = e => {//Handle input fields changes
-        //console.log(e.target.value)
+        
         setErrors({...temp, [e.target.name]:""})
         setObservation ({...observation,  [e.target.name]: e.target.value});
     }
@@ -316,7 +316,7 @@ const OtzRegister = (props) => {
         }
     }
     
-    //console.log(eligibility)
+    
     const onClickEligibility =() =>{
         setShowEligibility(!showEligibility)
     }

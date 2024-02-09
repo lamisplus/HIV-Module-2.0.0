@@ -93,8 +93,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ArtCommencement = (props) => {
   const patientObj = props.patientObj;
-  //let history = useHistory();
-  //console.log(props.activeContent.id)
+  
   let gender = "";
   const [enrollDate, setEnrollDate] = useState("");
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
@@ -181,7 +180,7 @@ const ArtCommencement = (props) => {
       let todayYear = today.getFullYear();
       let todayDate = today.getDate();
 
-      // console.log(todayMonth, todayYear);
+      
 
       // get the day, month and year from date of birth
       let birthDateMonth = birthDate.getMonth();
@@ -195,9 +194,7 @@ const ArtCommencement = (props) => {
         //Checking the month to confirm if the age has been cloocked
 
         let monthGap = todayMonth - birthDateMonth;
-        // console.log("monthGap", monthGap);
-
-        // If 'monthGap'> 0, the age has been clocked, 'monthGap'< 0, the age has not been clocked, 'monthGap'= 0, we are in the month then check date to confirm clocked age
+        
 
         if (monthGap > 0) {
           return assumedAge + " year(s)";
@@ -206,7 +203,7 @@ const ArtCommencement = (props) => {
           return confirmedAge + " year(s)";
         } else if (monthGap === 0) {
           let dateGap = todayDate - birthdateDate;
-          // console.log("date gap", todayDate, birthdateDate, dateGap);
+         
 
           if (dateGap > 0) {
             return assumedAge + " year(s)";
@@ -276,7 +273,7 @@ const ArtCommencement = (props) => {
         setAdultRegimenLine(artRegimen);
       })
       .catch((error) => {
-        //console.log(error);
+       
       });
   };
   //GET ChildRegimenLine
@@ -292,7 +289,7 @@ const ArtCommencement = (props) => {
         setChildRegimenLine(artRegimenChildren);
       })
       .catch((error) => {
-        //console.log(error);
+       
       });
   };
   //Get ART Object
@@ -302,7 +299,7 @@ const ArtCommencement = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        console.log(response.data);
+      
         setObjValues({ ...objValues, ...response.data });
         if (response.data.isViralLoadAtStartOfArt === true) {
           setViraLoadStart(true);
@@ -314,7 +311,7 @@ const ArtCommencement = (props) => {
         }
       })
       .catch((error) => {
-        //console.log(error);
+       
       });
   };
   //Get list of WhoStaging
@@ -324,11 +321,11 @@ const ArtCommencement = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
+      
         setClinicalStage(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+       
       });
   };
   //Get list of RegimenLine
@@ -338,11 +335,11 @@ const ArtCommencement = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
+  
         setRegimenLine(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+       
       });
   };
   //Get list of RegimenLine
@@ -352,11 +349,11 @@ const ArtCommencement = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
+  
         setRegimenType(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+       
       });
   };
   //Get list of PREGANACY_STATUS
@@ -366,11 +363,11 @@ const ArtCommencement = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
+  
         setpregnancyStatus(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+       
       });
   };
   ///GET LIST OF FUNCTIONAL%20_STATUS
@@ -392,11 +389,11 @@ const ArtCommencement = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
+  
         setTbStatus(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+       
       });
   };
 
@@ -638,8 +635,7 @@ const ArtCommencement = (props) => {
       <Message size="mini" color="blue" content="Overweight/Obese" />;
     }
   }
-  console.log(objValues);
-  //console.log(enrollDate)
+  
 
   return (
     <div>

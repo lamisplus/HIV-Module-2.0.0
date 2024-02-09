@@ -307,7 +307,7 @@ const ClinicVisit = (props) => {
       let todayYear = today.getFullYear();
       let todayDate = today.getDate();
 
-      // console.log(todayMonth, todayYear);
+      
 
       // get the day, month and year from date of birth
       let birthDateMonth = birthDate.getMonth();
@@ -321,7 +321,7 @@ const ClinicVisit = (props) => {
         //Checking the month to confirm if the age has been cloocked
 
         let monthGap = todayMonth - birthDateMonth;
-        // console.log("monthGap", monthGap);
+        
 
         // If 'monthGap'> 0, the age has been clocked, 'monthGap'< 0, the age has not been clocked, 'monthGap'= 0, we are in the month then check date to confirm clocked age
 
@@ -332,8 +332,7 @@ const ClinicVisit = (props) => {
           return confirmedAge + " year(s)";
         } else if (monthGap === 0) {
           let dateGap = todayDate - birthdateDate;
-          // console.log("date gap", todayDate, birthdateDate, dateGap);
-
+          
           if (dateGap > 0) {
             return assumedAge + " year(s)";
           } else if (dateGap < 0) {
@@ -366,7 +365,7 @@ const ClinicVisit = (props) => {
         setTestGroup(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   // PREGANACY_STATUS
@@ -379,7 +378,7 @@ const ClinicVisit = (props) => {
         setPregnancyStatus(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   // CRYPTOCOCCAL_SCREENING_STATUS
@@ -392,7 +391,7 @@ const ClinicVisit = (props) => {
         setCryptococcal(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   // CERVICAL_CANCER_SCREENING_STATUS
@@ -406,7 +405,7 @@ const ClinicVisit = (props) => {
         setCervicalStatus(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   // CERVICAL_CANCER_TREATMENT
@@ -419,7 +418,7 @@ const ClinicVisit = (props) => {
         setCervicalTreatment(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   // HEPATITIS_SCREENING_RESULT
@@ -432,7 +431,7 @@ const ClinicVisit = (props) => {
         setHepatitis(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   // HEPATITIS_SCREENING_RESULT
@@ -445,7 +444,7 @@ const ClinicVisit = (props) => {
         setFamilyPlaining(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //GET AdultRegimenLine
@@ -460,7 +459,7 @@ const ClinicVisit = (props) => {
         );
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //GET AdultRegimenLine
@@ -475,7 +474,7 @@ const ClinicVisit = (props) => {
         );
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //GET LIST Drug Refill
@@ -510,7 +509,7 @@ const ClinicVisit = (props) => {
         }
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   //Get The updated patient objeect
@@ -524,7 +523,7 @@ const ClinicVisit = (props) => {
         //patientObj=response.data
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
 
@@ -535,11 +534,11 @@ const ClinicVisit = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
+        
         setClinicalStage(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
   ///GET LIST OF FUNCTIONAL%20_STATUS
@@ -550,11 +549,11 @@ const ClinicVisit = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log(response.data);
+      
         setTbStatus(response.data);
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
 
@@ -576,7 +575,7 @@ const ClinicVisit = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        console.log(response.data);
+       
         setAdherenceLevel(response.data);
       })
       .catch((error) => {});

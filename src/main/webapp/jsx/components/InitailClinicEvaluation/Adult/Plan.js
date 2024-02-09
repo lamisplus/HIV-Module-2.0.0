@@ -129,7 +129,7 @@ const BasicInfo = (props) => {
     const handlePlan =e =>{
         setPlan({...plan, [e.target.name]: e.target.value})
         setPlan({...plan, [e.target.name]: e.target.value})
-        //console.log(plan)
+        
     }
 
     const handleEnroll =e =>{

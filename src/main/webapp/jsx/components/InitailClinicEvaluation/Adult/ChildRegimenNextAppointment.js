@@ -137,7 +137,7 @@ const ChildRegimenNextAppointment = (props) => {
                 setAdultRegimenLine(artRegimenChildren);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });        
     }
     //Get list of RegimenLine
@@ -147,11 +147,11 @@ const ChildRegimenNextAppointment = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-                //console.log(response.data);
+                
                 setRegimenType(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     }
@@ -180,7 +180,7 @@ const ChildRegimenNextAppointment = (props) => {
         props.observation.personId =props.patientObj.id
         props.observation.data.nextAppointment=objValues.nextAppointment
         props.observation.data.clinicianName = objValues.clinicianName
-        //console.log(props.observation)
+        
         if(validate()){
         axios.post(`${baseUrl}observation`, props.observation,
         { headers: {"Authorization" : `Bearer ${token}`}},            
@@ -194,7 +194,7 @@ const ChildRegimenNextAppointment = (props) => {
           })
           .catch(error => {
               setSaving(false);
-              //console.log(error.response)
+              
               if(error.response && error.response.data){
                 let errorMessage = error.response.data && error.response.data.apierror.message!=="" ? error.response.data.apierror.message :  "Something went wrong, please try again";
                 toast.error(errorMessage,  {position: toast.POSITION.BOTTOM_CENTER}); 

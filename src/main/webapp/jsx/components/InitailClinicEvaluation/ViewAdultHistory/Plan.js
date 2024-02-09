@@ -137,7 +137,7 @@ const BasicInfo = (props) => {
             plan.cd4FlowCytometry=""
         }
         setPlan({...plan, [e.target.name]: e.target.value})
-        //console.log(plan)
+        
     }
     const handleEnroll =e =>{
         setEnrollIn({...enroll, [e.target.name]: e.target.value})

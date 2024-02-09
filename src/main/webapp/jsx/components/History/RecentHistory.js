@@ -69,7 +69,7 @@ const RecentHistory = (props) => {
       })
       .catch((error) => {
         setLoadingRecent(false);
-        //console.log(error);
+     
       });
   };
   //Get list of LaboratoryHistory
@@ -80,22 +80,14 @@ const RecentHistory = (props) => {
         { headers: { Authorization: `Bearer ${token}` } }
       )
       .then((response) => {
-        //console.log(response.data)
+        
         setLoadingLab(false);
-        //  let LabObject= []
-        //       response.data.forEach(function(value, index, array) {
-        //           const dataOrders = value.labOrder.tests
-        //           if(dataOrders[index]) {
-        //               dataOrders.forEach(function(value, index, array) {
-        //                   LabObject.push(value)
-        //               })
-        //           }
-        //       });
+        
         setViralLoad(response.data);
       })
       .catch((error) => {
         setLoadingLab(false);
-        //console.log(error);
+       
       });
   };
   //GET LIST Drug Refill
@@ -107,7 +99,7 @@ const RecentHistory = (props) => {
         { headers: { Authorization: `Bearer ${token}` } }
       )
       .then((response) => {
-        //console.log(response.data)
+       
         setLoading(false);
         setLoadingPharmacy(false);
         setRefillList(response.data);
@@ -160,18 +152,21 @@ const RecentHistory = (props) => {
       return "CE";
     } else if (name === "Clinic visit follow up") {
       return "CV";
+    }else if (name === "ART Transfer Out") {
+        return "AT";
     } else if (name === "ART Commencement") {
       return "AC";
+    } else if (name === "Service OTZ") {
+      return "SO";
     } else {
       return "RA";
     }
   };
   const regimenName = (regimenObj) => {
-    //console.log(regimenObj)
+  
     let regimenArr = [];
     regimenObj &&
       regimenObj.forEach(function (value, index, array) {
-        //console.log(value)
         regimenArr.push(value["name"]);
       });
     return regimenArr.toString();
@@ -188,6 +183,13 @@ const RecentHistory = (props) => {
       props.setActiveContent({
         ...props.activeContent,
         route: "art-commencement-view",
+        id: row.id,
+        actionType: action,
+      });
+    } else if (row.path === "Service-OTZ") {
+      props.setActiveContent({
+        ...props.activeContent,
+        route: "otz-service-form",
         id: row.id,
         actionType: action,
       });
@@ -266,7 +268,6 @@ const RecentHistory = (props) => {
         activeTab: "history",
         actionType: action,
       });
-
     } else if (row.path === "client-tracker") {
       props.setActiveContent({
         ...props.activeContent,
@@ -291,7 +292,7 @@ const RecentHistory = (props) => {
         activeTab: "history",
         actionType: action,
       });
-    }else if (row.path === "Client-Verification") {
+    } else if (row.path === "Client-Verification") {
       props.setActiveContent({
         ...props.activeContent,
         route: "client-verfication-form",
@@ -307,9 +308,19 @@ const RecentHistory = (props) => {
         activeTab: "home",
         actionType: action,
       });
-    } else {
+    } else if (row.path === "ART-Transfer-Out") {
+      props.setActiveContent({
+        ...props.activeContent,
+        route: "filled-transferForm",
+        id: row.id,
+        activeTab: "home",
+        actionType: action,
+      });
+    } 
+     else {
     }
   };
+
   const LoadDeletePage = (row) => {
     if (row.path === "Mental-health") {
       setSaving(true);
@@ -539,32 +550,58 @@ const RecentHistory = (props) => {
             toast.error("Something went wrong. Please try again...");
           }
         });
-    }else if (row.path === "Client-Verification") {//Client-Verification
+    } else if (row.path === "Client-Verification") {
+      
       setSaving(true);
-      //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
+    
       axios
-          .delete(`${baseUrl}observation/${row.id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          .then((response) => {
-            toast.success("Record Deleted Successfully");
-            RecentActivities();
-            toggle();
-            setSaving(false);
-          })
-          .catch((error) => {
-            setSaving(false);
-            if (error.response && error.response.data) {
-              let errorMessage =
-                  error.response.data.apierror &&
-                  error.response.data.apierror.message !== ""
-                      ? error.response.data.apierror.message
-                      : "Something went wrong, please try again";
-              toast.error(errorMessage);
-            } else {
-              toast.error("Something went wrong. Please try again...");
-            }
-          });
+        .delete(`${baseUrl}observation/${row.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          toast.success("Record Deleted Successfully");
+          RecentActivities();
+          toggle();
+          setSaving(false);
+        })
+        .catch((error) => {
+          setSaving(false);
+          if (error.response && error.response.data) {
+            let errorMessage =
+              error.response.data.apierror &&
+              error.response.data.apierror.message !== ""
+                ? error.response.data.apierror.message
+                : "Something went wrong, please try again";
+            toast.error(errorMessage);
+          } else {
+            toast.error("Something went wrong. Please try again...");
+          }
+        });
+    } else if (row.path === "Service-OTZ") {
+      setSaving(true);
+      axios
+        .delete(`${baseUrl}observation/${row.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          toast.success("OTZ record Deleted Successfully");
+          RecentActivities();
+          toggle();
+          setSaving(false);
+        })
+        .catch((error) => {
+          setSaving(false);
+          if (error.response && error.response.data) {
+            let errorMessage =
+              error.response.data.apierror &&
+              error.response.data.apierror.message !== ""
+                ? error.response.data.apierror.message
+                : "Something went wrong, please try again";
+            toast.error(errorMessage);
+          } else {
+            toast.error("Something went wrong. Please try again...");
+          }
+        });
     } else if (row.path === "Chronic-Care") {
       setSaving(true);
       //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
@@ -617,7 +654,34 @@ const RecentHistory = (props) => {
             toast.error("Something went wrong. Please try again...");
           }
         });
-    } else {
+    }else if (row.path === "ART-Transfer-Out") {
+      setSaving(true);
+      //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
+      axios
+        .delete(`${baseUrl}observation/${row.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          toast.success("Record Deleted Successfully");
+          RecentActivities();
+          toggle();
+          setSaving(false);
+        })
+        .catch((error) => {
+          setSaving(false);
+          if (error.response && error.response.data) {
+            let errorMessage =
+              error.response.data.apierror &&
+              error.response.data.apierror.message !== ""
+                ? error.response.data.apierror.message
+                : "Something went wrong, please try again";
+            toast.error(errorMessage);
+          } else {
+            toast.error("Something went wrong. Please try again...");
+          }
+        });
+    } 
+    else {
     }
   };
   const redirectLink = () => {
@@ -1028,7 +1092,12 @@ const RecentHistory = (props) => {
         </Modal.Header>
         <Modal.Body>
           <h4>
-            Are you Sure you want to delete <b>{record && record.name==='Chronic Care' ? 'Care and Support' : record && record.name}</b>
+            Are you Sure you want to delete{" "}
+            <b>
+              {record && record.name === "Chronic Care"
+                ? "Care and Support"
+                : record && record.name}
+            </b>
           </h4>
         </Modal.Body>
         <Modal.Footer>

@@ -119,7 +119,7 @@ useEffect(() => {
                 setLabNumbers(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });
         
     }
@@ -132,10 +132,10 @@ useEffect(() => {
                const patientDTO= response.data.enrollment
                setEnrollDate (patientDTO && patientDTO.dateOfRegistration ? patientDTO.dateOfRegistration :"")
                //setEacStatusObj(response.data);
-               //console.log(enrollDate)
+               //
            })
            .catch((error) => {
-           //console.log(error);
+           
            });
        
     }
@@ -149,7 +149,7 @@ useEffect(() => {
                setEacStatusObj(response.data);
            })
            .catch((error) => {
-           //console.log(error);
+           
            });
        
     }
@@ -166,10 +166,10 @@ useEffect(() => {
                 //Tests
                 response.data.map((x)=> {
                     x.labTests.map((x2)=>{
-                        //console.log(x)
+                        
                         testsOptions.push({ value: x2.id, label: x2.labTestName,testGroupId:x.id, testGroupName:x.groupName, sampleType:x2.sampleType },)
                     })
-                    //console.log(testsOptions)
+                  
                 })
                 setLabTestOptions(testsOptions)
                 setSelectedOption(
@@ -179,11 +179,10 @@ useEffect(() => {
                 setDefaultSelectedOption(testsOptions.filter((y)=> y.value===props.activeContent.obj.labTestId))
             })
             .catch((error) => {
-            //console.log(error);
+            
             }); 
     }
-    //console.log(selectedOption);
-    //Get list of Test Group
+   
     const ViraLoadIndication =()=>{
         axios
             .get(`${baseUrl}application-codesets/v2/VIRAL_LOAD_INDICATION`,
@@ -193,7 +192,7 @@ useEffect(() => {
                 setVLIndication(response.data);
             })
             .catch((error) => {
-            //console.log(error);
+            
             });        
     }
     const handleInputChange = e => {
@@ -203,7 +202,7 @@ useEffect(() => {
 
     const handleInputChangeObject = e => {
         setSelectedOption(e)
-        //console.log(e);
+      
         tests.labTestGroupId=e.testGroupId
         tests.labTestId = e.value 
         tests.labTestName=e.label
@@ -232,7 +231,7 @@ useEffect(() => {
         if(validate()){
         tests.sampleCollectionDate = moment(tests.sampleCollectionDate).format("YYYY-MM-DD HH:MM:SS") 
         tests.dateResultReceived = moment(tests.dateResultReceived).format("YYYY-MM-DD HH:MM:SS")
-        //console.log(tests);
+        
         axios.put(`${baseUrl}laboratory/rde-orders/tests/${props.activeContent.obj.id}`,tests,
             { headers: {"Authorization" : `Bearer ${token}`}},)
             .then(response => {

@@ -105,11 +105,11 @@ const TBScreeningForm = (props) => {
     ) {
       props.tbObj.tbStatusId = "";
     }
-    console.log(props.careSupportTb);
+  
     if(props.careSupportTb!==""){
        //The value of the TB status id
        const tbStatusId=tbStatus.find((x)=> x.display===props.careSupportTb)
-        //console.log(tbStatus.find((x)=> x.display===props.careSupportTb));
+        
       props.tbObj.tbStatusId=tbStatusId && tbStatusId.id!==""? tbStatusId.id :""
     }
   }, [props.tbObj,props.careSupportTb]);
@@ -121,27 +121,17 @@ const TBScreeningForm = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        //console.log("values", response.data);
+       
         setTbStatus(response.data);
-        //actualTbSTatus=response.data
+        
       })
       .catch((error) => {
-        //console.log(error);
+        
       });
   };
 
   const handleInputChange = (e) => {
-    // props.setErrors({ ...props.errors, [e.target.name]: "" });
-    // if (e.target.name === "antiTBDrug" && e.target.value !== "") {
-    //   if (
-    //     e.target.value === "NO" &&
-    //     (props.tbObj.currentOnIpt === "" || props.tbObj.currentOnIpt === null)
-    //   ) {
-    //     props.tbObj.tbStatusId = 67;
-    //   } else if (e.target.value === "YES") {
-    //     props.tbObj.tbStatusId = 70;
-    //   }
-    // }
+    
 
     props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.value });
   };
