@@ -86,7 +86,6 @@ const UserRegistration = (props) => {
   }, []);
 
   const calculate_age = (dob) => {
-    console.log(dob);
     if (dob !== null && dob != "") {
       //Check if the DOB is not null or empty
       const today = new Date();
@@ -98,7 +97,6 @@ const UserRegistration = (props) => {
       let todayYear = today.getFullYear();
       let todayDate = today.getDate();
 
-      
       let birthDateMonth = birthDate.getMonth();
       let birthDateYear = birthDate.getFullYear();
       let birthdateDate = birthDate.getDate();
@@ -110,7 +108,6 @@ const UserRegistration = (props) => {
         //Checking the month to confirm if the age has been cloocked
 
         let monthGap = todayMonth - birthDateMonth;
-        
 
         // If 'monthGap'> 0, the age has been clocked, 'monthGap'< 0, the age has not been clocked, 'monthGap'= 0, we are in the month then check date to confirm clocked age
 
@@ -121,7 +118,6 @@ const UserRegistration = (props) => {
           return confirmedAge + " year(s)";
         } else if (monthGap === 0) {
           let dateGap = todayDate - birthdateDate;
-         
 
           if (dateGap > 0) {
             return assumedAge + " year(s)";
