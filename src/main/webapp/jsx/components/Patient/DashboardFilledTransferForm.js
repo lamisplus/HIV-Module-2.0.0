@@ -102,6 +102,16 @@ const DashboardFilledTransferForm = (props) => {
 
   const [currentMedication, setCurrentMedication] = useState([]);
   const [facId, setFacId] = useState(localStorage.getItem("facId"))
+  const [attemptList, setAttemptList] = useState([]);
+    const [selectedState, setSelectedState] = useState("");
+    const [selectedLga, setSelectedLga] = useState("");
+    const [reasonForTransfer, setReasonForTransfer] = useState([
+        "Relocating",
+        "Closeness to new facility",
+        "Self Transfer",
+        "Stigma",
+        "PMTCT",
+    ]);
 
   const [info, setInfo] = useState({});
 
@@ -131,7 +141,7 @@ const DashboardFilledTransferForm = (props) => {
     bmi: "",
     pregnancyStatus: "",
     currentMedication: [],
-    labResult: "",
+    labResult: [],
     reasonForTransfer: "",
     nameOfTreatmentSupporter: "",
     contactAddressOfTreatmentSupporter: "",
@@ -160,8 +170,6 @@ const DashboardFilledTransferForm = (props) => {
  
 
   const getTransferFormInfo = () => {
-    // let facId = localStorage.getItem("faciltyId");
-    //  .get(`${baseUrl}treatment-transfers/${facId}/${patientObj.personUuid}`
     axios
       .get(`${baseUrl}observation/${props.activeContent.id}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -251,7 +259,6 @@ const DashboardFilledTransferForm = (props) => {
   };
 
   const postTransferForm = (load) => {
-    //    treatment-transfers/patient_current_cd4/{facilityId}/{patientUuid}
     axios
       .put(`${baseUrl}observation/${props.activeContent.id}`, load, {
         headers: { Authorization: `Bearer ${token}` },
@@ -276,17 +283,6 @@ const DashboardFilledTransferForm = (props) => {
       });
   };
 
-  // const getPatientInfo = () => {
-  //   axios
-  //     .get(`${baseUrl}patient/${patientObj.id}`, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     })
-  //     .then((response) => {
-  //       
-  //         setPatientObj1(response.data);
-  //     })
-  //     .catch((error) => {});
-  // };
 
   // get all facilities
   const getAllFacilities = () => {
@@ -350,18 +346,18 @@ const DashboardFilledTransferForm = (props) => {
     setPayload({ ...payload, [e.target.name]: e.target.value });
   };
 
-  // handle Facility Name to slect drop down
+
   const handleInputChangeObject = (e) => {
     setPayload({
-      ...payload,
-      facilityTransferTo: e.name,
-      stateTransferTo: e.parentParentOrganisationUnitName,
-      lgaTransferTo: e.parentParentOrganisationUnitName,
+        ...payload,
+        facilityTransferTo: e.name,
+        stateTransferTo: e.parentParentOrganisationUnitName,
+        lgaTransferTo: e.parentOrganisationUnitName,
     });
     setErrors({ ...errors, facilityTransferTo: "" });
     setSelectedState(e.parentParentOrganisationUnitName);
-    // setSelectedOption(e);
-  };
+    setSelectedLga(e.parentOrganisationUnitName);
+};
   const [attempt, setAttempt] = useState({
     attemptDate: "",
     whoAttemptedContact: "",
@@ -370,16 +366,7 @@ const DashboardFilledTransferForm = (props) => {
     reasonForDefaulting: "",
     reasonForDefaultingOthers: "",
   });
-  const [attemptList, setAttemptList] = useState([]);
-  const [selectedState, setSelectedState] = useState("");
-  const [reasonForTransfer, setReasonForTransfer] = useState([
-    "Relocating",
-    "Closeness to new facility",
-    "Self Transfer",
-    "Stigma",
-    "PMTCT",
-  ]);
-
+ 
   const handleInputChangeAttempt = (e) => {
     
     setErrors({ ...temp, [e.target.name]: "" });
@@ -395,28 +382,7 @@ const DashboardFilledTransferForm = (props) => {
       ? ""
       : "This field is required";
     temp.modeOfHIVTest = payload.modeOfHIVTest ? "" : "This field is required";
-    // end of new error validaqtion
-    // temp.durationOnART = objValues.durationOnART
-    //   ? ""
-    //   : "This field is required";
-    // temp.dsdStatus = objValues.dsdStatus ? "" : "This field is required";
-    // {
-    //   objValues.dsdStatus === "Devolved" &&
-    //     (temp.dsdModel = objValues.dsdModel ? "" : "This field is required");
-    // }
-    // temp.reasonForTracking = objValues.reasonForTracking
-    //   ? ""
-    //   : "This field is required";
-    // temp.dateLastAppointment = objValues.dateLastAppointment
-    //   ? ""
-    //   : "This field is required";
-    // temp.dateMissedAppointment = objValues.dateMissedAppointment
-    //   ? ""
-    //   : "This field is required";
-
-    // temp.careInFacilityDiscountinued = objValues.careInFacilityDiscountinued
-    //   ? ""
-    //   : "This field is required";
+ 
 
     setErrors({
       ...temp,
@@ -462,30 +428,6 @@ const DashboardFilledTransferForm = (props) => {
     setAttemptList([...attemptList]);
   };
 
-  // const postPayload = () => {
-  //   axios
-  //     .post(`${baseUrl}observation`, testOrderList, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     })
-  //     .then((response) => {
-  //       setSaving(false);
-  //       toast.success("Transfer Form Submitted Successfully");
-  //       props.setActiveContent({
-  //         ...props.activeContent,
-  //         route: "recent-history",
-  //       });
-  //     })
-  //     .catch((error) => {
-  //       setSaving(false);
-  //       if (error.response && error.response.data) {
-  //         let errorMessage =
-  //           error.response.data && error.response.data.apierror.message !== ""
-  //             ? error.response.data.apierror.message
-  //             : "Something went wrong, please try again";
-  //         toast.error(errorMessage);
-  //       }
-  //     });
-  // };
 
   /**** Submit Button Processing  */
   const handleSubmit = (e) => {
@@ -566,33 +508,6 @@ const DashboardFilledTransferForm = (props) => {
                 </div>
               </div>
               <div className="row">
-                {/* <div className="form-group mb-3 col-md-4">
-                  <FormGroup>
-                    <Label for="">Facility Name To</Label>
-
-                    <Input
-                      type="select"
-                      name="durationOnART"
-                      id="durationOnART"
-                      onChange={handleInputChange}
-                      value={objValues?.durationOnART}
-                    >
-                      <option value="Not devolved">Select Facility</option>
-
-                      {allFacilities.map((each, index) => {
-                        return <option value="Devolved">Devolved</option>;
-                      })}
-                    </Input>
-                    {errors.durationOnART !== "" ? (
-                      <span className={classes.error}>
-                        {errors.durationOnART}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </FormGroup>
-                </div> */}
-
                 <div className="form-group mb-3 col-md-4">
                   <FormGroup>
                     <Label for="testGroup">
@@ -606,7 +521,7 @@ const DashboardFilledTransferForm = (props) => {
                         name="stateTransferTo"
                         id="stateTransferTo"
                         disabled={true}
-                        // onChange={handleInputChange}
+                        onChange={handleInputChangeObject}
                         value={payload.facilityTransferTo}
                       ></Input>
                     ) : props.activeContent.actionType === "update" &&
@@ -642,39 +557,6 @@ const DashboardFilledTransferForm = (props) => {
                         value={payload.facilityTransferTo}
                       ></Input>
                     )}
-
-                    {/* {props.activeContent.actionType === "update" &&
-                    showSelectdropdown ? (
-                      <Select
-                      
-                        onChange={handleInputChangeObject}
-                        name="facilityTransferTo"
-                        plcaceHolder={"hgeheh"}
-                        defaultValue={defaultFacility}
-                        options={allFacilities}
-                        theme={(theme) => ({
-                          ...theme,
-                          borderRadius: "0.25rem",
-                          border: "1px solid #014D88",
-                          colors: {
-                            ...theme.colors,
-                            primary25: "#014D88",
-                            primary: "#014D88",
-                          },
-                        })}
-                      />
-                    ) : (
-                      <Input
-                        type="text"
-                        name="stateTransferTo"
-                        id="stateTransferTo"
-                        onClick={(e) => {
-                          setShowSelectdropdown(true);
-                        }}
-                     
-                        value={payload.facilityTransferTo}
-                      ></Input>
-                    )} */}
 
                     {errors.facilityTransferTo !== "" ? (
                       <span className={classes.error}>
@@ -713,7 +595,7 @@ const DashboardFilledTransferForm = (props) => {
                       name="lgaTransferTo"
                       id="lgaTransferTo"
                       disabled={true}
-                      // onChange={handleInputChange}
+                      onChange={handleInputChange}
                       value={payload.lgaTransferTo}
                     ></Input>
                   </FormGroup>
@@ -1506,33 +1388,6 @@ const DashboardFilledTransferForm = (props) => {
               </h3>
               <div className="row">
                 <div className="form-group mb-3 col-md-4">
-                  {/* <FormGroup>
-                    <Label for=""> Patient came with Transfer form</Label>
-                    <Input
-                      type="select"
-                      name="acknowledgeOfTransfer"
-                      id="dateLastAppointment"
-                      onChange={handleInputChange}
-                      value={payload.acknowledgeOfTransfer}
-                      //min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
-                      style={{
-                        border: "1px solid #014D88",
-                        borderRadius: "0.25rem",
-                      }}
-                    />
-                    <option value="">Select Option</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                    <Input />
-
-                    {errors.dateLastAppointment !== "" ? (
-                      <span className={classes.error}>
-                        {errors.dateLastAppointment}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </FormGroup> */}
                   <FormGroup>
                     <Label for=""> Patient came with Transfer form</Label>
 
@@ -1650,30 +1505,6 @@ const DashboardFilledTransferForm = (props) => {
                     )}
                   </FormGroup>
                 </div>
-                {/* <div className="form-group mb-3 col-md-4">
-                  <FormGroup>
-                    <Label for="">Date of visit</Label>
-                    <Input
-                      type="date"
-                      name="dateLastAppointment"
-                      id="dateLastAppointment"
-                      onChange={handleInputChange}
-                      value={objValues.dateLastAppointment}
-                      max={moment(new Date()).format("YYYY-MM-DD")}
-                      style={{
-                        border: "1px solid #014D88",
-                        borderRadius: "0.25rem",
-                      }}
-                    />
-                    {errors.dateLastAppointment !== "" ? (
-                      <span className={classes.error}>
-                        {errors.dateLastAppointment}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </FormGroup>
-                  </div> */}
                 <div className="form-group mb-3 col-md-4">
                   <FormGroup>
                     <Label for="">
