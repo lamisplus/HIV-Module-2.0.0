@@ -2468,7 +2468,7 @@ const UserRegistration = (props) => {
                                   type="date"
                                   name="dateOfLpm"
                                   id="dateOfLpm"
-                                  max={today}
+                                  max={moment(new Date()).format("YYYY-MM-DD")}
                                   onChange={handleInputChange}
                                   value={objValues.dateOfLpm}
                                   style={{
@@ -2504,150 +2504,125 @@ const UserRegistration = (props) => {
                       </div>
                     )}
                     {ovcEnrolled === true && (
-                      <>
-                        <div className="row">
-                          <div className="form-group mb-3 col-md-6">
-                            <FormGroup>
-                              <Label>Household Unique Number</Label>
-                              <Input
-                                type="text"
-                                name="houseHoldNumber"
-                                id="houseHoldNumber"
-                                required={ovcEnrolled}
-                                onChange={handleInputChange}
-                                style={{
-                                  border: "1px solid #014D88",
-                                  borderRadius: "0.2rem",
-                                }}
-                                value={
-                                  objValues.houseHoldNumber !== ""
-                                    ? objValues.houseHoldNumber
-                                    : basicInfo?.householdUniqueId
-                                }
-                              />
-                            </FormGroup>
-                          </div>
-                          <div className="form-group mb-3 col-md-6">
-                            <FormGroup>
-                              <Label>OVC Unique ID</Label>
-                              <Input
-                                type="text"
-                                name="ovcNumber"
-                                id="ovcNumber"
-                                required={ovcEnrolled}
-                                onChange={handleInputChange}
-                                style={{
-                                  border: "1px solid #014D88",
-                                  borderRadius: "0.2rem",
-                                }}
-                                value={
-                                  objValues.ovcNumber !== ""
-                                    ? objValues.ovcNumber
-                                    : basicInfo?.ovcUniqueId
-                                }
-                              />
-                            </FormGroup>
-                          </div>
-                          {basicInfo?.entryPoint !== null ? (
-                            ""
-                          ) : (
-                            <>
-                              <div className="form-group mb-3 col-md-6">
-                                <FormGroup>
-                                  <Label>Referred To OVC Partner</Label>
-                                  <Input
-                                    type="select"
-                                    name="referredToOVCPartner"
-                                    id="referredToOVCPartner"
+                        <>
+                          <div className="row">
+                            <div className="form-group mb-3 col-md-6">
+                              <FormGroup>
+                                <Label>Household Unique Number</Label>
+                                <Input
+                                    type="text"
+                                    name="houseHoldNumber"
+                                    id="houseHoldNumber"
                                     required={ovcEnrolled}
                                     onChange={handleInputChange}
                                     style={{
                                       border: "1px solid #014D88",
                                       borderRadius: "0.2rem",
                                     }}
+                                    value={objValues.houseHoldNumber}
+                                />
+                              </FormGroup>
+                            </div>
+                            <div className="form-group mb-3 col-md-6">
+                              <FormGroup>
+                                <Label>OVC Unique ID</Label>
+                                <Input
+                                    type="text"
+                                    name="ovcNumber"
+                                    id="ovcNumber"
+                                    required={ovcEnrolled}
+                                    onChange={handleInputChange}
+                                    style={{
+                                      border: "1px solid #014D88",
+                                      borderRadius: "0.2rem",
+                                    }}
+                                    value={objValues.ovcNumber}
+                                />
+                              </FormGroup>
+                            </div>
+
+                            <div className="form-group mb-3 col-md-6">
+                              <FormGroup>
+                                <Label>Referred To OVC Partner</Label>
+                                <Input
+                                    type="select"
+                                    name="referredToOVCPartner"
+                                    id="referredToOVCPartner"
+                                    required={ovcEnrolled}
+                                    onChange={handleInputChange}
+                                    style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
                                     value={objValues.referredToOVCPartner}
-                                  >
-                                    <option value=""> Select</option>
-                                    <option value="YES"> YES</option>
-                                    <option value="NO"> NO</option>
-                                  </Input>
-                                </FormGroup>
-                              </div>
-                              <div className="form-group mb-3 col-md-6">
-                                <FormGroup>
-                                  <Label>Date Referred To OVC Partner</Label>
-                                  <Input
+                                >
+                                  <option value=""> Select</option>
+                                  <option value="YES"> YES</option>
+                                  <option value="NO"> NO</option>
+                                </Input>
+                              </FormGroup>
+                            </div>
+                            <div className="form-group mb-3 col-md-6">
+                              <FormGroup>
+                                <Label>Date Referred To OVC Partner</Label>
+                                <Input
                                     type="date"
                                     name="dateReferredToOVCPartner"
                                     id="dateReferredToOVCPartner"
                                     min={basicInfo.dob}
-                                    //max={objValues.dateOfRegistration }
+                                    max={moment(new Date()).format("YYYY-MM-DD")}
                                     onChange={handleInputChange}
                                     value={objValues.dateReferredToOVCPartner}
                                     style={{
                                       border: "1px solid #014D88",
                                       borderRadius: "0.2rem",
                                     }}
-                                  />
-                                  {/* {errors.dateConfirmedHiv !=="" ? (
+                                />
+                                {/* {errors.dateConfirmedHiv !=="" ? (
                                             <span className={classes.error}>{errors.dateConfirmedHiv}</span>
                                             ) : "" }  */}
-                                </FormGroup>
-                              </div>
-                            </>
-                          )}
-                          <div className="form-group mb-3 col-md-6">
-                            <FormGroup>
-                              <Label>Referred From OVC Partner</Label>
-                              <Input
-                                type="select"
-                                name="referredFromOVCPartner"
-                                id="referredFromOVCPartner"
-                                required={ovcEnrolled}
-                                onChange={handleInputChange}
-                                style={{
-                                  border: "1px solid #014D88",
-                                  borderRadius: "0.2rem",
-                                }}
-                                value={
-                                  basicInfo?.entryPoint !== null
-                                    ? "YES"
-                                    : objValues.referredFromOVCPartner
-                                }
-                              >
-                                <option value=""> Select</option>
-                                <option value="YES"> YES</option>
-                                <option value="NO"> NO</option>
-                              </Input>
-                            </FormGroup>
-                          </div>
-                          <div className="form-group mb-3 col-md-6">
-                            <FormGroup>
-                              <Label>Date Referred From OVC Partner</Label>
-                              <Input
-                                type="date"
-                                name="dateReferredFromOVCPartner"
-                                id="dateReferredFromOVCPartner"
-                                min={basicInfo.dob}
-                                max={objValues.dateOfRegistration}
-                                onChange={handleInputChange}
-                                value={
-                                  objValues.dateReferredFromOVCPartner !== ""
-                                    ? objValues.dateReferredFromOVCPartner
-                                    : basicInfo?.enrollmentDate
-                                }
-                                style={{
-                                  border: "1px solid #014D88",
-                                  borderRadius: "0.2rem",
-                                }}
-                              />
-                              {/* {errors.dateConfirmedHiv !=="" ? (
+                              </FormGroup>
+                            </div>
+                            <div className="form-group mb-3 col-md-6">
+                              <FormGroup>
+                                <Label>Referred From OVC Partner</Label>
+                                <Input
+                                    type="select"
+                                    name="referredFromOVCPartner"
+                                    id="referredFromOVCPartner"
+                                    required={ovcEnrolled}
+                                    onChange={handleInputChange}
+                                    style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
+                                    value={objValues.referredFromOVCPartner}
+
+                                >
+                                  <option value=""> Select</option>
+                                  <option value="YES"> YES</option>
+                                  <option value="NO"> NO</option>
+                                </Input>
+                              </FormGroup>
+                            </div>
+                            <div className="form-group mb-3 col-md-6">
+                              <FormGroup>
+                                <Label>Date Referred From OVC Partner</Label>
+                                <Input
+                                    type="date"
+                                    name="dateReferredFromOVCPartner"
+                                    id="dateReferredFromOVCPartner"
+                                    min={basicInfo.dob}
+                                    max={objValues.dateOfRegistration}
+                                    onChange={handleInputChange}
+                                    value={objValues.dateReferredFromOVCPartner}
+                                    style={{
+                                      border: "1px solid #014D88",
+                                      borderRadius: "0.2rem",
+                                    }}
+                                />
+                                {/* {errors.dateConfirmedHiv !=="" ? (
                                             <span className={classes.error}>{errors.dateConfirmedHiv}</span>
                                             ) : "" }  */}
-                            </FormGroup>
+                              </FormGroup>
+                            </div>
+
                           </div>
-                        </div>
-                      </>
+                        </>
                     )}
                   </div>
                 </div>
