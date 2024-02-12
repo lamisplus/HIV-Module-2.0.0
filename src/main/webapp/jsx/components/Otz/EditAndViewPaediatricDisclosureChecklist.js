@@ -251,7 +251,13 @@ const EditAndViewPeadiatricDisclosureChecklist = (props) => {
                         className="float-end"
                         style={{ cursor: "pointer" }}
                         onClick={() =>
-                          setSectionControls(!generalInformationSection)
+                          setSectionControls((prevState) => {
+                            return {
+                              ...prevState,
+                              generalInformationSection:
+                                !prevState.generalInformationSection,
+                            };
+                          })
                         }
                       >
                         <FaPlus />
@@ -263,7 +269,13 @@ const EditAndViewPeadiatricDisclosureChecklist = (props) => {
                         className="float-end"
                         style={{ cursor: "pointer" }}
                         onClick={() =>
-                          setSectionControls(!generalInformationSection)
+                          setSectionControls((prevState) => {
+                            return {
+                              ...prevState,
+                              generalInformationSection:
+                                !prevState.generalInformationSection,
+                            };
+                          })
                         }
                       >
                         <FaAngleDown />
@@ -272,169 +284,90 @@ const EditAndViewPeadiatricDisclosureChecklist = (props) => {
                   )}
                 </div>
 
-                <div className="row p-4">
-                  {/* <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>Facility Name</Label>
+                {generalInformationSection && (
+                  <div className="row p-4">
+                    <div className="form-group mb-3 col-md-4">
+                      <FormGroup>
+                        <Label>Encounter Date</Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="encounterDate"
+                          id="encounterDate"
+                          type="date"
+                          value={formik.values.encounterDate}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          max={moment(new Date()).format("YYYY-MM-DD")}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
+                        ></Input>
+                      </FormGroup>
+                      {formik.errors.encounterDate !== "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.encounterDate}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
 
-                      <Input
-                      readOnly={isViewActionType}
-                        type="text"
-                        name="facilityName"
-                        id="facilityName"
-                        value={formik.values.facilityName}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.facilityName !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.facilityName}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div> */}
+                    <div className="form-group mb-3 col-md-4">
+                      <FormGroup>
+                        <Label>Caregiver's Name</Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="caregiverName"
+                          id="caregiverName"
+                          type="text"
+                          value={formik.values.caregiverName}
+                          onChange={(e) =>
+                            handleFilterNumber(e, formik?.setFieldValue)
+                          }
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
+                        ></Input>
+                      </FormGroup>
+                      {formik.errors.caregiverName !== "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.caregiverName}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
 
-                  {/*<div className="form-group mb-3 col-md-4">*/}
-                  {/*  <FormGroup>*/}
-                  {/*    <Label>Child's Name</Label>*/}
-
-                  {/*    <Input
-                  readOnly={isViewActionType}*/}
-                  {/*      type="text"*/}
-                  {/*      name="childName"*/}
-                  {/*      id="childName"*/}
-                  {/*      value={PatientObject.firstName + " " + PatientObject.surname}*/}
-                  {/*      onChange={formik.handleChange}*/}
-                  {/*      onBlur={formik.handleBlur}*/}
-                  {/*      hidden*/}
-                  {/*      style={{*/}
-                  {/*        border: "1px solid #014D88",*/}
-                  {/*        borderRadius: "0.25rem",*/}
-                  {/*      }}*/}
-                  {/*    ></Input>*/}
-                  {/*  </FormGroup>*/}
-                  {/*  {formik.errors.childName !== "" ? (*/}
-                  {/*    <span className={classes.error}>*/}
-                  {/*      {formik.errors.childName}*/}
-                  {/*    </span>*/}
-                  {/*  ) : (*/}
-                  {/*    ""*/}
-                  {/*  )}*/}
-                  {/*</div>*/}
-                  {/*<div className="form-group mb-3 col-md-4">*/}
-                  {/*  <FormGroup>*/}
-                  {/*    <Label>Sex</Label>*/}
-                  {/*    <Input
-                  readOnly={isViewActionType}*/}
-                  {/*      name="sex"*/}
-                  {/*      id="sex"*/}
-                  {/*      type="select"*/}
-                  {/*      value={PatientObject.sex}*/}
-                  {/*      onChange={formik.handleChange}*/}
-                  {/*      onBlur={formik.handleBlur}*/}
-                  {/*      style={{*/}
-                  {/*        border: "1px solid #014D88",*/}
-                  {/*        borderRadius: "0.25rem",*/}
-                  {/*      }}*/}
-                  {/*    >*/}
-                  {/*      <option value="">Select</option>*/}
-                  {/*      <option value="Male">Male</option>*/}
-                  {/*      <option value="Female">Female</option>*/}
-                  {/*    </Input>*/}
-                  {/*  </FormGroup>*/}
-                  {/*  {formik.errors.sex !== "" ? (*/}
-                  {/*    <span className={classes.error}>{formik.errors.sex}</span>*/}
-                  {/*  ) : (*/}
-                  {/*    ""*/}
-                  {/*  )}*/}
-                  {/*</div>*/}
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>Encounter Date</Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="encounterDate"
-                        id="encounterDate"
-                        type="date"
-                        value={formik.values.encounterDate}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        max={moment(new Date()).format("YYYY-MM-DD")}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.encounterDate !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.encounterDate}
-                      </span>
-                    ) : (
-                      ""
-                    )}
+                    <div className="form-group mb-3 col-md-4">
+                      <FormGroup>
+                        <Label>CCC Number</Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="cccNumber"
+                          id="cccNumber"
+                          type="number"
+                          value={formik.values.cccNumber}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
+                        ></Input>
+                      </FormGroup>
+                      {formik.errors.cccNumber !== "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.cccNumber}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
                   </div>
-
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>Caregiver's Name</Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="caregiverName"
-                        id="caregiverName"
-                        type="text"
-                        value={formik.values.caregiverName}
-                        onChange={(e) =>
-                          handleFilterNumber(e, formik?.setFieldValue)
-                        }
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.caregiverName !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.caregiverName}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-4">
-                    <FormGroup>
-                      <Label>CCC Number</Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="cccNumber"
-                        id="cccNumber"
-                        type="number"
-                        value={formik.values.cccNumber}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.cccNumber !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.cccNumber}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                </div>
+                )}
               </div>
 
               <div className="card">
@@ -455,7 +388,14 @@ const EditAndViewPeadiatricDisclosureChecklist = (props) => {
                       <span
                         className="float-end"
                         style={{ cursor: "pointer" }}
-                        onClick={() => setSectionControls(!task1Section)}
+                        onClick={() =>
+                          setSectionControls((prevState) => {
+                            return {
+                              ...prevState,
+                              task1Section: !prevState.task1Section,
+                            };
+                          })
+                        }
                       >
                         <FaPlus />
                       </span>
@@ -465,7 +405,14 @@ const EditAndViewPeadiatricDisclosureChecklist = (props) => {
                       <span
                         className="float-end"
                         style={{ cursor: "pointer" }}
-                        onClick={() => setSectionControls(!task1Section)}
+                        onClick={() =>
+                          setSectionControls((prevState) => {
+                            return {
+                              ...prevState,
+                              task1Section: !prevState.task1Section,
+                            };
+                          })
+                        }
                       >
                         <FaAngleDown />
                       </span>{" "}
@@ -473,189 +420,193 @@ const EditAndViewPeadiatricDisclosureChecklist = (props) => {
                   )}
                 </div>
 
-                <div className="row p-4">
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>Date Task 1 executed</Label>
+                {task1Section && (
+                  <div className="row p-4">
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>Date Task 1 executed</Label>
 
-                      <Input
-                        readOnly={isViewActionType}
-                        type="date"
-                        name="dateTask1Executed"
-                        id="dateTask1Executed"
-                        value={formik.values.dateTask1Executed}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        max={moment(new Date()).format("YYYY-MM-DD")}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.dateTask1Executed !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.dateTask1Executed}
-                      </span>
-                    ) : (
-                      ""
-                    )}
+                        <Input
+                          readOnly={isViewActionType}
+                          type="date"
+                          name="dateTask1Executed"
+                          id="dateTask1Executed"
+                          value={formik.values.dateTask1Executed}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          max={moment(new Date()).format("YYYY-MM-DD")}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
+                        ></Input>
+                      </FormGroup>
+                      {formik.errors.dateTask1Executed !== "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.dateTask1Executed}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>Task facilitator name</Label>
+
+                        <Input
+                          readOnly={isViewActionType}
+                          type="text"
+                          name="task1HCW"
+                          id="task1HCW"
+                          value={formik.values.task1HCW}
+                          onChange={(e) =>
+                            handleFilterNumber(e, formik?.setFieldValue)
+                          }
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
+                        ></Input>
+                      </FormGroup>
+                      {formik.errors.task1HCW !== "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task1HCW}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>
+                          Child met the age criteria (between 6 and 10 years)
+                        </Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task1ChildMetCriteria"
+                          id="task1ChildMetCriteria"
+                          type="select"
+                          value={formik.values.task1ChildMetCriteria}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors.task1ChildMetCriteria !== "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task1ChildMetCriteria}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>
+                          Child and caregiver knowledgeable on the benefits of
+                          disclosure
+                        </Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task1ChildAndCaregiverKnowledgeable"
+                          id="task1ChildAndCaregiverKnowledgeable"
+                          type="select"
+                          value={
+                            formik.values.task1ChildAndCaregiverKnowledgeable
+                          }
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors.task1ChildAndCaregiverKnowledgeable !==
+                      "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task1ChildAndCaregiverKnowledgeable}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-12">
+                      <FormGroup>
+                        <Label>
+                          Caregiver willing to disclose to the child
+                        </Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task1CaregiverWilling"
+                          id="task1CaregiverWilling"
+                          type="select"
+                          value={formik.values.task1CaregiverWilling}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors.task1CaregiverWilling !== "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task1CaregiverWilling}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-12">
+                      <FormGroup>
+                        <Label>Task 1 comments</Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task1Comments"
+                          id="task1Comments"
+                          type="textarea"
+                          value={formik.values.task1Comments}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                            height: "100px",
+                          }}
+                        ></Input>
+                      </FormGroup>
+                      {formik.errors.task1Comments !== "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task1Comments}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
                   </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>Task facilitator name</Label>
-
-                      <Input
-                        readOnly={isViewActionType}
-                        type="text"
-                        name="task1HCW"
-                        id="task1HCW"
-                        value={formik.values.task1HCW}
-                        onChange={(e) =>
-                          handleFilterNumber(e, formik?.setFieldValue)
-                        }
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.task1HCW !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task1HCW}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>
-                        Child met the age criteria (between 6 and 10 years)
-                      </Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task1ChildMetCriteria"
-                        id="task1ChildMetCriteria"
-                        type="select"
-                        value={formik.values.task1ChildMetCriteria}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task1ChildMetCriteria !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task1ChildMetCriteria}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>
-                        Child and caregiver knowledgeable on the benefits of
-                        disclosure
-                      </Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task1ChildAndCaregiverKnowledgeable"
-                        id="task1ChildAndCaregiverKnowledgeable"
-                        type="select"
-                        value={
-                          formik.values.task1ChildAndCaregiverKnowledgeable
-                        }
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task1ChildAndCaregiverKnowledgeable !==
-                    "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task1ChildAndCaregiverKnowledgeable}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-12">
-                    <FormGroup>
-                      <Label>Caregiver willing to disclose to the child</Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task1CaregiverWilling"
-                        id="task1CaregiverWilling"
-                        type="select"
-                        value={formik.values.task1CaregiverWilling}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task1CaregiverWilling !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task1CaregiverWilling}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-12">
-                    <FormGroup>
-                      <Label>Task 1 comments</Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task1Comments"
-                        id="task1Comments"
-                        type="textarea"
-                        value={formik.values.task1Comments}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          height: "100px",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.task1Comments !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task1Comments}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                </div>
+                )}
               </div>
 
               <div className="card">
@@ -676,7 +627,14 @@ const EditAndViewPeadiatricDisclosureChecklist = (props) => {
                       <span
                         className="float-end"
                         style={{ cursor: "pointer" }}
-                        onClick={() => setSectionControls(!task2Section)}
+                        onClick={() =>
+                          setSectionControls((prevState) => {
+                            return {
+                              ...prevState,
+                              task2Section: !prevState.task2Section,
+                            };
+                          })
+                        }
                       >
                         <FaPlus />
                       </span>
@@ -686,7 +644,14 @@ const EditAndViewPeadiatricDisclosureChecklist = (props) => {
                       <span
                         className="float-end"
                         style={{ cursor: "pointer" }}
-                        onClick={() => setSectionControls(!task2Section)}
+                        onClick={() =>
+                          setSectionControls((prevState) => {
+                            return {
+                              ...prevState,
+                              task2Section: !prevState.task2Section,
+                            };
+                          })
+                        }
                       >
                         <FaAngleDown />
                       </span>{" "}
@@ -694,390 +659,356 @@ const EditAndViewPeadiatricDisclosureChecklist = (props) => {
                   )}
                 </div>
 
-                <div className="row p-4">
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>Date Task 2 executed</Label>
+                {task2Section && (
+                  <div className="row p-4">
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>Date Task 2 executed</Label>
 
-                      <Input
-                        readOnly={isViewActionType}
-                        type="date"
-                        name="dateTask2Executed"
-                        id="dateTask2Executed"
-                        value={formik.values.dateTask2Executed}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        max={moment(new Date()).format("YYYY-MM-DD")}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.dateTask2Executed !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.dateTask2Executed}
-                      </span>
-                    ) : (
-                      ""
-                    )}
+                        <Input
+                          readOnly={isViewActionType}
+                          type="date"
+                          name="dateTask2Executed"
+                          id="dateTask2Executed"
+                          value={formik.values.dateTask2Executed}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          max={moment(new Date()).format("YYYY-MM-DD")}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
+                        ></Input>
+                      </FormGroup>
+                      {formik.errors.dateTask2Executed !== "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.dateTask2Executed}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>Task 2 facilitator name</Label>
+
+                        <Input
+                          readOnly={isViewActionType}
+                          type="text"
+                          name="task2HCW"
+                          id="task2HCW"
+                          value={formik.values.task2HCW}
+                          onChange={(e) =>
+                            handleFilterNumber(e, formik?.setFieldValue)
+                          }
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
+                        ></Input>
+                      </FormGroup>
+                      {formik.errors.task2HCW !== "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task2HCW}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>
+                          Child or caregiver free from severe physical illness,
+                          trauma, psychological illness or physical illness
+                        </Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task2FreeFromPhysicalIllness"
+                          id="task2FreeFromPhysicalIllness"
+                          type="select"
+                          value={formik.values.task2FreeFromPhysicalIllness}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors.task2FreeFromPhysicalIllness !== "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task2FreeFromPhysicalIllness}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>
+                          Child have consisitent family, peer support or social
+                          support
+                        </Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task2ChildConsisitentFamilyPeer"
+                          id="task2ChildConsisitentFamilyPeer"
+                          type="select"
+                          value={formik.values.task2ChildConsisitentFamilyPeer}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                            marginTop: "20px",
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors.task2ChildConsisitentFamilyPeer !== "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task2ChildConsisitentFamilyPeer}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>
+                          Child demostrates interest in the environment and
+                          playing activites
+                        </Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task2ChildDemostrateInEnvAndPlaying"
+                          id="task2ChildDemostrateInEnvAndPlaying"
+                          type="select"
+                          value={
+                            formik.values.task2ChildDemostrateInEnvAndPlaying
+                          }
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                            marginTop: "20px",
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors.task2ChildDemostrateInEnvAndPlaying !==
+                      "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task2ChildDemostrateInEnvAndPlaying}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>
+                          Assess what the child knows about the medicines and
+                          illness and addressed needs and concerns
+                        </Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task2AssessedWhatChildAlreadyKnows"
+                          id="task2AssessedWhatChildAlreadyKnows"
+                          type="select"
+                          value={
+                            formik.values.task2AssessedWhatChildAlreadyKnows
+                          }
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                            // height: "100px"
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors.task2AssessedWhatChildAlreadyKnows !==
+                      "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task2AssessedWhatChildAlreadyKnows}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>
+                          Assessed functional school engagement by the child
+                          (consistent attendance, interacts well with the school
+                          community, able to freely discuss school activities)
+                        </Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="taskAssessedFunctionalSchoolEngagement"
+                          id="taskAssessedFunctionalSchoolEngagement"
+                          type="select"
+                          value={
+                            formik.values.taskAssessedFunctionalSchoolEngagement
+                          }
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                            // height: "100px"
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors.taskAssessedFunctionalSchoolEngagement !==
+                      "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.taskAssessedFunctionalSchoolEngagement}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>
+                          Assessed caregiver readiness for disclosure to the
+                          child
+                        </Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task2assessedCaregiverReadinessForDisclosureToChild"
+                          id="task2assessedCaregiverReadinessForDisclosureToChild"
+                          type="select"
+                          value={
+                            formik.values
+                              .task2assessedCaregiverReadinessForDisclosureToChild
+                          }
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                            marginTop: "20px",
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors
+                        .task2assessedCaregiverReadinessForDisclosureToChild !==
+                      "" ? (
+                        <span className={classes.error}>
+                          {
+                            formik.errors
+                              .task2assessedCaregiverReadinessForDisclosureToChild
+                          }
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                 
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>
+                          Discussed management of confidentiality of information
+                          regarding one's health with the child and caregiver
+                        </Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task2DiscussedManagementOfConfidentiality"
+                          id="task2DiscussedManagementOfConfidentiality"
+                          type="select"
+                          value={
+                            formik.values
+                              .task2DiscussedManagementOfConfidentiality
+                          }
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                            // height: "100px"
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors
+                        .task2DiscussedManagementOfConfidentiality !== "" ? (
+                        <span className={classes.error}>
+                          {
+                            formik.errors
+                              .task2DiscussedManagementOfConfidentiality
+                          }
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-12">
+                      <FormGroup>
+                        <Label>Task 2 comments</Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task2Comments"
+                          id="task2Comments"
+                          type="textarea"
+                          value={formik.values.task2Comments}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                            height: "100px",
+                          }}
+                        ></Input>
+                      </FormGroup>
+                      {formik.errors.task2Comments !== "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task2Comments}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
                   </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>Task 2 facilitator name</Label>
-
-                      <Input
-                        readOnly={isViewActionType}
-                        type="text"
-                        name="task2HCW"
-                        id="task2HCW"
-                        value={formik.values.task2HCW}
-                        onChange={(e) =>
-                          handleFilterNumber(e, formik?.setFieldValue)
-                        }
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.task2HCW !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task2HCW}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>
-                        Child or caregiver free from severe physical illness,
-                        trauma, psychological illness or physical illness
-                      </Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task2FreeFromPhysicalIllness"
-                        id="task2FreeFromPhysicalIllness"
-                        type="select"
-                        value={formik.values.task2FreeFromPhysicalIllness}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task2FreeFromPhysicalIllness !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task2FreeFromPhysicalIllness}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>
-                        Child have consisitent family, peer support or social
-                        support
-                      </Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task2ChildConsisitentFamilyPeer"
-                        id="task2ChildConsisitentFamilyPeer"
-                        type="select"
-                        value={formik.values.task2ChildConsisitentFamilyPeer}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          marginTop: "20px",
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task2ChildConsisitentFamilyPeer !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task2ChildConsisitentFamilyPeer}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>
-                        Child demostrates interest in the environment and
-                        playing activites
-                      </Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task2ChildDemostrateInEnvAndPlaying"
-                        id="task2ChildDemostrateInEnvAndPlaying"
-                        type="select"
-                        value={
-                          formik.values.task2ChildDemostrateInEnvAndPlaying
-                        }
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          marginTop: "20px",
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task2ChildDemostrateInEnvAndPlaying !==
-                    "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task2ChildDemostrateInEnvAndPlaying}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>
-                        Assess what the child knows about the medicines and
-                        illness and addressed needs and concerns
-                      </Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task2AssessedWhatChildAlreadyKnows"
-                        id="task2AssessedWhatChildAlreadyKnows"
-                        type="select"
-                        value={formik.values.task2AssessedWhatChildAlreadyKnows}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          // height: "100px"
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task2AssessedWhatChildAlreadyKnows !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task2AssessedWhatChildAlreadyKnows}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>
-                        Assessed functional school engagement by the child
-                        (consistent attendance, interacts well with the school
-                        community, able to freely discuss school activities)
-                      </Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="taskAssessedFunctionalSchoolEngagement"
-                        id="taskAssessedFunctionalSchoolEngagement"
-                        type="select"
-                        value={
-                          formik.values.taskAssessedFunctionalSchoolEngagement
-                        }
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          // height: "100px"
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.taskAssessedFunctionalSchoolEngagement !==
-                    "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.taskAssessedFunctionalSchoolEngagement}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>
-                        Assessed caregiver readiness for disclosure to the child
-                      </Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task2assessedCaregiverReadinessForDisclosureToChild"
-                        id="task2assessedCaregiverReadinessForDisclosureToChild"
-                        type="select"
-                        value={
-                          formik.values
-                            .task2assessedCaregiverReadinessForDisclosureToChild
-                        }
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          marginTop: "20px",
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors
-                      .task2assessedCaregiverReadinessForDisclosureToChild !==
-                    "" ? (
-                      <span className={classes.error}>
-                        {
-                          formik.errors
-                            .task2assessedCaregiverReadinessForDisclosureToChild
-                        }
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  {/*<div className="form-group mb-3 col-md-6">*/}
-                  {/*  <FormGroup>*/}
-                  {/*    <Label>*/}
-                  {/*      Assessed what the caregiver has communicated to the*/}
-                  {/*      child*/}
-                  {/*    </Label>*/}
-                  {/*    <Input
-                  readOnly={isViewActionType}*/}
-                  {/*      name="task2AssessedCaregiverCommunicatedToChild"*/}
-                  {/*      id="task2AssessedCaregiverCommunicatedToChild"*/}
-                  {/*      type="select"*/}
-                  {/*      value={*/}
-                  {/*        formik.values*/}
-                  {/*          .task2AssessedCaregiverCommunicatedToChild*/}
-                  {/*      }*/}
-                  {/*      onChange={formik.handleChange}*/}
-                  {/*      onBlur={formik.handleBlur}*/}
-                  {/*      style={{*/}
-                  {/*        border: "1px solid #014D88",*/}
-                  {/*        borderRadius: "0.25rem",*/}
-                  {/*        marginTop: "20px",*/}
-                  {/*      }}*/}
-                  {/*    >*/}
-                  {/*      <option value="">Select</option>*/}
-                  {/*      <option value="yes">Yes</option>*/}
-                  {/*      <option value="no">No</option>*/}
-                  {/*    </Input>*/}
-                  {/*  </FormGroup>*/}
-                  {/*  {formik.errors.task2AssessedCaregiverCommunicatedToChild !==*/}
-                  {/*  "" ? (*/}
-                  {/*    <span className={classes.error}>*/}
-                  {/*      {*/}
-                  {/*        formik.errors*/}
-                  {/*          .task2AssessedCaregiverCommunicatedToChild*/}
-                  {/*      }*/}
-                  {/*    </span>*/}
-                  {/*  ) : (*/}
-                  {/*    ""*/}
-                  {/*  )}*/}
-                  {/*</div>*/}
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>
-                        Discussed management of confidentiality of information
-                        regarding one's health with the child and caregiver
-                      </Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task2DiscussedManagementOfConfidentiality"
-                        id="task2DiscussedManagementOfConfidentiality"
-                        type="select"
-                        value={
-                          formik.values
-                            .task2DiscussedManagementOfConfidentiality
-                        }
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          // height: "100px"
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task2DiscussedManagementOfConfidentiality !==
-                    "" ? (
-                      <span className={classes.error}>
-                        {
-                          formik.errors
-                            .task2DiscussedManagementOfConfidentiality
-                        }
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-12">
-                    <FormGroup>
-                      <Label>Task 2 comments</Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task2Comments"
-                        id="task2Comments"
-                        type="textarea"
-                        value={formik.values.task2Comments}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          height: "100px",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.task2Comments !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task2Comments}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                </div>
+                )}
               </div>
 
               <div className="card">
@@ -1099,7 +1030,14 @@ const EditAndViewPeadiatricDisclosureChecklist = (props) => {
                       <span
                         className="float-end"
                         style={{ cursor: "pointer" }}
-                        onClick={() => setSectionControls(!task3Section)}
+                        onClick={() =>
+                          setSectionControls((prevState) => {
+                            return {
+                              ...prevState,
+                              task3Section: !prevState.task3Section,
+                            };
+                          })
+                        }
                       >
                         <FaPlus />
                       </span>
@@ -1109,7 +1047,14 @@ const EditAndViewPeadiatricDisclosureChecklist = (props) => {
                       <span
                         className="float-end"
                         style={{ cursor: "pointer" }}
-                        onClick={() => setSectionControls(!task3Section)}
+                        onClick={() =>
+                          setSectionControls((prevState) => {
+                            return {
+                              ...prevState,
+                              task3Section: !prevState.task3Section,
+                            };
+                          })
+                        }
                       >
                         <FaAngleDown />
                       </span>{" "}
@@ -1117,481 +1062,452 @@ const EditAndViewPeadiatricDisclosureChecklist = (props) => {
                   )}
                 </div>
 
-                <div className="row p-4">
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>Date Task 3 executed</Label>
+                {task3Section && (
+                  <div className="row p-4">
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>Date Task 3 executed</Label>
 
-                      <Input
-                        readOnly={isViewActionType}
-                        type="date"
-                        name="dateTask3Executed"
-                        id="dateTask3Executed"
-                        value={formik.values.dateTask3Executed}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        max={moment(new Date()).format("YYYY-MM-DD")}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.dateTask3Executed !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.dateTask3Executed}
-                      </span>
-                    ) : (
-                      ""
-                    )}
+                        <Input
+                          readOnly={isViewActionType}
+                          type="date"
+                          name="dateTask3Executed"
+                          id="dateTask3Executed"
+                          value={formik.values.dateTask3Executed}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          max={moment(new Date()).format("YYYY-MM-DD")}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
+                        ></Input>
+                      </FormGroup>
+                      {formik.errors.dateTask3Executed !== "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.dateTask3Executed}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>Task 3 facilitator name</Label>
+
+                        <Input
+                          readOnly={isViewActionType}
+                          type="text"
+                          name="task3HCW"
+                          id="task3HCW"
+                          value={formik.values.task3HCW}
+                          onChange={(e) =>
+                            handleFilterNumber(e, formik?.setFieldValue)
+                          }
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
+                        ></Input>
+                      </FormGroup>
+                      {formik.errors.task3HCW !== "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task3HCW}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>Reassured the caregiver and the child</Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task3ReassuredTheCaregiverAndChild"
+                          id="task3ReassuredTheCaregiverAndChild"
+                          type="select"
+                          value={
+                            formik.values.task3ReassuredTheCaregiverAndChild
+                          }
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors.task3ReassuredTheCaregiverAndChild !==
+                      "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task3ReassuredTheCaregiverAndChild}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>Assessed child and caregiver comfort</Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task3AssessedChildAndCaregiverComfort"
+                          id="task3AssessedChildAndCaregiverComfort"
+                          type="select"
+                          value={
+                            formik.values.task3AssessedChildAndCaregiverComfort
+                          }
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors.task3AssessedChildAndCaregiverComfort !==
+                      "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task3AssessedChildAndCaregiverComfort}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>Assessed safety (environment and timing)</Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task3AssessedSafety"
+                          id="task3AssessedSafety"
+                          type="select"
+                          value={formik.values.task3AssessedSafety}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                            // marginTop: "20px",
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors.task3AssessedSafety !== "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task3AssessedSafety}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>Assessed the depth of Child's knowledge</Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task3AssessedTheDepthOfChildKnowledge"
+                          id="task3AssessedTheDepthOfChildKnowledge"
+                          type="select"
+                          value={
+                            formik.values.task3AssessedTheDepthOfChildKnowledge
+                          }
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                            // height: "100px"
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors.task3AssessedTheDepthOfChildKnowledge !==
+                      "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task3AssessedTheDepthOfChildKnowledge}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>
+                          Supported caregiver to disclose using the simplest
+                          language the child can understand
+                        </Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task3SupportedCaregiverToDisclose"
+                          id="task3SupportedCaregiverToDisclose"
+                          type="select"
+                          value={
+                            formik.values.task3SupportedCaregiverToDisclose
+                          }
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                            // marginTop: "20px"
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors.task3SupportedCaregiverToDisclose !==
+                      "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task3SupportedCaregiverToDisclose}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>
+                          Observed the immediate reactions of both the child and
+                          caregiver and addressed concerns or negative reactions
+                        </Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task3ObservedTheImmediateReactionOfChildAndCaregiver"
+                          id="task3ObservedTheImmediateReactionOfChildAndCaregiver"
+                          type="select"
+                          value={
+                            formik.values
+                              .task3ObservedTheImmediateReactionOfChildAndCaregiver
+                          }
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                            // marginTop: "20px"
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors
+                        .task3ObservedTheImmediateReactionOfChildAndCaregiver !==
+                      "" ? (
+                        <span className={classes.error}>
+                          {
+                            formik.errors
+                              .task3ObservedTheImmediateReactionOfChildAndCaregiver
+                          }
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>Invited questions from the child</Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task3InvitedQuestionsFromChild"
+                          id="task3InvitedQuestionsFromChild"
+                          type="select"
+                          value={formik.values.task3InvitedQuestionsFromChild}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                            // height: "100px"
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors.task3InvitedQuestionsFromChild !== "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task3InvitedQuestionsFromChild}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>
+                          Revisited/reviewed the benefits of disclosure with the
+                          child and caregiver
+                        </Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task3RevistedBenefitsOfDisclosureWithChild"
+                          id="task3RevistedBenefitsOfDisclosureWithChild"
+                          type="select"
+                          value={
+                            formik.values
+                              .task3RevistedBenefitsOfDisclosureWithChild
+                          }
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                            // height: "100px"
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors
+                        .task3RevistedBenefitsOfDisclosureWithChild !== "" ? (
+                        <span className={classes.error}>
+                          {
+                            formik.errors
+                              .task3RevistedBenefitsOfDisclosureWithChild
+                          }
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>
+                          Explained care options available to the child and
+                          caregiver
+                        </Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task3ExplainedCareOptionsAvailable"
+                          id="task3ExplainedCareOptionsAvailable"
+                          type="select"
+                          value={
+                            formik.values.task3ExplainedCareOptionsAvailable
+                          }
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                            // marginTop: "40px"
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors.task3ExplainedCareOptionsAvailable !==
+                      "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task3ExplainedCareOptionsAvailable}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-12">
+                      <FormGroup>
+                        <Label>
+                          Concluded the session with reassurance to both the
+                          child and caregiver? reiterating importance of
+                          confidentiality of information of one's health with
+                          the child's caregiver
+                        </Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task3ConcludedSessionWithReassurance"
+                          id="task3ConcludedSessionWithReassurance"
+                          type="select"
+                          value={
+                            formik.values.task3ConcludedSessionWithReassurance
+                          }
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                            // height: "100px"
+                          }}
+                        >
+                          <option value="">Select</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </Input>
+                      </FormGroup>
+                      {formik.errors.task3ConcludedSessionWithReassurance !==
+                      "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task3ConcludedSessionWithReassurance}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3 col-md-12">
+                      <FormGroup>
+                        <Label>Task 3 comments</Label>
+                        <Input
+                          readOnly={isViewActionType}
+                          name="task3Comments"
+                          id="task3Comments"
+                          type="textarea"
+                          value={formik.values.task3Comments}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                            height: "100px",
+                          }}
+                        ></Input>
+                      </FormGroup>
+                      {formik.errors.task3Comments !== "" ? (
+                        <span className={classes.error}>
+                          {formik.errors.task3Comments}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
                   </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>Task 3 facilitator name</Label>
-
-                      <Input
-                        readOnly={isViewActionType}
-                        type="text"
-                        name="task3HCW"
-                        id="task3HCW"
-                        value={formik.values.task3HCW}
-                        onChange={(e) =>
-                          handleFilterNumber(e, formik?.setFieldValue)
-                        }
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.task3HCW !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task3HCW}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>Reassured the caregiver and the child</Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task3ReassuredTheCaregiverAndChild"
-                        id="task3ReassuredTheCaregiverAndChild"
-                        type="select"
-                        value={formik.values.task3ReassuredTheCaregiverAndChild}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task3ReassuredTheCaregiverAndChild !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task3ReassuredTheCaregiverAndChild}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>Assessed child and caregiver comfort</Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task3AssessedChildAndCaregiverComfort"
-                        id="task3AssessedChildAndCaregiverComfort"
-                        type="select"
-                        value={
-                          formik.values.task3AssessedChildAndCaregiverComfort
-                        }
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task3AssessedChildAndCaregiverComfort !==
-                    "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task3AssessedChildAndCaregiverComfort}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>Assessed safety (environment and timing)</Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task3AssessedSafety"
-                        id="task3AssessedSafety"
-                        type="select"
-                        value={formik.values.task3AssessedSafety}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          // marginTop: "20px",
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task3AssessedSafety !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task3AssessedSafety}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>Assessed the depth of Child's knowledge</Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task3AssessedTheDepthOfChildKnowledge"
-                        id="task3AssessedTheDepthOfChildKnowledge"
-                        type="select"
-                        value={
-                          formik.values.task3AssessedTheDepthOfChildKnowledge
-                        }
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          // height: "100px"
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task3AssessedTheDepthOfChildKnowledge !==
-                    "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task3AssessedTheDepthOfChildKnowledge}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>
-                        Supported caregiver to disclose using the simplest
-                        language the child can understand
-                      </Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task3SupportedCaregiverToDisclose"
-                        id="task3SupportedCaregiverToDisclose"
-                        type="select"
-                        value={formik.values.task3SupportedCaregiverToDisclose}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          // marginTop: "20px"
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task3SupportedCaregiverToDisclose !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task3SupportedCaregiverToDisclose}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>
-                        Observed the immediate reactions of both the child and
-                        caregiver and addressed concerns or negative reactions
-                      </Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task3ObservedTheImmediateReactionOfChildAndCaregiver"
-                        id="task3ObservedTheImmediateReactionOfChildAndCaregiver"
-                        type="select"
-                        value={
-                          formik.values
-                            .task3ObservedTheImmediateReactionOfChildAndCaregiver
-                        }
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          // marginTop: "20px"
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors
-                      .task3ObservedTheImmediateReactionOfChildAndCaregiver !==
-                    "" ? (
-                      <span className={classes.error}>
-                        {
-                          formik.errors
-                            .task3ObservedTheImmediateReactionOfChildAndCaregiver
-                        }
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  {/*<div className="form-group mb-3 col-md-6">*/}
-                  {/*  <FormGroup>*/}
-                  {/*    <Label>*/}
-                  {/*      Assessed what the caregiver has communicated to the*/}
-                  {/*      child*/}
-                  {/*    </Label>*/}
-                  {/*    <Input
-                  readOnly={isViewActionType}*/}
-                  {/*      name="task2AssessedCaregiverCommunicatedToChild"*/}
-                  {/*      id="task2AssessedCaregiverCommunicatedToChild"*/}
-                  {/*      type="select"*/}
-                  {/*      value={*/}
-                  {/*        formik.values*/}
-                  {/*          .task2AssessedCaregiverCommunicatedToChild*/}
-                  {/*      }*/}
-                  {/*      onChange={formik.handleChange}*/}
-                  {/*      onBlur={formik.handleBlur}*/}
-                  {/*      style={{*/}
-                  {/*        border: "1px solid #014D88",*/}
-                  {/*        borderRadius: "0.25rem",*/}
-                  {/*        // marginTop: "20px"*/}
-                  {/*      }}*/}
-                  {/*    >*/}
-                  {/*      <option value="">Select</option>*/}
-                  {/*      <option value="yes">Yes</option>*/}
-                  {/*      <option value="no">No</option>*/}
-                  {/*    </Input>*/}
-                  {/*  </FormGroup>*/}
-                  {/*  {formik.errors.task2AssessedCaregiverCommunicatedToChild !==*/}
-                  {/*  "" ? (*/}
-                  {/*    <span className={classes.error}>*/}
-                  {/*      {*/}
-                  {/*        formik.errors*/}
-                  {/*          .task2AssessedCaregiverCommunicatedToChild*/}
-                  {/*      }*/}
-                  {/*    </span>*/}
-                  {/*  ) : (*/}
-                  {/*    ""*/}
-                  {/*  )}*/}
-                  {/*</div>*/}
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>Invited questions from the child</Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task3InvitedQuestionsFromChild"
-                        id="task3InvitedQuestionsFromChild"
-                        type="select"
-                        value={formik.values.task3InvitedQuestionsFromChild}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          // height: "100px"
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task3InvitedQuestionsFromChild !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task3InvitedQuestionsFromChild}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>
-                        Revisited/reviewed the benefits of disclosure with the
-                        child and caregiver
-                      </Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task3RevistedBenefitsOfDisclosureWithChild"
-                        id="task3RevistedBenefitsOfDisclosureWithChild"
-                        type="select"
-                        value={
-                          formik.values
-                            .task3RevistedBenefitsOfDisclosureWithChild
-                        }
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          // height: "100px"
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors
-                      .task3RevistedBenefitsOfDisclosureWithChild !== "" ? (
-                      <span className={classes.error}>
-                        {
-                          formik.errors
-                            .task3RevistedBenefitsOfDisclosureWithChild
-                        }
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>
-                        Explained care options available to the child and
-                        caregiver
-                      </Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task3ExplainedCareOptionsAvailable"
-                        id="task3ExplainedCareOptionsAvailable"
-                        type="select"
-                        value={formik.values.task3ExplainedCareOptionsAvailable}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          // marginTop: "40px"
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task3ExplainedCareOptionsAvailable !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task3ExplainedCareOptionsAvailable}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-12">
-                    <FormGroup>
-                      <Label>
-                        Concluded the session with reassurance to both the child
-                        and caregiver? reiterating importance of confidentiality
-                        of information of one's health with the child's
-                        caregiver
-                      </Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task3ConcludedSessionWithReassurance"
-                        id="task3ConcludedSessionWithReassurance"
-                        type="select"
-                        value={
-                          formik.values.task3ConcludedSessionWithReassurance
-                        }
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          // height: "100px"
-                        }}
-                      >
-                        <option value="">Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                      </Input>
-                    </FormGroup>
-                    {formik.errors.task3ConcludedSessionWithReassurance !==
-                    "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task3ConcludedSessionWithReassurance}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-
-                  <div className="form-group mb-3 col-md-12">
-                    <FormGroup>
-                      <Label>Task 3 comments</Label>
-                      <Input
-                        readOnly={isViewActionType}
-                        name="task3Comments"
-                        id="task3Comments"
-                        type="textarea"
-                        value={formik.values.task3Comments}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                          height: "100px",
-                        }}
-                      ></Input>
-                    </FormGroup>
-                    {formik.errors.task3Comments !== "" ? (
-                      <span className={classes.error}>
-                        {formik.errors.task3Comments}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                </div>
+                )}
               </div>
 
               <div className="card">
@@ -1613,7 +1529,14 @@ const EditAndViewPeadiatricDisclosureChecklist = (props) => {
                       <span
                         className="float-end"
                         style={{ cursor: "pointer" }}
-                        onClick={() => setSectionControls(!task4Section)}
+                        onClick={() =>
+                          setSectionControls((prevState) => {
+                            return {
+                              ...prevState,
+                              task4Section: !prevState.task4Section,
+                            };
+                          })
+                        }
                       >
                         <FaPlus />
                       </span>
@@ -1623,7 +1546,14 @@ const EditAndViewPeadiatricDisclosureChecklist = (props) => {
                       <span
                         className="float-end"
                         style={{ cursor: "pointer" }}
-                        onClick={() => setSectionControls(!task4Section)}
+                        onClick={() =>
+                          setSectionControls((prevState) => {
+                            return {
+                              ...prevState,
+                              task4Section: !prevState.task4Section,
+                            };
+                          })
+                        }
                       >
                         <FaAngleDown />
                       </span>{" "}
@@ -1631,7 +1561,7 @@ const EditAndViewPeadiatricDisclosureChecklist = (props) => {
                   )}
                 </div>
 
-                <div className="row p-4">
+                { task4Section && <div className="row p-4">
                   <div className="form-group mb-3 col-md-6">
                     <FormGroup>
                       <Label>Date Task 4 executed</Label>
@@ -2036,7 +1966,7 @@ const EditAndViewPeadiatricDisclosureChecklist = (props) => {
                       ""
                     )}
                   </div>
-                </div>
+                </div> }
               </div>
 
               {props?.activeContent?.actionType === "create" && (
