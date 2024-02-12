@@ -22,7 +22,7 @@ function SubMenu(props) {
       getOldRecordIfExists();
     }
     LabOrders();
-  }, [props.patientObj, props?.activeContent.route]);
+  }, );
 
   //Get list
   const Observation = () => {

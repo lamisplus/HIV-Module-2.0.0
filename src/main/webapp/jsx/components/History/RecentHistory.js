@@ -120,6 +120,7 @@ const RecentHistory = (props) => {
         setLoading(false);
       });
   };
+
   const labStatus = (status) => {
     const orderStatus = parseInt(status);
     if (orderStatus === 0) {
@@ -139,6 +140,7 @@ const RecentHistory = (props) => {
       //return "timeline-badge info"
     }
   };
+
   const ActivityName = (name) => {
     if (name === "HIV Enrollment") {
       return "HE";
@@ -160,6 +162,7 @@ const RecentHistory = (props) => {
       return "RA";
     }
   };
+  
   const regimenName = (regimenObj) => {
     let regimenArr = [];
     regimenObj &&
@@ -195,6 +198,14 @@ const RecentHistory = (props) => {
       props.setActiveContent({
         ...props.activeContent,
         route: "adult-clinic-eveluation-view",
+        id: row.id,
+        actionType: action,
+      });
+    } else if (row.path === "eac1") {
+    } else if (row.path === "Paediatric-OTZ") {
+      props.setActiveContent({
+        ...props.activeContent,
+        route: "otz-peadiatric-disclosure-checklist",
         id: row.id,
         actionType: action,
       });
