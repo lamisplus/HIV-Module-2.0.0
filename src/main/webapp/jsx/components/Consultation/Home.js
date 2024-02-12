@@ -34,6 +34,8 @@ import { Accordion, Alert } from "react-bootstrap";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Label as LabelSui } from "semantic-ui-react";
 import Select from "react-select";
+import { calculate_age_to_number } from "../../../utils";
+
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -273,7 +275,7 @@ const ClinicVisit = (props) => {
     FAMILY_PLANNING_METHOD();
     GetPatientDTOObj();
     PatientCurrentRegimen();
-    GetCareSupport()
+    GetCareSupport();
     if (props.patientObj.id) {
       ClinicVisitList();
     }
@@ -292,22 +294,20 @@ const ClinicVisit = (props) => {
             : ""
         );
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
-  const GetCareSupport =()=>{
+  const GetCareSupport = () => {
     axios
-        .get(`${baseUrl}observation/person/${props.patientObj.id}`,
-            { headers: {"Authorization" : `Bearer ${token}`} }
-        )
-        .then((response) => {
-          setCareSupportObj(response.data.filter((x)=> x.type==='Chronic Care'))
-        })
-        .catch((error) => {
-
-        });
-
-  }
+      .get(`${baseUrl}observation/person/${props.patientObj.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        setCareSupportObj(
+          response.data.filter((x) => x.type === "Chronic Care")
+        );
+      })
+      .catch((error) => {});
+  };
   //Get the patient current regimen
   const PatientCurrentRegimen = () => {
     axios
@@ -321,70 +321,9 @@ const ClinicVisit = (props) => {
         RegimenType(currentRegimenObj.regimenType.id);
         arvDrugObj.regimenDrug = currentRegimenObj.id;
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
-  const calculate_age = (dob) => {
-    if (dob !== null && dob != "") {
-      //Check if the DOB is not null or empty
-      const today = new Date();
-      const dateParts = dob.split("-");
-      const birthDate = new Date(dob);
-
-      // get the day, month and year of today
-      let todayMonth = today.getMonth();
-      let todayYear = today.getFullYear();
-      let todayDate = today.getDate();
-
-      
-
-      // get the day, month and year from date of birth
-      let birthDateMonth = birthDate.getMonth();
-      let birthDateYear = birthDate.getFullYear();
-      let birthdateDate = birthDate.getDate();
-
-      // substract birthdate year from today year  ie todayYear - birthdateYear which  will give  "AssumedAge" is the age  we assume the patient will clock this year
-
-      let assumedAge = todayYear - birthDateYear;
-      if (assumedAge > 0) {
-        //Checking the month to confirm if the age has been cloocked
-
-        let monthGap = todayMonth - birthDateMonth;
-        
-
-        // If 'monthGap'> 0, the age has been clocked, 'monthGap'< 0, the age has not been clocked, 'monthGap'= 0, we are in the month then check date to confirm clocked age
-
-        if (monthGap > 0) {
-          return assumedAge + " year(s)";
-        } else if (monthGap < 0) {
-          let confirmedAge = assumedAge - 1;
-          return confirmedAge + " year(s)";
-        } else if (monthGap === 0) {
-          let dateGap = todayDate - birthdateDate;
-          
-
-          if (dateGap > 0) {
-            return assumedAge + " year(s)";
-          } else if (dateGap < 0) {
-            let confirmedAge = assumedAge - 1;
-            return confirmedAge + " year(s)";
-          }
-        }
-      } else {
-        let monthGap = todayMonth - birthDateMonth;
-        let dateGap = todayDate - birthdateDate;
-
-        let monthOld = monthGap > 0 ? monthGap : 0;
-        let DayOld = dateGap > 0 ? dateGap : 0;
-
-        let result = monthOld ? monthOld + "month(s)" : DayOld + "day(s)";
-        return result;
-      }
-    }
-  };
-  const patientAge = calculate_age(
-  patientObj.dateOfBirth
-  );
+  const patientAge = calculate_age_to_number(props.patientObj.dateOfBirth);
   // CRYPTOCOCCAL_SCREENING_STATUS
   const CRYPTOCOCCAL_SCREENING_STATUS = () => {
     axios
@@ -394,8 +333,7 @@ const ClinicVisit = (props) => {
       .then((response) => {
         setCryptococcal(response.data);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   // CERVICAL_CANCER_SCREENING_STATUS
   const CERVICAL_CANCER_SCREENING_STATUS = () => {
@@ -407,8 +345,7 @@ const ClinicVisit = (props) => {
       .then((response) => {
         setCervicalStatus(response.data);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   // CERVICAL_CANCER_TREATMENT
   const CERVICAL_CANCER_TREATMENT = () => {
@@ -419,8 +356,7 @@ const ClinicVisit = (props) => {
       .then((response) => {
         setCervicalTreatment(response.data);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   // HEPATITIS_SCREENING_RESULT
   const HEPATITIS_SCREENING_RESULT = () => {
@@ -431,8 +367,7 @@ const ClinicVisit = (props) => {
       .then((response) => {
         setHepatitis(response.data);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   // FAMILY_PLANNING_METHOD
   const FAMILY_PLANNING_METHOD = () => {
@@ -443,8 +378,7 @@ const ClinicVisit = (props) => {
       .then((response) => {
         setFamilyPlaining(response.data);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   // PREGANACY_STATUS
   const PREGANACY_STATUS = () => {
@@ -455,8 +389,7 @@ const ClinicVisit = (props) => {
       .then((response) => {
         setPregnancyStatus(response.data);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   //GET VIRAL LOAD INDICATION
   const ViraLoadIndication = () => {
@@ -467,8 +400,7 @@ const ClinicVisit = (props) => {
       .then((response) => {
         setVLIndication(response.data);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   //GET AdultRegimenLine
   const AdultRegimenLine = () => {
@@ -481,8 +413,7 @@ const ClinicVisit = (props) => {
           response.data.filter((x) => x.id === 1 || x.id === 2 || x.id === 14)
         );
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   //GET ChildRegimenLine
   const ChildRegimenLine = () => {
@@ -495,8 +426,7 @@ const ClinicVisit = (props) => {
           response.data.filter((x) => x.id === 3 || x.id === 4)
         );
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   //Get list of Test Group
   const TestGroup = () => {
@@ -516,12 +446,10 @@ const ClinicVisit = (props) => {
               sampleType: x2.sampleType,
             });
           });
-          
         });
         setLabTestOptions(testsOptions);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   //GET LIST Drug Refill
   async function ClinicVisitList() {
@@ -550,7 +478,7 @@ const ClinicVisit = (props) => {
       .then((response) => {
         setLoadVitalHistory(false);
         const lastVitalSigns = response.data[response.data.length - 1];
-        
+
         if (
           lastVitalSigns.captureDate >= moment(new Date()).format("YYYY-MM-DD")
         ) {
@@ -572,8 +500,7 @@ const ClinicVisit = (props) => {
         setGetPatientObj(response.data);
         patientObj = response.data;
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
 
   //Get list of WhoStaging
@@ -585,8 +512,7 @@ const ClinicVisit = (props) => {
       .then((response) => {
         setClinicalStage(response.data);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   ///GET LIST OF FUNCTIONAL%20_STATUS
   // TB STATUS
@@ -598,8 +524,7 @@ const ClinicVisit = (props) => {
       .then((response) => {
         setTbStatus(response.data);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
 
   async function FunctionalStatus() {
@@ -661,19 +586,23 @@ const ClinicVisit = (props) => {
   const handleInputChangeVitalSignDto = (e) => {
     setErrors({ ...errors, [e.target.name]: "" });
     setVitalSignDto({ ...vital, [e.target.name]: e.target.value });
-    if(e.target.name==='encounterDate' ){
+    if (e.target.name === "encounterDate") {
       //Validate the care and support date against the encounter date that was selected
-      const supportCareDetail= careSupportObj.find((x)=> x.dateOfObservation===e.target.value)
-      if(supportCareDetail!==undefined){
-        setCareSupportTb(supportCareDetail && supportCareDetail.data.tbIptScreening.status)
-        setSaving(false)
-      }else{
-        toast.error("Please select a valid date that exist for care & support")
-        setSaving(true)
+      const supportCareDetail = careSupportObj.find(
+        (x) => x.dateOfObservation === e.target.value
+      );
+      if (supportCareDetail !== undefined) {
+        setCareSupportTb(
+          supportCareDetail && supportCareDetail.data.tbIptScreening.status
+        );
+        setSaving(false);
+      } else {
+        toast.error("Please select a valid date that exist for care & support");
+        setSaving(true);
       }
       //objValues.tbStatus=supportCareDetail.data.tbIptScreening.status!==""? supportCareDetail.data.tbIptScreening.status :""
       //setVitalSignDto({ ...vital, [e.target.name]: e.target.value.replace(/\D/g, '') });
-    }else{
+    } else {
       //setVitalSignDto({ ...vital, [e.target.name]: e.target.value });
     }
   };
@@ -958,7 +887,6 @@ const ClinicVisit = (props) => {
       objValues.viralLoadOrder = testOrderList;
       objValues.arvdrugsRegimen = arvDrugOrderList;
       objValues["vitalSignDto"] = vital;
-     
 
       axios
         .post(`${baseUrl}hiv/art/clinic-visit/`, objValues, {
@@ -1026,7 +954,6 @@ const ClinicVisit = (props) => {
       <Message size="mini" color="blue" content="Overweight/Obese" />;
     }
   }
-
 
   return (
     <div className={classes.root}>

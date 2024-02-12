@@ -87,14 +87,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PeadiatricDisclosureChecklist = (props) => {
- 
   const [saving, setSavings] = useState(false);
-  
-  const PatientObject= props.patientObj && props.patientObj ? props.patientObj : null
+
+  const PatientObject =
+    props.patientObj && props.patientObj ? props.patientObj : null;
   const submitNewRecord = (values) => {
     const observation = {
       data: values,
-      dateOfObservation: values.encounterDate===""?  moment(new Date()).format("YYYY-MM-DD") : values.encounterDate,
+      dateOfObservation:
+        values.encounterDate === ""
+          ? moment(new Date()).format("YYYY-MM-DD")
+          : values.encounterDate,
       facilityId: null,
       personId: props.patientObj.id,
       type: "Paediatric OTZ",
@@ -108,7 +111,10 @@ const PeadiatricDisclosureChecklist = (props) => {
         setSavings(false);
         // props.patientObj.mentalHealth = true;
         toast.success("Paediatric OTZ screening save successful.");
-        props.setActiveContent({...props.activeContent, route:'recent-history'})//Redirect to patient home page
+        props.setActiveContent({
+          ...props.activeContent,
+          route: "recent-history",
+        }); //Redirect to patient home page
       })
       .catch((error) => {
         setSavings(false);
@@ -121,7 +127,6 @@ const PeadiatricDisclosureChecklist = (props) => {
   };
 
   const handleFilterNumber = (e, setFieldValue) => {
-    
     // Apply your regex to filter out numbers
     const newValue = e.target.value.replace(/\d/g, "");
     setFieldValue(e.target.name, newValue);
@@ -130,7 +135,10 @@ const PeadiatricDisclosureChecklist = (props) => {
   const updateOldRecord = (values) => {
     const observation = {
       data: values,
-      dateOfObservation: values.encounterDate===""?  moment(new Date()).format("YYYY-MM-DD") : values.encounterDate,
+      dateOfObservation:
+        values.encounterDate === ""
+          ? moment(new Date()).format("YYYY-MM-DD")
+          : values.encounterDate,
       facilityId: null,
       personId: props.patientObj.id,
       type: "Paediatric OTZ",
@@ -144,7 +152,10 @@ const PeadiatricDisclosureChecklist = (props) => {
         setSavings(false);
         // props.patientObj.mentalHealth = true;
         toast.success("Paediatric OTZ screening save successful.");
-        props.setActiveContent({...props.activeContent, route:'recent-history'})//Redirect to patient home page
+        props.setActiveContent({
+          ...props.activeContent,
+          route: "recent-history",
+        }); //Redirect to patient home page
       })
       .catch((error) => {
         setSavings(false);
@@ -157,7 +168,7 @@ const PeadiatricDisclosureChecklist = (props) => {
   };
 
   const handleSubmit = (values) => {
-    if (props?.activeContent?.id) {
+    if (props?.activeContent?.actionType !== "create") {
       updateOldRecord(values);
       return;
     }
@@ -190,22 +201,20 @@ const PeadiatricDisclosureChecklist = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        const patientDTO = response.data.data
-        formik.setValues(patientDTO)
+        const patientDTO = response.data.data;
+        formik.setValues(patientDTO);
         //props.setActiveContent({...props.activeContent, route:'recent-history'})//Redirect to patient home page
       })
-      .catch((error) => {
-        
-      });
-  }
+      .catch((error) => {});
+  };
 
   useEffect(() => {
     if (props.activeContent.id) {
-      getOldRecordIfExists()
+      getOldRecordIfExists();
     }
-  }, [])
-  
-const isViewActionType = props?.activeContent?.actionType === 'view'
+  }, []);
+
+  const isViewActionType = props?.activeContent?.actionType === "view";
 
   return (
     <>
@@ -293,7 +302,6 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                     )}
                   </div> */}
 
-
                   {/*<div className="form-group mb-3 col-md-4">*/}
                   {/*  <FormGroup>*/}
                   {/*    <Label>Child's Name</Label>*/}
@@ -352,24 +360,26 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                     <FormGroup>
                       <Label>Encounter Date</Label>
                       <Input
-                      readOnly={isViewActionType}
-                          name="encounterDate"
-                          id="encounterDate"
-                          type="date"
-                          value={formik.values.encounterDate}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          max= {moment(new Date()).format("YYYY-MM-DD") }
-                          style={{
-                            border: "1px solid #014D88",
-                            borderRadius: "0.25rem",
-                          }}
+                        readOnly={isViewActionType}
+                        name="encounterDate"
+                        id="encounterDate"
+                        type="date"
+                        value={formik.values.encounterDate}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        max={moment(new Date()).format("YYYY-MM-DD")}
+                        style={{
+                          border: "1px solid #014D88",
+                          borderRadius: "0.25rem",
+                        }}
                       ></Input>
                     </FormGroup>
                     {formik.errors.encounterDate !== "" ? (
-                        <span className={classes.error}>{formik.errors.encounterDate}</span>
+                      <span className={classes.error}>
+                        {formik.errors.encounterDate}
+                      </span>
                     ) : (
-                        ""
+                      ""
                     )}
                   </div>
 
@@ -377,12 +387,14 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                     <FormGroup>
                       <Label>Caregiver's Name</Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="caregiverName"
                         id="caregiverName"
                         type="text"
                         value={formik.values.caregiverName}
-                        onChange={(e)=>handleFilterNumber(e, formik?.setFieldValue)}
+                        onChange={(e) =>
+                          handleFilterNumber(e, formik?.setFieldValue)
+                        }
                         onBlur={formik.handleBlur}
                         style={{
                           border: "1px solid #014D88",
@@ -403,7 +415,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                     <FormGroup>
                       <Label>CCC Number</Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="cccNumber"
                         id="cccNumber"
                         type="number"
@@ -424,8 +436,6 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                       ""
                     )}
                   </div>
-
-
                 </div>
               </div>
 
@@ -471,14 +481,14 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                       <Label>Date Task 1 executed</Label>
 
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         type="date"
                         name="dateTask1Executed"
                         id="dateTask1Executed"
                         value={formik.values.dateTask1Executed}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        max= {moment(new Date()).format("YYYY-MM-DD") }
+                        max={moment(new Date()).format("YYYY-MM-DD")}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
@@ -499,12 +509,14 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                       <Label>Task facilitator name</Label>
 
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         type="text"
                         name="task1HCW"
                         id="task1HCW"
                         value={formik.values.task1HCW}
-                        onChange={(e) => handleFilterNumber(e, formik?.setFieldValue)}
+                        onChange={(e) =>
+                          handleFilterNumber(e, formik?.setFieldValue)
+                        }
                         onBlur={formik.handleBlur}
                         style={{
                           border: "1px solid #014D88",
@@ -527,7 +539,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         Child met the age criteria (between 6 and 10 years)
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task1ChildMetCriteria"
                         id="task1ChildMetCriteria"
                         type="select"
@@ -560,7 +572,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         disclosure
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task1ChildAndCaregiverKnowledgeable"
                         id="task1ChildAndCaregiverKnowledgeable"
                         type="select"
@@ -593,7 +605,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                     <FormGroup>
                       <Label>Caregiver willing to disclose to the child</Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task1CaregiverWilling"
                         id="task1CaregiverWilling"
                         type="select"
@@ -623,7 +635,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                     <FormGroup>
                       <Label>Task 1 comments</Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task1Comments"
                         id="task1Comments"
                         type="textarea"
@@ -690,14 +702,14 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                       <Label>Date Task 2 executed</Label>
 
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         type="date"
                         name="dateTask2Executed"
                         id="dateTask2Executed"
                         value={formik.values.dateTask2Executed}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        max= {moment(new Date()).format("YYYY-MM-DD") }
+                        max={moment(new Date()).format("YYYY-MM-DD")}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
@@ -718,12 +730,14 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                       <Label>Task 2 facilitator name</Label>
 
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         type="text"
                         name="task2HCW"
                         id="task2HCW"
                         value={formik.values.task2HCW}
-                        onChange={(e) => handleFilterNumber(e, formik?.setFieldValue)}
+                        onChange={(e) =>
+                          handleFilterNumber(e, formik?.setFieldValue)
+                        }
                         onBlur={formik.handleBlur}
                         style={{
                           border: "1px solid #014D88",
@@ -747,7 +761,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         trauma, psychological illness or physical illness
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task2FreeFromPhysicalIllness"
                         id="task2FreeFromPhysicalIllness"
                         type="select"
@@ -780,7 +794,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         support
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task2ChildConsisitentFamilyPeer"
                         id="task2ChildConsisitentFamilyPeer"
                         type="select"
@@ -814,7 +828,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         playing activites
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task2ChildDemostrateInEnvAndPlaying"
                         id="task2ChildDemostrateInEnvAndPlaying"
                         type="select"
@@ -851,7 +865,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         illness and addressed needs and concerns
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task2AssessedWhatChildAlreadyKnows"
                         id="task2AssessedWhatChildAlreadyKnows"
                         type="select"
@@ -886,7 +900,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         community, able to freely discuss school activities)
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="taskAssessedFunctionalSchoolEngagement"
                         id="taskAssessedFunctionalSchoolEngagement"
                         type="select"
@@ -922,7 +936,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         Assessed caregiver readiness for disclosure to the child
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task2assessedCaregiverReadinessForDisclosureToChild"
                         id="task2assessedCaregiverReadinessForDisclosureToChild"
                         type="select"
@@ -1005,7 +1019,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         regarding one's health with the child and caregiver
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task2DiscussedManagementOfConfidentiality"
                         id="task2DiscussedManagementOfConfidentiality"
                         type="select"
@@ -1043,7 +1057,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                     <FormGroup>
                       <Label>Task 2 comments</Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task2Comments"
                         id="task2Comments"
                         type="textarea"
@@ -1111,14 +1125,14 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                       <Label>Date Task 3 executed</Label>
 
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         type="date"
                         name="dateTask3Executed"
                         id="dateTask3Executed"
                         value={formik.values.dateTask3Executed}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        max= {moment(new Date()).format("YYYY-MM-DD") }
+                        max={moment(new Date()).format("YYYY-MM-DD")}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
@@ -1139,12 +1153,14 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                       <Label>Task 3 facilitator name</Label>
 
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         type="text"
                         name="task3HCW"
                         id="task3HCW"
                         value={formik.values.task3HCW}
-                        onChange={(e) => handleFilterNumber(e, formik?.setFieldValue)}
+                        onChange={(e) =>
+                          handleFilterNumber(e, formik?.setFieldValue)
+                        }
                         onBlur={formik.handleBlur}
                         style={{
                           border: "1px solid #014D88",
@@ -1165,7 +1181,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                     <FormGroup>
                       <Label>Reassured the caregiver and the child</Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task3ReassuredTheCaregiverAndChild"
                         id="task3ReassuredTheCaregiverAndChild"
                         type="select"
@@ -1195,7 +1211,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                     <FormGroup>
                       <Label>Assessed child and caregiver comfort</Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task3AssessedChildAndCaregiverComfort"
                         id="task3AssessedChildAndCaregiverComfort"
                         type="select"
@@ -1228,7 +1244,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                     <FormGroup>
                       <Label>Assessed safety (environment and timing)</Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task3AssessedSafety"
                         id="task3AssessedSafety"
                         type="select"
@@ -1259,7 +1275,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                     <FormGroup>
                       <Label>Assessed the depth of Child's knowledge</Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task3AssessedTheDepthOfChildKnowledge"
                         id="task3AssessedTheDepthOfChildKnowledge"
                         type="select"
@@ -1296,7 +1312,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         language the child can understand
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task3SupportedCaregiverToDisclose"
                         id="task3SupportedCaregiverToDisclose"
                         type="select"
@@ -1330,7 +1346,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         caregiver and addressed concerns or negative reactions
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task3ObservedTheImmediateReactionOfChildAndCaregiver"
                         id="task3ObservedTheImmediateReactionOfChildAndCaregiver"
                         type="select"
@@ -1410,7 +1426,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                     <FormGroup>
                       <Label>Invited questions from the child</Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task3InvitedQuestionsFromChild"
                         id="task3InvitedQuestionsFromChild"
                         type="select"
@@ -1444,7 +1460,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         child and caregiver
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task3RevistedBenefitsOfDisclosureWithChild"
                         id="task3RevistedBenefitsOfDisclosureWithChild"
                         type="select"
@@ -1485,7 +1501,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         caregiver
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task3ExplainedCareOptionsAvailable"
                         id="task3ExplainedCareOptionsAvailable"
                         type="select"
@@ -1521,7 +1537,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         caregiver
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task3ConcludedSessionWithReassurance"
                         id="task3ConcludedSessionWithReassurance"
                         type="select"
@@ -1555,7 +1571,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                     <FormGroup>
                       <Label>Task 3 comments</Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task3Comments"
                         id="task3Comments"
                         type="textarea"
@@ -1623,14 +1639,14 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                       <Label>Date Task 4 executed</Label>
 
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         type="date"
                         name="dateTask4Executed"
                         id="dateTask4Executed"
                         value={formik.values.dateTask4Executed}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        max= {moment(new Date()).format("YYYY-MM-DD") }
+                        max={moment(new Date()).format("YYYY-MM-DD")}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
@@ -1651,12 +1667,14 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                       <Label>Task 4 facilitator name</Label>
 
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         type="text"
                         name="task4HCW"
                         id="task4HCW"
                         value={formik.values.task4HCW}
-                        onChange={(e) => handleFilterNumber(e, formik?.setFieldValue)}
+                        onChange={(e) =>
+                          handleFilterNumber(e, formik?.setFieldValue)
+                        }
                         onBlur={formik.handleBlur}
                         style={{
                           border: "1px solid #014D88",
@@ -1677,7 +1695,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                     <FormGroup>
                       <Label>Assessed functional school engagement</Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task4AssessedFunctionalSchoolEngagement"
                         id="task4AssessedFunctionalSchoolEngagement"
                         type="select"
@@ -1713,7 +1731,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         support after disclosure
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task4AssessedFamilySocialAndPeerRelationship"
                         id="task4AssessedFamilySocialAndPeerRelationship"
                         type="select"
@@ -1753,7 +1771,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         children's activities like playing
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task4AssessedInterestAndEngagementOfChild"
                         id="task4AssessedInterestAndEngagementOfChild"
                         type="select"
@@ -1794,7 +1812,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         self-perception and outlook
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task4AllowedQuestionsFromChild"
                         id="task4AllowedQuestionsFromChild"
                         type="select"
@@ -1827,7 +1845,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         Addressed negative body or self-image issues
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task4AddressedNegativeBodyOrSelfImageIssues"
                         id="task4AddressedNegativeBodyOrSelfImageIssues"
                         type="select"
@@ -1868,7 +1886,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         behaviors
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task4AssessedChildForMoodiness"
                         id="task4AssessedChildForMoodiness"
                         type="select"
@@ -1902,7 +1920,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                         complications developed post disclosure if indicated
                       </Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task4ReferredAppropriately"
                         id="task4ReferredAppropriately"
                         type="select"
@@ -1933,7 +1951,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                     <FormGroup>
                       <Label>Given age-appropriate adherence information</Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task4GivenAppropriateAdherenceInformation"
                         id="task4GivenAppropriateAdherenceInformation"
                         type="select"
@@ -1971,7 +1989,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                     <FormGroup>
                       <Label>Task 4 comments</Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="task4Comments"
                         id="task4Comments"
                         type="textarea"
@@ -1998,7 +2016,7 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                     <FormGroup>
                       <Label>Final comments</Label>
                       <Input
-                      readOnly={isViewActionType}
+                        readOnly={isViewActionType}
                         name="finalComments"
                         id="finalComments"
                         type="textarea"
@@ -2023,26 +2041,30 @@ const isViewActionType = props?.activeContent?.actionType === 'view'
                 </div>
               </div>
 
-              <div className="d-flex justify-content-end">
-                <MatButton
-                  type="button"
-                  variant="contained"
-                  color="primary"
-                  className={classes.button}
-                  style={{ backgroundColor: "#014d88" }}
-                  startIcon={<SaveIcon />}
-                  disabled={saving}
-                  onClick={() => handleSubmit(formik.values)}
-                >
-                  {!saving ? (
-                    <span style={{ textTransform: "capitalize" }}>Submit</span>
-                  ) : (
-                    <span style={{ textTransform: "capitalize" }}>
-                      Submitting...
-                    </span>
-                  )}
-                </MatButton>
-              </div>
+              {props?.activeContent?.actionType === "create" || props?.activeContent?.actionType === "update" && (
+                <div className="d-flex justify-content-end">
+                  <MatButton
+                    type="button"
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    style={{ backgroundColor: "#014d88" }}
+                    startIcon={<SaveIcon />}
+                    disabled={saving}
+                    onClick={() => handleSubmit(formik.values)}
+                  >
+                    {!saving ? (
+                      <span style={{ textTransform: "capitalize" }}>
+                        {props?.activeContent?.actionType === "create" ? "Submit": "Update"}
+                      </span>
+                    ) : (
+                      <span style={{ textTransform: "capitalize" }}>
+                        Submitting...
+                      </span>
+                    )}
+                  </MatButton>
+                </div>
+              )}
 
               {saving && <Spinner />}
             </Form>

@@ -60,6 +60,7 @@ function SubMenu(props) {
     setActiveItem("pharmacy");
     props.setActiveContent({ ...props.activeContent, route: "pharmacy" });
   };
+
   const loadLaboratoryOrderResult = (row) => {
     setActiveItem("lab");
     props.setActiveContent({
@@ -67,6 +68,7 @@ function SubMenu(props) {
       route: "laboratoryOrderResult",
     });
   };
+
   const loadLaboratoryViralLoadOrderResult = (row) => {
     setActiveItem("lab");
     props.setActiveContent({
@@ -74,6 +76,7 @@ function SubMenu(props) {
       route: "laboratoryViralLoadOrderResult",
     });
   };
+
   const loadCervicalCancer = (row) => {
     setActiveItem("cancer");
     props.setActiveContent({
@@ -100,6 +103,7 @@ function SubMenu(props) {
     setActiveItem("health");
     props.setActiveContent({ ...props.activeContent, route: "mhs" });
   };
+
   const loadAdultEvaluation = (row) => {
     setActiveItem("initial");
     props.setActiveContent({
@@ -461,7 +465,7 @@ function SubMenu(props) {
 
                           {patientObj.age <= 19 && (
                             <Dropdown.Item
-                              onClick={() => loadOtzCheckList(patientObj)}
+                              onClick={() => loadOtzCheckList()}
                               name="Peadiatric Disclosure Checklist"
                               active={
                                 activeItem ===
