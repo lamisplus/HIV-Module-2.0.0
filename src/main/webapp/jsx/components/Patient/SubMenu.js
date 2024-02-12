@@ -22,7 +22,7 @@ function SubMenu(props) {
       getOldRecordIfExists();
     }
     LabOrders();
-  }, [props.patientObj]);
+  }, [props.patientObj, props?.activeContent.route]);
 
   //Get list
   const Observation = () => {
@@ -440,7 +440,7 @@ function SubMenu(props) {
                               ) : isOtzEnrollementDone === false ? (
                                 <Dropdown.Item
                                   onClick={() =>
-                                    loadOtzEnrollmentForm(patientObj)
+                                    loadOtzEnrollmentForm()
                                   }
                                   name="OTZ Enrollment Form"
                                   active={activeItem === "otz-enrollment-form"}
@@ -452,7 +452,7 @@ function SubMenu(props) {
 
                               {isOtzEnrollementDone ? (
                                 <Dropdown.Item
-                                  onClick={() => loadOtzServiceForm(patientObj)}
+                                  onClick={() => loadOtzServiceForm()}
                                   name="OTZ Service Form"
                                   active={activeItem === "otz-service-form"}
                                   title="Tracking Form"
@@ -480,6 +480,9 @@ function SubMenu(props) {
                       </Dropdown>
                     ) : null}
                   </Menu.Menu>
+
+
+
                   <Menu.Item
                     onClick={() => loadTransferForm(patientObj)}
                     name="transfer"
