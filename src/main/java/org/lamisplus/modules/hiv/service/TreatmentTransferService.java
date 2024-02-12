@@ -36,6 +36,7 @@ public class TreatmentTransferService {
     private final HivEnrollmentRepository hivEnrollmentr;
 
     public TransferPatientInfo getTransferPatientInfo(String patientUuid, Long facilityId) {
+
         try {
             if (patientUuid != null) {
                 TransferPatientInfo patient = observationRepository.getTransferPatientInfo(patientUuid, facilityId).get();
