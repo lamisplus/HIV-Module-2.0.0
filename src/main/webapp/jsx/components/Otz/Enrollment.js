@@ -91,6 +91,8 @@ const EnrollmentOtz = (props) => {
   const [currentRecord, setCurrentRecord] = useState(null);
   const [otzOutcomesArray, setOtzOutcomes] = useState([]);
   const [otzPlusCapture, setOtzCapture] = useState("");
+  const [labResult, setLabResult] = useState(null);
+
 
   const submitNewRecord = (values) => {
     const observation = {
@@ -136,6 +138,22 @@ const EnrollmentOtz = (props) => {
         setOtzOutcomes(response.data);
       });
   };
+
+  // const LabOrders = () => {
+  //   axios
+  //     .get(`${baseUrl}laboratory/vl-results/patients/${props.patientObj.id}`, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     })
+  //     .then((response) => {
+  //       const dynamicArray = response?.data;
+  //       if (dynamicArray?.length > 0) {
+  //         let lastItem = dynamicArray[dynamicArray.length - 1];
+  //         setLabResult(lastItem);
+  //         console.log(labResult)
+  //       }
+  //     })
+  //     .catch((error) => {});
+  // };
 
   
 
@@ -227,10 +245,9 @@ const EnrollmentOtz = (props) => {
   };
 
   useEffect(() => {
-    if (props?.activeContent?.id) {
-      getOldRecordIfExists();
-    }
+    console.log(props)
     getOtzOutomes();
+    // LabOrders();
 
     formik.setValues({
       ...formik?.values,

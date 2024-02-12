@@ -13,7 +13,7 @@ const divStyle = {
 };
 
 const PharmacyModule = (props) => {
-    const [key, setKey] = useState('home');
+    const [key, setKey] = useState('drug-refill');
     const patientObj = props.patientObj
     const [loading, setLoading] = useState(true)
     const [refillList, setRefillList] = useState([])
@@ -56,7 +56,7 @@ const PharmacyModule = (props) => {
                   {/* <Tab eventKey="checked-in" title="Checked In Patients">                   
                     <CheckedInPatients />
                   </Tab> */}
-                  <Tab eventKey="home" title="Pharmacy Drug Refill ">
+                  <Tab eventKey="drug-refill" title="Pharmacy Drug Refill ">
                     {props.activeContent.actionType==='update' ? 
                       (                 
                         <PharmacyRefillUpdate patientObj={patientObj} setActiveContent={props.setActiveContent} activeContent={props.activeContent} PharmacyList={PharmacyList}/>
