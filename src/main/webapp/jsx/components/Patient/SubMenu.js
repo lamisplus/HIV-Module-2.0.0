@@ -22,7 +22,7 @@ function SubMenu(props) {
       getOldRecordIfExists();
     }
     LabOrders();
-  }, );
+  });
 
   //Get list
   const Observation = () => {
@@ -31,9 +31,7 @@ function SubMenu(props) {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {})
-      .catch((error) => {
-      
-      });
+      .catch((error) => {});
   };
 
   const LabOrders = () => {
@@ -58,7 +56,11 @@ function SubMenu(props) {
 
   const loadPharmacyModal = (row) => {
     setActiveItem("pharmacy");
-    props.setActiveContent({ ...props.activeContent, route: "pharmacy" });
+    props.setActiveContent({
+      ...props.activeContent,
+      route: "pharmacy",
+      activeTab: "drug-refill",
+    });
   };
 
   const loadLaboratoryOrderResult = (row) => {
@@ -66,6 +68,7 @@ function SubMenu(props) {
     props.setActiveContent({
       ...props.activeContent,
       route: "laboratoryOrderResult",
+      activeTab: "labOrder",
     });
   };
 
@@ -74,6 +77,7 @@ function SubMenu(props) {
     props.setActiveContent({
       ...props.activeContent,
       route: "laboratoryViralLoadOrderResult",
+      activeTab: "viralLoad",
     });
   };
 
@@ -154,8 +158,7 @@ function SubMenu(props) {
       ...props.activeContent,
       ...props.expandedPatientObj,
       route: "otz-service-form",
-      actionType: "create"
-      
+      actionType: "create",
     });
   };
   const loadOtzEnrollmentForm = () => {
@@ -165,7 +168,7 @@ function SubMenu(props) {
       ...props.expandedPatientObj,
       currentLabResult: labResult,
       route: "otz-enrollment-form",
-      actionType: "create"
+      actionType: "create",
     });
   };
 
@@ -174,7 +177,7 @@ function SubMenu(props) {
     props.setActiveContent({
       ...props.activeContent,
       route: "otz-peadiatric-disclosure-checklist",
-      actionType: "create"
+      actionType: "create",
     });
   };
   const loadOtzRegister = () => {
@@ -199,7 +202,7 @@ function SubMenu(props) {
         }
       })
       .catch((error) => {
-        // 
+        //
         setIsOtzEnrollementDone(false);
       });
   };
@@ -439,9 +442,7 @@ function SubMenu(props) {
                                 </Dropdown.Item>
                               ) : isOtzEnrollementDone === false ? (
                                 <Dropdown.Item
-                                  onClick={() =>
-                                    loadOtzEnrollmentForm()
-                                  }
+                                  onClick={() => loadOtzEnrollmentForm()}
                                   name="OTZ Enrollment Form"
                                   active={activeItem === "otz-enrollment-form"}
                                   title="Enrollment Form"
@@ -480,8 +481,6 @@ function SubMenu(props) {
                       </Dropdown>
                     ) : null}
                   </Menu.Menu>
-
-
 
                   <Menu.Item
                     onClick={() => loadTransferForm(patientObj)}

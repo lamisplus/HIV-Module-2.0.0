@@ -47,12 +47,7 @@ const LaboratoryModule = (props) => {
                     onSelect={(k) => setKey(k)}
                     className="mb-3"
                 >
-                  {/* <Tab eventKey="checked-in" title="Checked In Patients">                   
-                    <CheckedInPatients />
-                  </Tab> */}
-                  {/* <Tab eventKey="home" title="VIRAL LOAD ORDER">                   
-                    <ViralLoadOrder patientObj={patientObj} setActiveContent={props.setActiveContent} LabOrders={LabOrders}/>
-                  </Tab> */}
+                 
                   <Tab eventKey="viralLoad" title="VIRAL LOAD ORDER & RESULT">                   
                     <ViralLoadOrderResult patientObj={patientObj} setActiveContent={props.setActiveContent} activeContent={props.activeContent} LabOrders={LabOrders}/>
                   </Tab>
