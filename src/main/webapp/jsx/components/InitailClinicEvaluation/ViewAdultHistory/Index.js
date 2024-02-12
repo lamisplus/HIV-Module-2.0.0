@@ -22,7 +22,7 @@ import Plan from "./Plan";
 import ChildRegimenNextAppointment from "./ChildRegimenNextAppointment";
 import AdultRegimenNextAppointment from "./AdultRegimenNextAppointment";
 import moment from "moment";
-
+import { calculate_age_to_number } from "../../../../utils";
 const useStyles = makeStyles((theme) => ({
   error: {
     color: "#f85032",
@@ -96,80 +96,17 @@ const UserRegistration = (props) => {
         setObservation(response.data);
         //setPatientObj(response.data)
       })
-      .catch((error) => {
-        
-      });
-  };
-  const calculate_age = (dob) => {
-    if (dob !== null && dob != "") {
-      //Check if the DOB is not null or empty
-      const today = new Date();
-      const dateParts = dob.split("-");
-      const birthDate = new Date(dob);
-
-      // get the day, month and year of today
-      let todayMonth = today.getMonth();
-      let todayYear = today.getFullYear();
-      let todayDate = today.getDate();
-
-     
-      let birthDateMonth = birthDate.getMonth();
-      let birthDateYear = birthDate.getFullYear();
-      let birthdateDate = birthDate.getDate();
-
-      // substract birthdate year from today year  ie todayYear - birthdateYear which  will give  "AssumedAge" is the age  we assume the patient will clock this year
-
-      let assumedAge = todayYear - birthDateYear;
-      if (assumedAge > 0) {
-        //Checking the month to confirm if the age has been cloocked
-
-        let monthGap = todayMonth - birthDateMonth;
-        
-
-        // If 'monthGap'> 0, the age has been clocked, 'monthGap'< 0, the age has not been clocked, 'monthGap'= 0, we are in the month then check date to confirm clocked age
-
-        if (monthGap > 0) {
-          return assumedAge + " year(s)";
-        } else if (monthGap < 0) {
-          let confirmedAge = assumedAge - 1;
-          return confirmedAge + " year(s)";
-        } else if (monthGap === 0) {
-          let dateGap = todayDate - birthdateDate;
-          
-
-          if (dateGap > 0) {
-            return assumedAge + " year(s)";
-          } else if (dateGap < 0) {
-            let confirmedAge = assumedAge - 1;
-            return confirmedAge + " year(s)";
-          }
-        }
-      } else {
-        let monthGap = todayMonth - birthDateMonth;
-        let dateGap = todayDate - birthdateDate;
-
-        let monthOld = monthGap > 0 ? monthGap : 0;
-        let DayOld = dateGap > 0 ? dateGap : 0;
-
-        let result = monthOld ? monthOld + "month(s)" : DayOld + "day(s)";
-        return result;
-      }
-    }
+      .catch((error) => {});
   };
 
-  const patientAge = calculate_age(
-    props.patientObj.dateOfBirth
-  );
-  
+  const patientAge = calculate_age_to_number(props.patientObj.dateOfBirth);
 
   return (
     <>
       <Card>
         <CardBody>
           <div className="row">
-            {calculate_age(
-              props.patientObj.dateOfBirth
-            ) <= 14 ? (
+            {calculate_age_to_number(props.patientObj.dateOfBirth) <= 14 ? (
               <h2>Pediatric- Initial Clinical Evaluation ssd</h2>
             ) : (
               <h2>Adult- Initial Clinical Evaluation </h2>
@@ -390,9 +327,8 @@ const UserRegistration = (props) => {
                 )}
                 {activeItem === "regimen" && (
                   <>
-                    {calculate_age(
-                    props.patientObj.dateOfBirth
-                    ) <= 14 ? (
+                    {calculate_age_to_number(props.patientObj.dateOfBirth) <=
+                    14 ? (
                       <ChildRegimenNextAppointment
                         handleItemClick={handleItemClick}
                         setCompleted={setCompleted}
