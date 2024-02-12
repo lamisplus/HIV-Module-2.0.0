@@ -818,7 +818,7 @@ const UserRegistration = (props) => {
                                                                     type="date"
                                                                     name="dateOfLpm"
                                                                     id="dateOfLpm"
-                                                                    max={today}
+                                                                    max={moment(new Date()).format("YYYY-MM-DD")}
                                                                     onChange={handleInputChange}
                                                                     value={objValues.dateOfLpm}
                                                                     style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
@@ -1002,9 +1002,7 @@ const UserRegistration = (props) => {
                                                                     style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
                                                                     disabled={disabledField}
                                                                 />
-                                                                {/* {errors.dateConfirmedHiv !=="" ? (
-                                            <span className={classes.error}>{errors.dateConfirmedHiv}</span>
-                                            ) : "" }  */}
+
                                                             </FormGroup>
                                                         </div>
                                                         <div className="form-group mb-3 col-md-6">
