@@ -362,31 +362,63 @@ const UserRegistration = (props) => {
       });
   };
   //Date of Birth and Age handle
-  const handleDobChange = (e) => {
-    let dob = e !== null ? e : e?.target?.value;
-    if (dob) {
-      const today = new Date();
-      const birthDate = new Date(dob);
-      let age_now = today.getFullYear() - birthDate.getFullYear();
-      const m = today.getMonth() - birthDate.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-        age_now--;
-      }
-      basicInfo.age = age_now;
+  // const handleDobChange = (e) => {
+  //   let dob = e !== null ? e : e?.target?.value;
+  //   if (dob) {
+  //     const today = new Date();
+  //     const birthDate = new Date(dob);
+  //     let age_now = today.getFullYear() - birthDate.getFullYear();
+  //     const m = today.getMonth() - birthDate.getMonth();
+  //     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+  //       age_now--;
+  //     }
+  //     basicInfo.age = age_now;
 
-      if (basicInfo?.enrolledInOvcProgram === "YES") {
-        setChecked(true);
-        setOvcEnrolled(true);
+  //     if (basicInfo?.enrolledInOvcProgram === "YES") {
+  //       setChecked(true);
+  //       setOvcEnrolled(true);
+  //     }
+  //     //setBasicInfo({...basicInfo, age: age_now});
+  //   } else {
+  //     setBasicInfo({ ...basicInfo, age: "" });
+  //   }
+  //   setBasicInfo({ ...basicInfo, dob: dob });
+  //   if (basicInfo.age !== "" && basicInfo.age >= 60) {
+  //     toggle();
+  //   }
+  // };
+
+  const handleDobChange = (e) => {
+    let dob = e?.target?.value || (typeof e === 'string' ? e : null);
+    // Check if dob is a valid date string
+    if (dob && !isNaN(Date.parse(dob))) {
+      setBasicInfo((prevInfo) => {
+        const today = new Date();
+        const birthDate = new Date(dob);
+        let age_now = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+          age_now--;
+        }
+        if (basicInfo?.enrolledInOvcProgram === "YES") {
+          setChecked(true);
+          setOvcEnrolled(true);
+        }
+        return {
+          ...prevInfo,
+          age: age_now,
+          dob: dob,
+        };
+      });
+
+      if (basicInfo.age !== "" && basicInfo.age >= 60) {
+        toggle();
       }
-      //setBasicInfo({...basicInfo, age: age_now});
     } else {
-      setBasicInfo({ ...basicInfo, age: "" });
-    }
-    setBasicInfo({ ...basicInfo, dob: dob });
-    if (basicInfo.age !== "" && basicInfo.age >= 60) {
-      toggle();
+      // console.error(`Invalid date format: ${dob}`);
     }
   };
+
   const handleDateOfBirthChange = (e) => {
     if (e.target.value === "Actual") {
       setAgeDisabled(true);
