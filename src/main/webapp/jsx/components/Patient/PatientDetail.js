@@ -15,7 +15,7 @@ import RecentHistory from "./../History/RecentHistory";
 import ClinicVisit from "../Consultation/Index";
 import Pharmacy from "./../Pharmacy/Index";
 import Laboratory from "./../Laboratory/index";
-import DashboardFilledTransferForm from "./DashboardFilledTransferForm";
+
 import EnhancedAdherenceCounseling from "../EnhancedAdherenceCounseling/Index";
 import CervicalCancer from "./../CervicalCancer/Index";
 import CervicalCancerUpdate from "./../CervicalCancer/ViewPage";
@@ -58,10 +58,7 @@ import UpdateViewViralLoadOrderResult from "./../Laboratory/ViralLoadOrderResult
 import OtzServiceForm from "./../Otz/ServiceForm";
 import OtzPeadiatricDisclosureChecklist from "./../Otz/PeadiatricDisclosureChecklist";
 import OtzRegister from "./../Otz/Register";
-import Tracking from "../ClientVerfication/ClientVerification";
-import ClientVerification from "../ClientVerfication/ClientVerification";
-import EnrollmentOtz from "../Otz/Enrollment";
-
+import ViewChronicCare from "../ChronicCare/viewChronicCare";
 const styles = (theme) => ({
   root: {
     width: "100%",
@@ -115,6 +112,7 @@ function PatientCard(props) {
   const [patientObj1, setPatientObj1] = useState(null);
   useEffect(() => {
     PatientCurrentObject();
+    //CheckBiometric();
   }, []);
 
   ///GET Patient
@@ -124,6 +122,7 @@ function PatientCard(props) {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
+        //console.log("patient obj 1" + JSON.stringify(response.data));
         setPatientObj1(response.data);
       })
       .catch((error) => {});
@@ -154,11 +153,10 @@ function PatientCard(props) {
           />
           <Sticky>
             <SubMenu
-              patientObj={patientObj}
-              setActiveContent={setActiveContent}
               expandedPatientObj={patientObj1}
+              patientObj={patientObj}
               art={art}
-              activeContent={activeContent}
+              setActiveContent={setActiveContent}
             />
           </Sticky>
           <br />
@@ -292,6 +290,7 @@ function PatientCard(props) {
               activeContent={activeContent}
             />
           )}
+
           {activeContent.route === "first-eac-history" && (
             <FirstEac
               patientObj={patientObj}
@@ -408,7 +407,7 @@ function PatientCard(props) {
             />
           )}
           {activeContent.route === "client-verfication-form" && (
-            <ClientVerification
+            <ClientVerficationForm
               patientObj={patientObj}
               setActiveContent={setActiveContent}
               activeContent={activeContent}
@@ -449,22 +448,7 @@ function PatientCard(props) {
             <OtzServiceForm
               patientObj={patientObj}
               setActiveContent={setActiveContent}
-              activeContent={{
-                ...activeContent,
-                patientId: patientObj?.id || patientObj1?.id,
-              }}
-              expandedPatientObj={patientObj1}
-              art={art}
-            />
-          )}
-          {activeContent.route === "otz-enrollment-form" && (
-            <EnrollmentOtz
-              patientObj={patientObj}
-              setActiveContent={setActiveContent}
-              activeContent={{
-                ...activeContent,
-                patientId: patientObj?.id || patientObj1?.id,
-              }}
+              activeContent={activeContent}
             />
           )}
           {activeContent.route === "otz-register" && (
@@ -474,15 +458,15 @@ function PatientCard(props) {
               activeContent={activeContent}
             />
           )}
-          {activeContent.route === "filled-transferForm" && (
-            <DashboardFilledTransferForm
+          {activeContent.route === "otz-peadiatric-disclosure-checklist" && (
+            <OtzPeadiatricDisclosureChecklist
               patientObj={patientObj}
               setActiveContent={setActiveContent}
               activeContent={activeContent}
             />
           )}
-          {activeContent.route === "otz-peadiatric-disclosure-checklist" && (
-            <OtzPeadiatricDisclosureChecklist
+          {activeContent.route === "Chronic-Care-view" && (
+            <ViewChronicCare
               patientObj={patientObj}
               setActiveContent={setActiveContent}
               activeContent={activeContent}

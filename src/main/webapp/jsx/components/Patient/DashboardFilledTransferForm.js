@@ -287,36 +287,64 @@ const DashboardFilledTransferForm = (props) => {
   // get all facilities
   const getAllFacilities = () => {
     axios
-      .get(`${baseUrl}organisation-unit-levels/v2/4/organisation-units`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        let updatedFaclilties = response.data.map((each, id) => {
-          return {
-            ...each,
-            value: each.id,
-            label: each.name,
-          };
+        .get(
+            `${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/5/hierarchy`,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
+        .then((response) => {
+            let updatedFacilities = response.data.map((each, id) => {
+                return {
+                    ...each,
+                    value: each.id,
+                    label: each.name,
+                };
+            });
+            setAllFacilities(updatedFacilities);
+        })
+        .catch((error) => {
+            // Handle error of Request A
+            toast.error("Request A failed. Trying Request B...")
+            // Attempt Request B
+            axios
+                .get(
+                    `${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/4/hierarchy`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                )
+                .then((response) => {
+                    let updatedFacilities = response.data.map((each, id) => {
+                        return {
+                            ...each,
+                            value: each.id,
+                            label: each.name,
+                        };
+                    });
+                    setAllFacilities(updatedFacilities);
+                })
+                .catch((error) => {
+                    // console.error("Both requests failed.");
+                });
         });
+};
 
-        setAllFacilities(updatedFaclilties);
-      })
-      .catch((error) => {});
-  };
-  const getAllSelectedFacility = () => {
-    let defaultFacilityValue = allFacilities.filter((each, id) => {
-      if (each.name == payload.facilityTransferTo) {
-        return each;
-        // {
-        //   ...each,
-        //   value: each.id,
-        //   label: each.name,
-        // };
-      }
-    });
 
-    setDefaultFacility(defaultFacilityValue[0]);
-  };
+  // const getAllSelectedFacility = () => {
+  //   let defaultFacilityValue = allFacilities.filter((each, id) => {
+  //     if (each.name == payload.facilityTransferTo) {
+  //       return each;
+  //       // {
+  //       //   ...each,
+  //       //   value: each.id,
+  //       //   label: each.name,
+  //       // };
+  //     }
+  //   });
+
+  //   setDefaultFacility(defaultFacilityValue[0]);
+  // };
   const calculateBMI = () => {
     let squareH = Number(transferInfo?.height) * Number(transferInfo?.height);
     let value = Number(transferInfo.weight) / squareH;
@@ -1024,7 +1052,7 @@ const DashboardFilledTransferForm = (props) => {
                       {labResult.slice(0,5).map((each, index) => {
                         return (
                           <tr>
-                            <td scope="row">{each.dateReported}</td>
+                            <td scope="row">{new Date(each.dateReported).toISOString().split('T')[0]}</td>
                             <td>{each.test}</td>
                             <td>{each.result}</td>
                             <td className="row">

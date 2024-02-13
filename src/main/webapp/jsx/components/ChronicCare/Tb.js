@@ -475,6 +475,7 @@ const TbScreening = (props) => {
                       id="tbTreatment"
                       onChange={handleInputChange}
                       value={props.tbObj.tbTreatment}
+                      disabled={props.action === "view" ? true : false}
                     >
                       <option value="">Select</option>
                       <option value="Yes">Yes</option>
@@ -501,6 +502,7 @@ const TbScreening = (props) => {
                             value={props.tbObj.tbTreatmentStartDate}
                             min={props.encounterDate}
                             max={moment(new Date()).format("YYYY-MM-DD")}
+                            disabled={props.action === "view" ? true : false}
                           ></Input>
                         </InputGroup>
                       </FormGroup>
@@ -518,6 +520,7 @@ const TbScreening = (props) => {
                             id="treatementType"
                             onChange={handleInputChange}
                             value={props.tbObj.treatementType}
+                            disabled={props.action === "view" ? true : false}
                           >
                             <option value="">Select</option>
                             {tbTreatmentType.map((value) => (
@@ -542,6 +545,7 @@ const TbScreening = (props) => {
                             id="treatmentOutcome"
                             onChange={handleInputChange}
                             value={props.tbObj.treatmentOutcome}
+                            disabled={props.action === "view" ? true : false}
                           >
                             <option value="">Select</option>
                             {tbTreatmentOutCome.map((value) => (
@@ -567,6 +571,7 @@ const TbScreening = (props) => {
                             onChange={handleInputChange}
                             value={props.tbObj.completionDate}
                             min={props.encounterDate}
+                            disabled={props.action === "view" ? true : false}
                             max={moment(new Date()).format("YYYY-MM-DD")}
                           ></Input>
                         </InputGroup>
@@ -590,6 +595,7 @@ const TbScreening = (props) => {
                             id="coughing"
                             onChange={handleInputChange}
                             value={props.tbObj.coughing}
+                            disabled={props.action === "view" ? true : false}
                           >
                             <option value="">Select</option>
                             <option value="Yes">Yes</option>
@@ -611,6 +617,7 @@ const TbScreening = (props) => {
                             id="fever"
                             onChange={handleInputChange}
                             value={props.tbObj.fever}
+                            disabled={props.action === "view" ? true : false}
                           >
                             <option value="">Select</option>
                             <option value="Yes">Yes</option>
@@ -632,6 +639,7 @@ const TbScreening = (props) => {
                             id="losingWeight"
                             onChange={handleInputChange}
                             value={props.tbObj.losingWeight}
+                            disabled={props.action === "view" ? true : false}
                           >
                             <option value="">Select</option>
                             <option value="Yes">Yes</option>
@@ -653,6 +661,7 @@ const TbScreening = (props) => {
                             id="nightSweats"
                             onChange={handleInputChange}
                             value={props.tbObj.nightSweats}
+                            disabled={props.action === "view" ? true : false}
                           >
                             <option value="">Select</option>
                             <option value="Yes">Yes</option>
@@ -676,6 +685,9 @@ const TbScreening = (props) => {
                                 id="poorWeightGain"
                                 onChange={handleInputChange}
                                 value={props.tbObj.poorWeightGain}
+                                disabled={
+                                  props.action === "view" ? true : false
+                                }
                               >
                                 <option value="">Select</option>
                                 <option value="Yes">Yes</option>
@@ -698,6 +710,9 @@ const TbScreening = (props) => {
                                 id="historyWithAdults"
                                 onChange={handleInputChange}
                                 value={props.tbObj.historyWithAdults}
+                                disabled={
+                                  props.action === "view" ? true : false
+                                }
                               >
                                 <option value="">Select</option>
                                 <option value="Yes">Yes</option>
@@ -723,6 +738,7 @@ const TbScreening = (props) => {
                             id="isTbTestConfirmed"
                             onChange={handleInputChange}
                             value={props.tbObj.isTbTestConfirmed}
+                            disabled={props.action === "view" ? true : false}
                           >
                             <option value="">Select</option>
                             <option value="Yes">Yes</option>
@@ -744,6 +760,7 @@ const TbScreening = (props) => {
                             id="currentlyOnTuberculosis"
                             onChange={handleInputChange}
                             value={props.tbObj.currentlyOnTuberculosis}
+                            disabled={props.action === "view" ? true : false}
                           >
                             <option value="">Select</option>
                             <option value="Yes">Yes</option>
@@ -771,6 +788,7 @@ const TbScreening = (props) => {
                             id="previouslyCompletedTPT"
                             onChange={handleInputChange}
                             value={props.tbObj.previouslyCompletedTPT}
+                            disabled={props.action === "view" ? true : false}
                           >
                             <option value="">Select</option>
                             <option value="Yes">Yes</option>
@@ -798,6 +816,7 @@ const TbScreening = (props) => {
                             id="activeTb"
                             value={props.tbObj.activeTb}
                             onChange={handleInputChangeContrain}
+                            disabled={props.action === "view" ? true : false}
                           />
                           <label
                             className="form-check-label"
@@ -816,6 +835,7 @@ const TbScreening = (props) => {
                             id="abnormalChest"
                             value={props.tbObj.abnormalChest}
                             onChange={handleInputChangeContrain}
+                            disabled={props.action === "view" ? true : false}
                           />
                           <label
                             className="form-check-label"
@@ -834,6 +854,7 @@ const TbScreening = (props) => {
                             id="poorTreatmentAdherence"
                             value={props.tbObj.poorTreatmentAdherence}
                             onChange={handleInputChangeContrain}
+                            disabled={props.action === "view" ? true : false}
                           />
                           <label
                             className="form-check-label"
@@ -852,6 +873,7 @@ const TbScreening = (props) => {
                             id="age1year"
                             value={props.tbObj.age1year}
                             onChange={handleInputChangeContrain}
+                            disabled={props.action === "view" ? true : false}
                           />
                           <label
                             className="form-check-label"
@@ -871,6 +893,7 @@ const TbScreening = (props) => {
                             id="activeHepatitis"
                             value={props.tbObj.activeHepatitis}
                             onChange={handleInputChangeContrain}
+                            disabled={props.action === "view" ? true : false}
                           />
                           <label
                             className="form-check-label"
@@ -889,6 +912,7 @@ const TbScreening = (props) => {
                             id="highAlcohol"
                             value={props.tbObj.highAlcohol}
                             onChange={handleInputChangeContrain}
+                            disabled={props.action === "view" ? true : false}
                           />
                           <label
                             className="form-check-label"
@@ -907,6 +931,7 @@ const TbScreening = (props) => {
                             id="priorInh"
                             value={props.tbObj.priorInh}
                             onChange={handleInputChangeContrain}
+                            disabled={props.action === "view" ? true : false}
                           />
                           <label
                             className="form-check-label"
@@ -941,6 +966,7 @@ const TbScreening = (props) => {
                           min={props.encounterDate}
                           max={moment(new Date()).format("YYYY-MM-DD")}
                           value={props.tbObj.dateTPTStart}
+                          disabled={props.action === "view" ? true : false}
                         ></Input>
                       </InputGroup>
                     </FormGroup>
@@ -955,6 +981,7 @@ const TbScreening = (props) => {
                           id="weightAtStartTPT"
                           onChange={handleInputChange}
                           value={props.tbObj.weightAtStartTPT}
+                          disabled={props.action === "view" ? true : false}
                         ></Input>
                       </InputGroup>
                     </FormGroup>
@@ -969,6 +996,7 @@ const TbScreening = (props) => {
                           id="inhDailyDose"
                           onChange={handleInputChange}
                           value={props.tbObj.inhDailyDose}
+                          disabled={props.action === "view" ? true : false}
                         ></Input>
                       </InputGroup>
                     </FormGroup>
