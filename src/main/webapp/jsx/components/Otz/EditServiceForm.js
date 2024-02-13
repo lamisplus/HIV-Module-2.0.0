@@ -143,7 +143,7 @@ const EditServiceForm = (props) => {
       formik?.setFieldTouched(fieldName, true);
     });
     const errorObj = await formik.validateForm();
-   
+
     const isValid = Object.keys(errorObj).length === 0;
     if (isValid) {
       updateOldRecord(formik.values);
@@ -190,9 +190,7 @@ const EditServiceForm = (props) => {
         formik.setValues(otzData?.data);
         setCurrentRecord(otzData);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
 
   useEffect(() => {
@@ -228,7 +226,7 @@ const EditServiceForm = (props) => {
   };
 
   const isViewActionType = props?.activeContent?.actionType === "view";
-  
+
   return (
     <>
       <ToastContainer autoClose={3000} hideProgressBar />
@@ -366,9 +364,6 @@ const EditServiceForm = (props) => {
                                         "YYYY-MM-DD"
                                       ),
                                     }}
-                                    disabled={
-                                      !formik?.values?.dateEnrolledIntoOtz
-                                    }
                                     name="acMonth1EacDate1"
                                     id="acMonth1EacDate1"
                                     value={formik?.values?.acMonth1EacDate1}
@@ -419,9 +414,6 @@ const EditServiceForm = (props) => {
                                           "YYYY-MM-DD"
                                         ),
                                       }}
-                                      disabled={
-                                        !formik?.values?.dateEnrolledIntoOtz
-                                      }
                                       name="acMonth1EacDate2"
                                       id="acMonth1EacDate2"
                                       value={formik.values.acMonth1EacDate2}
@@ -468,9 +460,6 @@ const EditServiceForm = (props) => {
                                           "YYYY-MM-DD"
                                         ),
                                       }}
-                                      disabled={
-                                        !formik?.values?.dateEnrolledIntoOtz
-                                      }
                                       className="form-control"
                                       name="acMonth1EacDate3"
                                       id="acMonth1EacDate3"
@@ -526,9 +515,6 @@ const EditServiceForm = (props) => {
                                             "YYYY-MM-DD"
                                           ),
                                         }}
-                                        disabled={
-                                          !formik?.values?.dateEnrolledIntoOtz
-                                        }
                                         name="dateViralLoadAssesmentMonth1"
                                         id="dateViralLoadAssesmentMonth1"
                                         value={
@@ -730,10 +716,6 @@ const EditServiceForm = (props) => {
                                           "YYYY-MM-DD"
                                         ),
                                       }}
-                                    //   disabled={
-                                    //     !props?.activeContent?.enrollment
-                                    //       ?.dateOfRegistration
-                                    //   }
                                       name="maMonth1PositiveLivingDate"
                                       id="maMonth1PositiveLivingDate"
                                       value={
@@ -842,10 +824,7 @@ const EditServiceForm = (props) => {
                                           "YYYY-MM-DD"
                                         ),
                                       }}
-                                    //   disabled={
-                                    //     !props?.activeContent?.enrollment
-                                    //       ?.dateOfRegistration
-                                    //   }
+                                     
                                       name="maMonth1LiteracyTreatmentDate"
                                       id="maMonth1LiteracyTreatmentDate"
                                       value={
@@ -957,10 +936,7 @@ const EditServiceForm = (props) => {
                                           "YYYY-MM-DD"
                                         ),
                                       }}
-                                    //   disabled={
-                                    //     !props?.activeContent?.enrollment
-                                    //       ?.dateOfRegistration
-                                    //   }
+                                     
                                       name="maMonth1AdolescentsParticipationDate"
                                       id="maMonth1AdolescentsParticipationDate"
                                       value={
@@ -1072,10 +1048,7 @@ const EditServiceForm = (props) => {
                                           "YYYY-MM-DD"
                                         ),
                                       }}
-                                    //   disabled={
-                                    //     !props?.activeContent?.enrollment
-                                    //       ?.dateOfRegistration
-                                    //   }
+                                   
                                       name="maMonth1leadershipTrainingDate"
                                       id="maMonth1leadershipTrainingDate"
                                       value={
@@ -1181,10 +1154,7 @@ const EditServiceForm = (props) => {
                                           "YYYY-MM-DD"
                                         ),
                                       }}
-                                    //   disabled={
-                                    //     !props?.activeContent?.enrollment
-                                    //       ?.dateOfRegistration
-                                    //   }
+                                     
                                       name="maMonth1PeerToPeerDate"
                                       id="maMonth1PeerToPeerDate"
                                       value={
@@ -1284,10 +1254,7 @@ const EditServiceForm = (props) => {
                                           "YYYY-MM-DD"
                                         ),
                                       }}
-                                    //   disabled={
-                                    //     !props?.activeContent?.enrollment
-                                    //       ?.dateOfRegistration
-                                    //   }
+                                      
                                       name="maMonth1RoleOfOtzDate"
                                       id="maMonth1RoleOfOtzDate"
                                       value={
@@ -1394,10 +1361,7 @@ const EditServiceForm = (props) => {
                                           "YYYY-MM-DD"
                                         ),
                                       }}
-                                    //   disabled={
-                                    //     !props?.activeContent?.enrollment
-                                    //       ?.dateOfRegistration
-                                    //   }
+                                      
                                       name="maMonth1OtzChampionOrientationDate"
                                       id="maMonth1OtzChampionOrientationDate"
                                       value={
@@ -1434,6 +1398,7 @@ const EditServiceForm = (props) => {
                       </div>
                     </div>
 
+                    {!isViewActionType && (
                     <div className="d-flex justify-content-end">
                       <MatButton
                         type="button"
@@ -1461,6 +1426,8 @@ const EditServiceForm = (props) => {
                         )}
                       </MatButton>
                     </div>
+)}
+
                   </div>
 
                   {formik?.values?.acMonth1EacDate1 &&
@@ -1580,10 +1547,7 @@ const EditServiceForm = (props) => {
                                                 "YYYY-MM-DD"
                                               ),
                                             }}
-                                            disabled={
-                                              !formik?.values
-                                                ?.dateEnrolledIntoOtz
-                                            }
+                                            
                                             name="acMonth2EacDate1"
                                             id="acMonth2EacDate1"
                                             value={
@@ -1636,10 +1600,7 @@ const EditServiceForm = (props) => {
                                                   "YYYY-MM-DD"
                                                 ),
                                               }}
-                                              disabled={
-                                                !formik?.values
-                                                  ?.dateEnrolledIntoOtz
-                                              }
+                                             
                                               name="acMonth2EacDate2"
                                               id="acMonth2EacDate2"
                                               value={
@@ -1693,10 +1654,7 @@ const EditServiceForm = (props) => {
                                                   "YYYY-MM-DD"
                                                 ),
                                               }}
-                                              disabled={
-                                                !formik?.values
-                                                  ?.dateEnrolledIntoOtz
-                                              }
+                                             
                                               className="form-control"
                                               name="acMonth2EacDate3"
                                               id="acMonth2EacDate3"
@@ -1754,10 +1712,7 @@ const EditServiceForm = (props) => {
                                                     new Date()
                                                   ).format("YYYY-MM-DD"),
                                                 }}
-                                                disabled={
-                                                  !formik?.values
-                                                    ?.dateEnrolledIntoOtz
-                                                }
+                                               
                                                 name="dateViralLoadAssesmentMonth2"
                                                 id="dateViralLoadAssesmentMonth2"
                                                 value={
@@ -1994,11 +1949,7 @@ const EditServiceForm = (props) => {
                                                   "YYYY-MM-DD"
                                                 ),
                                               }}
-                                              disabled={
-                                                !props?.activeContent
-                                                  ?.enrollment
-                                                  ?.dateOfRegistration
-                                              }
+                                             
                                               name="maMonth2PositiveLivingDate"
                                               id="maMonth2PositiveLivingDate"
                                               value={
@@ -2111,11 +2062,7 @@ const EditServiceForm = (props) => {
                                                   "YYYY-MM-DD"
                                                 ),
                                               }}
-                                              disabled={
-                                                !props?.activeContent
-                                                  ?.enrollment
-                                                  ?.dateOfRegistration
-                                              }
+                                              
                                               name="maMonth2LiteracyTreatmentDate"
                                               id="maMonth2LiteracyTreatmentDate"
                                               value={
@@ -2228,11 +2175,7 @@ const EditServiceForm = (props) => {
                                                   "YYYY-MM-DD"
                                                 ),
                                               }}
-                                              disabled={
-                                                !props?.activeContent
-                                                  ?.enrollment
-                                                  ?.dateOfRegistration
-                                              }
+                                             
                                               name="maMonth2AdolescentsParticipationDate"
                                               id="maMonth2AdolescentsParticipationDate"
                                               value={
@@ -2345,11 +2288,7 @@ const EditServiceForm = (props) => {
                                                   "YYYY-MM-DD"
                                                 ),
                                               }}
-                                              disabled={
-                                                !props?.activeContent
-                                                  ?.enrollment
-                                                  ?.dateOfRegistration
-                                              }
+                                             
                                               name="maMonth2leadershipTrainingDate"
                                               id="maMonth2leadershipTrainingDate"
                                               value={
@@ -2461,11 +2400,7 @@ const EditServiceForm = (props) => {
                                                   "YYYY-MM-DD"
                                                 ),
                                               }}
-                                              disabled={
-                                                !props?.activeContent
-                                                  ?.enrollment
-                                                  ?.dateOfRegistration
-                                              }
+                                             
                                               name="maMonth2PeerToPeerDate"
                                               id="maMonth2PeerToPeerDate"
                                               value={
@@ -2576,11 +2511,7 @@ const EditServiceForm = (props) => {
                                                   "YYYY-MM-DD"
                                                 ),
                                               }}
-                                              disabled={
-                                                !props?.activeContent
-                                                  ?.enrollment
-                                                  ?.dateOfRegistration
-                                              }
+                                             
                                               name="maMonth2RoleOfOtzDate"
                                               id="maMonth2RoleOfOtzDate"
                                               value={
@@ -2692,11 +2623,7 @@ const EditServiceForm = (props) => {
                                                   "YYYY-MM-DD"
                                                 ),
                                               }}
-                                              disabled={
-                                                !props?.activeContent
-                                                  ?.enrollment
-                                                  ?.dateOfRegistration
-                                              }
+                                             
                                               name="maMonth2OtzChampionOrientationDate"
                                               id="maMonth2OtzChampionOrientationDate"
                                               value={
@@ -2733,7 +2660,7 @@ const EditServiceForm = (props) => {
                               </div>
                             </div>
                           )}
-
+                        {!isViewActionType && (
                         <div className="d-flex justify-content-end">
                           <MatButton
                             type="button"
@@ -2761,6 +2688,7 @@ const EditServiceForm = (props) => {
                             )}
                           </MatButton>
                         </div>
+                        )}
                       </div>
                     )}
 
@@ -2882,10 +2810,7 @@ const EditServiceForm = (props) => {
                                                 "YYYY-MM-DD"
                                               ),
                                             }}
-                                            disabled={
-                                              !formik?.values
-                                                ?.dateEnrolledIntoOtz
-                                            }
+                                            
                                             name="acMonth3EacDate1"
                                             id="acMonth3EacDate1"
                                             value={
@@ -2939,10 +2864,7 @@ const EditServiceForm = (props) => {
                                                   "YYYY-MM-DD"
                                                 ),
                                               }}
-                                              disabled={
-                                                !formik?.values
-                                                  ?.dateEnrolledIntoOtz
-                                              }
+                                              
                                               name="acMonth3EacDate2"
                                               id="acMonth3EacDate2"
                                               value={
@@ -2996,10 +2918,7 @@ const EditServiceForm = (props) => {
                                                   "YYYY-MM-DD"
                                                 ),
                                               }}
-                                              disabled={
-                                                !formik?.values
-                                                  ?.dateEnrolledIntoOtz
-                                              }
+                                            
                                               className="form-control"
                                               name="acMonth3EacDate3"
                                               id="acMonth3EacDate3"
@@ -3057,10 +2976,7 @@ const EditServiceForm = (props) => {
                                                     new Date()
                                                   ).format("YYYY-MM-DD"),
                                                 }}
-                                                disabled={
-                                                  !formik?.values
-                                                    ?.dateEnrolledIntoOtz
-                                                }
+                                              
                                                 name="dateViralLoadAssesmentMonth3"
                                                 id="dateViralLoadAssesmentMonth3"
                                                 value={
@@ -3295,11 +3211,7 @@ const EditServiceForm = (props) => {
                                                   "YYYY-MM-DD"
                                                 ),
                                               }}
-                                              disabled={
-                                                !props?.activeContent
-                                                  ?.enrollment
-                                                  ?.dateOfRegistration
-                                              }
+                                             
                                               name="maMonth3PositiveLivingDate"
                                               id="maMonth3PositiveLivingDate"
                                               value={
@@ -3412,11 +3324,7 @@ const EditServiceForm = (props) => {
                                                   "YYYY-MM-DD"
                                                 ),
                                               }}
-                                              disabled={
-                                                !props?.activeContent
-                                                  ?.enrollment
-                                                  ?.dateOfRegistration
-                                              }
+                                             
                                               name="maMonth3LiteracyTreatmentDate"
                                               id="maMonth3LiteracyTreatmentDate"
                                               value={
@@ -3529,11 +3437,7 @@ const EditServiceForm = (props) => {
                                                   "YYYY-MM-DD"
                                                 ),
                                               }}
-                                              disabled={
-                                                !props?.activeContent
-                                                  ?.enrollment
-                                                  ?.dateOfRegistration
-                                              }
+                                             
                                               name="maMonth3AdolescentsParticipationDate"
                                               id="maMonth3AdolescentsParticipationDate"
                                               value={
@@ -3646,11 +3550,7 @@ const EditServiceForm = (props) => {
                                                   "YYYY-MM-DD"
                                                 ),
                                               }}
-                                              disabled={
-                                                !props?.activeContent
-                                                  ?.enrollment
-                                                  ?.dateOfRegistration
-                                              }
+                                             
                                               name="maMonth3leadershipTrainingDate"
                                               id="maMonth3leadershipTrainingDate"
                                               value={
@@ -3761,11 +3661,7 @@ const EditServiceForm = (props) => {
                                                   "YYYY-MM-DD"
                                                 ),
                                               }}
-                                              disabled={
-                                                !props?.activeContent
-                                                  ?.enrollment
-                                                  ?.dateOfRegistration
-                                              }
+                                             
                                               name="maMonth3PeerToPeerDate"
                                               id="maMonth3PeerToPeerDate"
                                               value={
@@ -3875,11 +3771,7 @@ const EditServiceForm = (props) => {
                                                   "YYYY-MM-DD"
                                                 ),
                                               }}
-                                              disabled={
-                                                !props?.activeContent
-                                                  ?.enrollment
-                                                  ?.dateOfRegistration
-                                              }
+                                             
                                               name="maMonth3RoleOfOtzDate"
                                               id="maMonth3RoleOfOtzDate"
                                               value={
@@ -3991,11 +3883,7 @@ const EditServiceForm = (props) => {
                                                   "YYYY-MM-DD"
                                                 ),
                                               }}
-                                              disabled={
-                                                !props?.activeContent
-                                                  ?.enrollment
-                                                  ?.dateOfRegistration
-                                              }
+                                             
                                               name="maMonth3OtzChampionOrientationDate"
                                               id="maMonth3OtzChampionOrientationDate"
                                               value={
@@ -4032,7 +3920,7 @@ const EditServiceForm = (props) => {
                               </div>
                             </div>
                           )}
-
+                        {!isViewActionType && (
                         <div className="d-flex justify-content-end">
                           <MatButton
                             type="button"
@@ -4060,6 +3948,7 @@ const EditServiceForm = (props) => {
                             )}
                           </MatButton>
                         </div>
+                      )}
                       </div>
                     )}
                 </div>
@@ -4219,10 +4108,7 @@ const EditServiceForm = (props) => {
                                           "YYYY-MM-DD"
                                         ),
                                       }}
-                                    //   disabled={
-                                    //     !props?.activeContent?.enrollment
-                                    //       ?.dateOfRegistration
-                                    //   }
+                                     
                                       name="maMonth1PositiveLivingDate"
                                       id="maMonth1PositiveLivingDate"
                                       value={
@@ -4331,10 +4217,7 @@ const EditServiceForm = (props) => {
                                           "YYYY-MM-DD"
                                         ),
                                       }}
-                                    //   disabled={
-                                    //     !props?.activeContent?.enrollment
-                                    //       ?.dateOfRegistration
-                                    //   }
+                                     
                                       name="maMonth1LiteracyTreatmentDate"
                                       id="maMonth1LiteracyTreatmentDate"
                                       value={
@@ -4446,10 +4329,7 @@ const EditServiceForm = (props) => {
                                           "YYYY-MM-DD"
                                         ),
                                       }}
-                                    //   disabled={
-                                    //     !props?.activeContent?.enrollment
-                                    //       ?.dateOfRegistration
-                                    //   }
+                                    
                                       name="maMonth1AdolescentsParticipationDate"
                                       id="maMonth1AdolescentsParticipationDate"
                                       value={
@@ -4560,10 +4440,7 @@ const EditServiceForm = (props) => {
                                           "YYYY-MM-DD"
                                         ),
                                       }}
-                                    //   disabled={
-                                    //     !props?.activeContent?.enrollment
-                                    //       ?.dateOfRegistration
-                                    //   }
+                                     
                                       name="maMonth1leadershipTrainingDate"
                                       id="maMonth1leadershipTrainingDate"
                                       value={
@@ -4668,10 +4545,7 @@ const EditServiceForm = (props) => {
                                           "YYYY-MM-DD"
                                         ),
                                       }}
-                                    //   disabled={
-                                    //     !props?.activeContent?.enrollment
-                                    //       ?.dateOfRegistration
-                                    //   }
+                                      
                                       name="maMonth1PeerToPeerDate"
                                       id="maMonth1PeerToPeerDate"
                                       value={
@@ -4771,10 +4645,7 @@ const EditServiceForm = (props) => {
                                           "YYYY-MM-DD"
                                         ),
                                       }}
-                                    //   disabled={
-                                    //     !props?.activeContent?.enrollment
-                                    //       ?.dateOfRegistration
-                                    //   }
+                                    
                                       name="maMonth1RoleOfOtzDate"
                                       id="maMonth1RoleOfOtzDate"
                                       value={
@@ -4881,10 +4752,7 @@ const EditServiceForm = (props) => {
                                           "YYYY-MM-DD"
                                         ),
                                       }}
-                                    //   disabled={
-                                    //     !props?.activeContent?.enrollment
-                                    //       ?.dateOfRegistration
-                                    //   }
+                                      
                                       name="maMonth1OtzChampionOrientationDate"
                                       id="maMonth1OtzChampionOrientationDate"
                                       value={
@@ -5065,10 +4933,7 @@ const EditServiceForm = (props) => {
                                             "YYYY-MM-DD"
                                           ),
                                         }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
+                                      
                                         name="maMonth2PositiveLivingDate"
                                         id="maMonth2PositiveLivingDate"
                                         value={
@@ -5180,10 +5045,7 @@ const EditServiceForm = (props) => {
                                             "YYYY-MM-DD"
                                           ),
                                         }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
+                                       
                                         name="maMonth2LiteracyTreatmentDate"
                                         id="maMonth2LiteracyTreatmentDate"
                                         value={
@@ -5296,10 +5158,7 @@ const EditServiceForm = (props) => {
                                             "YYYY-MM-DD"
                                           ),
                                         }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
+                                       
                                         name="maMonth2AdolescentsParticipationDate"
                                         id="maMonth2AdolescentsParticipationDate"
                                         value={
@@ -5412,10 +5271,7 @@ const EditServiceForm = (props) => {
                                             "YYYY-MM-DD"
                                           ),
                                         }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
+                                       
                                         name="maMonth2leadershipTrainingDate"
                                         id="maMonth2leadershipTrainingDate"
                                         value={
@@ -5522,10 +5378,7 @@ const EditServiceForm = (props) => {
                                             "YYYY-MM-DD"
                                           ),
                                         }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
+                                       
                                         name="maMonth2PeerToPeerDate"
                                         id="maMonth2PeerToPeerDate"
                                         value={
@@ -5626,10 +5479,7 @@ const EditServiceForm = (props) => {
                                             "YYYY-MM-DD"
                                           ),
                                         }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
+                                      
                                         name="maMonth2RoleOfOtzDate"
                                         id="maMonth2RoleOfOtzDate"
                                         value={
@@ -5736,10 +5586,7 @@ const EditServiceForm = (props) => {
                                             "YYYY-MM-DD"
                                           ),
                                         }}
-                                        disabled={
-                                          !props?.activeContent?.enrollment
-                                            ?.dateOfRegistration
-                                        }
+                                     
                                         name="maMonth2OtzChampionOrientationDate"
                                         id="maMonth2OtzChampionOrientationDate"
                                         value={
@@ -5921,10 +5768,7 @@ const EditServiceForm = (props) => {
                                               "YYYY-MM-DD"
                                             ),
                                           }}
-                                          disabled={
-                                            !props?.activeContent?.enrollment
-                                              ?.dateOfRegistration
-                                          }
+                                         
                                           name="maMonth3PositiveLivingDate"
                                           id="maMonth3PositiveLivingDate"
                                           value={
@@ -6036,10 +5880,7 @@ const EditServiceForm = (props) => {
                                               "YYYY-MM-DD"
                                             ),
                                           }}
-                                          disabled={
-                                            !props?.activeContent?.enrollment
-                                              ?.dateOfRegistration
-                                          }
+                                        
                                           name="maMonth3LiteracyTreatmentDate"
                                           id="maMonth3LiteracyTreatmentDate"
                                           value={
@@ -6152,10 +5993,7 @@ const EditServiceForm = (props) => {
                                               "YYYY-MM-DD"
                                             ),
                                           }}
-                                          disabled={
-                                            !props?.activeContent?.enrollment
-                                              ?.dateOfRegistration
-                                          }
+                                        
                                           name="maMonth3AdolescentsParticipationDate"
                                           id="maMonth3AdolescentsParticipationDate"
                                           value={
@@ -6268,10 +6106,7 @@ const EditServiceForm = (props) => {
                                               "YYYY-MM-DD"
                                             ),
                                           }}
-                                          disabled={
-                                            !props?.activeContent?.enrollment
-                                              ?.dateOfRegistration
-                                          }
+                                        
                                           name="maMonth3leadershipTrainingDate"
                                           id="maMonth3leadershipTrainingDate"
                                           value={
@@ -6379,10 +6214,7 @@ const EditServiceForm = (props) => {
                                               "YYYY-MM-DD"
                                             ),
                                           }}
-                                          disabled={
-                                            !props?.activeContent?.enrollment
-                                              ?.dateOfRegistration
-                                          }
+                                         
                                           name="maMonth3PeerToPeerDate"
                                           id="maMonth3PeerToPeerDate"
                                           value={
@@ -6490,10 +6322,7 @@ const EditServiceForm = (props) => {
                                               "YYYY-MM-DD"
                                             ),
                                           }}
-                                          disabled={
-                                            !props?.activeContent?.enrollment
-                                              ?.dateOfRegistration
-                                          }
+                                         
                                           name="maMonth3RoleOfOtzDate"
                                           id="maMonth3RoleOfOtzDate"
                                           value={
@@ -6604,10 +6433,7 @@ const EditServiceForm = (props) => {
                                               "YYYY-MM-DD"
                                             ),
                                           }}
-                                          disabled={
-                                            !props?.activeContent?.enrollment
-                                              ?.dateOfRegistration
-                                          }
+                                        
                                           name="maMonth3OtzChampionOrientationDate"
                                           id="maMonth3OtzChampionOrientationDate"
                                           value={
@@ -6781,10 +6607,7 @@ const EditServiceForm = (props) => {
                                         "YYYY-MM-DD"
                                       ),
                                     }}
-                                    disabled={
-                                      !props?.activeContent?.enrollment
-                                        ?.dateOfRegistration
-                                    }
+                                  
                                     name="sixMonthsDate"
                                     id="sixMonthsDate"
                                     value={formik.values.sixMonthsDate}
@@ -6924,10 +6747,7 @@ const EditServiceForm = (props) => {
                                         "YYYY-MM-DD"
                                       ),
                                     }}
-                                    disabled={
-                                      !props?.activeContent?.enrollment
-                                        ?.dateOfRegistration
-                                    }
+                                   
                                     name="twelveMonthsDate"
                                     id="twelveMonthsDate"
                                     value={formik.values.twelveMonthsDate}
@@ -7068,10 +6888,7 @@ const EditServiceForm = (props) => {
                                         "YYYY-MM-DD"
                                       ),
                                     }}
-                                    disabled={
-                                      !props?.activeContent?.enrollment
-                                        ?.dateOfRegistration
-                                    }
+                                  
                                     name="eighteenMonthsDate"
                                     id="eighteenMonthsDate"
                                     value={formik.values.eighteenMonthsDate}
@@ -7213,10 +7030,7 @@ const EditServiceForm = (props) => {
                                         "YYYY-MM-DD"
                                       ),
                                     }}
-                                    disabled={
-                                      !props?.activeContent?.enrollment
-                                        ?.dateOfRegistration
-                                    }
+                                    
                                     name="twentyFourMonthsDate"
                                     id="twentyFourMonthsDate"
                                     value={formik.values.twentyFourMonthsDate}
@@ -7356,10 +7170,7 @@ const EditServiceForm = (props) => {
                                         "YYYY-MM-DD"
                                       ),
                                     }}
-                                    disabled={
-                                      !props?.activeContent?.enrollment
-                                        ?.dateOfRegistration
-                                    }
+                                  
                                     name="thirtyMonthsDate"
                                     id="thirtyMonthsDate"
                                     value={formik.values.thirtyMonthsDate}
@@ -7500,10 +7311,7 @@ const EditServiceForm = (props) => {
                                         "YYYY-MM-DD"
                                       ),
                                     }}
-                                    disabled={
-                                      !props?.activeContent?.enrollment
-                                        ?.dateOfRegistration
-                                    }
+                                
                                     name="thirtySixMonthsDate"
                                     id="thirtySixMonthsDate"
                                     value={formik.values.thirtySixMonthsDate}
@@ -7759,10 +7567,7 @@ const EditServiceForm = (props) => {
                               {...{
                                 max: moment(new Date()).format("YYYY-MM-DD"),
                               }}
-                              disabled={
-                                !props?.activeContent?.enrollment
-                                  ?.dateOfRegistration
-                              }
+                           
                               name="exitedByDate"
                               id="exitedByDate"
                               value={formik.values.exitedByDate}
@@ -7844,10 +7649,7 @@ const EditServiceForm = (props) => {
                               {...{
                                 max: moment(new Date()).format("YYYY-MM-DD"),
                               }}
-                              disabled={
-                                !props?.activeContent?.enrollment
-                                  ?.dateOfRegistration
-                              }
+                            
                               name="dateOfAssessmentDone"
                               id="dateOfAssessmentDone"
                               value={formik.values.dateOfAssessmentDone}
@@ -7892,10 +7694,7 @@ const EditServiceForm = (props) => {
                             {...{
                               max: moment(new Date()).format("YYYY-MM-DD"),
                             }}
-                            disabled={
-                              !props?.activeContent?.enrollment
-                                ?.dateOfRegistration
-                            }
+                           
                             name="transitionDate"
                             id="transitionDate"
                             value={formik.values.transitionDate}
