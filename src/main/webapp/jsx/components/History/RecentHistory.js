@@ -69,7 +69,6 @@ const RecentHistory = (props) => {
       })
       .catch((error) => {
         setLoadingRecent(false);
-     
       });
   };
   //Get list of LaboratoryHistory
@@ -80,14 +79,12 @@ const RecentHistory = (props) => {
         { headers: { Authorization: `Bearer ${token}` } }
       )
       .then((response) => {
-        
         setLoadingLab(false);
-        
+
         setViralLoad(response.data);
       })
       .catch((error) => {
         setLoadingLab(false);
-       
       });
   };
   //GET LIST Drug Refill
@@ -99,7 +96,6 @@ const RecentHistory = (props) => {
         { headers: { Authorization: `Bearer ${token}` } }
       )
       .then((response) => {
-       
         setLoading(false);
         setLoadingPharmacy(false);
         setRefillList(response.data);
@@ -152,8 +148,8 @@ const RecentHistory = (props) => {
       return "CE";
     } else if (name === "Clinic visit follow up") {
       return "CV";
-    }else if (name === "ART Transfer Out") {
-        return "AT";
+    } else if (name === "ART Transfer Out") {
+      return "AT";
     } else if (name === "ART Commencement") {
       return "AC";
     } else if (name === "Service OTZ") {
@@ -163,7 +159,6 @@ const RecentHistory = (props) => {
     }
   };
   const regimenName = (regimenObj) => {
-  
     let regimenArr = [];
     regimenObj &&
       regimenObj.forEach(function (value, index, array) {
@@ -303,7 +298,7 @@ const RecentHistory = (props) => {
     } else if (row.path === "Chronic-Care") {
       props.setActiveContent({
         ...props.activeContent,
-        route: "chronic-care",
+        route: "Chronic-Care-view",
         id: row.id,
         activeTab: "home",
         actionType: action,
@@ -316,11 +311,10 @@ const RecentHistory = (props) => {
         activeTab: "home",
         actionType: action,
       });
-    } 
-     else {
+    } else {
     }
   };
-
+  // ViewChronicCare
   const LoadDeletePage = (row) => {
     if (row.path === "Mental-health") {
       setSaving(true);
@@ -551,9 +545,8 @@ const RecentHistory = (props) => {
           }
         });
     } else if (row.path === "Client-Verification") {
-      
       setSaving(true);
-    
+
       axios
         .delete(`${baseUrl}observation/${row.id}`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -654,7 +647,7 @@ const RecentHistory = (props) => {
             toast.error("Something went wrong. Please try again...");
           }
         });
-    }else if (row.path === "ART-Transfer-Out") {
+    } else if (row.path === "ART-Transfer-Out") {
       setSaving(true);
       //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
       axios
@@ -680,8 +673,7 @@ const RecentHistory = (props) => {
             toast.error("Something went wrong. Please try again...");
           }
         });
-    } 
-    else {
+    } else {
     }
   };
   const redirectLink = () => {
@@ -748,125 +740,122 @@ const RecentHistory = (props) => {
                                 <ul className="timeline">
                                   {data.activities &&
                                     data.activities.map((activity, index) => (
-                                      <>
-                                        <li>
-                                          <div className="timeline-panel">
-                                            <div
-                                              className={
-                                                index % 2 == 0
-                                                  ? "media me-2 media-info"
-                                                  : "media me-2 media-success"
-                                              }
-                                            >
-                                              {ActivityName(activity.name)}
-                                            </div>
-                                            <div className="media-body">
-                                              <h5 className="mb-1">
-                                                {activity.name ===
-                                                "Chronic Care"
-                                                  ? "Care and Support"
-                                                  : activity.name}
-                                              </h5>
-                                              <small className="d-block">
-                                                {activity.date}
-                                              </small>
-                                            </div>
-                                            {!notToBeUpdated.includes(
-                                              activity.path
-                                            ) ? (
-                                              <Dropdown className="dropdown">
-                                                <Dropdown.Toggle
-                                                  variant=" light"
-                                                  className="i-false p-0 btn-info sharp"
-                                                >
-                                                  <svg
-                                                    width="18px"
-                                                    height="18px"
-                                                    viewBox="0 0 24 24"
-                                                    version="1.1"
-                                                  >
-                                                    <g
-                                                      stroke="none"
-                                                      strokeWidth="1"
-                                                      fill="none"
-                                                      fillRule="evenodd"
-                                                    >
-                                                      <rect
-                                                        x="0"
-                                                        y="0"
-                                                        width="24"
-                                                        height="24"
-                                                      />
-                                                      <circle
-                                                        fill="#000000"
-                                                        cx="5"
-                                                        cy="12"
-                                                        r="2"
-                                                      />
-                                                      <circle
-                                                        fill="#000000"
-                                                        cx="12"
-                                                        cy="12"
-                                                        r="2"
-                                                      />
-                                                      <circle
-                                                        fill="#000000"
-                                                        cx="19"
-                                                        cy="12"
-                                                        r="2"
-                                                      />
-                                                    </g>
-                                                  </svg>
-                                                </Dropdown.Toggle>
-                                                <Dropdown.Menu className="dropdown-menu">
-                                                  {activity.viewable && (
-                                                    <Dropdown.Item
-                                                      className="dropdown-item"
-                                                      onClick={() =>
-                                                        LoadViewPage(
-                                                          activity,
-                                                          "view"
-                                                        )
-                                                      }
-                                                    >
-                                                      View
-                                                    </Dropdown.Item>
-                                                  )}
-                                                  {activity.viewable && (
-                                                    <Dropdown.Item
-                                                      className="dropdown-item"
-                                                      onClick={() =>
-                                                        LoadViewPage(
-                                                          activity,
-                                                          "update"
-                                                        )
-                                                      }
-                                                    >
-                                                      Update
-                                                    </Dropdown.Item>
-                                                  )}
-                                                  {activity.deletable && (
-                                                    <Dropdown.Item
-                                                      className="dropdown-item"
-                                                      to="/widget-basic"
-                                                      onClick={() =>
-                                                        LoadModal(
-                                                          activity,
-                                                          "delete"
-                                                        )
-                                                      }
-                                                    >
-                                                      Delete
-                                                    </Dropdown.Item>
-                                                  )}
-                                                </Dropdown.Menu>
-                                              </Dropdown>
-                                            ) : (
-                                              ""
-                                            )}
+                                      <li key={index}>
+                                        <div className="timeline-panel">
+                                          <div
+                                            className={
+                                              index % 2 == 0
+                                                ? "media me-2 media-info"
+                                                : "media me-2 media-success"
+                                            }
+                                          >
+                                            {ActivityName(activity.name)}
                                           </div>
-                                        </li>
-                                      </>
+                                          <div className="media-body">
+                                            <h5 className="mb-1">
+                                              {activity.name === "Chronic Care"
+                                                ? "Care and Support"
+                                                : activity.name}
+                                            </h5>
+                                            <small className="d-block">
+                                              {activity.date}
+                                            </small>
+                                          </div>
+                                          {!notToBeUpdated.includes(
+                                            activity.path
+                                          ) ? (
+                                            <Dropdown className="dropdown">
+                                              <Dropdown.Toggle
+                                                variant=" light"
+                                                className="i-false p-0 btn-info sharp"
+                                              >
+                                                <svg
+                                                  width="18px"
+                                                  height="18px"
+                                                  viewBox="0 0 24 24"
+                                                  version="1.1"
+                                                >
+                                                  <g
+                                                    stroke="none"
+                                                    strokeWidth="1"
+                                                    fill="none"
+                                                    fillRule="evenodd"
+                                                  >
+                                                    <rect
+                                                      x="0"
+                                                      y="0"
+                                                      width="24"
+                                                      height="24"
+                                                    />
+                                                    <circle
+                                                      fill="#000000"
+                                                      cx="5"
+                                                      cy="12"
+                                                      r="2"
+                                                    />
+                                                    <circle
+                                                      fill="#000000"
+                                                      cx="12"
+                                                      cy="12"
+                                                      r="2"
+                                                    />
+                                                    <circle
+                                                      fill="#000000"
+                                                      cx="19"
+                                                      cy="12"
+                                                      r="2"
+                                                    />
+                                                  </g>
+                                                </svg>
+                                              </Dropdown.Toggle>
+                                              <Dropdown.Menu className="dropdown-menu">
+                                                {activity.viewable && (
+                                                  <Dropdown.Item
+                                                    className="dropdown-item"
+                                                    onClick={() =>
+                                                      LoadViewPage(
+                                                        activity,
+                                                        "view"
+                                                      )
+                                                    }
+                                                  >
+                                                    View
+                                                  </Dropdown.Item>
+                                                )}
+                                                {activity.viewable && (
+                                                  <Dropdown.Item
+                                                    className="dropdown-item"
+                                                    onClick={() =>
+                                                      LoadViewPage(
+                                                        activity,
+                                                        "update"
+                                                      )
+                                                    }
+                                                  >
+                                                    Update
+                                                  </Dropdown.Item>
+                                                )}
+                                                {activity.deletable && (
+                                                  <Dropdown.Item
+                                                    className="dropdown-item"
+                                                    to="/widget-basic"
+                                                    onClick={() =>
+                                                      LoadModal(
+                                                        activity,
+                                                        "delete"
+                                                      )
+                                                    }
+                                                  >
+                                                    Delete
+                                                  </Dropdown.Item>
+                                                )}
+                                              </Dropdown.Menu>
+                                            </Dropdown>
+                                          ) : (
+                                            ""
+                                          )}
+                                        </div>
+                                      </li>
                                     ))}
                                 </ul>
                               </div>

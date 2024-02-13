@@ -114,8 +114,7 @@ const Eligibility = (props) => {
       .then((response) => {
         setClientType(response.data);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   const ART_STATUS = () => {
     axios
@@ -125,8 +124,7 @@ const Eligibility = (props) => {
       .then((response) => {
         setArtStatus(response.data);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   const PREGNANCY_STATUS = () => {
     axios
@@ -136,8 +134,7 @@ const Eligibility = (props) => {
       .then((response) => {
         setPregnancyStatus(response.data);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
   const WHO_STAGING_CRITERIA = () => {
     axios
@@ -147,10 +144,9 @@ const Eligibility = (props) => {
       .then((response) => {
         setWho(response.data);
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
- 
+
   const patientAge = calculate_age_to_number(props.patientObj.dateOfBirth);
 
   return (
@@ -172,6 +168,7 @@ const Eligibility = (props) => {
                       id="typeOfClient"
                       onChange={handleEligibility}
                       value={props.eligibility.typeOfClient}
+                      disabled={props.action === "view" ? true : false}
                     >
                       <option value="">Select</option>
                       {clientType.map((value) => (
@@ -193,6 +190,7 @@ const Eligibility = (props) => {
                         name="pregnantStatus"
                         id="pregnantStatus"
                         onChange={handleEligibility}
+                        disabled={props.action === "view" ? true : false}
                         value={props.eligibility.pregnantStatus}
                       >
                         <option value="">Select</option>
@@ -214,6 +212,7 @@ const Eligibility = (props) => {
                       type="select"
                       name="artStatus"
                       id="artStatus"
+                      disabled={props.action === "view" ? true : false}
                       onChange={handleEligibility}
                       value={props.eligibility.artStatus}
                     >
@@ -234,6 +233,7 @@ const Eligibility = (props) => {
                     <Input
                       type="select"
                       name="whoStaging"
+                      disabled={props.action === "view" ? true : false}
                       id="whoStaging"
                       onChange={handleEligibility}
                       value={props.eligibility.whoStaging}
@@ -258,6 +258,7 @@ const Eligibility = (props) => {
                       id="lastCd4Result"
                       value={props.eligibility.lastCd4Result}
                       onChange={handleEligibility}
+                      disabled={props.action === "view" ? true : false}
                     />
                   </InputGroup>
                 </FormGroup>
@@ -274,6 +275,7 @@ const Eligibility = (props) => {
                       min={props.encounterDate}
                       max={moment(new Date()).format("YYYY-MM-DD")}
                       onChange={handleEligibility}
+                      disabled={props.action === "view" ? true : false}
                     />
                   </InputGroup>
                 </FormGroup>
@@ -289,6 +291,7 @@ const Eligibility = (props) => {
                       id="lastViralLoadResult"
                       value={props.eligibility.lastViralLoadResult}
                       onChange={handleEligibility}
+                      disabled={props.action === "view" ? true : false}
                     />
                   </InputGroup>
                 </FormGroup>
@@ -305,6 +308,7 @@ const Eligibility = (props) => {
                       min={props.encounterDate}
                       max={moment(new Date()).format("YYYY-MM-DD")}
                       onChange={handleEligibility}
+                      disabled={props.action === "view" ? true : false}
                     />
                   </InputGroup>
                 </FormGroup>
@@ -319,6 +323,7 @@ const Eligibility = (props) => {
                       id="eligibleForViralLoad"
                       onChange={handleEligibility}
                       value={props.eligibility.eligibleForViralLoad}
+                      disabled={props.action === "view" ? true : false}
                     >
                       <option value="">Select</option>
                       <option value="Yes">Yes</option>
