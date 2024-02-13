@@ -18,7 +18,7 @@ public interface TransferPatientInfo {
     String getCurrentWhoClinical();
     Integer getCurrentCD4Count();
     Integer getBaselineCD4();
-    Integer getViralLoad();
+    Double getViralLoad();
     String getCurrentRegimenLine();
     String getFirstLineArtRegimen();
     Long getHivStatusId();
