@@ -120,6 +120,7 @@ const RecentHistory = (props) => {
         setLoading(false);
       });
   };
+
   const labStatus = (status) => {
     const orderStatus = parseInt(status);
     if (orderStatus === 0) {
@@ -139,6 +140,7 @@ const RecentHistory = (props) => {
       //return "timeline-badge info"
     }
   };
+
   const ActivityName = (name) => {
     if (name === "HIV Enrollment") {
       return "HE";
@@ -154,10 +156,13 @@ const RecentHistory = (props) => {
       return "AC";
     } else if (name === "Service OTZ") {
       return "SO";
+    } else if (name === "Paediatric OTZ") {
+      return "PO";
     } else {
       return "RA";
     }
   };
+
   const regimenName = (regimenObj) => {
     let regimenArr = [];
     regimenObj &&
@@ -166,6 +171,7 @@ const RecentHistory = (props) => {
       });
     return regimenArr.toString();
   };
+
   const LoadViewPage = (row, action) => {
     if (row.path === "Mental-health") {
       props.setActiveContent({
@@ -192,6 +198,14 @@ const RecentHistory = (props) => {
       props.setActiveContent({
         ...props.activeContent,
         route: "adult-clinic-eveluation-view",
+        id: row.id,
+        actionType: action,
+      });
+    } else if (row.path === "eac1") {
+    } else if (row.path === "Paediatric-OTZ") {
+      props.setActiveContent({
+        ...props.activeContent,
+        route: "otz-peadiatric-disclosure-checklist",
         id: row.id,
         actionType: action,
       });
@@ -673,6 +687,33 @@ const RecentHistory = (props) => {
             toast.error("Something went wrong. Please try again...");
           }
         });
+
+    } else if (row.path === "Paediatric-OTZ") {
+      setSaving(true);
+      axios
+        .delete(`${baseUrl}observation/${row.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          toast.success("Paediatric OTZ record deleted successfully");
+          RecentActivities();
+          toggle();
+          setSaving(false);
+        })
+        .catch((error) => {
+          setSaving(false);
+          if (error.response && error.response.data) {
+            let errorMessage =
+              error.response.data.apierror &&
+              error.response.data.apierror.message !== ""
+                ? error.response.data.apierror.message
+                : "Something went wrong, please try again";
+            toast.error(errorMessage);
+          } else {
+            toast.error("Something went wrong. Please try again...");
+          }
+        });
+
     } else {
     }
   };

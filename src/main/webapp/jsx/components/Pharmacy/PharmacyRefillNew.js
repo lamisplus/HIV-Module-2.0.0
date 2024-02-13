@@ -114,6 +114,7 @@ const Pharmacy = (props) => {
   const [lastChronicCare, setLastChronicCare] = useState(null);
   //const [currentRegimenValue, setCurrentRegimenValue] = useState("");//this is to get the current regimen value/ID the patient is on
   //IPT_TYPE
+  const [getAllPharmacyByPatientIdReponse, setGetAllPharmacyByPatientIdReponse] = useState([]);
   const [objValues, setObjValues] = useState({
     adherence: "",
     adrScreened: "",
@@ -191,7 +192,7 @@ const Pharmacy = (props) => {
             : ""
         );
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
   //
   const ChronicCare = () => {
@@ -205,7 +206,7 @@ const Pharmacy = (props) => {
         setLastChronicCare(obj1);
         //const lastobj;
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
   const GetIptEligibilty = () => {
     axios
@@ -215,8 +216,30 @@ const Pharmacy = (props) => {
       .then((response) => {
         setIptEligibilty(response.data);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
+
+  // get all pharamcy by patient Id
+  const getAllPharmacyByPatientId = () => {
+    axios
+      .get(
+          `${baseUrl}hiv/art/pharmacy/patient?pageNo=0&pageSize=100&personId=${props.patientObj.id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .then((response) => {
+        const patientRegimenList = response.data;
+        // console.log("patientRegimenList : ", response.data)
+        setGetAllPharmacyByPatientIdReponse(patientRegimenList)
+
+      })
+      .catch((error) => { });
+  };
+
+  useEffect(()=>{
+    getAllPharmacyByPatientId();
+  },[props.patientObj])
+
+
   //Get the patient current regimen
   const PatientCurrentRegimen = () => {
     axios
@@ -236,7 +259,7 @@ const Pharmacy = (props) => {
         setShowRegimen(true);
         //regimenDrug
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
   const patientAge = calculate_age_to_number(patientObj.dateOfBirth); //Age calculation
   //GET ChildRegimenLine
@@ -254,7 +277,7 @@ const Pharmacy = (props) => {
         );
         setChildrenTB(response.data.filter((x) => x.id === 11));
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
   //GET Other Drugd
   const OtherDrugs = () => {
@@ -270,7 +293,7 @@ const Pharmacy = (props) => {
           }))
         );
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
   const IPT_TYPE = () => {
     axios
@@ -280,7 +303,7 @@ const Pharmacy = (props) => {
       .then((response) => {
         setIPT_TYPE(response.data);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
   //IPT_TYPE
   //GET AdultRegimenLine
@@ -303,7 +326,7 @@ const Pharmacy = (props) => {
         setTbRegimenLine(tbRegimen);
         setOIRegimenLine(oIRegimen);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   //Check for the last Vital Signs
@@ -322,7 +345,7 @@ const Pharmacy = (props) => {
           setShowCurrentVitalSigns(true);
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
   //Get EAC Status
   const CheckEACStatus = () => {
@@ -333,7 +356,7 @@ const Pharmacy = (props) => {
       .then((response) => {
         setEacStatusObj(response.data);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
   //Get list of RegimenLine
   const RegimenLine = () => {
@@ -344,7 +367,7 @@ const Pharmacy = (props) => {
       .then((response) => {
         setRegimen(response.data);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
   //Get list of PrepSideEffect
   const PrepSideEffect = () => {
@@ -360,7 +383,7 @@ const Pharmacy = (props) => {
           }))
         );
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
   //Get list of DSD Model Type
   function DsdModelType(dsdmodel) {
@@ -373,7 +396,7 @@ const Pharmacy = (props) => {
       .then((response) => {
         setDsdModelType(response.data);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }
   function RegimenType(id) {
     async function getCharacters() {
@@ -389,7 +412,7 @@ const Pharmacy = (props) => {
             }))
           );
         }
-      } catch (e) {}
+      } catch (e) { }
     }
     getCharacters();
   }
@@ -407,7 +430,7 @@ const Pharmacy = (props) => {
             }))
           );
         }
-      } catch (e) {}
+      } catch (e) { }
     }
     getCharacters();
   }
@@ -425,7 +448,7 @@ const Pharmacy = (props) => {
             }))
           );
         }
-      } catch (e) {}
+      } catch (e) { }
     }
     getCharacters();
   }
@@ -460,7 +483,7 @@ const Pharmacy = (props) => {
           ];
           setRegimenDrug(drugObj);
         }
-      } catch (e) {}
+      } catch (e) { }
     }
     getCharacters(drugId);
   }
@@ -496,7 +519,7 @@ const Pharmacy = (props) => {
             ];
             setRegimenDrug(drugObj);
           }
-        } catch (e) {}
+        } catch (e) { }
       }
       getCharacters(drugId);
     } else {
@@ -532,7 +555,7 @@ const Pharmacy = (props) => {
           ];
           setRegimenDrug(drugObj);
         }
-      } catch (e) {}
+      } catch (e) { }
     }
     getCharacters(drugId);
   }
@@ -550,7 +573,7 @@ const Pharmacy = (props) => {
             }))
           );
         }
-      } catch (e) {}
+      } catch (e) { }
     }
     getCharacters();
   }
@@ -583,17 +606,45 @@ const Pharmacy = (props) => {
           ];
           setRegimenDrug(drugObj);
         }
-      } catch (e) {}
+      } catch (e) { }
     }
     getCharacters(drugId);
   }
+
+  // const handleInputChange = (e) => {
+  //   if (e.target.name === "dsdModel" && e.target.value !== "") {
+  //     DsdModelType(e.target.value);
+  //     setObjValues({ ...objValues, [e.target.name]: e.target.value });
+  //   }
+  //   setObjValues({ ...objValues, [e.target.name]: e.target.value });
+  // };
+
   const handleInputChange = (e) => {
-    if (e.target.name === "dsdModel" && e.target.value !== "") {
-      DsdModelType(e.target.value);
-      setObjValues({ ...objValues, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === "dsdModel" && value !== "") {
+      DsdModelType(value);
+      setObjValues({ ...objValues, [name]: value });
     }
-    setObjValues({ ...objValues, [e.target.name]: e.target.value });
+    // Check if the input field being changed is the encounter date field
+    if (name === "visitDate") {
+      // Check if the entered encounter date already exists in the list of visit dates
+      const encounterDateExists = getAllPharmacyByPatientIdReponse.some(
+        (visit) => visit.visitDate === value
+      );
+
+      if (encounterDateExists) {
+        temp[name] = "The refill date selected is taken";
+      } else {
+        // If the encounter date does not exist, clear the error message
+        delete temp[name];
+      }
+    }
+    // Update the state with the new input value and errors
+    setErrors({ ...temp });
+    setObjValues({ ...objValues, [name]: value });
   };
+
+
   const handleSelectedRegimen = (e) => {
     const regimenId = e.target.value;
     setObjValues({ ...objValues, [e.target.name]: e.target.value });
@@ -914,7 +965,7 @@ const Pharmacy = (props) => {
           if (error.response && error.response.data) {
             let errorMessage =
               error.response.data.apierror &&
-              error.response.data.apierror.message !== ""
+                error.response.data.apierror.message !== ""
                 ? error.response.data.apierror.message
                 : "Something went wrong, please try again";
 
@@ -930,10 +981,10 @@ const Pharmacy = (props) => {
             ) {
               toast.error(
                 error.response.data.apierror.message +
-                  " : " +
-                  error.response.data.apierror.subErrors[0].field +
-                  " " +
-                  error.response.data.apierror.subErrors[0].message,
+                " : " +
+                error.response.data.apierror.subErrors[0].field +
+                " " +
+                error.response.data.apierror.subErrors[0].message,
                 { position: toast.POSITION.BOTTOM_CENTER }
               );
             } else {
@@ -1154,6 +1205,11 @@ const Pharmacy = (props) => {
                         }}
                         required
                       />
+                      {errors.visitDate && (
+                        <div className="text-danger" style={{ fontSize: "12px" }}>
+                          {errors.visitDate}
+                        </div>
+                      )}
                     </FormGroup>
                   </div>
                   {/* <div className="mt-4 col-md-2" > 
@@ -1581,7 +1637,7 @@ const Pharmacy = (props) => {
                                     onChange={(event) =>
                                       handleFormChange(index, event)
                                     }
-                                    //disabled
+                                  //disabled
                                   ></Input>
                                 </FormGroup>
                               </div>
@@ -1914,7 +1970,7 @@ const Pharmacy = (props) => {
                                     onChange={(event) =>
                                       handleFormChange(index, event)
                                     }
-                                    //disabled
+                                  //disabled
                                   ></Input>
                                 </FormGroup>
                               </div>
@@ -2191,7 +2247,7 @@ const Pharmacy = (props) => {
                                     onChange={(event) =>
                                       handleFormChange(index, event)
                                     }
-                                    //disabled
+                                  //disabled
                                   ></Input>
                                 </FormGroup>
                               </div>
@@ -2455,7 +2511,7 @@ const Pharmacy = (props) => {
                                     onChange={(event) =>
                                       handleFormChange(index, event)
                                     }
-                                    //disabled
+                                  //disabled
                                   ></Input>
                                 </FormGroup>
                               </div>

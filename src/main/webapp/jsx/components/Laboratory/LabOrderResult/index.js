@@ -12,7 +12,7 @@ const divStyle = {
 };
 
 const LaboratoryModule = (props) => {
-    const [key, setKey] = useState('home');
+    const [key, setKey] = useState('labOrder');
     const [orderList, setOrderList] = useState([])
     const patientObj = props.patientObj
     useEffect ( () => {
@@ -52,7 +52,7 @@ const LaboratoryModule = (props) => {
                   {/* <Tab eventKey="checked-in" title="Checked In Patients">                   
                     <CheckedInPatients />
                   </Tab> */}
-                  <Tab eventKey="home" title="LAB ORDER & RESULT">                   
+                  <Tab eventKey="labOrder" title="LAB ORDER & RESULT">                   
                     <LabOrderResult patientObj={patientObj} setActiveContent={props.setActiveContent} LabOrders={LabOrders}/>
                   </Tab>
                   
