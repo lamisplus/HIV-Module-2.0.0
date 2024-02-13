@@ -306,27 +306,75 @@ const Tracking = (props) => {
     };
 
     // get all facilities
+    // const getAllFacilities = () => {
+    //     axios
+    //         .get(
+    //             `${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/5/hierarchy`,
+    //             {
+    //                 headers: { Authorization: `Bearer ${token}` },
+    //             }
+    //         )
+    //         .then((response) => {
+    //             console.log(response.data)
+    //             let updatedFaclilties = response.data.map((each, id) => {
+    //                 return {
+    //                     ...each,
+    //                     value: each.id,
+    //                     label: each.name,
+    //                 };
+    //             });
+    //             // console.log("updated facilities", updatedFaclilties)
+    //             setAllFacilities(updatedFaclilties);
+    //         })
+    //         .catch((error) => { });
+        
+    // };
+
     const getAllFacilities = () => {
         axios
             .get(
-                `${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/4/hierarchy`,
+                `${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/5/hierarchy`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
             )
             .then((response) => {
-                let updatedFaclilties = response.data.map((each, id) => {
+                let updatedFacilities = response.data.map((each, id) => {
                     return {
                         ...each,
                         value: each.id,
                         label: each.name,
                     };
                 });
-                // console.log("updated facilities", updatedFaclilties)
-                setAllFacilities(updatedFaclilties);
+                setAllFacilities(updatedFacilities);
             })
-            .catch((error) => { });
+            .catch((error) => {
+                toast.error("Request A failed. Trying Request B...")
+                // Attempt Request B
+                axios
+                    .get(
+                        `${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/4/hierarchy`,
+                        {
+                            headers: { Authorization: `Bearer ${token}` },
+                        }
+                    )
+                    .then((response) => {
+                        let updatedFacilities = response.data.map((each, id) => {
+                            return {
+                                ...each,
+                                value: each.id,
+                                label: each.name,
+                            };
+                        });
+                        setAllFacilities(updatedFacilities);
+                    })
+                    .catch((error) => {
+                        // console.error("Both requests failed.");
+                    });
+            });
     };
+    
+    
 
     const calculateBMI = () => {
         let result = Number(transferInfo?.weight) * Number(transferInfo?.height) * Number(transferInfo?.height);
@@ -431,6 +479,7 @@ const Tracking = (props) => {
             toast.error("Please fill the required fields");
         }
     };
+
     /* Remove ADR  function **/
     const removeAttempt = (index) => {
         attemptList.splice(index, 1);
@@ -1127,7 +1176,7 @@ const Tracking = (props) => {
                                             {labResult.slice(0, 5).map((each, index) => {
                                                 return (
                                                     <tr>
-                                                        <td scope="row">{each.dateReported}</td>
+                                                        <td scope="row">{new Date(each.dateReported).toISOString().split('T')[0]}</td>
                                                         <td>{each.test}</td>
                                                         <td>{each.result}</td>
                                                         <td className="row">
