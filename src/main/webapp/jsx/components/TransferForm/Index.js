@@ -99,18 +99,18 @@ const Tracking = (props) => {
     const [currentCD4, setCurrentCD4] = useState("");
     const [BMI, setBMI] = useState("");
     const [facId, setFacId] = useState(localStorage.getItem("facId"))
+    const [attemptList, setAttemptList] = useState([]);
+    const [selectedState, setSelectedState] = useState("");
+    const [selectedLga, setSelectedLga] = useState("");
+    const [reasonForTransfer, setReasonForTransfer] = useState([
+        "Relocating",
+        "Closeness to new facility",
+        "Self Transfer",
+        "Stigma",
+        "PMTCT",
+    ]);
 
     const [currentMedication, setCurrentMedication] = useState([]);
-
-    const [observation, setObservation] = useState({
-        data: {},
-        dateOfObservation: "yyyy-MM-dd",
-        facilityId: null,
-        personId: 0,
-        type: "Tracking form",
-        visitId: null,
-    });
-
     const [payload, setPayload] = useState({
         height: "",
         weight: "",
@@ -137,7 +137,7 @@ const Tracking = (props) => {
         bmi: "",
         pregnancyStatus: "",
         currentMedication: [],
-        labResult: "",
+        labResult: [],
         reasonForTransfer: "",
         nameOfTreatmentSupporter: "",
         contactAddressOfTreatmentSupporter: "",
@@ -155,10 +155,77 @@ const Tracking = (props) => {
         patientCameWithTransferForm: "",
         patientAttendedHerFirstVisit: "",
         acknowlegdeReceiveDate: "",
-        
+
     });
 
+    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
+    // const [states1, setStates1] = useState([])
+    // const [lgas1, setLGAs1] = useState([])
+    // const [facilities1, setFacilities1] = useState([])
+ 
+    // const loadStates1 = () => {
+    //     axios.get(`${baseUrl}organisation-units/parent-organisation-units/1`, {
+    //         headers: {
+    //             Authorization: `Bearer ${token}`
+    //         }
+    //     })
+    //     .then((response) => {
+    //         if (response.data) {
+    //             setStates1(response.data);
+    //         }
+    //     })
+    //     .catch((e) => {
+    //         console.log("Fetch states error" + e);
+    //     });
+    // };
+    
+    // const loadLGA1 = (stateId) => {
+    //     axios.get(`${baseUrl}organisation-units/parent-organisation-units/${stateId}`, {
+    //         headers: {
+    //             Authorization: `Bearer ${token}`
+    //         }
+    //     })
+    //     .then((response) => {
+    //         if (response.data) {
+    //             setLGAs1(response.data);
+    //             const selectedLga = response.data.find(lga => lga.id === stateId);
+    //             setPayload(prevPayload => ({ ...prevPayload, lgaTransferTo: selectedLga ? selectedLga.name : "" }));
+    //         }
+    //     })
+    //     .catch((e) => {
+    //         console.log("Fetch LGA error" + e);
+    //     });
+    // };
+    
+    // const loadFacilities1 = (lgaId) => {
+    //     axios.get(`${baseUrl}organisation-units/parent-organisation-units/${lgaId}`, {
+    //         headers: {
+    //             Authorization: `Bearer ${token}`
+    //         }
+    //     })
+    //     .then((response) => {
+    //         if (response.data) {
+    //             setFacilities1(response.data);
+    //             const selectedFacility = response.data.find(facility => facility.id === lgaId);
+    //             setPayload(prevPayload => ({ ...prevPayload, facilityTransferTo: selectedFacility ? selectedFacility.name : "" }));
+    //         }
+    //     })
+    //     .catch((e) => {
+    //         console.log("Fetch Facilities error" + e);
+    //     });
+    // };
+
+    // useEffect(() => {
+    //     console.log("State Transfer To:", payload.stateTransferTo);
+    //     console.log("LGA Transfer To:", payload.lgaTransferTo);
+    //     console.log("Facility Transfer To:", payload.facilityTransferTo);
+    // }, [payload.facilityTransferTo, payload.stateTransferTo, payload.lgaTransferTo]);
+
+//  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
 
     const checkNumberLimit = (e) => {
         const limit = 11;
@@ -172,11 +239,6 @@ const Tracking = (props) => {
         setPayload({ ...payload, [inputName]: NumberValue });
     };
 
- 
-
-    
-
- 
     const getTreatmentInfo = () => {
         // let facId = localStorage.getItem("faciltyId");
 
@@ -185,10 +247,10 @@ const Tracking = (props) => {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
-                
+
                 setTransferInfo(response.data);
             })
-            .catch((error) => {});
+            .catch((error) => { });
     };
 
     // get current Medication dose
@@ -200,9 +262,9 @@ const Tracking = (props) => {
             .then((response) => {
                 setCurrentMedication(response.data);
             })
-            .catch((error) => {});
+            .catch((error) => { });
     };
-//
+    //
     // get Lab Result
     const getLabResult = () => {
         axios
@@ -215,7 +277,7 @@ const Tracking = (props) => {
             .then((response) => {
                 setLabResult(response.data);
             })
-            .catch((error) => {});
+            .catch((error) => { });
     };
 
     const postTransferForm = (load) => {
@@ -244,43 +306,86 @@ const Tracking = (props) => {
     };
 
     // get all facilities
+    // const getAllFacilities = () => {
+    //     axios
+    //         .get(
+    //             `${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/5/hierarchy`,
+    //             {
+    //                 headers: { Authorization: `Bearer ${token}` },
+    //             }
+    //         )
+    //         .then((response) => {
+    //             console.log(response.data)
+    //             let updatedFaclilties = response.data.map((each, id) => {
+    //                 return {
+    //                     ...each,
+    //                     value: each.id,
+    //                     label: each.name,
+    //                 };
+    //             });
+    //             // console.log("updated facilities", updatedFaclilties)
+    //             setAllFacilities(updatedFaclilties);
+    //         })
+    //         .catch((error) => { });
+        
+    // };
+
     const getAllFacilities = () => {
         axios
             .get(
-                `${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/4/hierarchy`,
+                `${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/5/hierarchy`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
             )
             .then((response) => {
-                // 
-
-                let updatedFaclilties = response.data.map((each, id) => {
+                let updatedFacilities = response.data.map((each, id) => {
                     return {
                         ...each,
                         value: each.id,
                         label: each.name,
                     };
                 });
-
-                setAllFacilities(updatedFaclilties);
+                setAllFacilities(updatedFacilities);
             })
-            .catch((error) => {});
+            .catch((error) => {
+                toast.error("Request A failed. Trying Request B...")
+                // Attempt Request B
+                axios
+                    .get(
+                        `${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/4/hierarchy`,
+                        {
+                            headers: { Authorization: `Bearer ${token}` },
+                        }
+                    )
+                    .then((response) => {
+                        let updatedFacilities = response.data.map((each, id) => {
+                            return {
+                                ...each,
+                                value: each.id,
+                                label: each.name,
+                            };
+                        });
+                        setAllFacilities(updatedFacilities);
+                    })
+                    .catch((error) => {
+                        // console.error("Both requests failed.");
+                    });
+            });
     };
+    
+    
 
     const calculateBMI = () => {
-        // let squareH = Number(transferInfo?.height) * Number(transferInfo?.height);
-        // let value = Number(transferInfo.weight) / squareH;
-        // setBMI(value);
-        let result = Number(transferInfo?.weight) * Number(transferInfo?.height) * Number(transferInfo?.height) ;
+        let result = Number(transferInfo?.weight) * Number(transferInfo?.height) * Number(transferInfo?.height);
         let value = result / 10000
         setBMI(value)
-    
+
     };
     // when component mounts
 
     useEffect(() => {
-        // fetchFacilityId();
+        // loadStates1();
         getAllFacilities();
         getTreatmentInfo();
         getLabResult();
@@ -318,19 +423,10 @@ const Tracking = (props) => {
         reasonForDefaulting: "",
         reasonForDefaultingOthers: "",
     });
-    const [attemptList, setAttemptList] = useState([]);
-    const [selectedState, setSelectedState] = useState("");
-    const [selectedLga, setSelectedLga] = useState("");
-    const [reasonForTransfer, setReasonForTransfer] = useState([
-        "Relocating",
-        "Closeness to new facility",
-        "Self Transfer",
-        "Stigma",
-        "PMTCT",
-    ]);
+    
 
     const handleInputChangeAttempt = (e) => {
-        
+
         setErrors({ ...temp, [e.target.name]: "" });
         setAttempt({ ...attempt, [e.target.name]: e.target.value });
     };
@@ -344,28 +440,6 @@ const Tracking = (props) => {
             ? ""
             : "This field is required";
         temp.modeOfHIVTest = payload.modeOfHIVTest ? "" : "This field is required";
-        // end of new error validaqtion
-        // temp.durationOnART = objValues.durationOnART
-        //   ? ""
-        //   : "This field is required";
-        // temp.dsdStatus = objValues.dsdStatus ? "" : "This field is required";
-        // {
-        //   objValues.dsdStatus === "Devolved" &&
-        //     (temp.dsdModel = objValues.dsdModel ? "" : "This field is required");
-        // }
-        // temp.reasonForTracking = objValues.reasonForTracking
-        //   ? ""
-        //   : "This field is required";
-        // temp.dateLastAppointment = objValues.dateLastAppointment
-        //   ? ""
-        //   : "This field is required";
-        // temp.dateMissedAppointment = objValues.dateMissedAppointment
-        //   ? ""
-        //   : "This field is required";
-
-        // temp.careInFacilityDiscountinued = objValues.careInFacilityDiscountinued
-        //   ? ""
-        //   : "This field is required";
 
         setErrors({
             ...temp,
@@ -405,6 +479,7 @@ const Tracking = (props) => {
             toast.error("Please fill the required fields");
         }
     };
+
     /* Remove ADR  function **/
     const removeAttempt = (index) => {
         attemptList.splice(index, 1);
@@ -440,7 +515,6 @@ const Tracking = (props) => {
                                 <div className="form-group mb-3 col-md-4">
                                     <FormGroup>
                                         <Label for="">Facility Name From</Label>
-
                                         <Input
                                             type="text"
                                             name="facilityName"
@@ -478,7 +552,86 @@ const Tracking = (props) => {
                                     </FormGroup>
                                 </div>
                             </div>
-                            <div className="row">
+                            {/* <div className="row">
+                                <div className="form-group mb-3 col-md-4">
+                                    <FormGroup>
+                                        <Label for="" style={{ color: '#014d88', fontWeight: 'bolder' }}>State1</Label>
+                                        <Input
+                                            type="select"
+                                            // name="parentOrganisationUnitLevelId"
+                                            // id="parentOrganisationUnitLevelId"
+                                            name="stateTransferTo"
+                                            style={{ height: "40px", border: 'solid 1px #014d88', borderRadius: '5px', fontWeight: 'bolder', appearance: 'auto' }}
+                                            required
+                                            // onChange={loadLGA1}
+                                            onChange={(e) => {
+                                                setPayload(prevPayload => ({ ...prevPayload, stateTransferTo: e.target.value }));
+                                                loadLGA1(e.target.value);
+                                            }}
+                                        
+                                        >
+                                            <option>Select State</option>
+                                            {states1.map((state) => (
+                                                <option key={state.id} value={state.id}>
+                                                    {state.name}
+                                                </option>
+                                            ))}
+                                        </Input>
+                                    </FormGroup>
+                                </div>
+                                <div className="form-group mb-3 col-md-4">
+                                    <FormGroup>
+                                        <Label for="" style={{ color: '#014d88', fontWeight: 'bolder' }}>LGA</Label>
+                                        <Input
+                                            type="select"
+                                            // name="p"
+                                            // id="parentOrganisationUnitLevelId"
+                                            name="lgaTransferTo"
+                                            style={{ height: "40px", border: 'solid 1px #014d88', borderRadius: '5px', fontWeight: 'bolder', appearance: 'auto' }}
+                                            required
+                                            // onChange={loadFacilities1}
+                                            onChange={(e) => {
+                                                setPayload(prevPayload => ({ ...prevPayload, lgaTransferTo: e.target.value }));
+                                                loadFacilities1(e.target.value);
+                                            }}
+                                          
+                                        >
+                                            <option>Select LGA</option>
+                                            {lgas1.map((lga) => (
+                                                <option key={lga.id} value={lga.id}>
+                                                    {lga.name}
+                                                </option>
+                                            ))}
+                                        </Input>
+                                    </FormGroup>
+                                </div>
+                                <div className="form-group mb-3 col-md-4">
+                                    <FormGroup>
+                                        <Label for="" style={{ color: '#014d88', fontWeight: 'bolder' }}>Facility</Label>
+                                        <Input
+                                            type="select"
+                                            // name="parentOrganisationUnitLevelId"
+                                            // id="parentOrganisationUnitLevelId"
+                                            name="facilityTransferTo"
+                                            style={{ height: "40px", border: 'solid 1px #014d88', borderRadius: '5px', fontWeight: 'bolder', appearance: 'auto' }}
+                                            required
+                                            onChange={(e) => {
+                                                const selectedFacilityId = e.target.value;
+                                                const selectedFacility = facilities1.find(facility => facility.id === selectedFacilityId);
+                                                setPayload({...payload, facilityTransferTo: selectedFacility ? selectedFacility.name : ""});
+                                            }}
+                                        >
+                                            <option>Select Facility</option>
+                                            {facilities1.map((facility) => (
+                                                <option key={facility.id} value={facility.id}>
+                                                    {facility.name}
+                                                </option>
+                                            ))}
+                                        </Input>
+                                    </FormGroup>
+                                </div>
+                            </div> */}
+                         <div className="row">
                                 <div className="form-group mb-3 col-md-4">
                                     <FormGroup>
                                         <Label for="testGroup">
@@ -503,8 +656,8 @@ const Tracking = (props) => {
                                         />
                                         {errors.facilityTransferTo !== "" ? (
                                             <span className={classes.error}>
-                        {errors.facilityTransferTo}
-                      </span>
+                                                {errors.facilityTransferTo}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
@@ -522,11 +675,11 @@ const Tracking = (props) => {
                                             // onChange={handleInputChange}
                                             value={selectedState}
                                         ></Input>
-                                        {/* {errors.dsdStatus !== "" ? (
+                                         {/* {errors.dsdStatus !== "" ? (
                       <span className={classes.error}>{errors.dsdStatus}</span>
                     ) : (
                       ""
-                    )} */}
+                    )}  */}
                                     </FormGroup>
                                 </div>
                                 <div className="form-group mb-3 col-md-4">
@@ -543,7 +696,7 @@ const Tracking = (props) => {
                                         ></Input>
                                     </FormGroup>
                                 </div>
-                            </div>
+                            </div> 
                             <div className="row">
                                 <div className="form-group mb-3 col-md-12">
                                     <FormGroup>
@@ -609,8 +762,8 @@ const Tracking = (props) => {
                                         </Input>
                                         {errors.modeOfHIVTest !== "" ? (
                                             <span className={classes.error}>
-                        {errors.modeOfHIVTest}
-                      </span>
+                                                {errors.modeOfHIVTest}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
@@ -654,8 +807,8 @@ const Tracking = (props) => {
                                             />
                                             {errors.reasonForTrackingOthers !== "" ? (
                                                 <span className={classes.error}>
-                          {errors.reasonForTrackingOthers}
-                        </span>
+                                                    {errors.reasonForTrackingOthers}
+                                                </span>
                                             ) : (
                                                 ""
                                             )}
@@ -851,8 +1004,8 @@ const Tracking = (props) => {
                                         />
                                         {errors.reasonForTracking !== "" ? (
                                             <span className={classes.error}>
-                        {errors.reasonForTracking}
-                      </span>
+                                                {errors.reasonForTracking}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
@@ -872,8 +1025,8 @@ const Tracking = (props) => {
                                         />
                                         {errors.reasonForTrackingOthers !== "" ? (
                                             <span className={classes.error}>
-                        {errors.reasonForTrackingOthers}
-                      </span>
+                                                {errors.reasonForTrackingOthers}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
@@ -892,37 +1045,37 @@ const Tracking = (props) => {
                                         }}
                                     >
                                         <thead class="table-dark" style={{ background: "#014d88" }}>
-                                        <tr>
-                                            <th scope="col" style={{ fontSize: "14px" }}>
-                                                Regimen Name
-                                            </th>
-                                            <th scope="col" style={{ fontSize: "14px" }}>
-                                                Frequency
-                                            </th>
-                                            <th scope="col" style={{ fontSize: "14px" }}>
-                                                Duration
-                                            </th>
-                                            <th scope="col" style={{ fontSize: "14px" }}>
-                                                Quantity Prescribed
-                                            </th>
-                                            <th scope="col" style={{ fontSize: "14px" }}>
-                                                Dispense
-                                            </th>
-                                        </tr>
+                                            <tr>
+                                                <th scope="col" style={{ fontSize: "14px" }}>
+                                                    Regimen Name
+                                                </th>
+                                                <th scope="col" style={{ fontSize: "14px" }}>
+                                                    Frequency
+                                                </th>
+                                                <th scope="col" style={{ fontSize: "14px" }}>
+                                                    Duration
+                                                </th>
+                                                <th scope="col" style={{ fontSize: "14px" }}>
+                                                    Quantity Prescribed
+                                                </th>
+                                                <th scope="col" style={{ fontSize: "14px" }}>
+                                                    Dispense
+                                                </th>
+                                            </tr>
                                         </thead>
                                         <tbody>
-                                        {currentMedication &&
-                                            currentMedication.slice(0,5).map((each, index) => {
-                                                return (
-                                                    <tr>
-                                                        <td scope="row">{each?.regimenName}</td>
-                                                        <td>{each?.frequency}</td>
-                                                        <td>{each?.duration}</td>
-                                                        <td>{each?.prescribed}</td>
-                                                        <td>{each?.dispense}</td>
-                                                    </tr>
-                                                );
-                                            })}
+                                            {currentMedication &&
+                                                currentMedication.slice(0, 5).map((each, index) => {
+                                                    return (
+                                                        <tr key={index}>
+                                                            <td scope="row">{each?.regimenName}</td>
+                                                            <td>{each?.frequency}</td>
+                                                            <td>{each?.duration}</td>
+                                                            <td>{each?.prescribed}</td>
+                                                            <td>{each?.dispense}</td>
+                                                        </tr>
+                                                    );
+                                                })}
                                         </tbody>
                                     </table>
 
@@ -1004,44 +1157,44 @@ const Tracking = (props) => {
                                         }}
                                     >
                                         <thead class="table-dark" style={{ background: "#014d88" }}>
-                                        <tr>
-                                            <th scope="col" style={{ fontSize: "14px" }}>
-                                                Date
-                                            </th>
-                                            <th scope="col" style={{ fontSize: "14px" }}>
-                                                Test
-                                            </th>
-                                            <th scope="col" style={{ fontSize: "14px" }}>
-                                                Value
-                                            </th>
-                                            <th scope="col" style={{ fontSize: "14px" }}>
-                                                When next due
-                                            </th>
-                                        </tr>
+                                            <tr>
+                                                <th scope="col" style={{ fontSize: "14px" }}>
+                                                    Date
+                                                </th>
+                                                <th scope="col" style={{ fontSize: "14px" }}>
+                                                    Test
+                                                </th>
+                                                <th scope="col" style={{ fontSize: "14px" }}>
+                                                    Value
+                                                </th>
+                                                <th scope="col" style={{ fontSize: "14px" }}>
+                                                    When next due
+                                                </th>
+                                            </tr>
                                         </thead>
                                         <tbody>
-                                        {labResult.slice(0,5).map((each, index) => {
-                                            return (
-                                                <tr>
-                                                    <td scope="row">{each.dateReported}</td>
-                                                    <td>{each.test}</td>
-                                                    <td>{each.result}</td>
-                                                    <td className="row">
-                                                        {" "}
-                                                        <FormGroup className="col-md-6">
-                                                            <Input
-                                                                type="text"
+                                            {labResult.slice(0, 5).map((each, index) => {
+                                                return (
+                                                    <tr>
+                                                        <td scope="row">{new Date(each.dateReported).toISOString().split('T')[0]}</td>
+                                                        <td>{each.test}</td>
+                                                        <td>{each.result}</td>
+                                                        <td className="row">
+                                                            {" "}
+                                                            <FormGroup className="col-md-6">
+                                                                <Input
+                                                                    type="text"
                                                                 // name="facilityName"
                                                                 // id="facilityName"
                                                                 // onChange={handleInputChange}
                                                                 // disabled={true}
                                                                 // value={payload?.facilityName}
-                                                            ></Input>
-                                                        </FormGroup>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
+                                                                ></Input>
+                                                            </FormGroup>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
                                         </tbody>
                                     </table>
                                 </div>
@@ -1102,8 +1255,8 @@ const Tracking = (props) => {
                                         </Input>
                                         {errors.reasonForTransfer !== "" ? (
                                             <span className={classes.error}>
-                        {errors.reasonForTransfer}
-                      </span>
+                                                {errors.reasonForTransfer}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
@@ -1127,8 +1280,8 @@ const Tracking = (props) => {
                                         />
                                         {errors.dateLastAppointment !== "" ? (
                                             <span className={classes.error}>
-                        {errors.dateLastAppointment}
-                      </span>
+                                                {errors.dateLastAppointment}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
@@ -1154,8 +1307,8 @@ const Tracking = (props) => {
                                         />
                                         {errors.dateLastAppointment !== "" ? (
                                             <span className={classes.error}>
-                        {errors.dateLastAppointment}
-                      </span>
+                                                {errors.dateLastAppointment}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
@@ -1165,26 +1318,6 @@ const Tracking = (props) => {
                                 <div className="form-group mb-3 col-md-4">
                                     <FormGroup>
                                         <Label for="">Phone Number of Treatment supporter </Label>
-                                        {/* <Input
-                      type="number"
-                      name="phoneNumberOfTreatmentSupporter"
-                      id="phoneNumberOfTreatmentSupporter"
-                      onChange={handleInputChange}
-                      value={payload.phoneNumberOfTreatmentSupporter}
-                      //min= {moment(payload.dateOfLastViralLoad).format("YYYY-MM-DD") }
-                      max={moment(new Date()).format("YYYY-MM-DD")}
-                      style={{
-                        border: "1px solid #014D88",
-                        borderRadius: "0.25rem",
-                      }}
-                    />
-                    {errors.dateLastAppointment !== "" ? (
-                      <span className={classes.error}>
-                        {errors.dateLastAppointment}
-                      </span>
-                    ) : (
-                      ""
-                    )} */}
                                         <Input
                                             type="text"
                                             name="phoneNumberOfTreatmentSupporter"
@@ -1200,8 +1333,8 @@ const Tracking = (props) => {
                                         />
                                         {errors.phoneNumberOfTreatmentSupporter !== "" ? (
                                             <span className={classes.error}>
-                            {errors.phoneNumberOfTreatmentSupporter}
-                          </span>
+                                                {errors.phoneNumberOfTreatmentSupporter}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
@@ -1226,8 +1359,8 @@ const Tracking = (props) => {
                                         />
                                         {errors.dateLastAppointment !== "" ? (
                                             <span className={classes.error}>
-                        {errors.dateLastAppointment}
-                      </span>
+                                                {errors.dateLastAppointment}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
@@ -1255,8 +1388,8 @@ const Tracking = (props) => {
                                         />
                                         {errors.dateMissedAppointment !== "" ? (
                                             <span className={classes.error}>
-                        {errors.dateMissedAppointment}
-                      </span>
+                                                {errors.dateMissedAppointment}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
@@ -1280,8 +1413,8 @@ const Tracking = (props) => {
                                         />
                                         {errors.dateLastAppointment !== "" ? (
                                             <span className={classes.error}>
-                        {errors.dateLastAppointment}
-                      </span>
+                                                {errors.dateLastAppointment}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
@@ -1308,8 +1441,8 @@ const Tracking = (props) => {
                                         />
                                         {errors.dateLastAppointment !== "" ? (
                                             <span className={classes.error}>
-                        {errors.dateLastAppointment}
-                      </span>
+                                                {errors.dateLastAppointment}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
@@ -1336,8 +1469,8 @@ const Tracking = (props) => {
                                         />
                                         {errors.dateLastAppointment !== "" ? (
                                             <span className={classes.error}>
-                        {errors.dateLastAppointment}
-                      </span>
+                                                {errors.dateLastAppointment}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
@@ -1363,8 +1496,8 @@ const Tracking = (props) => {
                                         />
                                         {errors.dateLastAppointment !== "" ? (
                                             <span className={classes.error}>
-                        {errors.dateLastAppointment}
-                      </span>
+                                                {errors.dateLastAppointment}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
@@ -1377,33 +1510,7 @@ const Tracking = (props) => {
                             </h3>
                             <div className="row">
                                 <div className="form-group mb-3 col-md-4">
-                                    {/* <FormGroup>
-                    <Label for=""> Patient came with Transfer form</Label>
-                    <Input
-                      type="select"
-                      name="acknowledgeOfTransfer"
-                      id="dateLastAppointment"
-                      onChange={handleInputChange}
-                      value={payload.acknowledgeOfTransfer}
-                      //min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
-                      style={{
-                        border: "1px solid #014D88",
-                        borderRadius: "0.25rem",
-                      }}
-                    />
-                    <option value="">Select Option</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                    <Input />
-
-                    {errors.dateLastAppointment !== "" ? (
-                      <span className={classes.error}>
-                        {errors.dateLastAppointment}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </FormGroup> */}
+    
                                     <FormGroup>
                                         <Label for=""> Patient came with Transfer form</Label>
 
@@ -1413,7 +1520,7 @@ const Tracking = (props) => {
                                             id="patientCameWithTransferForm"
                                             onChange={handleInputChange}
                                             value={payload.patientCameWithTransferForm}
-                                            //min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
+                                        //min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
                                         >
                                             <option value=""></option>
                                             <option value="Yes">Yes</option>
@@ -1421,8 +1528,8 @@ const Tracking = (props) => {
                                         </Input>
                                         {errors.reasonForTrackingOthers !== "" ? (
                                             <span className={classes.error}>
-                        {errors.reasonForTrackingOthers}
-                      </span>
+                                                {errors.reasonForTrackingOthers}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
@@ -1452,8 +1559,8 @@ const Tracking = (props) => {
                                         </Input>
                                         {errors.dateLastAppointment !== "" ? (
                                             <span className={classes.error}>
-                        {errors.dateLastAppointment}
-                      </span>
+                                                {errors.dateLastAppointment}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
@@ -1477,8 +1584,8 @@ const Tracking = (props) => {
                                         />
                                         {errors.dateLastAppointment !== "" ? (
                                             <span className={classes.error}>
-                        {errors.dateLastAppointment}
-                      </span>
+                                                {errors.dateLastAppointment}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
@@ -1502,37 +1609,13 @@ const Tracking = (props) => {
                                         />
                                         {errors.dateLastAppointment !== "" ? (
                                             <span className={classes.error}>
-                        {errors.dateLastAppointment}
-                      </span>
+                                                {errors.dateLastAppointment}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
                                     </FormGroup>
                                 </div>
-                                {/* <div className="form-group mb-3 col-md-4">
-                  <FormGroup>
-                    <Label for="">Date of visit</Label>
-                    <Input
-                      type="date"
-                      name="dateLastAppointment"
-                      id="dateLastAppointment"
-                      onChange={handleInputChange}
-                      value={objValues.dateLastAppointment}
-                      max={moment(new Date()).format("YYYY-MM-DD")}
-                      style={{
-                        border: "1px solid #014D88",
-                        borderRadius: "0.25rem",
-                      }}
-                    />
-                    {errors.dateLastAppointment !== "" ? (
-                      <span className={classes.error}>
-                        {errors.dateLastAppointment}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </FormGroup>
-                  </div> */}
                                 <div className="form-group mb-3 col-md-4">
                                     <FormGroup>
                                         <Label for="">
@@ -1553,8 +1636,8 @@ const Tracking = (props) => {
                                         />
                                         {errors.dateLastAppointment !== "" ? (
                                             <span className={classes.error}>
-                        {errors.dateLastAppointment}
-                      </span>
+                                                {errors.dateLastAppointment}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
@@ -1563,26 +1646,6 @@ const Tracking = (props) => {
                                 <div className="form-group mb-3 col-md-4">
                                     <FormGroup>
                                         <Label for="">Telephone Number</Label>
-                                        {/* <Input
-                      type="number"
-                      name="clinicianTelephoneNumber"
-                      id="clinicianTelephoneNumber"
-                      onChange={handleInputChange}
-                      value={payload.clinicianTelephoneNumber}
-                      //min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
-                      max={moment(new Date()).format("YYYY-MM-DD")}
-                      style={{
-                        border: "1px solid #014D88",
-                        borderRadius: "0.25rem",
-                      }}
-                    />
-                    {errors.dateLastAppointment !== "" ? (
-                      <span className={classes.error}>
-                        {errors.dateLastAppointment}
-                      </span>
-                    ) : (
-                      ""
-                    )} */}
                                         <Input
                                             type="text"
                                             name="clinicianTelephoneNumber"
@@ -1598,8 +1661,8 @@ const Tracking = (props) => {
                                         />
                                         {errors.clinicianTelephoneNumber !== "" ? (
                                             <span className={classes.error}>
-                            {errors.clinicianTelephoneNumber}
-                          </span>
+                                                {errors.clinicianTelephoneNumber}
+                                            </span>
                                         ) : (
                                             ""
                                         )}
@@ -1620,7 +1683,7 @@ const Tracking = (props) => {
                             startIcon={<SaveIcon />}
                             onClick={handleSubmit}
                             style={{ backgroundColor: "#014d88" }}
-                            // disabled={objValues.dateOfEac1 === "" ? true : false}
+                        // disabled={objValues.dateOfEac1 === "" ? true : false}
                         >
                             {!saving ? (
                                 <span style={{ textTransform: "capitalize" }}>Save</span>

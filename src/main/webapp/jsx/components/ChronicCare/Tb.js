@@ -511,7 +511,7 @@ const TbScreening = (props) => {
                       <FormGroup>
                         <Label>
                           Treatment Type{" "}
-                          <span style={{ color: "red" }}> *</span>
+                          {/* <span style={{ color: "red" }}> *</span> */}
                         </Label>
                         <InputGroup>
                           <Input
