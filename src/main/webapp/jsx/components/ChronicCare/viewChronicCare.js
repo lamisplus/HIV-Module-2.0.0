@@ -93,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ChronicCare = (props) => {
+const ViewChronicCare = (props) => {
   const patientObj = props.patientObj;
   const [saving, setSaving] = useState(false);
   const classes = useStyles();
@@ -118,6 +118,7 @@ const ChronicCare = (props) => {
     haveBeenBeaten: "",
     partnerLivelihood: "",
   });
+
   //Eligibility Object
   const [eligibility, setEligibility] = useState({
     typeOfClient: "",
@@ -228,7 +229,6 @@ const ChronicCare = (props) => {
     visitId: null,
   });
   useEffect(() => {
-    // GetChronicCare();
     GetChronicCareData();
     PatientCurrentObject();
     if (
@@ -236,6 +236,7 @@ const ChronicCare = (props) => {
       props.activeContent.id !== "" &&
       props.activeContent.id !== null
     ) {
+      GetChronicCare();
       setSisabledField(props.activeContent.actionType === "view");
     }
     setIsUpdate(
@@ -254,41 +255,42 @@ const ChronicCare = (props) => {
       })
       .catch((error) => {});
   }
-  // const GetChronicCare = () => {
-  //   //function to get chronic care data for edit
-  //   axios
-  //     .get(`${baseUrl}observation/${props.activeContent.id}`, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     })
-  //     .then((response) => {
-  //       observationObj.eligibility = response.data.eligibility;
-  //       observationObj.nutrition = response.data;
-  //       observationObj.genderBase = response.data.genderBase;
-  //       observationObj.chronicCondition = response.data.chronicConditions;
-  //       observationObj.positiveHealth = response.data.positiveHealth;
-  //       observationObj.peproductive = response.data.peproductive;
-  //       observationObj.tbIptScreening = response.data.tbIptScreening;
-  //       observationObj.tptMonitoring = response.data.tptMonitoring;
-  //       setObservation(response.data);
-  //       setObservationObj(response.data.data);
-  //       setTpt({ ...tpt, ...response.data.data.tptMonitoring });
-  //       setTbObj({ ...tbObj, ...response.data.data.tbIptScreening });
-  //       setEligibility({ ...eligibility, ...response.data.data.eligibility });
-  //       setGenderBase({ ...genderBase, ...response.data.data.genderBase });
-  //       setChronicConditions({
-  //         ...chronicConditions,
-  //         ...response.data.data.chronicConditions,
-  //       });
-  //       setPreventive({ ...preventive, ...response.data.data.preventive });
-  //       setReproductive({
-  //         ...reproductive,
-  //         ...response.data.data.reproductive,
-  //       });
-  //       setTpt({ ...tpt, ...response.data.data.tptMonitoring });
-  //       setlastDateOfObservation(response.data.dateOfObservation); //set the date of onservation into this variable
-  //     })
-  //     .catch((error) => {});
-  // };
+  const GetChronicCare = () => {
+    //function to get chronic care data for edit
+    axios
+      .get(`${baseUrl}observation/${props.activeContent.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        observationObj.eligibility = response.data.eligibility;
+        observationObj.nutrition = response.data;
+        observationObj.genderBase = response.data.genderBase;
+        observationObj.chronicCondition = response.data.chronicConditions;
+        observationObj.positiveHealth = response.data.positiveHealth;
+        observationObj.peproductive = response.data.peproductive;
+        observationObj.tbIptScreening = response.data.tbIptScreening;
+        observationObj.tptMonitoring = response.data.tptMonitoring;
+        setObservation(response.data);
+        setObservationObj(response.data.data);
+        setTpt({ ...tpt, ...response.data.data.tptMonitoring });
+        setTbObj({ ...tbObj, ...response.data.data.tbIptScreening });
+        setEligibility({ ...eligibility, ...response.data.data.eligibility });
+        setGenderBase({ ...genderBase, ...response.data.data.genderBase });
+        setChronicConditions({
+          ...chronicConditions,
+          ...response.data.data.chronicCondition,
+        });
+        setNutrition({ ...nutrition, ...response.data.data.nutrition });
+        setPreventive({ ...preventive, ...response.data.data.positiveHealth });
+        setReproductive({
+          ...reproductive,
+          ...response.data.data.peproductive,
+        });
+        setTpt({ ...tpt, ...response.data.data.tptMonitoring });
+        setlastDateOfObservation(response.data.dateOfObservation); //set the date of onservation into this variable
+      })
+      .catch((error) => {});
+  };
   const GetChronicCareData = () => {
     //function to get chronic care data check if record exist using date for validation
     axios
@@ -512,6 +514,9 @@ const ChronicCare = (props) => {
                         borderRadius: "0.25rem",
                       }}
                       min={enrollDate}
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
                       max={moment(new Date()).format("YYYY-MM-DD")}
                     ></Input>
                   </FormGroup>
@@ -568,6 +573,7 @@ const ChronicCare = (props) => {
                     errors={errors}
                     encounterDate={observation.dateOfObservation}
                     patientObj={patientObj}
+                    action={props.activeContent.actionType}
                   />
                 )}
               </div>
@@ -616,6 +622,7 @@ const ChronicCare = (props) => {
                     errors={errors}
                     encounterDate={observation.dateOfObservation}
                     patientObj={patientObj}
+                    action={props.activeContent.actionType}
                   />
                 )}
               </div>
@@ -664,6 +671,7 @@ const ChronicCare = (props) => {
                     errors={errors}
                     encounterDate={observation.dateOfObservation}
                     patientObj={patientObj}
+                    action={props.activeContent.actionType}
                   />
                 )}
               </div>
@@ -712,6 +720,7 @@ const ChronicCare = (props) => {
                     errors={errors}
                     encounterDate={observation.dateOfObservation}
                     patientObj={patientObj}
+                    action={props.activeContent.actionType}
                   />
                 )}
               </div>
@@ -762,6 +771,7 @@ const ChronicCare = (props) => {
                         errors={errors}
                         encounterDate={observation.dateOfObservation}
                         patientObj={patientObj}
+                        action={props.activeContent.actionType}
                       />
                     </div>
                   </div>
@@ -814,6 +824,7 @@ const ChronicCare = (props) => {
                         errors={errors}
                         encounterDate={observation.dateOfObservation}
                         patientObj={patientObj}
+                        action={props.activeContent.actionType}
                       />
                     </div>
                   </div>
@@ -866,6 +877,7 @@ const ChronicCare = (props) => {
                         errors={errors}
                         encounterDate={observation.dateOfObservation}
                         patientObj={patientObj}
+                        action={props.activeContent.actionType}
                       />
                     </div>
                   </div>
@@ -918,6 +930,7 @@ const ChronicCare = (props) => {
                         errors={errors}
                         encounterDate={observation.dateOfObservation}
                         patientObj={patientObj}
+                        action={props.activeContent.actionType}
                       />
                     </div>
                   </div>
@@ -927,22 +940,54 @@ const ChronicCare = (props) => {
               {saving ? <Spinner /> : ""}
 
               <br />
-              <MatButton
-                type="submit"
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                startIcon={<SaveIcon />}
-                style={{ backgroundColor: "#014d88" }}
-                onClick={handleSubmit}
-                disabled={saving}
-              >
-                {!saving ? (
-                  <span style={{ textTransform: "capitalize" }}>Save</span>
-                ) : (
-                  <span style={{ textTransform: "capitalize" }}>Saving...</span>
-                )}
-              </MatButton>
+              {isUpdate ? (
+                <>
+                  <MatButton
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    hidden={disabledField}
+                    className={classes.button}
+                    startIcon={<SaveIcon />}
+                    style={{ backgroundColor: "#014d88" }}
+                    onClick={handleSubmit}
+                    disabled={saving}
+                  >
+                    {!saving ? (
+                      <span style={{ textTransform: "capitalize" }}>
+                        Update
+                      </span>
+                    ) : (
+                      <span style={{ textTransform: "capitalize" }}>
+                        Updating...
+                      </span>
+                    )}
+                  </MatButton>
+                </>
+              ) : props.activeContent.actionType === "view" ? (
+                ""
+              ) : (
+                <>
+                  <MatButton
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    startIcon={<SaveIcon />}
+                    style={{ backgroundColor: "#014d88" }}
+                    onClick={handleSubmit}
+                    disabled={saving}
+                  >
+                    {!saving ? (
+                      <span style={{ textTransform: "capitalize" }}>Save</span>
+                    ) : (
+                      <span style={{ textTransform: "capitalize" }}>
+                        Saving...
+                      </span>
+                    )}
+                  </MatButton>
+                </>
+              )}
             </Form>
           </div>
         </CardContent>
@@ -951,4 +996,4 @@ const ChronicCare = (props) => {
   );
 };
 
-export default ChronicCare;
+export default ViewChronicCare;
