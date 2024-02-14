@@ -7464,7 +7464,7 @@ const CreateServiceForm = (props) => {
                           <option value="">Select</option>
                           {otzOutcomesArray?.map?.((item, index) => (
                             <>
-                              <option value={item?.id}>{item?.display}</option>
+                              <option value={item?.id} key={item.id}>{item?.display}</option>
                             </>
                           ))}
                         </Input>
