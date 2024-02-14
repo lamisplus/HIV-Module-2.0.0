@@ -753,13 +753,16 @@ const ArtCommencement = (props) => {
                         ))}
                       </>
                     )}
-                    {patientAge && patientAge <= 15 && (
+
+                    {patientAge <= 15 && (
                       <>
-                        {childRegimenLine.map((value) => (
-                          <option key={value.id} value={value.id}>
-                            {value.description}
-                          </option>
-                        ))}
+                        {childRegimenLine.map((value) => {
+                          return (
+                            <option key={value.id} value={value.id}>
+                              {value.description}
+                            </option>
+                          );
+                        })}
                       </>
                     )}
                   </Input>

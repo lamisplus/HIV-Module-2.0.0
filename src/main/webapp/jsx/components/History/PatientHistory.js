@@ -83,15 +83,12 @@ const PatientnHistory = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        
         setLoading(false);
-        
+
         setRecentActivities(response.data);
       })
 
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   const LoadViewPage = (row, action) => {
     if (row.path === "Mental-health") {
@@ -224,12 +221,12 @@ const PatientnHistory = (props) => {
     } else if (row.path === "Chronic-Care") {
       props.setActiveContent({
         ...props.activeContent,
-        route: "chronic-care",
+        route: "Chronic-Care-view",
         id: row.id,
         activeTab: "home",
         actionType: action,
       });
-    }  else if (row.path === "ART-Transfer-Out") {
+    } else if (row.path === "ART-Transfer-Out") {
       props.setActiveContent({
         ...props.activeContent,
         route: "filled-transferForm",
@@ -237,8 +234,7 @@ const PatientnHistory = (props) => {
         activeTab: "home",
         actionType: action,
       });
-    }
-    else {
+    } else {
       //Chronic Care
     }
   };
@@ -247,7 +243,6 @@ const PatientnHistory = (props) => {
     setReason({ [e.target.name]: e.target.value });
   };
   const LoadDeletePage = (row) => {
-  
     if (row.path === "Mental-health") {
       setSaving(true);
       //props.setActiveContent({...props.activeContent, route:'mental-health-view', id:row.id})
@@ -532,81 +527,80 @@ const PatientnHistory = (props) => {
       setSaving(true);
       //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
       axios
-          .delete(`${baseUrl}observation/${row.id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          .then((response) => {
-            toast.success("Record Deleted Successfully");
-            PatientHistory();
-            toggle();
-            setSaving(false);
-          })
-          .catch((error) => {
-            setSaving(false);
-            if (error.response && error.response.data) {
-              let errorMessage =
-                  error.response.data.apierror &&
-                  error.response.data.apierror.message !== ""
-                      ? error.response.data.apierror.message
-                      : "Something went wrong, please try again";
-              toast.error(errorMessage);
-            } else {
-              toast.error("Something went wrong. Please try again...");
-            }
-          });
+        .delete(`${baseUrl}observation/${row.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          toast.success("Record Deleted Successfully");
+          PatientHistory();
+          toggle();
+          setSaving(false);
+        })
+        .catch((error) => {
+          setSaving(false);
+          if (error.response && error.response.data) {
+            let errorMessage =
+              error.response.data.apierror &&
+              error.response.data.apierror.message !== ""
+                ? error.response.data.apierror.message
+                : "Something went wrong, please try again";
+            toast.error(errorMessage);
+          } else {
+            toast.error("Something went wrong. Please try again...");
+          }
+        });
     } else if (row.path === "Service-OTZ") {
       setSaving(true);
       axios
-          .delete(`${baseUrl}observation/${row.id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          .then((response) => {
-            toast.success("OTZ record Deleted Successfully");
-            PatientHistory();
-            toggle();
-            setSaving(false);
-          })
-          .catch((error) => {
-            setSaving(false);
-            if (error.response && error.response.data) {
-              let errorMessage =
-                  error.response.data.apierror &&
-                  error.response.data.apierror.message !== ""
-                      ? error.response.data.apierror.message
-                      : "Something went wrong, please try again";
-              toast.error(errorMessage);
-            } else {
-              toast.error("Something went wrong. Please try again...");
-            }
-          });
+        .delete(`${baseUrl}observation/${row.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          toast.success("OTZ record Deleted Successfully");
+          PatientHistory();
+          toggle();
+          setSaving(false);
+        })
+        .catch((error) => {
+          setSaving(false);
+          if (error.response && error.response.data) {
+            let errorMessage =
+              error.response.data.apierror &&
+              error.response.data.apierror.message !== ""
+                ? error.response.data.apierror.message
+                : "Something went wrong, please try again";
+            toast.error(errorMessage);
+          } else {
+            toast.error("Something went wrong. Please try again...");
+          }
+        });
     } else if (row.path === "Paediatric-OTZ") {
       setSaving(true);
       axios
-          .delete(`${baseUrl}observation/${row.id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-          .then((response) => {
-            toast.success("Paediatric OTZ record deleted successfully");
-            PatientHistory();
-            toggle();
-            setSaving(false);
-          })
-          .catch((error) => {
-            setSaving(false);
-            if (error.response && error.response.data) {
-              let errorMessage =
-                  error.response.data.apierror &&
-                  error.response.data.apierror.message !== ""
-                      ? error.response.data.apierror.message
-                      : "Something went wrong, please try again";
-              toast.error(errorMessage);
-            } else {
-              toast.error("Something went wrong. Please try again...");
-            }
-          });
+        .delete(`${baseUrl}observation/${row.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          toast.success("Paediatric OTZ record deleted successfully");
+          PatientHistory();
+          toggle();
+          setSaving(false);
+        })
+        .catch((error) => {
+          setSaving(false);
+          if (error.response && error.response.data) {
+            let errorMessage =
+              error.response.data.apierror &&
+              error.response.data.apierror.message !== ""
+                ? error.response.data.apierror.message
+                : "Something went wrong, please try again";
+            toast.error(errorMessage);
+          } else {
+            toast.error("Something went wrong. Please try again...");
+          }
+        });
     } else if (row.path === "client-tracker") {
-    } 
-    else if (row.path === "ART-Transfer-Out") {
+    } else if (row.path === "ART-Transfer-Out") {
       setSaving(true);
       //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
       axios
@@ -633,8 +627,7 @@ const PatientnHistory = (props) => {
             toast.error("Something went wrong. Please try again...");
           }
         });
-    }
-    else if (row.path === "client-tracker") {
+    } else if (row.path === "client-tracker") {
       setSaving(true);
       //props.setActiveContent({...props.activeContent, route:'mental-health-history', id:row.id})
       axios
@@ -770,7 +763,12 @@ const PatientnHistory = (props) => {
         </Modal.Header>
         <Modal.Body>
           <h4>
-            Are you Sure you want to delete <b>{record && record.name==='Chronic Care' ? 'Care and Support' : record && record.name}</b>
+            Are you Sure you want to delete{" "}
+            <b>
+              {record && record.name === "Chronic Care"
+                ? "Care and Support"
+                : record && record.name}
+            </b>
           </h4>
           <br />
           <Form>
@@ -795,7 +793,6 @@ const PatientnHistory = (props) => {
               </div>
             </div>
             <Button
-            
               onClick={() => LoadDeletePage(record)}
               style={{ backgroundColor: "red", color: "#fff" }}
               disabled={saving}
