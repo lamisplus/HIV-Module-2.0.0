@@ -749,6 +749,7 @@ const Pharmacy = (props) => {
         toast.success("Pharmacy drug refill successful", {
           position: toast.POSITION.BOTTOM_CENTER,
         });
+        setOIRegimenLine([]);
         props.setActiveContent({
           ...props.activeContent,
           route: "pharmacy",
