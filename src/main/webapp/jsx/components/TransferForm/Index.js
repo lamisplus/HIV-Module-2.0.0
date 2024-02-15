@@ -16,6 +16,7 @@ import moment from "moment";
 import { Spinner } from "reactstrap";
 import { Icon, List, Label as LabelSui } from "semantic-ui-react";
 import Select from "react-select";
+import { useRowState } from "react-table";
 
 // import moment from "moment";
 
@@ -100,8 +101,7 @@ const Tracking = (props) => {
     const [BMI, setBMI] = useState("");
     const [facId, setFacId] = useState(localStorage.getItem("facId"))
     const [attemptList, setAttemptList] = useState([]);
-    const [selectedState, setSelectedState] = useState("");
-    const [selectedLga, setSelectedLga] = useState("");
+    // const [selectedLga, setSelectedLga] = useState("");
     const [reasonForTransfer, setReasonForTransfer] = useState([
         "Relocating",
         "Closeness to new facility",
@@ -158,63 +158,66 @@ const Tracking = (props) => {
 
     });
 
-    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    
-    // const [states1, setStates1] = useState([])
-    // const [lgas1, setLGAs1] = useState([])
-    // const [facilities1, setFacilities1] = useState([])
- 
-    // const loadStates1 = () => {
-    //     axios.get(`${baseUrl}organisation-units/parent-organisation-units/1`, {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`
-    //         }
-    //     })
-    //     .then((response) => {
-    //         if (response.data) {
-    //             setStates1(response.data);
-    //         }
-    //     })
-    //     .catch((e) => {
-    //         console.log("Fetch states error" + e);
-    //     });
-    // };
-    
-    // const loadLGA1 = (stateId) => {
-    //     axios.get(`${baseUrl}organisation-units/parent-organisation-units/${stateId}`, {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`
-    //         }
-    //     })
-    //     .then((response) => {
-    //         if (response.data) {
-    //             setLGAs1(response.data);
-    //             const selectedLga = response.data.find(lga => lga.id === stateId);
-    //             setPayload(prevPayload => ({ ...prevPayload, lgaTransferTo: selectedLga ? selectedLga.name : "" }));
-    //         }
-    //     })
-    //     .catch((e) => {
-    //         console.log("Fetch LGA error" + e);
-    //     });
-    // };
-    
-    // const loadFacilities1 = (lgaId) => {
-    //     axios.get(`${baseUrl}organisation-units/parent-organisation-units/${lgaId}`, {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`
-    //         }
-    //     })
-    //     .then((response) => {
-    //         if (response.data) {
-    //             setFacilities1(response.data);
-    //             const selectedFacility = response.data.find(facility => facility.id === lgaId);
-    //             setPayload(prevPayload => ({ ...prevPayload, facilityTransferTo: selectedFacility ? selectedFacility.name : "" }));
-    //         }
-    //     })
-    //     .catch((e) => {
-    //         console.log("Fetch Facilities error" + e);
-    //     });
-    // };
+
+    const [states1, setStates1] = useState([])
+    const [lgas1, setLGAs1] = useState([])
+    const [facilities1, setFacilities1] = useState([])
+    const [selectedState, setSelectedState] = useState({})
+    const [selectedFacility, setSelectedFacility] = useState({});
+    const [selectedLga, setSelectedLga] = useState({});
+
+    const loadStates1 = () => {
+        axios.get(`${baseUrl}organisation-units/parent-organisation-units/1`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then((response) => {
+                if (response.data) {
+                    setStates1(response.data);
+                }
+            })
+            .catch((e) => {
+                // console.log("Fetch states error" + e);
+            });
+    };
+
+
+    const loadLGA1 = (id) => {
+        axios.get(`${baseUrl}organisation-units/parent-organisation-units/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then((response) => {
+                if (response.data) {
+                    setLGAs1(response.data);
+                    // const selectedLga = response.data.find(lga => lga.id === id);
+                    // setPayload(prevPayload => ({ ...prevPayload, lgaTransferTo: selectedLga ? selectedLga.name : "" }));
+                }
+            })
+            .catch((e) => {
+                // console.log("Fetch LGA error" + e);
+            });
+    };
+
+    const loadFacilities1 = (id) => {
+        axios.get(`${baseUrl}organisation-units/parent-organisation-units/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then((response) => {
+                if (response.data) {
+                    setFacilities1(response.data);
+                    // const selectedFacility = response.data.find(facility => facility.id === id);
+                    // setPayload(prevPayload => ({ ...prevPayload, facilityTransferTo: selectedFacility ? selectedFacility.name : "" }));
+                }
+            })
+            .catch((e) => {
+                // console.log("Fetch Facilities error" + e);
+            });
+    };
 
     // useEffect(() => {
     //     console.log("State Transfer To:", payload.stateTransferTo);
@@ -222,7 +225,7 @@ const Tracking = (props) => {
     //     console.log("Facility Transfer To:", payload.facilityTransferTo);
     // }, [payload.facilityTransferTo, payload.stateTransferTo, payload.lgaTransferTo]);
 
-//  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
@@ -305,88 +308,28 @@ const Tracking = (props) => {
             });
     };
 
-    // get all facilities
-    // const getAllFacilities = () => {
-    //     axios
-    //         .get(
-    //             `${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/5/hierarchy`,
-    //             {
-    //                 headers: { Authorization: `Bearer ${token}` },
-    //             }
-    //         )
-    //         .then((response) => {
-    //             console.log(response.data)
-    //             let updatedFaclilties = response.data.map((each, id) => {
-    //                 return {
-    //                     ...each,
-    //                     value: each.id,
-    //                     label: each.name,
-    //                 };
-    //             });
-    //             // console.log("updated facilities", updatedFaclilties)
-    //             setAllFacilities(updatedFaclilties);
-    //         })
-    //         .catch((error) => { });
-        
-    // };
 
-    const getAllFacilities = () => {
-        axios
-            .get(
-                `${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/5/hierarchy`,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                }
-            )
-            .then((response) => {
-                let updatedFacilities = response.data.map((each, id) => {
-                    return {
-                        ...each,
-                        value: each.id,
-                        label: each.name,
-                    };
-                });
-                setAllFacilities(updatedFacilities);
-            })
-            .catch((error) => {
-                toast.error("Request A failed. Trying Request B...")
-                // Attempt Request B
-                axios
-                    .get(
-                        `${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/4/hierarchy`,
-                        {
-                            headers: { Authorization: `Bearer ${token}` },
-                        }
-                    )
-                    .then((response) => {
-                        let updatedFacilities = response.data.map((each, id) => {
-                            return {
-                                ...each,
-                                value: each.id,
-                                label: each.name,
-                            };
-                        });
-                        setAllFacilities(updatedFacilities);
-                    })
-                    .catch((error) => {
-                        // console.error("Both requests failed.");
-                    });
-            });
-    };
-    
-    
 
     const calculateBMI = () => {
-        let result = Number(transferInfo?.weight) * Number(transferInfo?.height) * Number(transferInfo?.height);
-        let value = result / 10000
-        setBMI(value)
+        const weight = Number(transferInfo?.weight);
+        const height = Number(transferInfo?.height);
 
-    };
+        if (isNaN(weight) || isNaN(height) || weight <= 0 || height <= 0) {
+            setBMI("");
+        } else {
+            const heightInMeters = height / 100;
+            const bmi = weight / (heightInMeters * heightInMeters);
+            setBMI(Math.round(bmi));
+        }
+    }
+
+
+
+
     // when component mounts
 
     useEffect(() => {
-        // loadStates1();
-        getAllFacilities();
+        loadStates1();
         getTreatmentInfo();
         getLabResult();
         getCurrentMedication();
@@ -395,26 +338,25 @@ const Tracking = (props) => {
     useEffect(() => {
         setPayload({ ...payload, ...transferInfo });
         calculateBMI();
-
-        // calculateBMI();
     }, [transferInfo]);
+
     const handleInputChange = (e) => {
         setErrors({ ...temp, [e.target.name]: "" });
         setPayload({ ...payload, [e.target.name]: e.target.value });
     };
 
     // handle Facility Name to slect drop down
-    const handleInputChangeObject = (e) => {
-        setPayload({
-            ...payload,
-            facilityTransferTo: e.name,
-            stateTransferTo: e.parentParentOrganisationUnitName,
-            lgaTransferTo: e.parentOrganisationUnitName,
-        });
-        setErrors({ ...errors, facilityTransferTo: "" });
-        setSelectedState(e.parentParentOrganisationUnitName);
-        setSelectedLga(e.parentOrganisationUnitName);
-    };
+    // const handleInputChangeObject = (e) => {
+    //     setPayload({
+    //         ...payload,
+    //         facilityTransferTo: e.name,
+    //         stateTransferTo: e.parentParentOrganisationUnitName,
+    //         lgaTransferTo: e.parentOrganisationUnitName,
+    //     });
+    //     setErrors({ ...errors, facilityTransferTo: "" });
+    //     setSelectedState(e.parentParentOrganisationUnitName);
+    //     setSelectedLga(e.parentOrganisationUnitName);
+    // };
     const [attempt, setAttempt] = useState({
         attemptDate: "",
         whoAttemptedContact: "",
@@ -423,7 +365,7 @@ const Tracking = (props) => {
         reasonForDefaulting: "",
         reasonForDefaultingOthers: "",
     });
-    
+
 
     const handleInputChangeAttempt = (e) => {
 
@@ -440,6 +382,9 @@ const Tracking = (props) => {
             ? ""
             : "This field is required";
         temp.modeOfHIVTest = payload.modeOfHIVTest ? "" : "This field is required";
+        temp.stateTransferTo = payload.stateTransferTo ? "" : "This field is required";
+        temp.lgaTransferTo = payload.lgaTransferTo ? "" : "This field is required";
+        temp.facilityTransferTo = payload.facilityTransferTo ? "" : "This field is required";
 
         setErrors({
             ...temp,
@@ -512,19 +457,7 @@ const Tracking = (props) => {
                             <br />
                             <br />
                             <div className="row">
-                                <div className="form-group mb-3 col-md-4">
-                                    <FormGroup>
-                                        <Label for="">Facility Name From</Label>
-                                        <Input
-                                            type="text"
-                                            name="facilityName"
-                                            id="facilityName"
-                                            onChange={handleInputChange}
-                                            disabled={true}
-                                            value={payload?.facilityName}
-                                        ></Input>
-                                    </FormGroup>
-                                </div>
+
                                 <div className="form-group mb-3 col-md-4">
                                     <FormGroup>
                                         <Label for=""> State Transfer From</Label>
@@ -551,24 +484,43 @@ const Tracking = (props) => {
                                         ></Input>
                                     </FormGroup>
                                 </div>
-                            </div>
-                            {/* <div className="row">
                                 <div className="form-group mb-3 col-md-4">
                                     <FormGroup>
-                                        <Label for="" style={{ color: '#014d88', fontWeight: 'bolder' }}>State1</Label>
+                                        <Label for="">Facility Name From</Label>
+                                        <Input
+                                            type="text"
+                                            name="facilityName"
+                                            id="facilityName"
+                                            onChange={handleInputChange}
+                                            disabled={true}
+                                            value={payload?.facilityName}
+                                        ></Input>
+                                    </FormGroup>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="form-group mb-3 col-md-4">
+                                    <FormGroup>
+                                        <Label for="" style={{ color: '#014d88', fontWeight: 'bolder' }}>State Transfer To <span style={{ color: "red" }}> *</span> </Label>
                                         <Input
                                             type="select"
-                                            // name="parentOrganisationUnitLevelId"
-                                            // id="parentOrganisationUnitLevelId"
                                             name="stateTransferTo"
                                             style={{ height: "40px", border: 'solid 1px #014d88', borderRadius: '5px', fontWeight: 'bolder', appearance: 'auto' }}
                                             required
                                             // onChange={loadLGA1}
                                             onChange={(e) => {
-                                                setPayload(prevPayload => ({ ...prevPayload, stateTransferTo: e.target.value }));
+                                                if (e.target.value !== "") {
+                                                    const filterState = states1.filter(st => {
+                                                        return Number(st.id) === Number(e.target.value)
+                                                    }
+                                                    )
+                                                    setSelectedState(filterState)
+
+                                                    setPayload(prevPayload => ({ ...prevPayload, stateTransferTo: filterState[0].name }));
+                                                }
                                                 loadLGA1(e.target.value);
                                             }}
-                                        
+
                                         >
                                             <option>Select State</option>
                                             {states1.map((state) => (
@@ -577,24 +529,38 @@ const Tracking = (props) => {
                                                 </option>
                                             ))}
                                         </Input>
+                                        {errors.stateTransferTo !== "" ? (
+                                            <span className={classes.error}>
+                                                {errors.stateTransferTo}
+                                            </span>
+                                        ) : (
+                                            ""
+                                        )}
                                     </FormGroup>
                                 </div>
                                 <div className="form-group mb-3 col-md-4">
                                     <FormGroup>
-                                        <Label for="" style={{ color: '#014d88', fontWeight: 'bolder' }}>LGA</Label>
+                                        <Label for="" style={{ color: '#014d88', fontWeight: 'bolder' }}>LGA Transfer To <span style={{ color: "red" }}> *</span></Label>
                                         <Input
                                             type="select"
-                                            // name="p"
-                                            // id="parentOrganisationUnitLevelId"
                                             name="lgaTransferTo"
                                             style={{ height: "40px", border: 'solid 1px #014d88', borderRadius: '5px', fontWeight: 'bolder', appearance: 'auto' }}
                                             required
                                             // onChange={loadFacilities1}
                                             onChange={(e) => {
-                                                setPayload(prevPayload => ({ ...prevPayload, lgaTransferTo: e.target.value }));
+                                                if (e.target.value !== "") {
+                                                    const filterlga = lgas1.filter(lg => {
+                                                        return Number(lg.id) === Number(e.target.value)
+                                                    }
+                                                    )
+                                                    setSelectedLga(filterlga)
+
+                                                    setPayload(prevPayload => ({ ...prevPayload, lgaTransferTo: filterlga[0].name }));
+                                                }
                                                 loadFacilities1(e.target.value);
+
                                             }}
-                                          
+
                                         >
                                             <option>Select LGA</option>
                                             {lgas1.map((lga) => (
@@ -603,22 +569,33 @@ const Tracking = (props) => {
                                                 </option>
                                             ))}
                                         </Input>
+                                        {errors.lgaTransferTo !== "" ? (
+                                            <span className={classes.error}>
+                                                {errors.lgaTransferTo}
+                                            </span>
+                                        ) : (
+                                            ""
+                                        )}
                                     </FormGroup>
                                 </div>
                                 <div className="form-group mb-3 col-md-4">
                                     <FormGroup>
-                                        <Label for="" style={{ color: '#014d88', fontWeight: 'bolder' }}>Facility</Label>
+                                        <Label for="" style={{ color: '#014d88', fontWeight: 'bolder' }}>Facility Transfer To <span style={{ color: "red" }}> *</span> </Label>
                                         <Input
                                             type="select"
-                                            // name="parentOrganisationUnitLevelId"
-                                            // id="parentOrganisationUnitLevelId"
                                             name="facilityTransferTo"
                                             style={{ height: "40px", border: 'solid 1px #014d88', borderRadius: '5px', fontWeight: 'bolder', appearance: 'auto' }}
                                             required
                                             onChange={(e) => {
-                                                const selectedFacilityId = e.target.value;
-                                                const selectedFacility = facilities1.find(facility => facility.id === selectedFacilityId);
-                                                setPayload({...payload, facilityTransferTo: selectedFacility ? selectedFacility.name : ""});
+                                                // setPayload(prevPayload => ({ ...prevPayload, facilityTransferTo: e.target.value }));
+                                                if (e.target.value !== "") {
+                                                    const filterFacility = facilities1.filter(fa => {
+                                                        return Number(fa.id) === Number(e.target.value)
+                                                    }
+                                                    )
+                                                    setSelectedFacility(filterFacility)
+                                                    setPayload(prevPayload => ({ ...prevPayload, facilityTransferTo: filterFacility[0].name }));
+                                                }
                                             }}
                                         >
                                             <option>Select Facility</option>
@@ -628,11 +605,18 @@ const Tracking = (props) => {
                                                 </option>
                                             ))}
                                         </Input>
+                                        {errors.facilityTransferTo !== "" ? (
+                                            <span className={classes.error}>
+                                                {errors.facilityTransferTo}
+                                            </span>
+                                        ) : (
+                                            ""
+                                        )}
                                     </FormGroup>
                                 </div>
-                            </div> */}
-                         <div className="row">
-                                <div className="form-group mb-3 col-md-4">
+                            </div>
+                            {/* <div className="row"> */}
+                            {/* <div className="form-group mb-3 col-md-4">
                                     <FormGroup>
                                         <Label for="testGroup">
                                             Facility Name To <span style={{ color: "red" }}> *</span>
@@ -662,9 +646,9 @@ const Tracking = (props) => {
                                             ""
                                         )}
                                     </FormGroup>
-                                </div>
+                                </div> */}
 
-                                <div className="form-group mb-3 col-md-4">
+                            {/* <div className="form-group mb-3 col-md-4">
                                     <FormGroup>
                                         <Label for=""> State Transfer To</Label>
                                         <Input
@@ -675,14 +659,9 @@ const Tracking = (props) => {
                                             // onChange={handleInputChange}
                                             value={selectedState}
                                         ></Input>
-                                         {/* {errors.dsdStatus !== "" ? (
-                      <span className={classes.error}>{errors.dsdStatus}</span>
-                    ) : (
-                      ""
-                    )}  */}
                                     </FormGroup>
-                                </div>
-                                <div className="form-group mb-3 col-md-4">
+                                </div> */}
+                            {/* <div className="form-group mb-3 col-md-4">
                                     <FormGroup>
                                         <Label for="">LGA Transfer To</Label>
 
@@ -695,8 +674,8 @@ const Tracking = (props) => {
                                             value={selectedLga}
                                         ></Input>
                                     </FormGroup>
-                                </div>
-                            </div> 
+                                </div> */}
+                            {/* </div>  */}
                             <div className="row">
                                 <div className="form-group mb-3 col-md-12">
                                     <FormGroup>
@@ -1087,68 +1066,6 @@ const Tracking = (props) => {
                             <div className="row">
                                 <div className="mb-5 col-md-12 mt-0">
                                     <h3>Latest lab results </h3>
-                                    {/* {currentMedication.map((each, index) => {
-                      return (
-                        <div className="row px-3 py-2 mt-3" key={index}>
-                          <div className="col-md-4">
-                            <h5>Regimen Name</h5>
-                            <Input
-                              type="text"
-                              name="reasonForTrackingOthers"
-                              id="reasonForTrackingOthers"
-                              onChange={handleInputChange}
-                              disabled={true}
-                              value={each?.regimenName}
-                            />
-                          </div>{" "}
-                          <div className="col-md-2">
-                            <h5>Frequency</h5>
-                            <Input
-                              type="text"
-                              name="reasonForTrackingOthers"
-                              id="reasonForTrackingOthers"
-                              onChange={handleInputChange}
-                              disabled={true}
-                              value={each?.frequency}
-                            />
-                          </div>{" "}
-                          <div className="col-md-2">
-                            <h5>Duration</h5>
-                            <Input
-                              type="text"
-                              name="reasonForTrackingOthers"
-                              id="reasonForTrackingOthers"
-                              onChange={handleInputChange}
-                              disabled={true}
-                              value={each?.duration}
-                            />
-                          </div>
-                          <div className="col-md-2">
-                            <h5>Quantity Prescribed</h5>
-                            <Input
-                              type="text"
-                              name="reasonForTrackingOthers"
-                              id="reasonForTrackingOthers"
-                              onChange={handleInputChange}
-                              disabled={true}
-                              value={each?.prescribed}
-                            />
-                          </div>
-                          <div className="col-md-2">
-                            <h5>Dispense</h5>
-                            <Input
-                              type="text"
-                              name="reasonForTrackingOthers"
-                              id="reasonForTrackingOthers"
-                              onChange={handleInputChange}
-                              disabled={true}
-                              value={each?.dispense}
-                            />
-                          </div>{" "}
-                        </div>
-                      );
-                    })} */}
-
                                     <table
                                         class="table px-5 pt-2 mt-3 pb-0 table-bordered"
                                         style={{
@@ -1510,7 +1427,7 @@ const Tracking = (props) => {
                             </h3>
                             <div className="row">
                                 <div className="form-group mb-3 col-md-4">
-    
+
                                     <FormGroup>
                                         <Label for=""> Patient came with Transfer form</Label>
 

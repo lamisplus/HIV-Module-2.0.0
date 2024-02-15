@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Card, CardBody, FormGroup, Label, Input } from "reactstrap";
 import MatButton from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
@@ -103,15 +103,14 @@ const DashboardFilledTransferForm = (props) => {
   const [currentMedication, setCurrentMedication] = useState([]);
   const [facId, setFacId] = useState(localStorage.getItem("facId"))
   const [attemptList, setAttemptList] = useState([]);
-    const [selectedState, setSelectedState] = useState("");
-    const [selectedLga, setSelectedLga] = useState("");
-    const [reasonForTransfer, setReasonForTransfer] = useState([
-        "Relocating",
-        "Closeness to new facility",
-        "Self Transfer",
-        "Stigma",
-        "PMTCT",
-    ]);
+  // const [selectedLga, setSelectedLga] = useState("");
+  const [reasonForTransfer, setReasonForTransfer] = useState([
+    "Relocating",
+    "Closeness to new facility",
+    "Self Transfer",
+    "Stigma",
+    "PMTCT",
+  ]);
 
   const [info, setInfo] = useState({});
 
@@ -165,9 +164,69 @@ const DashboardFilledTransferForm = (props) => {
     value: "",
     label: "",
   });
-  
 
- 
+  const [states1, setStates1] = useState([])
+  const [lgas1, setLGAs1] = useState([])
+  const [facilities1, setFacilities1] = useState([])
+  const [selectedState, setSelectedState] = useState({})
+  const [selectedFacility, setSelectedFacility] = useState({});
+  const [selectedLga, setSelectedLga] = useState({});
+
+  const loadStates1 = () => {
+    axios.get(`${baseUrl}organisation-units/parent-organisation-units/1`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then((response) => {
+        if (response.data) {
+          setStates1(response.data);
+        }
+
+      })
+      .catch((e) => {
+        // console.log("Fetch states error" + e);
+      });
+  };
+
+
+  const loadLGA1 = (id) => {
+    axios.get(`${baseUrl}organisation-units/parent-organisation-units/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then((response) => {
+        if (response.data) {
+          setLGAs1(response.data);
+          // const selectedLga = response.data.find(lga => lga.id === id);
+          // setPayload(prevPayload => ({ ...prevPayload, lgaTransferTo: selectedLga ? selectedLga.name : "" }));
+        }
+
+      })
+      .catch((e) => {
+        // console.log("Fetch LGA error" + e);
+      });
+  };
+
+  const loadFacilities1 = (id) => {
+    axios.get(`${baseUrl}organisation-units/parent-organisation-units/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then((response) => {
+        if (response.data) {
+          setFacilities1(response.data);
+
+        }
+      })
+      .catch((e) => {
+        // console.log("Fetch Facilities error" + e);
+      });
+  };
+
+
 
   const getTransferFormInfo = () => {
     axios
@@ -182,9 +241,8 @@ const DashboardFilledTransferForm = (props) => {
         });
         //   setPatientObj1(response.data);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
-
   // fetch info for the form
   const getTreatmentInfo = () => {
     axios
@@ -195,7 +253,7 @@ const DashboardFilledTransferForm = (props) => {
         setTransferInfo(response.data);
         //   setPatientObj1(response.data);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   // get current Medication dose
@@ -206,10 +264,10 @@ const DashboardFilledTransferForm = (props) => {
       })
       .then((response) => {
         // setTransferInfo(response.data);
-      
+
         setCurrentMedication(response.data);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   // get Lab Result
@@ -225,7 +283,7 @@ const DashboardFilledTransferForm = (props) => {
         // setTransferInfo(response.data);
         setLabResult(response.data);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   const getBasedlineCD4Count = () => {
@@ -239,7 +297,7 @@ const DashboardFilledTransferForm = (props) => {
         setBaselineCDCount(response.data);
         // setLabResult(response.data);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   const getCurrentCD4Count = () => {
@@ -255,7 +313,7 @@ const DashboardFilledTransferForm = (props) => {
       .then((response) => {
         setCurrentCD4(response.data);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   const postTransferForm = (load) => {
@@ -287,105 +345,113 @@ const DashboardFilledTransferForm = (props) => {
   // get all facilities
   const getAllFacilities = () => {
     axios
-        .get(
-            `${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/5/hierarchy`,
+      .get(
+        `${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/5/hierarchy`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then((response) => {
+        let updatedFacilities = response.data.map((each, id) => {
+          return {
+            ...each,
+            value: each.id,
+            label: each.name,
+          };
+        });
+        setAllFacilities(updatedFacilities);
+      })
+      .catch((error) => {
+        // Handle error of Request A
+        toast.error("Request A failed. Trying Request B...")
+        // Attempt Request B
+        axios
+          .get(
+            `${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/4/hierarchy`,
             {
-                headers: { Authorization: `Bearer ${token}` },
+              headers: { Authorization: `Bearer ${token}` },
             }
-        )
-        .then((response) => {
+          )
+          .then((response) => {
             let updatedFacilities = response.data.map((each, id) => {
-                return {
-                    ...each,
-                    value: each.id,
-                    label: each.name,
-                };
+              return {
+                ...each,
+                value: each.id,
+                label: each.name,
+              };
             });
             setAllFacilities(updatedFacilities);
-        })
-        .catch((error) => {
-            // Handle error of Request A
-            toast.error("Request A failed. Trying Request B...")
-            // Attempt Request B
-            axios
-                .get(
-                    `${baseUrl}organisation-units/parent-organisation-units/1/organisation-units-level/4/hierarchy`,
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                )
-                .then((response) => {
-                    let updatedFacilities = response.data.map((each, id) => {
-                        return {
-                            ...each,
-                            value: each.id,
-                            label: each.name,
-                        };
-                    });
-                    setAllFacilities(updatedFacilities);
-                })
-                .catch((error) => {
-                    // console.error("Both requests failed.");
-                });
-        });
-};
-
-
-  // const getAllSelectedFacility = () => {
-  //   let defaultFacilityValue = allFacilities.filter((each, id) => {
-  //     if (each.name == payload.facilityTransferTo) {
-  //       return each;
-  //       // {
-  //       //   ...each,
-  //       //   value: each.id,
-  //       //   label: each.name,
-  //       // };
-  //     }
-  //   });
-
-  //   setDefaultFacility(defaultFacilityValue[0]);
-  // };
-  const calculateBMI = () => {
-    let squareH = Number(transferInfo?.height) * Number(transferInfo?.height);
-    let value = Number(transferInfo.weight) / squareH;
-    setBMI(value);
+          })
+          .catch((error) => {
+            // console.error("Both requests failed.");
+          });
+      });
   };
-  // when component mounts
 
+
+
+
+  const calculateBMI = () => {
+    const weight = Number(transferInfo?.weight);
+    const height = Number(transferInfo?.height);
+
+    if (isNaN(weight) || isNaN(height) || weight <= 0 || height <= 0) {
+        setBMI("");
+    } else {
+        const heightInMeters = height / 100;
+        const bmi = weight / (heightInMeters * heightInMeters);
+        setBMI(Math.round(bmi));
+    }
+}
   useEffect(() => {
-    getAllFacilities();
+    loadStates1()
     getTreatmentInfo();
     getLabResult();
     getCurrentMedication();
-    getBasedlineCD4Count();
-    getCurrentCD4Count();
     getTransferFormInfo();
+    
   }, []);
 
-  useEffect(() => {
-    // setPayload({ ...transferInfo });
-    calculateBMI();
 
-    // calculateBMI();
-  }, [transferInfo.height, transferInfo.weight]);
+  useEffect(()=> {
+    calculateBMI();
+  },[ transferInfo.height, transferInfo.weight])
 
   const handleInputChange = (e) => {
     setErrors({ ...temp, [e.target.name]: "" });
     setPayload({ ...payload, [e.target.name]: e.target.value });
   };
 
-
+  const handleInputChangeLocation = (e) => {
+    setErrors({ ...temp, [e.target.name]: "" });
+    if(e.target.name === 'stateTransferTo'){
+   let filteredState = states1.filter((each)=>{
+    return each.name.toLowerCase()  === e.target.value.toLowerCase() 
+   })
+  setPayload({ ...payload, [e.target.name]: e.target.value });
+    loadLGA1(filteredState[0].id);
+    }
+    if(e.target.name === 'lgaTransferTo'){
+     let filteredState = lgas1.filter((each)=>{
+      return each.name.toLowerCase()  === e.target.value.toLowerCase() 
+     })
+    setPayload({ ...payload, [e.target.name]: e.target.value });
+      loadFacilities1(filteredState[0].id);
+  
+      }
+  
+  };
   const handleInputChangeObject = (e) => {
     setPayload({
-        ...payload,
-        facilityTransferTo: e.name,
-        stateTransferTo: e.parentParentOrganisationUnitName,
-        lgaTransferTo: e.parentOrganisationUnitName,
+      ...payload,
+      facilityTransferTo: e.name,
+      stateTransferTo: e.parentParentOrganisationUnitName,
+      lgaTransferTo: e.parentOrganisationUnitName,
     });
     setErrors({ ...errors, facilityTransferTo: "" });
     setSelectedState(e.parentParentOrganisationUnitName);
     setSelectedLga(e.parentOrganisationUnitName);
-};
+  };
   const [attempt, setAttempt] = useState({
     attemptDate: "",
     whoAttemptedContact: "",
@@ -394,9 +460,9 @@ const DashboardFilledTransferForm = (props) => {
     reasonForDefaulting: "",
     reasonForDefaultingOthers: "",
   });
- 
+
   const handleInputChangeAttempt = (e) => {
-    
+
     setErrors({ ...temp, [e.target.name]: "" });
     setAttempt({ ...attempt, [e.target.name]: e.target.value });
   };
@@ -410,7 +476,9 @@ const DashboardFilledTransferForm = (props) => {
       ? ""
       : "This field is required";
     temp.modeOfHIVTest = payload.modeOfHIVTest ? "" : "This field is required";
- 
+    temp.stateTransferTo = payload.stateTransferTo ? "" : "This field is required";
+    temp.lgaTransferTo = payload.lgaTransferTo ? "" : "This field is required";
+    temp.facilityTransferTo = payload.facilityTransferTo ? "" : "This field is required";
 
     setErrors({
       ...temp,
@@ -535,60 +603,85 @@ const DashboardFilledTransferForm = (props) => {
                   </FormGroup>
                 </div>
               </div>
+
+
               <div className="row">
                 <div className="form-group mb-3 col-md-4">
                   <FormGroup>
+                    <Label for="" style={{ color: '#014d88', fontWeight: 'bolder' }}>State Transfer To <span style={{ color: "red" }}> *</span> </Label>
+                    <Input
+                      type="select"
+                      name="stateTransferTo"
+                      style={{ height: "40px", border: 'solid 1px #014d88', borderRadius: '5px', fontWeight: 'bolder', appearance: 'auto' }}
+                      required
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
+                      value={payload?.stateTransferTo}
+                      // onChange={loadLGA1}
+                      onChange={handleInputChangeLocation}
+
+                    >
+                      <option>Select State</option>
+                      {states1.map((state) => (
+                        <option key={state.id} value={state.name}>
+                          {state.name}
+                        </option>
+                      ))}
+                    </Input>
+                    {errors.stateTransferTo !== "" ? (
+                      <span className={classes.error}>
+                        {errors.stateTransferTo}
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </FormGroup>
+
+                </div>
+
+
+
+
+
+
+                {/* LOCAL GOVERNMENT TARNASFER TO  */}
+
+                <div className="form-group mb-3 col-md-4">
+                  <FormGroup>
                     <Label for="testGroup">
-                      Facility Name To <span style={{ color: "red" }}> *</span>
+                      Lga Transfer To <span style={{ color: "red" }}> *</span>
                     </Label>
 
-                    {/* props.activeContent.actionType */}
-                    {props.activeContent.actionType === "view" ? (
-                      <Input
-                        type="text"
-                        name="stateTransferTo"
-                        id="stateTransferTo"
-                        disabled={true}
-                        onChange={handleInputChangeObject}
-                        value={payload.facilityTransferTo}
-                      ></Input>
-                    ) : props.activeContent.actionType === "update" &&
-                      showSelectdropdown ? (
-                      <Select
-                        //value={selectedOption}
-                        onChange={handleInputChangeObject}
-                        name="facilityTransferTo"
-                        plcaceHolder={"hgeheh"}
-                        defaultValue={defaultFacility}
-                        options={allFacilities}
-                        theme={(theme) => ({
-                          ...theme,
-                          borderRadius: "0.25rem",
-                          border: "1px solid #014D88",
-                          colors: {
-                            ...theme.colors,
-                            primary25: "#014D88",
-                            primary: "#014D88",
-                          },
-                        })}
-                      />
-                    ) : (
-                      <Input
-                        type="text"
-                        name="stateTransferTo"
-                        id="stateTransferTo"
-                        onClick={(e) => {
-                          setShowSelectdropdown(true);
-                        }}
-                        // disabled={true}
-                        // onChange={handleInputChange}
-                        value={payload.facilityTransferTo}
-                      ></Input>
-                    )}
+                    <Input
+                      type="select"
+                      name="lgaTransferTo"
+                      style={{ height: "40px", border: 'solid 1px #014d88', borderRadius: '5px', fontWeight: 'bolder', appearance: 'auto' }}
+                      required
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
+                      value={payload?.lgaTransferTo}
 
-                    {errors.facilityTransferTo !== "" ? (
+                      onChange={handleInputChangeLocation}
+
+                    >
+                      <option>Select Lga</option>
+                      {lgas1.length > 0 &&lgas1.map((lga) => (
+                        <option key={lga.id} value={lga.name}>
+                          {lga.name}
+                        </option>
+                      )) }
+                         {lgas1.length < 1 && <option key={3} value={payload?.lgaTransferTo}>
+                          {payload?.lgaTransferTo}
+                        </option> }
+
+            
+
+                    </Input>
+                    {errors.lgaTransferTo !== "" ? (
                       <span className={classes.error}>
-                        {errors.facilityTransferTo}
+                        {errors.lgaTransferTo}
                       </span>
                     ) : (
                       ""
@@ -596,38 +689,50 @@ const DashboardFilledTransferForm = (props) => {
                   </FormGroup>
                 </div>
 
+
+                {/* FACILITY TRANSFER TO   */}
+
                 <div className="form-group mb-3 col-md-4">
                   <FormGroup>
-                    <Label for=""> State Transfer To</Label>
+                    <Label for="testGroup">
+                      Facility Transfer To <span style={{ color: "red" }}> *</span>
+                    </Label>
                     <Input
-                      type="text"
-                      name="stateTransferTo"
-                      id="stateTransferTo"
-                      disabled={true}
-                      // onChange={handleInputChange}
-                      value={payload.stateTransferTo}
-                    ></Input>
-                    {/* {errors.dsdStatus !== "" ? (
-                      <span className={classes.error}>{errors.dsdStatus}</span>
+                      type="select"
+                      name="facilityTransferTo"
+                      style={{ height: "40px", border: 'solid 1px #014d88', borderRadius: '5px', fontWeight: 'bolder', appearance: 'auto' }}
+                      required
+                      disabled={
+                        props.activeContent.actionType === "view" ? true : false
+                      }
+                      value={payload.facilityTransferTo}
+                      // onChange={loadLGA1}
+                      onChange={handleInputChange}
+
+                    >
+                      <option>Select State</option>
+                      {facilities1.length > 0 &&facilities1.map((fa) => (
+                        <option key={fa.id} value={fa.name}>
+                          {fa.name}
+                        </option>
+                      ))}
+
+                         {facilities1.length < 1 && <option key={3} value={payload?.facilityTransferTo}>
+                          {payload?.facilityTransferTo}
+                        </option> }
+                    </Input>
+                    {errors.facilityTransferTo !== "" ? (
+                      <span className={classes.error}>
+                        {errors.facilityTransferTo}
+                      </span>
                     ) : (
                       ""
-                    )} */}
-                  </FormGroup>
-                </div>
-                <div className="form-group mb-3 col-md-4">
-                  <FormGroup>
-                    <Label for="">LGA Transfer To</Label>
+                    )}
 
-                    <Input
-                      type="text"
-                      name="lgaTransferTo"
-                      id="lgaTransferTo"
-                      disabled={true}
-                      onChange={handleInputChange}
-                      value={payload.lgaTransferTo}
-                    ></Input>
                   </FormGroup>
                 </div>
+
+
               </div>
               <div className="row">
                 <div className="form-group mb-3 col-md-12">
@@ -1003,7 +1108,7 @@ const DashboardFilledTransferForm = (props) => {
                     </thead>
                     <tbody>
                       {currentMedication &&
-                        currentMedication.slice(0,5).map((each, index) => {
+                        currentMedication.slice(0, 5).map((each, index) => {
                           return (
                             <tr>
                               <td scope="row">{each?.regimenName}</td>
@@ -1049,7 +1154,7 @@ const DashboardFilledTransferForm = (props) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {labResult.slice(0,5).map((each, index) => {
+                      {labResult.slice(0, 5).map((each, index) => {
                         return (
                           <tr>
                             <td scope="row">{new Date(each.dateReported).toISOString().split('T')[0]}</td>
@@ -1060,11 +1165,11 @@ const DashboardFilledTransferForm = (props) => {
                               <FormGroup className="col-md-6">
                                 <Input
                                   type="text"
-                                  // name="facilityName"
-                                  // id="facilityName"
-                                  // onChange={handleInputChange}
-                                  // disabled={true}
-                                  // value={payload?.facilityName}
+                                // name="facilityName"
+                                // id="facilityName"
+                                // onChange={handleInputChange}
+                                // disabled={true}
+                                // value={payload?.facilityName}
                                 ></Input>
                               </FormGroup>
                             </td>
@@ -1428,7 +1533,7 @@ const DashboardFilledTransferForm = (props) => {
                       }
                       onChange={handleInputChange}
                       value={payload.patientCameWithTransferForm}
-                      //min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
+                    //min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
                     >
                       <option value=""></option>
                       <option value="Yes">Yes</option>
@@ -1607,7 +1712,7 @@ const DashboardFilledTransferForm = (props) => {
                 startIcon={<SaveIcon />}
                 onClick={handleSubmit}
                 style={{ backgroundColor: "#014d88" }}
-                // disabled={objValues.dateOfEac1 === "" ? true : false}
+              // disabled={objValues.dateOfEac1 === "" ? true : false}
               >
                 {!saving ? (
                   <span style={{ textTransform: "capitalize" }}>Update</span>
