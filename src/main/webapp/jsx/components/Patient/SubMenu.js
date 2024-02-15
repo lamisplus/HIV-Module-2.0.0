@@ -22,7 +22,7 @@ function SubMenu(props) {
       getOldRecordIfExists();
     }
     LabOrders();
-  },[]);
+  }, []);
 
   //Get list
   const Observation = () => {
@@ -295,7 +295,71 @@ function SubMenu(props) {
                 "died (confirmed)" ||
               props.patientObj.currentStatus.toLowerCase() ===
                 "art transfer out" ? (
-                " "
+                <Menu.Menu position="" name="lab" active={activeItem === "lab"}>
+                  <Dropdown item text="Other Forms">
+                    <Dropdown.Menu>
+                      <Dropdown.Item
+                        onClick={() => loadTrackingForm(patientObj)}
+                        name="tracking"
+                        active={activeItem === "tracking"}
+                        title="Tracking Form"
+                      >
+                        Tracking Form
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+
+                  {(patientObj?.age >= 10 && patientObj?.age <= 23) ||
+                  patientObj.age <= 19 ? (
+                    <Dropdown item text="OTZ">
+                      <Dropdown.Menu>
+                        {patientObj?.age >= 10 && patientObj?.age <= 23 && (
+                          <>
+                            {isOtzEnrollementDone === null ? (
+                              <Dropdown.Item>
+                                Checking patient enrollment...
+                              </Dropdown.Item>
+                            ) : isOtzEnrollementDone === false ? (
+                              <Dropdown.Item
+                                onClick={() => loadOtzEnrollmentForm()}
+                                name="OTZ Enrollment Form"
+                                active={activeItem === "otz-enrollment-form"}
+                                title="Enrollment Form"
+                              >
+                                OTZ Enrollment Form
+                              </Dropdown.Item>
+                            ) : null}
+
+                            {isOtzEnrollementDone ? (
+                              <Dropdown.Item
+                                onClick={() => loadOtzServiceForm()}
+                                name="OTZ Service Form"
+                                active={activeItem === "otz-service-form"}
+                                title="Tracking Form"
+                              >
+                                OTZ Service Form
+                              </Dropdown.Item>
+                            ) : null}
+                          </>
+                        )}
+
+                        {patientObj.age <= 19 && (
+                          <Dropdown.Item
+                            onClick={() => loadOtzCheckList()}
+                            name="Peadiatric Disclosure Checklist"
+                            active={
+                              activeItem ===
+                              "otz-peadiatric-disclosure-checklist"
+                            }
+                            title="Peadiatric Disclosure Checklist"
+                          >
+                            Peadiatric Disclosure Checklist
+                          </Dropdown.Item>
+                        )}
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  ) : null}
+                </Menu.Menu>
               ) : (
                 <>
                   {!patientObj.clinicalEvaluation &&

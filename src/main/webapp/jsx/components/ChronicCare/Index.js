@@ -706,7 +706,7 @@ const ChronicCare = (props) => {
                 </div>
                 {showNutrition && (
                   <NutritionalStatus
-                    nutrition={nutrition}
+                    g={nutrition}
                     setNutrition={setNutrition}
                     setErrors={setErrors}
                     errors={errors}

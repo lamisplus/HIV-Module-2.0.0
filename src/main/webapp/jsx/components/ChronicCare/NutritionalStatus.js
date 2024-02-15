@@ -121,8 +121,10 @@ const BasicInfo = (props) => {
       .catch((error) => {});
   };
   const [vital, setVitalSignDto] = useState({
-    bodyWeight: props.nutrition.bodyWeight,
-    height: props.nutrition.height,
+    bodyWeight: props?.nutrition?.bodyWeight
+      ? props?.nutrition?.bodyWeight
+      : props?.nutrition?.weight,
+    height: props?.nutrition?.height,
   });
   //Vital signs clinical decision support
   const [vitalClinicalSupport, setVitalClinicalSupport] = useState({

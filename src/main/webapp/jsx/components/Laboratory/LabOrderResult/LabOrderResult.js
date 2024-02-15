@@ -375,6 +375,7 @@ const Laboratory = (props) => {
                     orderId: "",
                     resultReportedBy: "",
                 })
+                setTestOrderList([])
                 props.setActiveContent({...props.activeContent, route:'laboratoryOrderResult', activeTab:"history"})
             })
             .catch(error => {
