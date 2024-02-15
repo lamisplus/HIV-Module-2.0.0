@@ -257,6 +257,7 @@ useEffect(() => {
                     orderId: "",
                     resultReportedBy: "",
                 })
+                setTestOrderList([])
                 props.setActiveContent({...props.activeContent, route:'laboratoryOrderResult', id:props.activeContent.obj.id, activeTab:"history", actionType:"update", obj:props.activeContent.obj})
             })
             .catch(error => {
