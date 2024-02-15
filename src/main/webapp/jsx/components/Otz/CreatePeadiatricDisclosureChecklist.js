@@ -292,7 +292,7 @@ const CreatePeadiatricDisclosureChecklist = (props) => {
                         <Input
                           name="cccNumber"
                           id="cccNumber"
-                          type="number"
+                          type="text"
                           value={formik.values.cccNumber}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
