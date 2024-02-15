@@ -663,6 +663,7 @@ const ArtCommencement = (props) => {
                         id="cd4Count"
                         value={objValues.cd4Count}
                         onChange={handleInputChange}
+                        disabled={disabledField}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.2rem",
@@ -686,6 +687,7 @@ const ArtCommencement = (props) => {
                         id="cd4Count"
                         value={objValues.cd4Count}
                         onChange={handleInputChange}
+                        disabled={disabledField}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
