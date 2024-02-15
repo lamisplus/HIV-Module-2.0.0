@@ -22,7 +22,7 @@ function SubMenu(props) {
       getOldRecordIfExists();
     }
     LabOrders();
-  });
+  }, []);
 
   //Get list
   const Observation = () => {
