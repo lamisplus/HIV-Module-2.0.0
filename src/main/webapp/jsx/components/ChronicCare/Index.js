@@ -706,12 +706,13 @@ const ChronicCare = (props) => {
                 </div>
                 {showNutrition && (
                   <NutritionalStatus
-                    g={nutrition}
+                    nutrition={nutrition}
                     setNutrition={setNutrition}
                     setErrors={setErrors}
                     errors={errors}
                     encounterDate={observation.dateOfObservation}
                     patientObj={patientObj}
+                    action={props.activeContent.actionType}
                   />
                 )}
               </div>

@@ -340,6 +340,7 @@ const UserRegistration = (props) => {
                         activeContent={props.activeContent}
                         setActiveContent={props.setActiveContent}
                         patientAge={patientAge}
+                        action={props.activeContent.actionType}
                       />
                     ) : (
                       <AdultRegimenNextAppointment
@@ -353,6 +354,7 @@ const UserRegistration = (props) => {
                         activeContent={props.activeContent}
                         setActiveContent={props.setActiveContent}
                         patientAge={patientAge}
+                        action={props.activeContent.actionType}
                       />
                     )}
                   </>

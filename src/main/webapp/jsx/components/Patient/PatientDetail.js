@@ -61,6 +61,7 @@ import OtzRegister from "./../Otz/Register";
 import Tracking from "../ClientVerfication/ClientVerification";
 import ClientVerification from "../ClientVerfication/ClientVerification";
 import EnrollmentOtz from "../Otz/Enrollment";
+import ViewChronicCare from "../ChronicCare/viewChronicCare";
 
 const styles = (theme) => ({
   root: {
@@ -483,6 +484,14 @@ function PatientCard(props) {
           )}
           {activeContent.route === "otz-peadiatric-disclosure-checklist" && (
             <OtzPeadiatricDisclosureChecklist
+              patientObj={patientObj}
+              setActiveContent={setActiveContent}
+              activeContent={activeContent}
+            />
+          )}
+
+          {activeContent.route === "Chronic-Care-view" && (
+            <ViewChronicCare
               patientObj={patientObj}
               setActiveContent={setActiveContent}
               activeContent={activeContent}
