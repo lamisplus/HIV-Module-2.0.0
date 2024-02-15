@@ -89,7 +89,7 @@ public class ObservationService {
         boolean sameEncounterObservation = personObservations.stream()
                 .anyMatch(o -> o.getType().equals(observationDto.getType())
                         && o.getDateOfObservation().equals(observationDto.getDateOfObservation())
-                        && o.getArchived().equals(observationDto.getArchived()));
+                        && o.getArchived()==0);
         if (sameEncounterObservation) {
             throw new RecordExistException(Observation.class, "date of observation", "" + observationDto.getDateOfObservation());
         }
