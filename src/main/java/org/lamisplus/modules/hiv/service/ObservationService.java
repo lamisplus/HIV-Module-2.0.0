@@ -88,7 +88,8 @@ public class ObservationService {
         List<Observation> personObservations = observationRepository.getAllByPersonAndFacilityIdAndArchived(person, person.getFacilityId(), 1);
         boolean sameEncounterObservation = personObservations.stream()
                 .anyMatch(o -> o.getType().equals(observationDto.getType())
-                        && o.getDateOfObservation().equals(observationDto.getDateOfObservation()));
+                        && o.getDateOfObservation().equals(observationDto.getDateOfObservation())
+                        && o.getArchived().equals(observationDto.getArchived()));
         if (sameEncounterObservation) {
             throw new RecordExistException(Observation.class, "date of observation", "" + observationDto.getDateOfObservation());
         }
