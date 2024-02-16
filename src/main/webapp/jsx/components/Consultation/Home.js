@@ -35,6 +35,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { Label as LabelSui } from "semantic-ui-react";
 import Select from "react-select";
 import { calculate_age_to_number } from "../../../utils";
+import TBScreeningForm from "./TBScreening/Index";
 // import { resetForm } from "../../../utils/formUtils";
 
 const useStyles = makeStyles((theme) => ({
@@ -906,8 +907,6 @@ const ClinicVisit = (props) => {
             route: "consultation",
             activeTab: "history",
           });
-
-       
         })
         .catch((error) => {
           setSaving(false);
@@ -950,7 +949,10 @@ const ClinicVisit = (props) => {
     }
     // resetForm(setObjValues, setVitalSignDto, setTbObj, setTests);
     resetForm();
+    setCareSupportTb(null);
+    setTbStatus(null);
   };
+
 
   const resetForm = () => {
     setObjValues({
@@ -971,7 +973,16 @@ const ClinicVisit = (props) => {
       oiScreened: "",
       opportunisticInfections: {},
       personId: patientObj.id,
-      tbScreen: {},
+      tbScreen: {
+        currentOnIpt: "",
+        coughing: "",
+        antiTBDrug: "",
+        nightSweat: "",
+        fever: "",
+        contactWithTBCase: "",
+        lethergy: "",
+        tbStatusId: null,
+      },
       stiIds: "",
       stiTreated: "",
       uuid: "",
@@ -988,7 +999,7 @@ const ClinicVisit = (props) => {
       tbPrevention: "",
       arvdrugsRegimen: {},
       viralLoadOrder: {},
-      pregnancyStatus: ""
+      pregnancyStatus: "",
     });
     setVitalSignDto({
       bodyWeight: "",
@@ -1015,7 +1026,7 @@ const ClinicVisit = (props) => {
       fever: "",
       contactWithTBCase: "",
       lethergy: "",
-      tbStatusId: "",
+      tbStatusId: null,
     });
 
     setTests({
@@ -1031,7 +1042,7 @@ const ClinicVisit = (props) => {
       viralLoadIndication: "",
       visitId: "",
     });
-  }
+  };
   function BmiCal(bmi) {
     if (bmi < 18.5) {
       return <Message size="mini" color="brown" content="Underweight" />;
@@ -1041,6 +1052,10 @@ const ClinicVisit = (props) => {
       <Message size="mini" color="blue" content="Overweight/Obese" />;
     }
   }
+
+  // if (careSupportTb === "Presumptive TB and referred for evaluation") {
+  //   setCareSupportTb("Presumptive TB");
+  // }
 
   return (
     <div className={classes.root}>
@@ -2293,7 +2308,7 @@ const ClinicVisit = (props) => {
               TB Screening
             </Label>
             {/* TB Screening Form */}
-            <TBScreening
+            <TBScreeningForm
               tbStatus={tbStatus}
               tbObj={tbObj}
               setTbObj={setTbObj}
