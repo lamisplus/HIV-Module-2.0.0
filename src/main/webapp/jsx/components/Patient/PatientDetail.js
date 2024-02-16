@@ -498,6 +498,14 @@ function PatientCard(props) {
               activeContent={activeContent}
             />
           )}
+
+          {activeContent.route === "Chronic-Care-view" && (
+            <ViewChronicCare
+              patientObj={patientObj}
+              setActiveContent={setActiveContent}
+              activeContent={activeContent}
+            />
+          )}
         </CardContent>
       </Card>
     </div>

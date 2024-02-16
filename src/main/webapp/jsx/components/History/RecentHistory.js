@@ -687,7 +687,6 @@ const RecentHistory = (props) => {
             toast.error("Something went wrong. Please try again...");
           }
         });
-
     } else if (row.path === "Paediatric-OTZ") {
       setSaving(true);
       axios
@@ -713,7 +712,6 @@ const RecentHistory = (props) => {
             toast.error("Something went wrong. Please try again...");
           }
         });
-
     } else {
     }
   };
@@ -934,74 +932,72 @@ const RecentHistory = (props) => {
                       {viralLoad.length > 0 ? (
                         <>
                           {viralLoad.map((test, index) => (
-                            <>
-                              <li key={index}>
-                                <div
-                                  className={labStatus(test.labTestOrderStatus)}
-                                ></div>
-                                <span
-                                  className="timeline-panel text-muted"
-                                  onClick={() => redirectLink()}
-                                  //to=""
-                                >
+                            <li key={index}>
+                              <div
+                                className={labStatus(test.labTestOrderStatus)}
+                              ></div>
+                              <span
+                                className="timeline-panel text-muted"
+                                onClick={() => redirectLink()}
+                                //to=""
+                              >
+                                <h6 className="mb-0">
+                                  Test Order Date <br />
+                                  <strong className="text-primary">
+                                    {test.dateOrderBy}
+                                  </strong>
+                                </h6>
+                                {test.labTestGroupName !== "others" && (
                                   <h6 className="mb-0">
-                                    Test Order Date <br />
+                                    Test Order <br />
                                     <strong className="text-primary">
-                                      {test.dateOrderBy}
-                                    </strong>
-                                  </h6>
-                                  {test.labTestGroupName !== "others" && (
-                                    <h6 className="mb-0">
-                                      Test Order <br />
-                                      <strong className="text-primary">
-                                        {test.labTestGroupName +
-                                          " - " +
-                                          test.labTestName}
-                                      </strong>
-                                      .
-                                    </h6>
-                                  )}
-                                  {test.labTestGroupName === "others" && (
-                                    <h6 className="mb-0">
-                                      Test Order <br />
-                                      <strong className="text-primary">
-                                        {test.labTestName +
-                                          " - " +
-                                          test.viralLoadIndicationName}
-                                      </strong>
-                                      .
-                                    </h6>
-                                  )}
-
-                                  <h6 className="mb-0">
-                                    Status <br />
-                                    <strong className="text-primary">
-                                      {test.labTestOrderStatusName}
+                                      {test.labTestGroupName +
+                                        " - " +
+                                        test.labTestName}
                                     </strong>
                                     .
                                   </h6>
-                                  {test.labTestOrderStatusName ===
-                                    "Result Reported" && (
-                                    <>
-                                      <h6 className="mb-0">
-                                        Date Result Reported <br />
-                                        <strong className="text-primary">
-                                          {test.dateResultReported}
-                                        </strong>
-                                        .
-                                      </h6>
-                                      <h6 className="mb-0">
-                                        Result <br />
-                                        <strong className="text-primary">
-                                          {test.result}
-                                        </strong>
-                                        .
-                                      </h6>
-                                    </>
-                                  )}
-                                </span>
-                              </li>
-                            </>
+                                )}
+                                {test.labTestGroupName === "others" && (
+                                  <h6 className="mb-0">
+                                    Test Order <br />
+                                    <strong className="text-primary">
+                                      {test.labTestName +
+                                        " - " +
+                                        test.viralLoadIndicationName}
+                                    </strong>
+                                    .
+                                  </h6>
+                                )}
+
+                                <h6 className="mb-0">
+                                  Status <br />
+                                  <strong className="text-primary">
+                                    {test.labTestOrderStatusName}
+                                  </strong>
+                                  .
+                                </h6>
+                                {test.labTestOrderStatusName ===
+                                  "Result Reported" && (
+                                  <>
+                                    <h6 className="mb-0">
+                                      Date Result Reported <br />
+                                      <strong className="text-primary">
+                                        {test.dateResultReported}
+                                      </strong>
+                                      .
+                                    </h6>
+                                    <h6 className="mb-0">
+                                      Result <br />
+                                      <strong className="text-primary">
+                                        {test.result}
+                                      </strong>
+                                      .
+                                    </h6>
+                                  </>
+                                )}
+                              </span>
+                            </li>
                           ))}
                         </>
                       ) : (
@@ -1042,48 +1038,46 @@ const RecentHistory = (props) => {
                       {refillList && refillList.length > 0 ? (
                         <>
                           {refillList.map((regimen, index) => (
-                            <>
-                              <li key={index}>
-                                <div
-                                  className={
-                                    index % 2 == 0
-                                      ? "timeline-badge info"
-                                      : "timeline-badge success"
-                                  }
-                                ></div>
-                                <span
-                                  className="timeline-panel text-muted"
-                                  onClick={() => redirectLink()}
-                                  //to=""
-                                >
-                                  <h6 className="mb-0">
-                                    Regimen
-                                    {regimenName(
-                                      regimen && regimen.extra
-                                        ? regimen.extra.regimens
-                                        : null
-                                    )}
-                                  </h6>
-                                  <strong className="text-teal">
-                                    Refill Duration
-                                    <br />
-                                    {regimen.refillPeriod}
-                                  </strong>
+                            <li key={index}>
+                              <div
+                                className={
+                                  index % 2 == 0
+                                    ? "timeline-badge info"
+                                    : "timeline-badge success"
+                                }
+                              ></div>
+                              <span
+                                className="timeline-panel text-muted"
+                                onClick={() => redirectLink()}
+                                //to=""
+                              >
+                                <h6 className="mb-0">
+                                  Regimen
+                                  {regimenName(
+                                    regimen && regimen.extra
+                                      ? regimen.extra.regimens
+                                      : null
+                                  )}
+                                </h6>
+                                <strong className="text-teal">
+                                  Refill Duration
                                   <br />
-                                  <strong className="text-black">
-                                    Visit Date
-                                    <br />
-                                    {regimen.visitDate}
-                                  </strong>
+                                  {regimen.refillPeriod}
+                                </strong>
+                                <br />
+                                <strong className="text-black">
+                                  Visit Date
                                   <br />
-                                  <strong className="text-warning">
-                                    Next Appointment
-                                    <br />
-                                    {regimen.nextAppointment}
-                                  </strong>
-                                </span>
-                              </li>
-                            </>
+                                  {regimen.visitDate}
+                                </strong>
+                                <br />
+                                <strong className="text-warning">
+                                  Next Appointment
+                                  <br />
+                                  {regimen.nextAppointment}
+                                </strong>
+                              </span>
+                            </li>
                           ))}
                         </>
                       ) : (

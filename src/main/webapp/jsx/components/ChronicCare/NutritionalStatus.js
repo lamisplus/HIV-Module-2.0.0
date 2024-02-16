@@ -385,7 +385,9 @@ const BasicInfo = (props) => {
                 <FormGroup>
                   <Label>Nutrition Support</Label>
                   {/* Nutrition Education */}
-                  {console.log("Nutrition suppport & education", nutritionSupport, nutritionEducation)}
+
+                  {console.log("Nutrition suppport", nutritionSupport)}
+              
 
                   <DualListBox
                     //canFilter
