@@ -674,7 +674,7 @@ const Tracking = (props) => {
           objValues.biometricStatus !== ""
         ) {
           objValues.statusTracker.biometricStatus = objValues.biometricStatus;
-          objValues.statusTracker.hivStatus = objValues.biometricStatus;
+          objValues.statusTracker.hivStatus = objValues.reasonForDiscountinuation;
         }
 
         
