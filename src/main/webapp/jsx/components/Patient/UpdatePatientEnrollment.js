@@ -33,7 +33,7 @@ import "./patient.css";
 import { Modal } from "react-bootstrap";
 import { Label as LabelSui } from "semantic-ui-react";
 import { Icon } from "semantic-ui-react";
-import { calculate_age_to_number } from "../../../utils";
+import { calculate_age } from "../../../utils";
 library.add(faCheckSquare, faCoffee, faEdit, faTrash);
 
 const useStyles = makeStyles((theme) => ({
@@ -176,7 +176,6 @@ const UserRegistration = (props) => {
       alert("Date of registration can not be earlier than date of birth");
     }
   }, [patientObj, patientId]);
-
   //GET  Patients
   async function PatientCurrentObject() {
     axios
@@ -600,7 +599,7 @@ const UserRegistration = (props) => {
                             type="text"
                             name="age"
                             id="age"
-                            value={basicInfo.age}
+                            value={calculate_age(patientObj.dateOfBirth)}
                             disabled={ageDisabled}
                             onChange={handleAgeChange}
                             style={{
