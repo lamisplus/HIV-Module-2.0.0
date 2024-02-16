@@ -1,6 +1,7 @@
 package org.lamisplus.modules.hiv.service;
 
 import lombok.RequiredArgsConstructor;
+import org.audit4j.core.util.Log;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
 import org.lamisplus.modules.hiv.domain.dto.HIVStatusTrackerDto;
 import org.lamisplus.modules.hiv.domain.dto.PatientTrackingDto;
@@ -37,7 +38,9 @@ public class PatientTrackerService {
 					() -> new EntityNotFoundException(HIVStatusTracker.class, "id", String.valueOf(statusDto.getId())));
 			patientTracker.setStatusTracker(status);
 		}
-		return mapEntityDto(patientTrackerRepository.save(patientTracker));
+		PatientTracker en = patientTrackerRepository.save(patientTracker);
+		Log.info("Emmanuel data patient tracker: {}", en);
+		return mapEntityDto(en);
 	}
 	
 	
@@ -107,9 +110,14 @@ public class PatientTrackerService {
 		patentTrackingDto.setDateMissedAppointment(entity.getDateMissedAppointment());
 		patentTrackingDto.setFacilityId(entity.getFacilityId());
 		patentTrackingDto.setPatientId(entity.getPerson().getId());
-		HIVStatusTrackerDto statusTracker =
-				statusTrackerService.convertEntityToDto(entity.getStatusTracker());
-		patentTrackingDto.setStatusTracker(statusTracker);
+//		HIVStatusTrackerDto statusTracker =
+//				statusTrackerService.convertEntityToDto(entity.getStatusTracker());
+//		patentTrackingDto.setStatusTracker(statusTracker);
+		if(entity.getStatusTracker() != null) {
+			HIVStatusTrackerDto statusTracker =
+					statusTrackerService.convertEntityToDto(entity.getStatusTracker());
+			patentTrackingDto.setStatusTracker(statusTracker);
+		}
 		entity.getPerson().getId();
 		patentTrackingDto.setId(entity.getId());
 		return patentTrackingDto;

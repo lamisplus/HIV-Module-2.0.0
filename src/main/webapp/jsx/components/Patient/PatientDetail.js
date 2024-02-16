@@ -286,6 +286,8 @@ function PatientCard(props) {
               activeContent={activeContent}
             />
           )}
+
+
           {activeContent.route === "art-commencement-view" && (
             <ViewArtCommencement
               patientObj={patientObj}

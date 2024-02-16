@@ -613,7 +613,7 @@ const Tracking = (props) => {
                 error.response.data.apierror &&
                 error.response.data.apierror.message !== "" &&
                 error.response.data.apierror &&
-                error.response.data.apierror.subErrors[0].message !== ""
+                error.response.data.apierror?.subErrors?.[0].message !== ""
               ) {
                 toast.error(
                   error.response.data.apierror.message +

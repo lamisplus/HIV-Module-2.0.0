@@ -8,11 +8,9 @@ const divStyle = {
 };
 
 const LaboratoryModule = (props) => {
-    const [key, setKey] = useState('home');
+    const [key, setKey] = useState(props.activeContent.activeTab);
     const patientObj = props.patientObj
-    useEffect ( () => {
-      setKey(props.activeContent.activeTab)
-    }, [props.activeContent.id]);
+    
 
     
   return (

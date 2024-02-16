@@ -674,7 +674,7 @@ const Tracking = (props) => {
           objValues.biometricStatus !== ""
         ) {
           objValues.statusTracker.biometricStatus = objValues.biometricStatus;
-          objValues.statusTracker.hivStatus = objValues.biometricStatus;
+          objValues.statusTracker.hivStatus = objValues.reasonForDiscountinuation;
         }
 
         
@@ -686,8 +686,7 @@ const Tracking = (props) => {
           })
           .then((response) => {
             setSaving(false);
-            //props.TrackingDetails();
-            //props.PatientCurrentObject()
+            
             toast.success("Tracking from save successfully", {
               position: toast.POSITION.BOTTOM_CENTER,
             });
@@ -696,8 +695,7 @@ const Tracking = (props) => {
               route: "tracking-form",
               activeTab: "history",
             });
-            //props.setActiveContent({...props.activeContent, route:'recent-history'})
-            //props.setActiveContent('recent-history')
+          
             if (objValues.reasonForDiscountinuation === "Death") {
               history.push("/");
             }

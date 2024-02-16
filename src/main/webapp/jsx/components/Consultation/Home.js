@@ -35,7 +35,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { Label as LabelSui } from "semantic-ui-react";
 import Select from "react-select";
 import { calculate_age_to_number } from "../../../utils";
-
+// import { resetForm } from "../../../utils/formUtils";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -226,6 +226,7 @@ const ClinicVisit = (props) => {
     systolic: "",
     pulse: "",
     temperature: "",
+
     respiratoryRate: "",
     headCircumference: "",
     surfaceArea: "",
@@ -871,6 +872,7 @@ const ClinicVisit = (props) => {
     setErrors({ ...temp, [e.target.name]: "" }); //reset the error message to empty once the field as value
     setTests({ ...tests, [e.target.name]: e.target.value });
   };
+
   /**** Submit Button Processing  */
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -904,6 +906,8 @@ const ClinicVisit = (props) => {
             route: "consultation",
             activeTab: "history",
           });
+
+       
         })
         .catch((error) => {
           setSaving(false);
@@ -944,7 +948,90 @@ const ClinicVisit = (props) => {
         position: toast.POSITION.BOTTOM_CENTER,
       });
     }
+    // resetForm(setObjValues, setVitalSignDto, setTbObj, setTests);
+    resetForm();
   };
+
+  const resetForm = () => {
+    setObjValues({
+      adherenceLevel: "",
+      adheres: {},
+      adrScreened: "",
+      adverseDrugReactions: {},
+      artStatusId: "",
+      cd4: "",
+      cd4Percentage: "",
+      clinicalNote: "",
+      clinicalStageId: "",
+      facilityId: 0,
+      functionalStatusId: "",
+      hivEnrollmentId: "",
+      nextAppointment: "",
+      lmpDate: "",
+      oiScreened: "",
+      opportunisticInfections: {},
+      personId: patientObj.id,
+      tbScreen: {},
+      stiIds: "",
+      stiTreated: "",
+      uuid: "",
+      visitDate: "",
+      whoStagingId: "",
+      cryptococcalScreeningStatus: "",
+      cervicalCancerScreeningStatus: "",
+      cervicalCancerTreatmentProvided: "",
+      hepatitisScreeningResult: "",
+      familyPlaning: "",
+      onFamilyPlaning: "",
+      levelOfAdherence: "",
+      tbStatus: "",
+      tbPrevention: "",
+      arvdrugsRegimen: {},
+      viralLoadOrder: {},
+      pregnancyStatus: ""
+    });
+    setVitalSignDto({
+      bodyWeight: "",
+      diastolic: "",
+      encounterDate: "",
+      facilityId: 1,
+      height: "",
+      personId: props.patientObj.id,
+      serviceTypeId: 1,
+      systolic: "",
+      pulse: "",
+      temperature: "",
+      respiratoryRate: "",
+      headCircumference: "",
+      surfaceArea: "",
+      nextAppointment: "",
+      muac: "",
+    });
+    setTbObj({
+      currentOnIpt: "",
+      coughing: "",
+      antiTBDrug: "",
+      nightSweat: "",
+      fever: "",
+      contactWithTBCase: "",
+      lethergy: "",
+      tbStatusId: "",
+    });
+
+    setTests({
+      comments: "",
+      dateAssayed: "",
+      labNumber: "",
+      labTestGroupId: "",
+      labTestId: "",
+      dateResultReceived: "",
+      patientId: props.patientObj ? props.patientObj.id : "",
+      result: "",
+      sampleCollectionDate: null,
+      viralLoadIndication: "",
+      visitId: "",
+    });
+  }
   function BmiCal(bmi) {
     if (bmi < 18.5) {
       return <Message size="mini" color="brown" content="Underweight" />;
@@ -954,6 +1041,8 @@ const ClinicVisit = (props) => {
       <Message size="mini" color="blue" content="Overweight/Obese" />;
     }
   }
+
+  console.log("tbobj==>", tbObj, "caresupport==>",careSupportTb, "tbStatus==>", tbStatus)
 
   return (
     <div className={classes.root}>

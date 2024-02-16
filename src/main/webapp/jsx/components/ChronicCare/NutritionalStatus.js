@@ -92,6 +92,7 @@ const BasicInfo = (props) => {
         if (props.nutrition.education.length > 0) {
           setSelectedOptions1(props.nutrition.education);
         }
+        
         setNutritionEducation(
           Object.entries(response.data).map(([key, value]) => ({
             label: value.display,
@@ -210,6 +211,8 @@ const BasicInfo = (props) => {
       label: "Referred to community support",
     },
   ];
+
+  
 
   return (
     <>
@@ -382,7 +385,9 @@ const BasicInfo = (props) => {
                 <FormGroup>
                   <Label>Nutrition Support</Label>
                   {/* Nutrition Education */}
+
                   {console.log("Nutrition suppport", nutritionSupport)}
+              
 
                   <DualListBox
                     //canFilter
