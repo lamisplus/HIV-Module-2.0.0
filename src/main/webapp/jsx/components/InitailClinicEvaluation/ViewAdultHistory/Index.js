@@ -325,7 +325,7 @@ const UserRegistration = (props) => {
                     patientAge={patientAge}
                   />
                 )}
-                {activeItem === "regimen" && (
+                 {activeItem === "regimen" && (
                   <>
                     {calculate_age_to_number(props.patientObj.dateOfBirth) <=
                     14 ? (
@@ -340,6 +340,7 @@ const UserRegistration = (props) => {
                         activeContent={props.activeContent}
                         setActiveContent={props.setActiveContent}
                         patientAge={patientAge}
+                        action={props.activeContent.actionType}
                       />
                     ) : (
                       <AdultRegimenNextAppointment
@@ -353,6 +354,7 @@ const UserRegistration = (props) => {
                         activeContent={props.activeContent}
                         setActiveContent={props.setActiveContent}
                         patientAge={patientAge}
+                        action={props.activeContent.actionType}
                       />
                     )}
                   </>

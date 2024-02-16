@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import axios from "axios";
 import MatButton from "@material-ui/core/Button";
 import Button from "@material-ui/core/Button";
 import { FormGroup, Label, Spinner, Input, Form } from "reactstrap";
-//import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faCheckSquare,
@@ -11,29 +10,21 @@ import {
   faEdit,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-//import {yupResolver} from '@hookform/resolvers/yup';
 import * as moment from "moment";
 import { makeStyles } from "@material-ui/core/styles";
 import { Card, CardContent } from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
-//import AddIcon from "@material-ui/icons/Add";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "react-widgets/dist/css/react-widgets.css";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { TiArrowBack } from "react-icons/ti";
-//import {useForm} from "react-hook-form";
 import { token, url as baseUrl } from "../../../api";
-//import PhoneInput from 'react-phone-input-2'
 import "react-phone-input-2/lib/style.css";
-//import { getValue } from "@syncfusion/ej2-base";
 import "./patient.css";
-// import Form from 'react-bootstrap/Form';
 import { Modal } from "react-bootstrap";
-import { Label as LabelSui } from "semantic-ui-react";
-import { Icon } from "semantic-ui-react";
-import { calculate_age_to_number } from "../../../utils";
+import { calculate_age } from "../../../utils";
 library.add(faCheckSquare, faCoffee, faEdit, faTrash);
 
 const useStyles = makeStyles((theme) => ({
@@ -600,7 +591,7 @@ const UserRegistration = (props) => {
                             type="text"
                             name="age"
                             id="age"
-                            value={basicInfo.age}
+                            value={calculate_age(patientObj.dateOfBirth)}
                             disabled={ageDisabled}
                             onChange={handleAgeChange}
                             style={{

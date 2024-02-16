@@ -11,13 +11,12 @@ const divStyle = {
 };
 
 const ClinicVisitPage = (props) => {
-    const [key, setKey] = useState('home');
+    const [key, setKey] = useState(props.activeContent.activeTab);
     const patientObj = props.patientObj
     const [loading, setLoading] = useState(true)
     const [clinicVisitList, setClinicVisitList] = useState([])
     useEffect ( () => {
       ClinicVisitListHistory();
-      setKey(props.activeContent.activeTab)
     }, [props.activeContent.id, props.activeContent.activeTab]);
     async function ClinicVisitListHistory() {
       setLoading(true)

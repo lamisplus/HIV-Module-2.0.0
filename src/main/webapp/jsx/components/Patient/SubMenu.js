@@ -51,7 +51,7 @@ function SubMenu(props) {
 
   const loadEAC = (row) => {
     setActiveItem("eac");
-    props.setActiveContent({ ...props.activeContent, route: "counseling" });
+    props.setActiveContent({ ...props.activeContent, route: "counseling", activeTab:"home" });
   };
 
   const loadPharmacyModal = (row) => {
@@ -91,7 +91,7 @@ function SubMenu(props) {
 
   const onClickConsultation = (row) => {
     setActiveItem("visit");
-    props.setActiveContent({ ...props.activeContent, route: "consultation" });
+    props.setActiveContent({ ...props.activeContent, route: "consultation", activeTab:"home" });
   };
   const onClickHome = (row) => {
     setActiveItem("home");
@@ -100,7 +100,9 @@ function SubMenu(props) {
 
   const loadTrackingForm = (row) => {
     setActiveItem("tracking");
-    props.setActiveContent({ ...props.activeContent, route: "tracking-form" });
+    props.setActiveContent({ ...props.activeContent, route: "tracking-form", 
+    activeTab: "home"
+  });
   };
 
   const loadMentalHealth = () => {
@@ -150,7 +152,7 @@ function SubMenu(props) {
   };
   const loadChronicCare = () => {
     setActiveItem("chronic-care");
-    props.setActiveContent({ ...props.activeContent, route: "chronic-care" });
+    props.setActiveContent({ ...props.activeContent, route: "chronic-care", activeTab:"home" });
   };
   const loadOtzServiceForm = () => {
     setActiveItem("otz-service-form");

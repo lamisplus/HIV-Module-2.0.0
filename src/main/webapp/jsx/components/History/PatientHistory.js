@@ -235,7 +235,7 @@ const PatientnHistory = (props) => {
         actionType: action,
       });
     } else {
-      //Chronic Care
+      
     }
   };
 
