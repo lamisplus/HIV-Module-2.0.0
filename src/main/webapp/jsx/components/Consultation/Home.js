@@ -1042,6 +1042,8 @@ const ClinicVisit = (props) => {
     }
   }
 
+  console.log("tbobj==>", tbObj, "caresupport==>",careSupportTb, "tbStatus==>", tbStatus)
+
   return (
     <div className={classes.root}>
       <div className="row">

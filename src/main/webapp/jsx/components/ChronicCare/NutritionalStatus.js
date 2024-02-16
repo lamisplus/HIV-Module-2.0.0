@@ -92,6 +92,7 @@ const BasicInfo = (props) => {
         if (props.nutrition.education.length > 0) {
           setSelectedOptions1(props.nutrition.education);
         }
+        
         setNutritionEducation(
           Object.entries(response.data).map(([key, value]) => ({
             label: value.display,
@@ -111,6 +112,7 @@ const BasicInfo = (props) => {
         if (props.nutrition.support.length > 0) {
           setSelectedOptions2(props.nutrition.support);
         }
+
         setNutritionSupport(
           Object.entries(response.data).map(([key, value]) => ({
             label: value.display,
@@ -210,6 +212,8 @@ const BasicInfo = (props) => {
     },
   ];
 
+  
+
   return (
     <>
       <Card>
@@ -227,6 +231,7 @@ const BasicInfo = (props) => {
                 <div className=" mb-3 col-md-4">
                   <FormGroup>
                     <Label>Body Weight</Label>
+                    {console.log(nutritionEducation)}
                     <InputGroup>
                       <Input
                         type="number"
@@ -365,6 +370,8 @@ const BasicInfo = (props) => {
               <div className="form-group mb-3 col-md-12">
                 <FormGroup>
                   <Label>Nutrition Education and Counselled</Label>
+                  {console.log("Nutrition Education", nutritionEducation)}
+                  {/* Nutrition Education */}
                   <DualListBox
                     //canFilter
                     options={nutritionEducation}
@@ -377,6 +384,9 @@ const BasicInfo = (props) => {
               <div className="form-group mb-3 col-md-12">
                 <FormGroup>
                   <Label>Nutrition Support</Label>
+                  {/* Nutrition Education */}
+                  {console.log("Nutrition suppport & education", nutritionSupport, nutritionEducation)}
+
                   <DualListBox
                     //canFilter
                     options={nutritionSupport}

@@ -136,6 +136,8 @@ const TBScreeningForm = (props) => {
     props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.value });
   };
 
+  console.log("tbStatus from tb screening ==>",tbStatus)
+
   return (
     <div>
       <div className="row">
