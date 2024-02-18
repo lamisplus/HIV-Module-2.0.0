@@ -83,11 +83,12 @@ const TBScreeningForm = (props) => {
   useEffect(() => {
     TBStatus();
     if (
-      (props.tbObj.currentOnIpt !== "" && props.tbObj.coughing === "YES") ||
-      props.tbObj.nightSweat === "YES" ||
-      props.tbObj.fever === "YES" ||
-      props.tbObj.contactWithTBCase === "YES" ||
-      props.tbObj.lethergy === "YES"
+      props.tbObj.currentOnIpt !== "" &&
+      (props.tbObj.coughing === "YES" &&
+        props.tbObj.nightSweat === "YES" &&
+        props.tbObj.fever === "YES" &&
+        props.tbObj.contactWithTBCase === "YES" &&
+        props.tbObj.lethergy === "YES")
     ) {
       props.tbObj.tbStatusId = 68; //for any option with YES
     } else if (
@@ -98,7 +99,7 @@ const TBScreeningForm = (props) => {
       props.tbObj.contactWithTBCase === "NO" &&
       props.tbObj.lethergy === "NO"
     ) {
-      props.tbObj.tbStatusId = 67;
+      props.tbObj.tbStatusId = 67; //for any option with NO
     } else if (
       props.tbObj.tbStatusId === "" ||
       props.tbObj.tbStatusId === null
@@ -136,7 +137,7 @@ const TBScreeningForm = (props) => {
     props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.value });
   };
 
-  console.log("tbStatus from tb screening ==>",tbStatus)
+
 
   return (
     <div>
