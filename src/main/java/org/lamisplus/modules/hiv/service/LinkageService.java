@@ -250,6 +250,14 @@ public class LinkageService {
     public LinkageResponse convertToLinkageResponseDto(OvcLinkage ovcLinkage) {
         LinkageResponse response = new LinkageResponse();
         response.setArtNumber(ovcLinkage.getArtNumber());
+        // recently added entity
+        response.setArvRegimen(ovcLinkage.getArvRegimen());
+        response.setDateTested(ovcLinkage.getDateTested());
+        response.setArtEnrollmentDate(ovcLinkage.getArtEnrollmentDate());
+        response.setVlTestDate(ovcLinkage.getVlTestDate());
+        response.setVlResult(ovcLinkage.getVlResult());
+        response.setVlResultDate(ovcLinkage.getVlResultDate());
+
         response.setLastName(ovcLinkage.getLastName());
         response.setOtherName(ovcLinkage.getOtherName());
         response.setGender(ovcLinkage.getGender());
@@ -262,6 +270,10 @@ public class LinkageService {
         response.setStateOfResidence(ovcLinkage.getStateOfResidence());
         response.setLgaOfResidence(ovcLinkage.getLgaOfResidence());
         response.setEntryPoint(ovcLinkage.getEntryPoint());
+        // recent added entity
+        response.setOfferedOvcFromFacility(ovcLinkage.getOfferedOvcFromFacility());
+        response.setOfferAccepted(ovcLinkage.getOfferAccepted());
+
         response.setShareContactWithOvc(ovcLinkage.getShareContactWithOvc());
         response.setReasonForDecline(ovcLinkage.getReasonForDecline());
         response.setDrugRefillNotification(ovcLinkage.getDrugRefillNotification());

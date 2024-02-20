@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <property name="autoIncrement" value="true"/>
+
+
+    <changeSet failOnError="true" author="Joshua Gabriel" id="20240220-001">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="hiv_art_clinical" columnName="arv_regimen" />
+                <columnExists tableName="hiv_art_clinical" columnName="tested_date" />
+                <columnExists tableName="hiv_art_clinical" columnName="art_enrollment_date" />
+                <columnExists tableName="hiv_art_clinical" columnName="vl_test_date" />
+                <columnExists tableName="hiv_art_clinical" columnName="vl_result" />
+                <columnExists tableName="hiv_art_clinical" columnName="vl_result_date" />
+                <columnExists tableName="hiv_art_clinical" columnName="offered_ovc_from_facility" />
+                <columnExists tableName="hiv_art_clinical" columnName="offer_accepted" />
+            </not>
+        </preConditions>
+        <sql>
+            ALTER TABLE hiv_ovc_linkage
+            ADD arv_regimen VARCHAR(255),
+            ADD tested_date DATE,
+            ADD art_enrollment_date DATE,
+            ADD vl_test_date DATE,
+            ADD vl_result VARCHAR(255),
+            ADD vl_result_date DATE,
+            ADD offered_ovc_from_facility VARCHAR(255),
+            ADD offer_accepted VARCHAR(255);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
