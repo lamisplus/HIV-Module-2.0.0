@@ -83,12 +83,12 @@ const Home = () => {
                   <Tab eventKey="art-patients" title="ART Patients">
                     <ArtPatients />
                   </Tab>
-                  {/* <Tab eventKey="list" title="OVC Linkage">
+                   <Tab eventKey="list" title="OVC Linkage">
                     <Ovc />
                   </Tab>
-                   <Tab eventKey="visualization" title="Data Visualisation">                   
+                   <Tab eventKey="visualization" title="Data Visualisation">
                     <VisualisationHome />
-                  </Tab>                     */}
+                  </Tab>
                 </Tabs>
               </div>
             </Card.Body>
