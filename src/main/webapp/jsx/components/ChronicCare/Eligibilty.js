@@ -24,6 +24,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "react-widgets/dist/css/react-widgets.css";
 import "react-phone-input-2/lib/style.css";
 import { calculate_age_to_number } from "../../../utils";
+import { h } from "preact";
 const useStyles = makeStyles((theme) => ({
   card: {
     margin: theme.spacing(20),
@@ -126,15 +127,33 @@ const Eligibility = (props) => {
       })
       .catch((error) => {});
   };
+  // const PREGNANCY_STATUS = () => {
+  //   axios
+  //     .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS`, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     })
+  //     .then((response) => {
+  //       setPregnancyStatus(response.data);
+  //     })
+  //     .catch((error) => {});
+  // };
+
+
   const PREGNANCY_STATUS = () => {
     axios
       .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        setPregnancyStatus(response.data);
+        // Filter out "Post Partum" from the response.data array
+        const filteredData = response.data.filter(
+          (status) => status.display !== "Post Partum"
+        );
+        setPregnancyStatus(filteredData);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        console.log(error);
+      });
   };
   const WHO_STAGING_CRITERIA = () => {
     axios
@@ -183,7 +202,7 @@ const Eligibility = (props) => {
               {patientAge >= 10 && props.patientObj.sex === "Female" && (
                 <div className="form-group mb-3 col-md-6">
                   <FormGroup>
-                    <Label>Pregnancy/Breastfeeding Status</Label>
+                    <Label>Pregnancy Status</Label>
                     <InputGroup>
                       <Input
                         type="select"
@@ -228,7 +247,7 @@ const Eligibility = (props) => {
               </div>
               <div className="form-group mb-3 col-md-6">
                 <FormGroup>
-                  <Label>Current Clinical Status(WHO Statging)</Label>
+                  <Label>WHO Clinical Staging</Label>
                   <InputGroup>
                     <Input
                       type="select"
