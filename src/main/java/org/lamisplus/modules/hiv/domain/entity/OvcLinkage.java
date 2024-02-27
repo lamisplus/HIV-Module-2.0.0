@@ -28,6 +28,20 @@ public class OvcLinkage extends HivAuditEntity implements Persistable<UUID> {
     private UUID id;
     @Column(name = "art_number")
     private String artNumber;
+    // added variables on ovc
+    @Column(name = "arv_regimen")
+    private String arvRegimen;
+    @Column(name = "tested_date")
+    private LocalDate dateTested;
+    @Column(name = "art_enrollment_date")
+    private LocalDate artEnrollmentDate;
+    @Column(name = "vl_test_date")
+    private LocalDate vlTestDate;
+    @Column(name = "vl_result")
+    private String vlResult;
+    @Column(name = "vl_result_date")
+    private LocalDate vlResultDate;
+
     @Column(name = "last_name")
     private String lastName;
     @Column(name = "other_name")
@@ -45,6 +59,12 @@ public class OvcLinkage extends HivAuditEntity implements Persistable<UUID> {
     private String lgaOfResidence;
     @Column(name = "entry_point")
     private String entryPoint;
+    //added entities
+    @Column(name = "offered_ovc_from_facility")
+    private String offeredOvcFromFacility;
+    @Column(name = "offer_accepted")
+    private String offerAccepted;
+
     @Column(name = "share_contact_with_ovc")
     private YesNo shareContactWithOvc;
     @Column(name = "reason_for_decline")
@@ -73,6 +93,9 @@ public class OvcLinkage extends HivAuditEntity implements Persistable<UUID> {
     @Column(name = "facility_staff_name")
     private String facilityStaffName;
     private String status;
+
+
+
     @Override
     public boolean isNew() {
         return id == null;

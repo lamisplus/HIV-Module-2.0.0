@@ -13,6 +13,14 @@ import java.util.UUID;
 @AllArgsConstructor
 public class LinkageRequest {
     private String artNumber;
+    // added variables on ovc
+    private String arvRegimen;
+    private LocalDate dateTested;
+    private LocalDate artEnrollmentDate;
+    private LocalDate vlTestDate;
+    private String vlResult;
+    private LocalDate vlResultDate;
+
     private String lastName;
     private String otherName;
     private String gender;
@@ -22,6 +30,10 @@ public class LinkageRequest {
     private String stateOfResidence;
     private String lgaOfResidence;
     private String entryPoint;
+    //recent added entities
+    private String offeredOvcFromFacility;
+    private String offerAccepted;
+
     private YesNo shareContactWithOvc;
     private String reasonForDecline;
     private YesNo drugRefillNotification;
