@@ -21,7 +21,7 @@ const Home = () => {
   const [key, setKey] = useState("home");
   // tab
 
-  const fetchFacilityId = () => {
+const fetchFacilityId = () => {
     
     axios
         .get(`${baseUrl}account`, {

@@ -25,6 +25,7 @@ import "react-widgets/dist/css/react-widgets.css";
 import "react-phone-input-2/lib/style.css";
 import { calculate_age_to_number } from "../../../utils";
 import { h } from "preact";
+import useFacilityId from "../../../hooks/useFacilityId";
 const useStyles = makeStyles((theme) => ({
   card: {
     margin: theme.spacing(20),
@@ -91,10 +92,15 @@ const useStyles = makeStyles((theme) => ({
 
 const Eligibility = (props) => {
   const classes = useStyles();
+
   const [clientType, setClientType] = useState([]);
   const [pregnancyStatus, setPregnancyStatus] = useState([]);
   const [who, setWho] = useState([]);
   const [artStatus, setArtStatus] = useState([]);
+  const [lastCd4Result, setLastCd4Result] = useState([]);
+  const facilityId = useFacilityId(baseUrl, token);
+  console.log("Facility ID:", facilityId);
+
   const handleEligibility = (e) => {
     props.setEligibility({
       ...props.eligibility,
@@ -106,6 +112,7 @@ const Eligibility = (props) => {
     PREGNANCY_STATUS();
     ART_STATUS();
     WHO_STAGING_CRITERIA();
+    getLastCD4Result();
   }, []);
   const CHRONIC_CARE_CLIENT_TYPE = () => {
     axios
@@ -127,17 +134,6 @@ const Eligibility = (props) => {
       })
       .catch((error) => {});
   };
-  // const PREGNANCY_STATUS = () => {
-  //   axios
-  //     .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS`, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     })
-  //     .then((response) => {
-  //       setPregnancyStatus(response.data);
-  //     })
-  //     .catch((error) => {});
-  // };
-
 
   const PREGNANCY_STATUS = () => {
     axios
@@ -167,6 +163,39 @@ const Eligibility = (props) => {
   };
 
   const patientAge = calculate_age_to_number(props.patientObj.dateOfBirth);
+
+  const getLastCD4Result = () => {
+    axios
+      .get(
+        `${baseUrl}last/test/result/1/${props.patientObj.id}/${facilityId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then((response) => {
+        console.log("Last CD4 Result:", response.data);
+        
+        const lastCd4Result = response.data;
+        handleLastCd4({
+          target: {
+            name: "lastCd4Result",
+            value: lastCd4Result.lastViralLoadResult,
+          },
+        });
+
+        setLastCd4Result(lastCd4Result.lastViralLoadResult);
+      })
+      .catch((error) => {
+        console.error("Error fetching Last CD4 Result:", error);
+      });
+  };
+
+  const handleLastCd4 = (e) => {
+    props.setEligibility({
+      ...props.eligibility,
+      lastCd4Result: e.target.value,
+    });
+  };
 
   return (
     <>
@@ -275,8 +304,8 @@ const Eligibility = (props) => {
                       type="text"
                       name="lastCd4Result"
                       id="lastCd4Result"
-                      value={props.eligibility.lastCd4Result}
-                      onChange={handleEligibility}
+                      value={lastCd4Result}
+                      onChange={handleLastCd4}
                       disabled={props.action === "view" ? true : false}
                     />
                   </InputGroup>
