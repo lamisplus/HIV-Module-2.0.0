@@ -301,4 +301,13 @@ public class ObservationService {
         return map;
     }
 
+
+    public Map<String, Boolean> getIsHypertensive(Long personId) {
+        Person person = getPerson(personId);
+        Optional<String> isHypertensivePatientUuid = observationRepository.getIsHypertensive(person.getFacilityId(), person.getUuid());
+        HashMap<String, Boolean> map = new HashMap<>();
+        map.put("isHypertensive", isHypertensivePatientUuid.isPresent());
+        return map;
+    }
+
 }
