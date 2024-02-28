@@ -281,7 +281,7 @@ const Pharmacy = (props) => {
       .catch((error) => {});
   };
 
-  //GET Other Drugd
+  //GET Other Drug
   //remove arv prohpylaxis for pregnant women form the list of regimen type and populate the drop down list
  const OtherDrugs = async () => {
    try {
@@ -295,7 +295,7 @@ const Pharmacy = (props) => {
          label: value.description,
          value: value.id,
        }))
-       .filter((item) => item.value !== 5);
+       .filter((item) => item.value !== 5 && item.value !== 30);
 
      setOtherDrugs(filteredData);
    } catch (error) {
