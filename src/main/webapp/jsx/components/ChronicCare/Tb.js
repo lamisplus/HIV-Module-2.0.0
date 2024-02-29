@@ -388,7 +388,7 @@ const TbScreening = (props) => {
 
   //Logic for Less than 14 years
   if (age < 14) {
-    console.log("less than 14 years", 14);
+ 
     useEffect(() => {
       //First Logic 1 Solved
 
