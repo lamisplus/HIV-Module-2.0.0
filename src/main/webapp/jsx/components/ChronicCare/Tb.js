@@ -24,6 +24,8 @@ import "react-toastify/dist/ReactToastify.css";
 import "react-widgets/dist/css/react-widgets.css";
 import "react-phone-input-2/lib/style.css";
 import { Button } from "semantic-ui-react";
+import { calculate_age_to_number } from "../../../utils";
+import { fi } from "date-fns/locale";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -95,273 +97,613 @@ const TbScreening = (props) => {
   const [contraindicationDisplay, setcontraindicationDisplay] = useState(false);
   const [tbTreatmentType, setTbTreatmentType] = useState([]);
   const [tbTreatmentOutCome, setTbTreatmentOutCome] = useState([]);
+  const [tbScreeningType, setTbScreeningType] = useState([]);
+  const [showAdditionalFields, setShowAdditionalFields] = useState(false);
+  const patientAge = calculate_age_to_number(props.patientObj.dateOfBirth);
+
+  //Logic Above 14 years
   useEffect(() => {
-    if (props.tbObj.tbTreatment === "No") {
-      //is TB test confirmed +ve logic
-      if (props.tbObj.isTbTestConfirmed === "Yes") {
-        if (
-          props.tbObj.coughing === "No" &&
-          props.tbObj.fever === "No" &&
-          props.tbObj.losingWeight === "No" &&
-          props.tbObj.nightSweats === "No"
-        ) {
-          props.tbObj.eligibleForTPT = "";
-          props.setTbObj({
-            ...props.tbObj,
-            ["outcome"]: "Not Presumptive",
-            ["status"]: "Confirmed TB",
-            ["eligibleForTPT"]: "",
-          });
-        } else if (
-          props.tbObj.coughing === "Yes" ||
-          props.tbObj.fever === "Yes" ||
-          props.tbObj.losingWeight === "Yes" ||
-          props.tbObj.nightSweats === "Yes" ||
-          props.tbObj.poorWeightGain === "Yes" ||
-          props.tbObj.historyWithAdults === "Yes"
-        ) {
-          props.tbObj.eligibleForTPT = "";
-          props.setTbObj({
-            ...props.tbObj,
-            ["outcome"]: "Presumptive",
-            ["status"]: "Confirmed TB",
-            ["eligibleForTPT"]: "",
-          });
-        }
-      }
-      // TB treatment logic
+    //First Logic 1 Solved
+
+    if (
+      props.tbObj.tbTreatment === "No" &&
+      props.tbObj.tbScreeningType === "Symptom screening"
+    ) {
       if (
         props.tbObj.coughing === "No" &&
         props.tbObj.fever === "No" &&
-        props.tbObj.losingWeight === "No" &&
         props.tbObj.nightSweats === "No" &&
-        props.tbObj.isTbTestConfirmed !== "Yes"
+        props.tbObj.losingWeight === "No"
       ) {
         props.setTbObj({
           ...props.tbObj,
-          ["outcome"]: "Not Presumptive",
-          ["status"]: "No signs or symptoms of TB",
-        });
-      } else if (
-        (props.tbObj.coughing === "Yes" ||
-          props.tbObj.fever === "Yes" ||
-          props.tbObj.losingWeight === "Yes" ||
-          props.tbObj.nightSweats === "Yes" ||
-          props.tbObj.poorWeightGain === "Yes" ||
-          props.tbObj.historyWithAdults === "Yes") &&
-        props.tbObj.isTbTestConfirmed !== "Yes"
-      ) {
-        props.setTbObj({
-          ...props.tbObj,
-          ["outcome"]: "Presumptive",
-          ["status"]: "Presumptive TB and referred for evaluation",
-        });
-      }
-    } else {
-      if (
-        props.tbObj.tbTreatment === "Yes" &&
-        props.tbObj.tbTreatmentStartDate !== ""
-      ) {
-        props.setTbObj({
-          ...props.tbObj,
-          ["outcome"]: "Not Presumptive",
-          ["status"]: "Currently on TB treatment",
-          ["activeTb"]: true,
+          outcome: "Not Presumptive",
+          status: "No signs or symptoms of TB",
+          eligibleForTPT: "",
         });
       }
     }
 
-    //TPT Logic
-    if (props.tbObj.currentlyOnTuberculosis === "No") {
-      if (props.tbObj.previouslyCompletedTPT === "No") {
-        if (
-          props.tbObj.tbTreatment === "No" &&
-          props.tbObj.coughing === "No" &&
-          props.tbObj.fever === "No" &&
-          props.tbObj.losingWeight === "No" &&
-          props.tbObj.nightSweats === "No"
-        ) {
-          setcontraindicationDisplay(true);
-          props.tbObj.eligibleForTPT = "Yes";
-          props.setTbObj({
-            ...props.tbObj,
-            ["outcome"]: "Not Presumptive",
-            ["status"]: "No signs or symptoms of TB",
-            ["eligibleForTPT"]: "Yes",
-          });
-        }
-
-        if (
-          // second TPT logic
-          props.tbObj.tbTreatment === "No" &&
-          props.tbObj.coughing === "No" &&
-          props.tbObj.fever === "No" &&
-          props.tbObj.losingWeight === "No" &&
-          props.tbObj.nightSweats === "No" &&
-          (props.tbObj.activeTb === true ||
-            props.tbObj.priorInh === true ||
-            props.tbObj.highAlcohol === true ||
-            props.tbObj.activeHepatitis === true ||
-            props.tbObj.age1year === true ||
-            props.tbObj.abnormalChest === true ||
-            props.tbObj.poorTreatmentAdherence === true)
-        ) {
-          setcontraindicationDisplay(true);
-          props.tbObj.eligibleForTPT = "No";
-          props.setTbObj({
-            ...props.tbObj,
-            ["outcome"]: "Not Presumptive",
-            ["status"]: "No signs or symptoms of TB",
-            ["eligibleForTPT"]: "No",
-          });
-        } else if (
-          // Third Logic
-          (props.tbObj.coughing === "Yes" ||
-            props.tbObj.fever === "Yes" ||
-            props.tbObj.losingWeight === "Yes" ||
-            props.tbObj.nightSweats === "Yes" ||
-            props.tbObj.poorWeightGain === "Yes" ||
-            props.tbObj.historyWithAdults === "Yes") &&
-          (props.tbObj.activeTb !== false ||
-            props.tbObj.priorInh !== false ||
-            props.tbObj.highAlcohol !== false ||
-            props.tbObj.activeHepatitis !== false ||
-            props.tbObj.age1year !== false ||
-            props.tbObj.abnormalChest !== false ||
-            props.tbObj.poorTreatmentAdherence !== false)
-        ) {
-          setcontraindicationDisplay(true);
-          props.tbObj.eligibleForTPT = "No";
-          props.setTbObj({
-            ...props.tbObj,
-            ["outcome"]: "Presumptive",
-            ["status"]: "Presumptive TB and referred for evaluation",
-            ["eligibleForTPT"]: "No",
-          });
-        } else if (
-          // fourth Logic
-          (props.tbObj.coughing === "Yes" ||
-            props.tbObj.fever === "Yes" ||
-            props.tbObj.losingWeight === "Yes" ||
-            props.tbObj.nightSweats === "Yes" ||
-            props.tbObj.poorWeightGain === "Yes" ||
-            props.tbObj.historyWithAdults === "Yes") &&
-          props.tbObj.activeTb === false &&
-          props.tbObj.priorInh === false &&
-          props.tbObj.highAlcohol === false &&
-          props.tbObj.activeHepatitis === false &&
-          props.tbObj.age1year === false &&
-          props.tbObj.abnormalChest === false &&
-          props.tbObj.poorTreatmentAdherence === false
-        ) {
-          setcontraindicationDisplay(true);
-          props.tbObj.eligibleForTPT = "No";
-          props.setTbObj({
-            ...props.tbObj,
-            ["outcome"]: "Presumptive",
-            ["status"]: "Presumptive TB and referred for evaluation",
-            ["eligibleForTPT"]: "No",
-          });
-        }
-      } else {
-        if (
-          // fifth TPT logic
-          props.tbObj.previouslyCompletedTPT === "Yes" &&
-          props.tbObj.tbTreatment === "No" &&
-          props.tbObj.coughing === "No" &&
-          props.tbObj.fever === "No" &&
-          props.tbObj.losingWeight === "No" &&
-          props.tbObj.nightSweats === "No"
-        ) {
-          setcontraindicationDisplay(false);
-          props.tbObj.eligibleForTPT = "No";
-          props.setTbObj({
-            ...props.tbObj,
-            ["outcome"]: "Not Presumptive",
-            ["status"]: "No signs or symptoms of TB",
-            ["eligibleForTPT"]: "No",
-          });
-        } else if (
-          // sixth Logic
-          props.tbObj.previouslyCompletedTPT === "Yes" &&
-          (props.tbObj.coughing === "Yes" ||
-            props.tbObj.fever === "Yes" ||
-            props.tbObj.losingWeight === "Yes" ||
-            props.tbObj.nightSweats === "Yes" ||
-            props.tbObj.poorWeightGain === "Yes" ||
-            props.tbObj.historyWithAdults === "Yes")
-        ) {
-          setcontraindicationDisplay(false);
-          props.tbObj.eligibleForTPT = "No";
-          props.setTbObj({
-            ...props.tbObj,
-            ["outcome"]: "Presumptive",
-            ["status"]: "Presumptive TB and referred for evaluation",
-            ["eligibleForTPT"]: "No",
-          });
-        }
-      }
-    } else {
+    if (
+      props.tbObj.tbTreatment === "No" &&
+      props.tbObj.tbScreeningType === "Symptom screening"
+    ) {
       if (
-        props.tbObj.currentlyOnTuberculosis === "Yes" &&
-        (props.tbObj.coughing === "Yes" ||
-          props.tbObj.fever === "Yes" ||
-          props.tbObj.losingWeight === "Yes" ||
-          props.tbObj.nightSweats === "Yes" ||
-          props.tbObj.poorWeightGain === "Yes" ||
-          props.tbObj.historyWithAdults === "Yes")
+        props.tbObj.coughing === "Yes" ||
+        props.tbObj.fever === "Yes" ||
+        props.tbObj.nightSweats === "Yes" ||
+        props.tbObj.losingWeight === "Yes"
       ) {
-        props.tbObj.eligibleForTPT = "No";
         props.setTbObj({
           ...props.tbObj,
-          ["outcome"]: "Presumptive",
-          ["status"]: "Currently on INH prophylaxis (IPT)",
-          ["eligibleForTPT"]: "No",
+          outcome: "Presumptive",
+          status: "Presumptive TB and referred for evaluation",
+          eligibleForTPT: "",
         });
-      } else if (
-        props.tbObj.currentlyOnTuberculosis === "Yes" &&
-        props.tbObj.tbTreatment === "No" &&
+      }
+    }
+
+    //First Logic 2
+    if (
+      props.tbObj.tbTreatment === "No" &&
+      props.tbObj.tbScreeningType === "Chest X-ray" &&
+      props.tbObj.chestXray === "X-ray suggestive"
+    ) {
+      if (
         props.tbObj.coughing === "No" &&
         props.tbObj.fever === "No" &&
-        props.tbObj.losingWeight === "No" &&
-        props.tbObj.nightSweats === "No"
+        props.tbObj.nightSweats === "No" &&
+        props.tbObj.losingWeight === "No"
       ) {
-        props.tbObj.eligibleForTPT = "No";
         props.setTbObj({
           ...props.tbObj,
-          ["outcome"]: "Not Presumptive",
-          ["status"]: "Currently on INH prophylaxis (IPT)",
-          ["eligibleForTPT"]: "No",
+          outcome: "Not Presumptive",
+          status: "No signs or symptoms of TB",
+          eligibleForTPT: "",
         });
       }
     }
-    //End TPT logic
+
+    if (
+      props.tbObj.tbTreatment === "No" &&
+      props.tbObj.tbScreeningType === "Chest X-ray" &&
+      props.tbObj.chestXray === "X-ray suggestive"
+    ) {
+      if (
+        props.tbObj.coughing === "Yes" ||
+        props.tbObj.fever === "Yes" ||
+        props.tbObj.nightSweats === "Yes" ||
+        props.tbObj.losingWeight === "Yes"
+      ) {
+        props.setTbObj({
+          ...props.tbObj,
+          outcome: "Presumptive",
+          status: "Presumptive TB and referred for evaluation",
+          eligibleForTPT: "",
+        });
+      }
+    }
+
+    //Second Logic
+    if (props.tbObj.tbTreatment === "Yes") {
+      if (
+        props.tbObj.completionDate !== "" &&
+        props.tbObj.treatementType !== "" &&
+        props.tbObj.tbTreatmentStartDate !== "" &&
+        props.tbObj.treatmentOutcome === "Treatment completed" &&
+        props.tbObj.treatmentCompletionResult !== ""
+      ) {
+        props.setTbObj({
+          ...props.tbObj,
+          outcome: "Not Presumptive",
+          status: "Currently on TB treatment",
+          activeTb: true,
+        });
+      }
+    }
+
+    //Third Logic
+    if (
+      props.tbObj.tbTreatment === "No" &&
+      props.tbObj.currentlyOnTuberculosis === "No" &&
+      props.tbObj.tbScreeningType === "Symptom screening" &&
+      props.tbObj.previouslyCompletedTPT === "No"
+    ) {
+      if (
+        props.tbObj.coughing === "Yes" ||
+        props.tbObj.fever === "Yes" ||
+        props.tbObj.nightSweats === "Yes" ||
+        props.tbObj.losingWeight === "Yes"
+      ) {
+        props.setTbObj({
+          ...props.tbObj,
+          outcome: "Presumptive",
+          status: "Presumptive TB and referred for evaluation",
+          eligibleForTPT: "No",
+        });
+      }
+    }
+
+    if (
+      props.tbObj.tbTreatment === "No" &&
+      props.tbObj.currentlyOnTuberculosis === "No" &&
+      props.tbObj.tbScreeningType === "Chest X-ray" &&
+      props.tbObj.chestXray === "X-ray suggestive"
+    ) {
+      if (
+        props.tbObj.coughing === "Yes" ||
+        props.tbObj.fever === "Yes" ||
+        props.tbObj.nightSweats === "Yes" ||
+        props.tbObj.losingWeight === "Yes"
+      ) {
+        props.setTbObj({
+          ...props.tbObj,
+          outcome: "Presumptive",
+          status: "Presumptive TB and referred for evaluation",
+          eligibleForTPT: "No",
+        });
+      }
+    }
+
+    //Fourth Logic
+    if (
+      props.tbObj.tbTreatment === "No" &&
+      props.tbObj.currentlyOnTuberculosis === "No" &&
+      props.tbObj.tbScreeningType === "Symptom screening" &&
+      props.tbObj.previouslyCompletedTPT === "Yes"
+    ) {
+      if (
+        props.tbObj.coughing === "No" &&
+        props.tbObj.fever === "No" &&
+        props.tbObj.nightSweats === "No" &&
+        props.tbObj.losingWeight === "No"
+      ) {
+        props.setTbObj({
+          ...props.tbObj,
+          outcome: "Not Presumptive",
+          status: "No signs or symptoms of TB",
+          eligibleForTPT: "No",
+        });
+      }
+    }
+
+    //Fifth Logic
+    if (
+      props.tbObj.tbTreatment === "No" &&
+      props.tbObj.currentlyOnTuberculosis === "No" &&
+      props.tbObj.tbScreeningType === "Chest X-ray" &&
+      props.tbObj.chestXray === "X-ray not suggestive"
+    ) {
+      if (
+        props.tbObj.coughing === "No" &&
+        props.tbObj.fever === "No" &&
+        props.tbObj.nightSweats === "No" &&
+        props.tbObj.losingWeight === "No"
+      ) {
+        props.setTbObj({
+          ...props.tbObj,
+          outcome: "Not Presumptive",
+          status: "No signs or symptoms of TB",
+          eligibleForTPT: "No",
+        });
+      }
+    }
+
+    //Sixth Logic
+    if (
+      props.tbObj.tbTreatment === "No" &&
+      props.tbObj.currentlyOnTuberculosis === "Yes" &&
+      props.tbObj.tbScreeningType === "Symptom screening" &&
+      props.tbObj.previouslyCompletedTPT === "No"
+    ) {
+      if (
+        props.tbObj.coughing === "Yes" ||
+        props.tbObj.fever === "Yes" ||
+        props.tbObj.nightSweats === "Yes" ||
+        props.tbObj.losingWeight === "Yes"
+      ) {
+        props.setTbObj({
+          ...props.tbObj,
+          outcome: "Presumptive",
+          status: "Currently on TPT",
+          eligibleForTPT: "No",
+        });
+      }
+    }
+
+    //Seventh Logic
+    if (
+      props.tbObj.tbTreatment === "No" &&
+      props.tbObj.currentlyOnTuberculosis === "Yes" &&
+      props.tbObj.tbScreeningType === "Chest X-ray" &&
+      props.tbObj.chestXray === "X-ray suggestive"
+    ) {
+      if (
+        props.tbObj.coughing === "Yes" ||
+        props.tbObj.fever === "Yes" ||
+        props.tbObj.nightSweats === "Yes" ||
+        props.tbObj.losingWeight === "Yes"
+      ) {
+        props.setTbObj({
+          ...props.tbObj,
+          outcome: "Presumptive",
+          status: "Currently on TPT",
+          eligibleForTPT: "No",
+        });
+      }
+    }
+
+    //Eighth Logic
+    if (
+      props.tbObj.coughing === "No" &&
+      props.tbObj.fever === "No" &&
+      props.tbObj.nightSweats === "No" &&
+      props.tbObj.losingWeight === "No"
+    ) {
+      if (props.tbObj.isTbTestConfirmed === "Yes") {
+        props.setTbObj({
+          ...props.tbObj,
+          outcome: "Not Presumptive",
+          status: "Confirmed TB",
+          eligibleForTPT: "",
+        });
+      }
+    }
+
+    //Nineth Logic
+    if (
+      props.tbObj.coughing === "Yes" ||
+      props.tbObj.fever === "Yes" ||
+      props.tbObj.nightSweats === "Yes" ||
+      props.tbObj.losingWeight === "Yes"
+    ) {
+      if (props.tbObj.isTbTestConfirmed === "Yes") {
+        props.setTbObj({
+          ...props.tbObj,
+          outcome: "Presumptive Eligible for TPT",
+          status: "Confirmed TB",
+          eligibleForTPT: "",
+        });
+      }
+    }
   }, [
-    props.tbObj.priorInh,
-    props.tbObj.highAlcohol,
-    props.tbObj.activeHepatitis,
-    props.tbObj.age1year,
-    props.tbObj.poorTreatmentAdherence,
-    props.tbObj.abnormalChest,
-    props.tbObj.activeTb,
-    props.tbObj.contraindications,
+    patientAge,
+    props.tbObj.tbTreatment,
     props.tbObj.coughing,
     props.tbObj.fever,
-    props.tbObj.losingWeight,
     props.tbObj.nightSweats,
-    props.tbObj.poorWeightGain,
-    props.tbObj.historyWithAdults,
+    props.tbObj.tbScreeningType,
+    props.tbObj.eligibleForTPT,
     props.tbObj.outcome,
     props.tbObj.status,
-    props.tbObj.eligibleForTPT,
-    props.tbObj.currentlyOnTuberculosis,
-    props.tbObj.isTbTestConfirmed,
-    props.tbObj.previouslyCompletedTPT,
+    props.tbObj.losingWeight,
+    props.tbObj.chestXray,
+    props.tbObj.completionDate,
+    props.tbObj.treatementType,
     props.tbObj.tbTreatmentStartDate,
+    props.tbObj.treatmentOutcome,
+    props.tbObj.treatmentCompletionResult,
+    props.tbObj.isTbTestConfirmed,
   ]);
+
+  //Logic for Less than 14 years
+  if (age < 14) {
+    console.log("less than 14 years", 14);
+    useEffect(() => {
+      //First Logic 1 Solved
+
+      if (
+        props.tbObj.tbTreatment === "No" &&
+        props.tbObj.tbScreeningType === "Symptom screening"
+      ) {
+        if (
+          props.tbObj.coughing === "No" &&
+          props.tbObj.fever === "No" &&
+          props.tbObj.nightSweats === "No" &&
+          props.tbObj.losingWeight === "No" &&
+          props.tbObj.historyWithAdults === "No" &&
+          props.tbObj.poorWeightGain === "No"
+        ) {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Not Presumptive",
+            status: "No signs or symptoms of TB",
+            eligibleForTPT: "",
+          });
+        }
+      }
+
+      if (
+        props.tbObj.tbTreatment === "No" &&
+        props.tbObj.tbScreeningType === "Symptom screening"
+      ) {
+        if (
+          props.tbObj.coughing === "Yes" ||
+          props.tbObj.fever === "Yes" ||
+          props.tbObj.nightSweats === "Yes" ||
+          props.tbObj.losingWeight === "Yes" ||
+          props.tbObj.historyWithAdults === "Yes" ||
+          props.tbObj.poorWeightGain === "Yes"
+        ) {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Presumptive",
+            status: "Presumptive TB and referred for evaluation",
+            eligibleForTPT: "",
+          });
+        }
+      }
+
+      //First Logic 2
+      if (
+        props.tbObj.tbTreatment === "No" &&
+        props.tbObj.tbScreeningType === "Chest X-ray" &&
+        props.tbObj.chestXray === "X-ray suggestive"
+      ) {
+        if (
+          props.tbObj.coughing === "No" &&
+          props.tbObj.fever === "No" &&
+          props.tbObj.nightSweats === "No" &&
+          props.tbObj.losingWeight === "No" &&
+          props.tbObj.historyWithAdults === "No" &&
+          props.tbObj.poorWeightGain === "No"
+        ) {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Not Presumptive",
+            status: "No signs or symptoms of TB",
+            eligibleForTPT: "",
+          });
+        }
+      }
+
+      if (
+        props.tbObj.tbTreatment === "No" &&
+        props.tbObj.tbScreeningType === "Chest X-ray" &&
+        props.tbObj.chestXray === "X-ray suggestive"
+      ) {
+        if (
+          props.tbObj.coughing === "Yes" ||
+          props.tbObj.fever === "Yes" ||
+          props.tbObj.nightSweats === "Yes" ||
+          props.tbObj.losingWeight === "Yes" ||
+          props.tbObj.historyWithAdults === "Yes" ||
+          props.tbObj.poorWeightGain === "Yes"
+        ) {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Presumptive",
+            status: "Presumptive TB and referred for evaluation",
+            eligibleForTPT: "",
+          });
+        }
+      }
+
+      //Second Logic
+      if (props.tbObj.tbTreatment === "Yes") {
+        if (
+          props.tbObj.completionDate !== "" &&
+          props.tbObj.treatementType !== "" &&
+          props.tbObj.tbTreatmentStartDate !== "" &&
+          props.tbObj.treatmentOutcome === "Treatment completed" &&
+          props.tbObj.treatmentCompletionResult !== ""
+        ) {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Not Presumptive",
+            status: "Currently on TB treatment",
+            activeTb: true,
+          });
+        }
+      }
+
+      //Third Logic
+      if (
+        props.tbObj.tbTreatment === "No" &&
+        props.tbObj.currentlyOnTuberculosis === "No" &&
+        props.tbObj.tbScreeningType === "Symptom screening" &&
+        props.tbObj.previouslyCompletedTPT === "No"
+      ) {
+        if (
+          props.tbObj.coughing === "Yes" ||
+          props.tbObj.fever === "Yes" ||
+          props.tbObj.nightSweats === "Yes" ||
+          props.tbObj.losingWeight === "Yes" ||
+          props.tbObj.historyWithAdults === "Yes" ||
+          props.tbObj.poorWeightGain === "Yes"
+        ) {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Presumptive",
+            status: "Presumptive TB and referred for evaluation",
+            eligibleForTPT: "No",
+          });
+        }
+      }
+
+      if (
+        props.tbObj.tbTreatment === "No" &&
+        props.tbObj.currentlyOnTuberculosis === "No" &&
+        props.tbObj.tbScreeningType === "Chest X-ray" &&
+        props.tbObj.chestXray === "X-ray suggestive"
+      ) {
+        if (
+          props.tbObj.coughing === "Yes" ||
+          props.tbObj.fever === "Yes" ||
+          props.tbObj.nightSweats === "Yes" ||
+          props.tbObj.losingWeight === "Yes" ||
+          props.tbObj.historyWithAdults === "Yes" ||
+          props.tbObj.poorWeightGain === "Yes"
+        ) {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Presumptive",
+            status: "Presumptive TB and referred for evaluation",
+            eligibleForTPT: "No",
+          });
+        }
+      }
+
+      //Fourth Logic
+      if (
+        props.tbObj.tbTreatment === "No" &&
+        props.tbObj.currentlyOnTuberculosis === "No" &&
+        props.tbObj.tbScreeningType === "Symptom screening" &&
+        props.tbObj.previouslyCompletedTPT === "Yes"
+      ) {
+        if (
+          props.tbObj.coughing === "No" &&
+          props.tbObj.fever === "No" &&
+          props.tbObj.nightSweats === "No" &&
+          props.tbObj.losingWeight === "No" &&
+          props.tbObj.historyWithAdults === "No" &&
+          props.tbObj.poorWeightGain === "No"
+        ) {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Not Presumptive",
+            status: "No signs or symptoms of TB",
+            eligibleForTPT: "No",
+          });
+        }
+      }
+
+      //Fifth Logic
+      if (
+        props.tbObj.tbTreatment === "No" &&
+        props.tbObj.currentlyOnTuberculosis === "No" &&
+        props.tbObj.tbScreeningType === "Chest X-ray" &&
+        props.tbObj.chestXray === "X-ray not suggestive"
+      ) {
+        if (
+          props.tbObj.coughing === "No" &&
+          props.tbObj.fever === "No" &&
+          props.tbObj.nightSweats === "No" &&
+          props.tbObj.losingWeight === "No" &&
+          props.tbObj.historyWithAdults === "No" &&
+          props.tbObj.poorWeightGain === "No"
+        ) {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Not Presumptive",
+            status: "No signs or symptoms of TB",
+            eligibleForTPT: "No",
+          });
+        }
+      }
+
+      //Sixth Logic
+      if (
+        props.tbObj.tbTreatment === "No" &&
+        props.tbObj.currentlyOnTuberculosis === "Yes" &&
+        props.tbObj.tbScreeningType === "Symptom screening" &&
+        props.tbObj.previouslyCompletedTPT === "No"
+      ) {
+        if (
+          props.tbObj.coughing === "Yes" ||
+          props.tbObj.fever === "Yes" ||
+          props.tbObj.nightSweats === "Yes" ||
+          props.tbObj.losingWeight === "Yes" ||
+          props.tbObj.historyWithAdults === "Yes" ||
+          props.tbObj.poorWeightGain === "Yes"
+        ) {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Presumptive",
+            status: "Currently on TPT",
+            eligibleForTPT: "No",
+          });
+        }
+      }
+
+      //Seventh Logic
+      if (
+        props.tbObj.tbTreatment === "No" &&
+        props.tbObj.currentlyOnTuberculosis === "Yes" &&
+        props.tbObj.tbScreeningType === "Chest X-ray" &&
+        props.tbObj.chestXray === "X-ray suggestive"
+      ) {
+        if (
+          props.tbObj.coughing === "Yes" ||
+          props.tbObj.fever === "Yes" ||
+          props.tbObj.nightSweats === "Yes" ||
+          props.tbObj.losingWeight === "Yes" ||
+          props.tbObj.historyWithAdults === "Yes" ||
+          props.tbObj.poorWeightGain === "Yes"
+        ) {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Presumptive",
+            status: "Currently on TPT",
+            eligibleForTPT: "No",
+          });
+        }
+      }
+
+      //Eighth Logic
+      if (
+        props.tbObj.coughing === "No" &&
+        props.tbObj.fever === "No" &&
+        props.tbObj.nightSweats === "No" &&
+        props.tbObj.losingWeight === "No" &&
+        props.tbObj.historyWithAdults === "No" &&
+        props.tbObj.poorWeightGain === "No"
+      ) {
+        if (props.tbObj.isTbTestConfirmed === "Yes") {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Not Presumptive",
+            status: "Confirmed TB",
+            eligibleForTPT: "",
+          });
+        }
+      }
+
+      //Nineth Logic
+      if (
+        props.tbObj.coughing === "Yes" ||
+        props.tbObj.fever === "Yes" ||
+        props.tbObj.nightSweats === "Yes" ||
+        props.tbObj.losingWeight === "Yes" ||
+        props.tbObj.historyWithAdults === "Yes" ||
+        props.tbObj.poorWeightGain === "Yes"
+      ) {
+        if (props.tbObj.isTbTestConfirmed === "Yes") {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Presumptive Eligible for TPT",
+            status: "Confirmed TB",
+            eligibleForTPT: "",
+          });
+        }
+      }
+    }, [
+      patientAge,
+      props.tbObj.tbTreatment,
+      props.tbObj.coughing,
+      props.tbObj.fever,
+      props.tbObj.nightSweats,
+      props.tbObj.tbScreeningType,
+      props.tbObj.eligibleForTPT,
+      props.tbObj.outcome,
+      props.tbObj.status,
+      props.tbObj.losingWeight,
+      props.tbObj.chestXray,
+      props.tbObj.completionDate,
+      props.tbObj.treatementType,
+      props.tbObj.tbTreatmentStartDate,
+      props.tbObj.treatmentOutcome,
+      props.tbObj.treatmentCompletionResult,
+      props.tbObj.isTbTestConfirmed,
+      props.tbObj.poorWeightGain,
+      props.tbObj.historyWithAdults,
+    ]);
+  }
+
   useEffect(() => {
     TB_TREATMENT_OUTCOME();
     TB_TREATMENT_TYPE();
+    TB_SCREENING_TYPE();
   }, []);
   const TB_TREATMENT_TYPE = () => {
     axios
@@ -384,66 +726,21 @@ const TbScreening = (props) => {
       .catch((error) => {});
   };
 
+  const TB_SCREENING_TYPE = () => {
+    axios
+      .get(`${baseUrl}application-codesets/v2/TB_SCREENING_TYPE`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        setTbScreeningType(response.data);
+      })
+      .catch((error) => {});
+  };
+
+  console.log("tbScreeningType", tbScreeningType);
+
   const handleInputChange = (e) => {
     props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.value });
-
-    //making some fields to be empty once the selection logic is apply(skip logic)
-    // if (
-    //   e.target.name === "currentlyOnTuberculosis" &&
-    //   e.target.value === "Yes"
-    // ) {
-    //   props.tbObj.tbTreatment = "";
-    //   props.tbObj.tbTreatmentStartDate = "";
-    //   props.setTbObj({ ...props.tbObj, ["tbTreatment"]: "" });
-    //   props.setTbObj({ ...props.tbObj, ["tbTreatmentStartDate"]: "" });
-    //   props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.value });
-    // }
-    // if (
-    //   e.target.name === "currentlyOnTuberculosis" &&
-    //   e.target.value === "No"
-    // ) {
-    //   props.tbObj.coughing = "";
-    //   props.tbObj.fever = "";
-    //   props.tbObj.losingWeight = "";
-    //   props.tbObj.nightSweats = "";
-    //   props.tbObj.poorWeightGain = "";
-    //   props.tbObj.historyWithAdults = "";
-    //   props.setTbObj({ ...props.tbObj, ["coughing"]: "" });
-    //   props.setTbObj({ ...props.tbObj, ["fever"]: "" });
-    //   props.setTbObj({ ...props.tbObj, ["losingWeight"]: "" });
-    //   props.setTbObj({ ...props.tbObj, ["nightSweats"]: "" });
-    //   props.setTbObj({ ...props.tbObj, ["poorWeightGain"]: "" });
-    //   props.setTbObj({ ...props.tbObj, ["historyWithAdults"]: "" });
-    //   props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.value });
-    // }
-    if (e.target.name === "tbTreatment" && e.target.value === "Yes") {
-      props.tbObj.tbTreatmentStartDate = "";
-      props.tbObj.coughing = "";
-      props.tbObj.fever = "";
-      props.tbObj.losingWeight = "";
-      props.tbObj.nightSweats = "";
-      props.tbObj.poorWeightGain = "";
-      props.tbObj.historyWithAdults = "";
-      props.setTbObj({ ...props.tbObj, ["coughing"]: "" });
-      props.setTbObj({ ...props.tbObj, ["fever"]: "" });
-      props.setTbObj({ ...props.tbObj, ["losingWeight"]: "" });
-      props.setTbObj({ ...props.tbObj, ["nightSweats"]: "" });
-      props.setTbObj({ ...props.tbObj, ["poorWeightGain"]: "" });
-      props.setTbObj({ ...props.tbObj, ["historyWithAdults"]: "" });
-      props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.value });
-    }
-    if (e.target.name === "tbTreatment" && e.target.value === "No") {
-      setcontraindicationDisplay(true);
-      props.tbObj.tbTreatmentStartDate = "";
-      props.tbObj.treatementType = "";
-      props.tbObj.treatmentOutcome = "";
-      props.tbObj.completionDate = "";
-      props.setTbObj({ ...props.tbObj, ["tbTreatmentStartDate"]: "" });
-      props.setTbObj({ ...props.tbObj, ["treatementType"]: "" });
-      props.setTbObj({ ...props.tbObj, ["treatmentOutcome"]: "" });
-      props.setTbObj({ ...props.tbObj, ["completionDate"]: "" });
-      props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.value });
-    }
   };
 
   const handleInputChangeContrain = (e) => {
@@ -484,298 +781,57 @@ const TbScreening = (props) => {
                   </InputGroup>
                 </FormGroup>
               </div>
-              {props.tbObj.tbTreatment !== "" &&
-                props.tbObj.tbTreatment === "Yes" && (
-                  <>
-                    <div className="form-group mb-3 col-md-6">
-                      <FormGroup>
-                        <Label>
-                          TB treatment start date{" "}
-                          <span style={{ color: "red" }}> *</span>
-                        </Label>
-                        <InputGroup>
-                          <Input
-                            type="date"
-                            name="tbTreatmentStartDate"
-                            id="tbTreatmentStartDate"
-                            onChange={handleInputChange}
-                            value={props.tbObj.tbTreatmentStartDate}
-                            min={props.encounterDate}
-                            max={moment(new Date()).format("YYYY-MM-DD")}
-                            disabled={props.action === "view" ? true : false}
-                          ></Input>
-                        </InputGroup>
-                      </FormGroup>
-                    </div>
-                    <div className="form-group mb-3 col-md-6">
-                      <FormGroup>
-                        <Label>
-                          Treatment Type{" "}
-                          {/* <span style={{ color: "red" }}> *</span> */}
-                        </Label>
-                        <InputGroup>
-                          <Input
-                            type="select"
-                            name="treatementType"
-                            id="treatementType"
-                            onChange={handleInputChange}
-                            value={props.tbObj.treatementType}
-                            disabled={props.action === "view" ? true : false}
-                          >
-                            <option value="">Select</option>
-                            {tbTreatmentType.map((value) => (
-                              <option key={value.id} value={value.display}>
-                                {value.display}
-                              </option>
-                            ))}
-                          </Input>
-                        </InputGroup>
-                      </FormGroup>
-                    </div>
-                    <div className="form-group mb-3 col-md-6">
-                      <FormGroup>
-                        <Label>
-                          Treatment Outcome{" "}
-                          {/* <span style={{ color: "red" }}> *</span> */}
-                        </Label>
-                        <InputGroup>
-                          <Input
-                            type="select"
-                            name="treatmentOutcome"
-                            id="treatmentOutcome"
-                            onChange={handleInputChange}
-                            value={props.tbObj.treatmentOutcome}
-                            disabled={props.action === "view" ? true : false}
-                          >
-                            <option value="">Select</option>
-                            {tbTreatmentOutCome.map((value) => (
-                              <option key={value.id} value={value.display}>
-                                {value.display}
-                              </option>
-                            ))}
-                          </Input>
-                        </InputGroup>
-                      </FormGroup>
-                    </div>
-                    <div className="form-group mb-3 col-md-6">
-                      <FormGroup>
-                        <Label>
-                          TB Treatment Completion Date{" "}
-                          {/* <span style={{ color: "red" }}> *</span> */}
-                        </Label>
-                        <InputGroup>
-                          <Input
-                            type="date"
-                            name="completionDate"
-                            id="completionDate"
-                            onChange={handleInputChange}
-                            value={props.tbObj.completionDate}
-                            min={props.encounterDate}
-                            disabled={props.action === "view" ? true : false}
-                            max={moment(new Date()).format("YYYY-MM-DD")}
-                          ></Input>
-                        </InputGroup>
-                      </FormGroup>
-                    </div>
-                  </>
-                )}
-              {props.tbObj.tbTreatment !== "" &&
-                props.tbObj.tbTreatment === "No" && (
-                  <>
-                    <div className="form-group mb-3 col-md-6">
-                      <FormGroup>
-                        <Label>
-                          Are you coughing?{" "}
-                          <span style={{ color: "red" }}> *</span>
-                        </Label>
-                        <InputGroup>
-                          <Input
-                            type="select"
-                            name="coughing"
-                            id="coughing"
-                            onChange={handleInputChange}
-                            value={props.tbObj.coughing}
-                            disabled={props.action === "view" ? true : false}
-                          >
-                            <option value="">Select</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                          </Input>
-                        </InputGroup>
-                      </FormGroup>
-                    </div>
-                    <div className="form-group mb-3 col-md-6">
-                      <FormGroup>
-                        <Label>
-                          Do you have fever for 2 weeks or more? (Unexplained
-                          fever) <span style={{ color: "red" }}> *</span>
-                        </Label>
-                        <InputGroup>
-                          <Input
-                            type="select"
-                            name="fever"
-                            id="fever"
-                            onChange={handleInputChange}
-                            value={props.tbObj.fever}
-                            disabled={props.action === "view" ? true : false}
-                          >
-                            <option value="">Select</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                          </Input>
-                        </InputGroup>
-                      </FormGroup>
-                    </div>
-                    <div className="form-group mb-3 col-md-6">
-                      <FormGroup>
-                        <Label>
-                          Are you losing weight? (Unplanned weight loss)
-                          <span style={{ color: "red" }}> *</span>
-                        </Label>
-                        <InputGroup>
-                          <Input
-                            type="select"
-                            name="losingWeight"
-                            id="losingWeight"
-                            onChange={handleInputChange}
-                            value={props.tbObj.losingWeight}
-                            disabled={props.action === "view" ? true : false}
-                          >
-                            <option value="">Select</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                          </Input>
-                        </InputGroup>
-                      </FormGroup>
-                    </div>
-                    <div className="form-group mb-3 col-md-6">
-                      <FormGroup>
-                        <Label>
-                          Are you having night sweats? (drenching or excessive
-                          night sweats)<span style={{ color: "red" }}> *</span>
-                        </Label>
-                        <InputGroup>
-                          <Input
-                            type="select"
-                            name="nightSweats"
-                            id="nightSweats"
-                            onChange={handleInputChange}
-                            value={props.tbObj.nightSweats}
-                            disabled={props.action === "view" ? true : false}
-                          >
-                            <option value="">Select</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                          </Input>
-                        </InputGroup>
-                      </FormGroup>
-                    </div>
-                    {age <= 14 ? (
-                      <>
-                        <div className="form-group mb-3 col-md-6">
-                          <FormGroup>
-                            <Label>
-                              Poor weight gain (Paediatrics clients {"<"}12
-                              months){" "}
-                            </Label>
-                            <InputGroup>
-                              <Input
-                                type="select"
-                                name="poorWeightGain"
-                                id="poorWeightGain"
-                                onChange={handleInputChange}
-                                value={props.tbObj.poorWeightGain}
-                                disabled={
-                                  props.action === "view" ? true : false
-                                }
-                              >
-                                <option value="">Select</option>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                              </Input>
-                            </InputGroup>
-                          </FormGroup>
-                        </div>
 
-                        <div className="form-group mb-3 col-md-6">
-                          <FormGroup>
-                            <Label>
-                              History of contacts with TB adults (Paediatrics
-                              clients {"<"} 12 months){" "}
-                            </Label>
-                            <InputGroup>
-                              <Input
-                                type="select"
-                                name="historyWithAdults"
-                                id="historyWithAdults"
-                                onChange={handleInputChange}
-                                value={props.tbObj.historyWithAdults}
-                                disabled={
-                                  props.action === "view" ? true : false
-                                }
-                              >
-                                <option value="">Select</option>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                              </Input>
-                            </InputGroup>
-                          </FormGroup>
-                        </div>
-                      </>
-                    ) : (
-                      " "
-                    )}
-                    <div className="form-group mb-3 col-md-6">
-                      <FormGroup>
-                        <Label>
-                          Is TB test confirmed positive?{" "}
-                          <span style={{ color: "red" }}> *</span>
-                        </Label>
-                        <InputGroup>
-                          <Input
-                            type="select"
-                            name="isTbTestConfirmed"
-                            id="isTbTestConfirmed"
-                            onChange={handleInputChange}
-                            value={props.tbObj.isTbTestConfirmed}
-                            disabled={props.action === "view" ? true : false}
-                          >
-                            <option value="">Select</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                          </Input>
-                        </InputGroup>
-                      </FormGroup>
-                    </div>
-                    <div className="form-group mb-3 col-md-6">
-                      <FormGroup>
-                        <Label>
-                          Are you currently on Tuberculosis Preventive Therapy (
-                          TPT ) <span style={{ color: "red" }}> *</span>
-                        </Label>
-                        <InputGroup>
-                          <Input
-                            type="select"
-                            name="currentlyOnTuberculosis"
-                            id="currentlyOnTuberculosis"
-                            onChange={handleInputChange}
-                            value={props.tbObj.currentlyOnTuberculosis}
-                            disabled={props.action === "view" ? true : false}
-                          >
-                            <option value="">Select</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                          </Input>
-                        </InputGroup>
-                      </FormGroup>
-                    </div>
-                  </>
-                )}
+              {props.tbObj.tbTreatment === "No" && (
+                <>
+                  <div className="form-group mb-3 col-md-6">
+                    <FormGroup>
+                      <Label>
+                        Are you currently on Tuberculosis Preventive Therapy (
+                        TPT ) <span style={{ color: "red" }}> *</span>
+                      </Label>
+                      <InputGroup>
+                        <Input
+                          type="select"
+                          name="currentlyOnTuberculosis"
+                          id="currentlyOnTuberculosis"
+                          onChange={handleInputChange}
+                          value={props.tbObj.currentlyOnTuberculosis}
+                          disabled={props.action === "view" ? true : false}
+                        >
+                          <option value="">Select</option>
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </Input>
+                      </InputGroup>
+                    </FormGroup>
+                  </div>
 
-              {props.tbObj.currentlyOnTuberculosis !== "" &&
-                props.tbObj.currentlyOnTuberculosis === "No" && (
-                  <>
-                    <div className="form-group mb-3 col-md-6">
+                  <div className="form-group  mb-3 col-md-6">
+                    <FormGroup>
+                      <Label>Screening Type</Label>
+                      <InputGroup>
+                        <Input
+                          type="select"
+                          name="tbScreeningType"
+                          id="tbScreeningType"
+                          onChange={handleInputChange}
+                          disabled={props.action === "view" ? true : false}
+                          value={props.tbObj.tbScreeningType}
+                        >
+                          <option value="">Select</option>
+                          {tbScreeningType.map((value) => (
+                            <option key={value.id} value={value.display}>
+                              {value.display}
+                            </option>
+                          ))}
+                        </Input>
+                      </InputGroup>
+                    </FormGroup>
+                  </div>
+                  <div className="form-group  mb-3 col-md-6">
+                    {/* (props.tbObj.currentlyOnTuberculosis === "Yes" */}
+                    {props.tbObj.currentlyOnTuberculosis === "No" && (
                       <FormGroup>
                         <Label>
                           Have you previously completed TPT?{" "}
@@ -796,215 +852,540 @@ const TbScreening = (props) => {
                           </Input>
                         </InputGroup>
                       </FormGroup>
-                    </div>
-                  </>
-                )}
-              <br />
-              {contraindicationDisplay === true && (
-                <>
-                  <hr />
+                    )}
+                    {props.tbObj.currentlyOnTuberculosis === "Yes" && (
+                      <FormGroup>
+                        <Label>
+                          Have you previously completed TPT?{" "}
+                          <span style={{ color: "red" }}> *</span>
+                        </Label>
+                        <InputGroup>
+                          <Input
+                            type="select"
+                            name="previouslyCompletedTPT"
+                            id="previouslyCompletedTPT"
+                            onChange={handleInputChange}
+                            value={props.tbObj.previouslyCompletedTPT}
+                            disabled={props.action === "view" ? true : false}
+                          >
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                          </Input>
+                        </InputGroup>
+                      </FormGroup>
+                    )}
+                  </div>
 
-                  <h3>Contraindications for TPT</h3>
-                  {props.tbObj.currentlyOnTuberculosis === "No" && (
+                  {/* TB SCREENING TYPE*/}
+
+                  {props.tbObj.tbScreeningType === "Symptom screening" && (
                     <>
-                      <div className="form-group mb-3 col-md-12">
-                        <div className="form-check custom-checkbox ml-1 ">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            name="activeTb"
-                            id="activeTb"
-                            value={props.tbObj.activeTb}
-                            onChange={handleInputChangeContrain}
-                            disabled={props.action === "view" ? true : false}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="basic_checkbox_1"
-                          >
-                            Active TB
-                          </label>
-                        </div>
+                      <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                          <Label>
+                            Are you coughing?{" "}
+                            <span style={{ color: "red" }}> *</span>
+                          </Label>
+                          <InputGroup>
+                            <Input
+                              type="select"
+                              name="coughing"
+                              id="coughing"
+                              onChange={handleInputChange}
+                              value={props.tbObj.coughing}
+                              disabled={props.action === "view" ? true : false}
+                            >
+                              <option value="">Select</option>
+                              <option value="Yes">Yes</option>
+                              <option value="No">No</option>
+                            </Input>
+                          </InputGroup>
+                        </FormGroup>
                       </div>
-                      <div className="form-group mb-3 col-md-12">
-                        <div className="form-check custom-checkbox ml-1 ">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            name="abnormalChest"
-                            id="abnormalChest"
-                            value={props.tbObj.abnormalChest}
-                            onChange={handleInputChangeContrain}
-                            disabled={props.action === "view" ? true : false}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="basic_checkbox_1"
-                          >
-                            Abnormal Chest X-Ray
-                          </label>
-                        </div>
+
+                      <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                          <Label>
+                            Do you have fever for 2 weeks or more? (Unexplained
+                            fever) <span style={{ color: "red" }}> *</span>
+                          </Label>
+                          <InputGroup>
+                            <Input
+                              type="select"
+                              name="fever"
+                              id="fever"
+                              onChange={handleInputChange}
+                              value={props.tbObj.fever}
+                              disabled={props.action === "view" ? true : false}
+                            >
+                              <option value="">Select</option>
+                              <option value="Yes">Yes</option>
+                              <option value="No">No</option>
+                            </Input>
+                          </InputGroup>
+                        </FormGroup>
                       </div>
-                      <div className="form-group mb-3 col-md-12">
-                        <div className="form-check custom-checkbox ml-1 ">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            name="poorTreatmentAdherence"
-                            id="poorTreatmentAdherence"
-                            value={props.tbObj.poorTreatmentAdherence}
-                            onChange={handleInputChangeContrain}
-                            disabled={props.action === "view" ? true : false}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="basic_checkbox_1"
-                          >
-                            History of poor treatment adherence
-                          </label>
-                        </div>
+
+                      <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                          <Label>
+                            Are you having night sweats? (drenching or excessive
+                            night sweats)
+                            <span style={{ color: "red" }}> *</span>
+                          </Label>
+                          <InputGroup>
+                            <Input
+                              type="select"
+                              name="nightSweats"
+                              id="nightSweats"
+                              onChange={handleInputChange}
+                              value={props.tbObj.nightSweats}
+                              disabled={props.action === "view" ? true : false}
+                            >
+                              <option value="">Select</option>
+                              <option value="Yes">Yes</option>
+                              <option value="No">No</option>
+                            </Input>
+                          </InputGroup>
+                        </FormGroup>
                       </div>
-                      <div className="form-group mb-3 col-md-12">
-                        <div className="form-check custom-checkbox ml-1 ">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            name="age1year"
-                            id="age1year"
-                            value={props.tbObj.age1year}
-                            onChange={handleInputChangeContrain}
-                            disabled={props.action === "view" ? true : false}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="basic_checkbox_1"
-                          >
-                            Age {"<"}1 year without history of close contact
-                            with TB patient
-                          </label>
-                        </div>
+
+                      <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                          <Label>
+                            Are you losing weight? (Unplanned weight loss)
+                            <span style={{ color: "red" }}> *</span>
+                          </Label>
+                          <InputGroup>
+                            <Input
+                              type="select"
+                              name="losingWeight"
+                              id="losingWeight"
+                              onChange={handleInputChange}
+                              value={props.tbObj.losingWeight}
+                              disabled={props.action === "view" ? true : false}
+                            >
+                              <option value="">Select</option>
+                              <option value="Yes">Yes</option>
+                              <option value="No">No</option>
+                            </Input>
+                          </InputGroup>
+                        </FormGroup>
                       </div>
-                      <div className="form-group mb-3 col-md-12">
-                        <div className="form-check custom-checkbox ml-1 ">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            name="activeHepatitis"
-                            id="activeHepatitis"
-                            value={props.tbObj.activeHepatitis}
-                            onChange={handleInputChangeContrain}
-                            disabled={props.action === "view" ? true : false}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="basic_checkbox_1"
-                          >
-                            Active hepatitis (clinical or lab)
-                          </label>
-                        </div>
-                      </div>
-                      <div className="form-group mb-3 col-md-12">
-                        <div className="form-check custom-checkbox ml-1 ">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            name="highAlcohol"
-                            id="highAlcohol"
-                            value={props.tbObj.highAlcohol}
-                            onChange={handleInputChangeContrain}
-                            disabled={props.action === "view" ? true : false}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="basic_checkbox_1"
-                          >
-                            High alcohol consumption
-                          </label>
-                        </div>
-                      </div>
-                      <div className="form-group mb-3 col-md-12">
-                        <div className="form-check custom-checkbox ml-1 ">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            name="priorInh"
-                            id="priorInh"
-                            value={props.tbObj.priorInh}
-                            onChange={handleInputChangeContrain}
-                            disabled={props.action === "view" ? true : false}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="basic_checkbox_1"
-                          >
-                            Prior allergy to INH
-                          </label>
-                        </div>
+                      {patientAge <= 14 && (
+                        <>
+                          <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                              <Label>
+                                History of contacts with TB adults (Paediatrics
+                                clients {"<"} 12 months){" "}
+                              </Label>
+                              <InputGroup>
+                                <Input
+                                  type="select"
+                                  name="historyWithAdults"
+                                  id="historyWithAdults"
+                                  onChange={handleInputChange}
+                                  value={props.tbObj.historyWithAdults}
+                                  disabled={
+                                    props.action === "view" ? true : false
+                                  }
+                                >
+                                  <option value="">Select</option>
+                                  <option value="Yes">Yes</option>
+                                  <option value="No">No</option>
+                                </Input>
+                              </InputGroup>
+                            </FormGroup>
+                          </div>
+                          <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                              <Label>
+                                Poor weight gain (Paediatrics clients {"<"}12
+                                months){" "}
+                              </Label>
+                              <InputGroup>
+                                <Input
+                                  type="select"
+                                  name="poorWeightGain"
+                                  id="poorWeightGain"
+                                  onChange={handleInputChange}
+                                  value={props.tbObj.poorWeightGain}
+                                  disabled={
+                                    props.action === "view" ? true : false
+                                  }
+                                >
+                                  <option value="">Select</option>
+                                  <option value="Yes">Yes</option>
+                                  <option value="No">No</option>
+                                </Input>
+                              </InputGroup>
+                            </FormGroup>
+                          </div>
+                        </>
+                      )}
+
+                      <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                          <Label>
+                            Is TB test confirmed positive?{" "}
+                            <span style={{ color: "red" }}> *</span>
+                          </Label>
+                          <InputGroup>
+                            <Input
+                              type="select"
+                              name="isTbTestConfirmed"
+                              id="isTbTestConfirmed"
+                              onChange={handleInputChange}
+                              value={props.tbObj.isTbTestConfirmed}
+                              disabled={props.action === "view" ? true : false}
+                            >
+                              <option value="">Select</option>
+                              <option value="Yes">Yes</option>
+                              <option value="No">No</option>
+                            </Input>
+                          </InputGroup>
+                        </FormGroup>
                       </div>
                     </>
                   )}
-                  <h4>Result :{props.tbObj.contraindications} </h4>
+
+                  {/* TB SCREENING TYPE === Chest X-ray*/}
+
+                  {props.tbObj.tbScreeningType === "Chest X-ray" && (
+                    <>
+                      <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                          <Label>Chest X-ray</Label>
+                          <InputGroup>
+                            <Input
+                              type="select"
+                              name="chestXray"
+                              id="chestXray"
+                              onChange={handleInputChange}
+                              disabled={props.action === "view" ? true : false}
+                              value={props.tbObj.chestXray}
+                            >
+                              <option value="">Select</option>
+                              <option value="X-ray suggestive">
+                                X-ray suggestive
+                              </option>
+                              <option value="X-ray not suggestive">
+                                X-ray not suggestive
+                              </option>
+                            </Input>
+                          </InputGroup>
+                        </FormGroup>
+                      </div>
+
+                      <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                          <Label>
+                            Are you coughing?{" "}
+                            <span style={{ color: "red" }}> *</span>
+                          </Label>
+                          <InputGroup>
+                            <Input
+                              type="select"
+                              name="coughing"
+                              id="coughing"
+                              onChange={handleInputChange}
+                              value={props.tbObj.coughing}
+                              disabled={props.action === "view" ? true : false}
+                            >
+                              <option value="">Select</option>
+                              <option value="Yes">Yes</option>
+                              <option value="No">No</option>
+                            </Input>
+                          </InputGroup>
+                        </FormGroup>
+                      </div>
+
+                      <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                          <Label>
+                            Do you have fever for 2 weeks or more? (Unexplained
+                            fever) <span style={{ color: "red" }}> *</span>
+                          </Label>
+                          <InputGroup>
+                            <Input
+                              type="select"
+                              name="fever"
+                              id="fever"
+                              onChange={handleInputChange}
+                              value={props.tbObj.fever}
+                              disabled={props.action === "view" ? true : false}
+                            >
+                              <option value="">Select</option>
+                              <option value="Yes">Yes</option>
+                              <option value="No">No</option>
+                            </Input>
+                          </InputGroup>
+                        </FormGroup>
+                      </div>
+
+                      {patientAge <= 14 && (
+                        <>
+                          <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                              <Label>
+                                History of contacts with TB adults (Paediatrics
+                                clients {"<"} 12 months){" "}
+                              </Label>
+                              <InputGroup>
+                                <Input
+                                  type="select"
+                                  name="historyWithAdults"
+                                  id="historyWithAdults"
+                                  onChange={handleInputChange}
+                                  value={props.tbObj.historyWithAdults}
+                                  disabled={
+                                    props.action === "view" ? true : false
+                                  }
+                                >
+                                  <option value="">Select</option>
+                                  <option value="Yes">Yes</option>
+                                  <option value="No">No</option>
+                                </Input>
+                              </InputGroup>
+                            </FormGroup>
+                          </div>
+                          <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                              <Label>
+                                Poor weight gain (Paediatrics clients {"<"}12
+                                months){" "}
+                              </Label>
+                              <InputGroup>
+                                <Input
+                                  type="select"
+                                  name="poorWeightGain"
+                                  id="poorWeightGain"
+                                  onChange={handleInputChange}
+                                  value={props.tbObj.poorWeightGain}
+                                  disabled={
+                                    props.action === "view" ? true : false
+                                  }
+                                >
+                                  <option value="">Select</option>
+                                  <option value="Yes">Yes</option>
+                                  <option value="No">No</option>
+                                </Input>
+                              </InputGroup>
+                            </FormGroup>
+                          </div>
+                        </>
+                      )}
+                      <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                          <Label>
+                            Are you having night sweats? (drenching or excessive
+                            night sweats)
+                            <span style={{ color: "red" }}> *</span>
+                          </Label>
+                          <InputGroup>
+                            <Input
+                              type="select"
+                              name="nightSweats"
+                              id="nightSweats"
+                              onChange={handleInputChange}
+                              value={props.tbObj.nightSweats}
+                              disabled={props.action === "view" ? true : false}
+                            >
+                              <option value="">Select</option>
+                              <option value="Yes">Yes</option>
+                              <option value="No">No</option>
+                            </Input>
+                          </InputGroup>
+                        </FormGroup>
+                      </div>
+                      <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                          <Label>
+                            Are you losing weight? (Unplanned weight loss)
+                            <span style={{ color: "red" }}> *</span>
+                          </Label>
+                          <InputGroup>
+                            <Input
+                              type="select"
+                              name="losingWeight"
+                              id="losingWeight"
+                              onChange={handleInputChange}
+                              value={props.tbObj.losingWeight}
+                              disabled={props.action === "view" ? true : false}
+                            >
+                              <option value="">Select</option>
+                              <option value="Yes">Yes</option>
+                              <option value="No">No</option>
+                            </Input>
+                          </InputGroup>
+                        </FormGroup>
+                      </div>
+                      <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                          <Label>
+                            Is TB test confirmed positive?{" "}
+                            {/* <span style={{ color: "red" }}> *</span> */}
+                          </Label>
+                          <InputGroup>
+                            <Input
+                              type="select"
+                              name="isTbTestConfirmed"
+                              id="isTbTestConfirmed"
+                              onChange={handleInputChange}
+                              value={props.tbObj.isTbTestConfirmed}
+                              disabled={props.action === "view" ? true : false}
+                            >
+                              <option value="">Select</option>
+                              <option value="Yes">Yes</option>
+                              <option value="No">No</option>
+                            </Input>
+                          </InputGroup>
+                        </FormGroup>
+                      </div>
+                    </>
+                  )}
                 </>
               )}
+
+              {props.tbObj.tbTreatment === "Yes" && (
+                <>
+                  <div className="form-group mb-3 col-md-6">
+                    <FormGroup>
+                      <Label>
+                        TB treatment start date{" "}
+                        <span style={{ color: "red" }}> *</span>
+                      </Label>
+                      <InputGroup>
+                        <Input
+                          type="date"
+                          name="tbTreatmentStartDate"
+                          id="tbTreatmentStartDate"
+                          onChange={handleInputChange}
+                          value={props.tbObj.tbTreatmentStartDate}
+                          min={props.encounterDate}
+                          max={moment(new Date()).format("YYYY-MM-DD")}
+                          disabled={props.action === "view" ? true : false}
+                        ></Input>
+                      </InputGroup>
+                    </FormGroup>
+                  </div>
+                  <div className="form-group mb-3 col-md-6">
+                    <FormGroup>
+                      <Label>
+                        Treatment Type <span style={{ color: "red" }}> *</span>
+                      </Label>
+                      <InputGroup>
+                        <Input
+                          type="select"
+                          name="treatementType"
+                          id="treatementType"
+                          onChange={handleInputChange}
+                          value={props.tbObj.treatementType}
+                          disabled={props.action === "view" ? true : false}
+                        >
+                          <option value="">Select</option>
+                          {tbTreatmentType.map((value) => (
+                            <option key={value.id} value={value.display}>
+                              {value.display}
+                            </option>
+                          ))}
+                        </Input>
+                      </InputGroup>
+                    </FormGroup>
+                  </div>
+                  <div className="form-group mb-3 col-md-6">
+                    <FormGroup>
+                      <Label>
+                        Treatment Outcome{" "}
+                        <span style={{ color: "red" }}> *</span>
+                      </Label>
+                      <InputGroup>
+                        <Input
+                          type="select"
+                          name="treatmentOutcome"
+                          id="treatmentOutcome"
+                          onChange={handleInputChange}
+                          value={props.tbObj.treatmentOutcome}
+                          disabled={props.action === "view" ? true : false}
+                        >
+                          <option value="">Select</option>
+                          {tbTreatmentOutCome.map((value) => (
+                            <option key={value.id} value={value.display}>
+                              {value.display}
+                            </option>
+                          ))}
+                        </Input>
+                      </InputGroup>
+                    </FormGroup>
+                  </div>
+                  {props.tbObj.tbTreatment === "Yes" &&
+                    props.tbObj.treatementType !== "" &&
+                    props.tbObj.treatmentOutcome === "Treatment completed" && (
+                      <>
+                        <div className="form-group mb-3 col-md-6">
+                          <FormGroup>
+                            <Label>
+                              TB Treatment Completion Date{" "}
+                              <span style={{ color: "red" }}> *</span>
+                            </Label>
+                            <InputGroup>
+                              <Input
+                                type="date"
+                                name="completionDate"
+                                id="completionDate"
+                                onChange={handleInputChange}
+                                value={props.tbObj.completionDate}
+                                min={props.encounterDate}
+                                disabled={
+                                  props.action === "view" ? true : false
+                                }
+                                max={moment(new Date()).format("YYYY-MM-DD")}
+                              ></Input>
+                            </InputGroup>
+                          </FormGroup>
+                        </div>
+                        <div className="form-group mb-3 col-md-6">
+                          <FormGroup>
+                            <Label>TB Treatment Completion Result</Label>
+                            <InputGroup>
+                              <Input
+                                type="select"
+                                name="treatmentCompletionResult"
+                                id="treatmentCompletionResult"
+                                onChange={handleInputChange}
+                                disabled={
+                                  props.action === "view" ? true : false
+                                }
+                                value={props.tbObj.treatmentCompletionResult}
+                              >
+                                <option value="">Select</option>
+                                <option value="Treatment failed">
+                                  Treatment failed
+                                </option>
+                                <option value="Treatment success">
+                                  Treatment success
+                                </option>
+                              </Input>
+                            </InputGroup>
+                          </FormGroup>
+                        </div>
+                      </>
+                    )}
+                </>
+              )}
+
               <hr />
 
               <br />
               <p style={{ color: "black" }}>
                 Eligible for IPT:<b>{" " + props.tbObj.eligibleForTPT}</b>
               </p>
-              {props.tbObj.eligibleForTPT === "Yes" && (
-                <>
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>Date TPT start </Label>
-                      <InputGroup>
-                        <Input
-                          type="date"
-                          name="dateTPTStart"
-                          id="dateTPTStart"
-                          onChange={handleInputChange}
-                          min={props.encounterDate}
-                          max={moment(new Date()).format("YYYY-MM-DD")}
-                          value={props.tbObj.dateTPTStart}
-                          disabled={props.action === "view" ? true : false}
-                        ></Input>
-                      </InputGroup>
-                    </FormGroup>
-                  </div>
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>Weight at start of TPT</Label>
-                      <InputGroup>
-                        <Input
-                          type="text"
-                          name="weightAtStartTPT"
-                          id="weightAtStartTPT"
-                          onChange={handleInputChange}
-                          value={props.tbObj.weightAtStartTPT}
-                          disabled={props.action === "view" ? true : false}
-                        ></Input>
-                      </InputGroup>
-                    </FormGroup>
-                  </div>
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>INH daily dose </Label>
-                      <InputGroup>
-                        <Input
-                          type="text"
-                          name="inhDailyDose"
-                          id="inhDailyDose"
-                          onChange={handleInputChange}
-                          value={props.tbObj.inhDailyDose}
-                          disabled={props.action === "view" ? true : false}
-                        ></Input>
-                      </InputGroup>
-                    </FormGroup>
-                  </div>
-                </>
-              )}
+
               <br />
               <hr />
+
               <p style={{ color: "black" }}>
                 TB Screening Outcome:<b>{" " + props.tbObj.outcome}</b>
               </p>

@@ -140,6 +140,14 @@ const Patient = (props) => {
     } catch (e) {}
   };
 
+    const formattedDate = (inputDate) => {
+      const dateObject = new Date(inputDate);
+      const year = dateObject.getFullYear();
+      const month = String(dateObject.getMonth() + 1).padStart(2, "0");
+      const day = String(dateObject.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+
   return (
     <>
       <div>
@@ -167,7 +175,7 @@ const Patient = (props) => {
         <br />
         <MaterialTable
           icons={tableIcons}
-          title="OVC Patients"
+          title="OVC Beneficiaries"
           columns={[
             {
               title: "Patient Name",
@@ -211,7 +219,7 @@ const Patient = (props) => {
                       caregiverSurname: row.caregiverSurname,
                       cboName: row.cboName,
                       enrolledInOvcProgram: row.enrolledInOvcProgram,
-                      createdDate: row.createdDate,
+                      createdDate: formattedDate(row.createdDate),
                       actions: (
                         <Link
                           to={{
@@ -252,7 +260,7 @@ const Patient = (props) => {
                                   fontWeight: "bolder",
                                 }}
                               >
-                                Enroll Patient
+                                Enroll Beneficiary
                               </span>
                             </Button>
                           </ButtonGroup>
