@@ -704,7 +704,7 @@
     <changeSet id="20240227-001-001" author="Anana">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
-                SELECT COUNT(*) FROM base_application_codeset WHERE codeset_group in ('TB_SCREENING_TYPE', 'TB_SCREENING_TYPE', 'TB_SCREENING_TYPE');
+                SELECT COUNT(*) FROM base_application_codeset WHERE codeset_group in ('TB_SCREENING_TYPE', 'LAB_ORDER_INDICATION', 'CXR_SCREENING_TYPE');
             </sqlCheck>
         </preConditions>
         <sql>
