@@ -101,7 +101,7 @@ const TbScreening = (props) => {
   const [showAdditionalFields, setShowAdditionalFields] = useState(false);
   const patientAge = calculate_age_to_number(props.patientObj.dateOfBirth);
 
-  //Above 14 years
+  //Above 14 years Old
   useEffect(() => {
     //First Logic 1 Solved
 
