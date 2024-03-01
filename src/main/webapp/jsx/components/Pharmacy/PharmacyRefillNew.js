@@ -280,22 +280,31 @@ const Pharmacy = (props) => {
       })
       .catch((error) => {});
   };
-  //GET Other Drugd
-  const OtherDrugs = () => {
-    axios
-      .get(`${baseUrl}hiv/regimen/other/drugs`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        setOtherDrugs(
-          Object.entries(response.data).map(([key, value]) => ({
-            label: value.description,
-            value: value.id,
-          }))
-        );
-      })
-      .catch((error) => {});
-  };
+
+  //GET Other Drug
+  //remove arv prohpylaxis for pregnant women form the list of regimen type and populate the drop down list
+ const OtherDrugs = async () => {
+   try {
+     const response = await axios.get(`${baseUrl}hiv/regimen/other/drugs`, {
+       headers: { Authorization: `Bearer ${token}` },
+     });
+
+     // Filter out items with id !== 5
+     const filteredData = Object.entries(response.data)
+       .map(([key, value]) => ({
+         label: value.description,
+         value: value.id,
+       }))
+       .filter((item) => item.value !== 5 && item.value !== 30);
+
+     setOtherDrugs(filteredData);
+   } catch (error) {
+     // Handle errors here
+     console.error('Error fetching OtherDrugs:', error);
+     //.catch((error) => {});
+   }
+ };
+
   const IPT_TYPE = () => {
     axios
       .get(`${baseUrl}application-codesets/v2/IPT_TYPE`, {
