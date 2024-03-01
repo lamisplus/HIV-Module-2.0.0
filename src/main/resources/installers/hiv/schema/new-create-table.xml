@@ -51,4 +51,38 @@
         );
     </sql>
 </changeSet>
+
+<changeSet id="202402296100-01" author="Sunday">
+    <preConditions onFail="MARK_RAN">
+        <sqlCheck expectedResult="0">
+            SELECT COUNT(table_name) FROM information_schema.tables WHERE table_name = 'dsd_devolvement';
+        </sqlCheck>
+    </preConditions>
+    <sql>
+		CREATE TABLE dsd_devolvement(
+			id SERIAL PRIMARY KEY,
+			person_uuid VARCHAR(255) NOT NULL,
+			facility_id BigInt NOT NULL, 
+			created_date TIMESTAMP,
+			created_by VARCHAR(255),
+			last_modified_date TIMESTAMP,
+			last_modified_by VARCHAR(255),
+			viral_load_test_result VARCHAR(255),
+			viral_load_test_result_date DATE,
+			dsd_eligible VARCHAR(255),
+			dsd_accept VARCHAR(255),
+			dsd_model VARCHAR(255),
+            score INT,
+			dsd_type VARCHAR(255),
+			comment VARCHAR(255),
+			completed_by VARCHAR(255),
+			designation VARCHAR(255),
+			date_devolved DATE,
+			uuid VARCHAR(255) NOT NULL UNIQUE,
+			archived INT,
+			dsd_eligibility_assessment JSONB,
+			FOREIGN KEY (person_uuid) REFERENCES patient_person(uuid)
+		);
+	</sql>
+</changeSet>
 </databaseChangeLog>

@@ -112,6 +112,7 @@ const ChronicCare = (props) => {
   const [chronicDateExist, setChronicDateExist] = useState(null);
   const [lastDateOfObservation, setlastDateOfObservation] = useState(null);
   const [isUpdate, setIsUpdate] = useState(false);
+  const [isHypertensive, setHypertensive] = useState("")
   //GenderBase Object
   const [genderBase, setGenderBase] = useState({
     partnerEverPhysically: "",
@@ -231,6 +232,7 @@ const ChronicCare = (props) => {
     // GetChronicCare();
     GetChronicCareData();
     PatientCurrentObject();
+    getIsHypertensive();
     if (
       props.activeContent.id &&
       props.activeContent.id !== "" &&
@@ -289,6 +291,32 @@ const ChronicCare = (props) => {
   //     })
   //     .catch((error) => {});
   // };
+
+
+  const getIsHypertensive = async () => {
+    try {
+      //function to get is hypertensive
+      const response = await axios.get(`${baseUrl}observation/is-hypertensive/${patientObj.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+  
+      if (response.data) {
+
+        console.log("Got here" + response.data['isHypertensive']);
+  
+        //To get the latest Chronic Hypertensive response
+        setHypertensive(response.data['isHypertensive']);
+      }
+    } catch (error) {
+      // Handle error here
+      console.error(error);
+    }
+  };
+
+ 
+
+  
+
   const GetChronicCareData = () => {
     //function to get chronic care data check if record exist using date for validation
     axios
@@ -299,10 +327,17 @@ const ChronicCare = (props) => {
         const DateObj = response.data.filter((x) => x.type === "Chronic Care");
         if (response.data) {
           setChronicDateExist(DateObj);
+
+          //To get the lastest Chronic Hyptensive response
+          //const hypensiveResponse = DateObj.length-1
+          //setHypertensive(DateObj[hypensiveResponse].data.chronicCondition.hypertensive)
+          //console.log(DateObj[hypensiveResponse].data.chronicCondition.hypertensive);
         }
       })
       .catch((error) => {});
   };
+
+
   const handleInputChange = (e) => {
     setErrors({ ...temp, [e.target.name]: "" });
     setObservation({ ...observation, [e.target.name]: e.target.value });
@@ -477,6 +512,7 @@ const ChronicCare = (props) => {
   const handleCancel = () => {
     //history.push({ pathname: '/' });
   };
+
 
   return (
     <>
@@ -815,6 +851,7 @@ const ChronicCare = (props) => {
                         errors={errors}
                         encounterDate={observation.dateOfObservation}
                         patientObj={patientObj}
+                        isHypertensive={isHypertensive}
                       />
                     </div>
                   </div>
