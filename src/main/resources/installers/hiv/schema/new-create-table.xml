@@ -85,4 +85,26 @@
 		);
 	</sql>
 </changeSet>
+    <changeSet  id="20240301-018"  author="Sunday">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="6">
+                SELECT COUNT(*) FROM hiv_regimen WHERE active = true AND id IN (102,103,104,105,118,109);
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO hiv_regimen (id, description, composition, regimen_type_id, active, priority) VALUES ((SELECT MAX(id) + 1 FROM hiv_regimen), 'NVP(50mg/5ml)', 'Nevirapine', 6, true, 1);
+            INSERT INTO hiv_regimen_resolver (regimensys, regimen) VALUES ('NVP(50mg/5ml)','NVP');
+
+            INSERT INTO hiv_drug (id, abbrev, name, strength, pack_size, doseform, morning, afternoon, evening, item_id) VALUES ((SELECT MAX(id) + 1 FROM hiv_drug), 'NVP', 'Nevirapine', '50mg/5ml', 100, 'Suspension', 1, 0, 0, (SELECT MAX(id) + 1 FROM hiv_drug));
+            INSERT INTO hiv_regimen_drug(id, regimen_id, drug_id) VALUES ((SELECT MAX(id) + 1 FROM hiv_regimen_drug), (SELECT MAX(id) FROM hiv_regimen), (SELECT MAX(id) FROM hiv_drug));
+
+            INSERT INTO hiv_regimen (id, description, composition, regimen_type_id, active, priority) VALUES ((SELECT MAX(id) + 1 FROM hiv_regimen), 'AZT(50mg/5ml)', 'Zidovudine', 6, true, 1);
+            INSERT INTO hiv_regimen_resolver (regimensys, regimen) VALUES ('AZT(50mg/5ml)','AZT');
+
+            INSERT INTO hiv_drug (id, abbrev, name, strength, pack_size, doseform, morning, afternoon, evening, item_id) VALUES ((SELECT MAX(id) + 1 FROM hiv_drug), 'AZT', 'Zidovudine', '50mg/5ml', 240, 'Suspension', 1, 0, 1, (SELECT MAX(id) + 1 FROM hiv_drug));
+            INSERT INTO hiv_regimen_drug(id, regimen_id, drug_id) VALUES ((SELECT MAX(id) + 1 FROM hiv_regimen_drug), (SELECT MAX(id) FROM hiv_regimen), (SELECT MAX(id) FROM hiv_drug));
+
+            UPDATE public.hiv_regimen SET active = false WHERE id IN (102,103,104,105,118,109,33,119,6,5,15,16,96,124,26,39,3,2,40,13,41,1,233,4,93,113,94,114,14,101,99,100,97,98,35,23,24,8,17,7,34,28,27,22,21,110,213,215,128,228,229,201,20,19,10,122,11,42,222,223,220,221);
+        </sql>
+    </changeSet>
 </databaseChangeLog>

@@ -2,9 +2,11 @@ package org.lamisplus.modules.hiv.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import org.hibernate.annotations.GeneratorType;
 import org.lamisplus.modules.hiv.domain.dto.ARTClinicalVisitDisplayDto;
+import org.lamisplus.modules.hiv.domain.dto.CurrentViralLoadDTO;
 import org.lamisplus.modules.hiv.domain.dto.DsdDevolvementDTO;
 import org.lamisplus.modules.hiv.domain.dto.RegisterArtPharmacyDTO;
 import org.lamisplus.modules.hiv.service.DsdDevolvementService;
@@ -58,13 +60,24 @@ public class DsdDevolvementController {
         }
     }
 
-    @GetMapping(value = "person", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/devolvements", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<DsdDevolvementDTO>> getDsdDevolvementByPersonId(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize, @RequestParam Long personId) {
         try {
             return ResponseEntity.ok (devolvementService.getDsdDevolvementByPersonId(personId, pageNo, pageSize));
         }catch (Exception e){
             e.printStackTrace();
             return  new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(value="/current-viral-load", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Optional<CurrentViralLoadDTO>> getCurrentViralLoadByPersonId(@RequestParam Long personId){
+        Optional<CurrentViralLoadDTO> currentViralLoad = devolvementService.getCurrentViralLoadByPersonId(personId);
+
+        if(currentViralLoad.isPresent()) {
+            return new ResponseEntity<>(currentViralLoad, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
