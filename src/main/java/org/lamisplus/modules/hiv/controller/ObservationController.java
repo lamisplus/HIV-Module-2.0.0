@@ -45,10 +45,17 @@ public class ObservationController {
 	public ResponseEntity<List<ObservationDto>> getObservationByPersonId(@PathVariable("id") Long id) {
 		return ResponseEntity.ok(observationService.getAllObservationByPerson(id));
 	}
-	
+
 	@GetMapping(value = "/check-ipt-eligible/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public  ResponseEntity<Map<String, Boolean>> checkIptEligible(@PathVariable("id") Long personId) {
 		return ResponseEntity.ok(observationService.isEligibleForIpt(personId));
+	}
+
+
+
+	@GetMapping(value = "/is-hypertensive/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public  ResponseEntity<Map<String, Boolean>> getIsHypertensive(@PathVariable("id") Long personId) {
+		return ResponseEntity.ok(observationService.getIsHypertensive(personId));
 	}
 
 //    @PostMapping(value="/eac", produces = MediaType.APPLICATION_JSON_VALUE)

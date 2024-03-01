@@ -44,6 +44,7 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
             "AND tbTreatmentPersonUuid = ?2", nativeQuery = true)
     Optional<String>  getIPTEligiblePatientUuid(Long facilityId, String uuid);
 
+    
     List<Observation> getAllByPersonAndFacilityId(Person person, Long orgId);
 
 
@@ -260,4 +261,8 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
     List<MedicationInfo> getTransferPatientTreatmentMedication(@Param("uuid") String uuid);
 
 
+
+  @Query(value = "SELECT data->'chronicCondition'->>'hypertensive' AS hypertensive_value FROM public.hiv_observation WHERE type = 'Chronic Care' and facility_id = ?1 and person_uuid = ?2  AND archived = 0 AND data->'chronicCondition'->>'hypertensive' = 'Yes' limit 1", nativeQuery = true)
+  Optional<String> getIsHypertensive(Long facilityId, String uuid);
+  
 }
