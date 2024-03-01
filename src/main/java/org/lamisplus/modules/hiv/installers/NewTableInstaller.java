@@ -7,7 +7,7 @@ import org.springframework.core.annotation.Order;
 @Order(1)
 @Installer(name = "new-table-installer",
 		description = "Installs new tables",
-		version = 3)
+		version = 4)
 public class NewTableInstaller extends AcrossLiquibaseInstaller {
 	public NewTableInstaller() {
 		super("classpath:installers/hiv/schema/new-create-table.xml");

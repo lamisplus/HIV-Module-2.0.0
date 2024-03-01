@@ -3,16 +3,17 @@ package org.lamisplus.modules.hiv.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
+import org.lamisplus.modules.hiv.domain.dto.CurrentViralLoadDTO;
 import org.lamisplus.modules.hiv.domain.dto.DsdDevolvementDTO;
-import org.lamisplus.modules.hiv.domain.dto.RegisterArtPharmacyDTO;
-import org.lamisplus.modules.hiv.domain.entity.ARTClinical;
-import org.lamisplus.modules.hiv.domain.entity.ArtPharmacy;
+import org.lamisplus.modules.hiv.domain.entity.CurrentViralLoad;
 import org.lamisplus.modules.hiv.domain.entity.DsdDevolvement;
+import org.lamisplus.modules.hiv.repositories.CurrentViralLoadRepository;
 import org.lamisplus.modules.hiv.repositories.DsdDevolvementRepository;
 import org.lamisplus.modules.patient.domain.entity.Person;
 import org.lamisplus.modules.patient.repository.PersonRepository;
@@ -36,6 +37,8 @@ public class DsdDevolvementService {
     private final DsdDevolvementRepository dsdDevolvementRepository;
     private final PersonRepository personRepository;
     private final CurrentUserOrganizationService organizationUtil;
+
+    private final CurrentViralLoadRepository currentViralLoadRepository;
 
     public DsdDevolvementDTO saveDsdDevolvement(DsdDevolvementDTO dto) throws IOException {
         try {
@@ -70,9 +73,14 @@ public class DsdDevolvementService {
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by("dateDevolved").descending());
         Page<DsdDevolvement> devolveVisits = dsdDevolvementRepository.findAllByPersonAndArchived(person, 0, paging);
         if (devolveVisits.hasContent()) {
-           // return devolveVisits.getContent().stream().map(this::convertEntityToDsdDevolvementDto).collect(Collectors.toList());
+           return devolveVisits.getContent().stream().map(this::convertEntityToDsdDevolvementDto).collect(Collectors.toList());
         }
         return new ArrayList<>();
+    }
+
+    public Optional<CurrentViralLoadDTO> getCurrentViralLoadByPersonId(Long personId){
+            Optional<CurrentViralLoad> currentViralLoad = currentViralLoadRepository.findViralLoadByPersonId(personId);
+            return  convertEntityTocurrentViralLoadDto(currentViralLoad);
     }
 
     public String deleteById(Long id) throws IOException{
@@ -84,6 +92,18 @@ public class DsdDevolvementService {
 
 
     //implement model mapper
+    private Optional<CurrentViralLoadDTO> convertEntityTocurrentViralLoadDto(Optional<CurrentViralLoad> entity){
+        CurrentViralLoadDTO dto = new CurrentViralLoadDTO();
+        try {
+            BeanUtils.copyProperties(entity, dto);
+            dto.setId(entity.get().getId());
+            dto.setViralLoadResultDate(entity.get().getViralLoadResultDate());
+            dto.setViralLoadTestResult(entity.get().getViralLoadTestResult());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return Optional.of(dto);
+    }
     private DsdDevolvement  convertDsdDevolvementDtoToEntity(DsdDevolvementDTO dto) throws JsonProcessingException {
         DsdDevolvement dsdDevolvement = new DsdDevolvement();
         try {
@@ -99,7 +119,7 @@ public class DsdDevolvementService {
         return dsdDevolvement;
     }
 
-    private DsdDevolvementDTO convertEntityToDsdDevolvementDto(DsdDevolvement entity) throws JsonProcessingException{
+    private DsdDevolvementDTO convertEntityToDsdDevolvementDto(DsdDevolvement entity){
 		DsdDevolvementDTO dto = new DsdDevolvementDTO();
         try {
             BeanUtils.copyProperties(entity, dto);
