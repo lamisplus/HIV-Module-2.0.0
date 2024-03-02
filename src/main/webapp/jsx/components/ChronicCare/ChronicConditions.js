@@ -94,122 +94,191 @@ const ChronicConditions = (props) => {
           <form>
             {/* Medical History form inputs */}
             <div className="row">
-              <div className="form-group mb-3 col-md-8"></div>
-            </div>
-            <div className="row">
-              <div className="form-group mb-3 col-md-6">
-                <FormGroup>
-                  <Label>Known Hypertensive </Label>
-                  <Input
-                    type="select"
-                    name="hypertensive"
-                    id="hypertensive"
-                    onChange={handleInputChange}
-                    value={props.chronicConditions.hypertensive}
-                    disabled={props.action === "view" ? true : false}
-                  >
-                    <option value="">Select</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                  </Input>
-                </FormGroup>
-              </div>
-              <div className="form-group mb-3 col-md-6">
-                <FormGroup>
-                  <Label>First time identified within the programme?</Label>
-                  <Input
-                    type="select"
-                    name="firstTimeHypertensive"
-                    id="firstTimeHypertensive"
-                    onChange={handleInputChange}
-                    value={props.chronicConditions.firstTimeHypertensive}
-                    disabled={props.action === "view" ? true : false}
-                  >
-                    <option value="">Select</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                  </Input>
-                </FormGroup>
-              </div>
-              <div className="row">
-                <div className="form-group mb-3 col-md-12">
-                  <FormGroup>
-                    <Label>Blood Pressure</Label>
-                    <InputGroup>
-                      <InputGroupText
-                        addonType="append"
-                        style={{
-                          backgroundColor: "#014D88",
-                          color: "#fff",
-                          border: "1px solid #014D88",
-                          borderRadius: "0rem",
-                        }}
-                      >
-                        systolic(mmHg)
-                      </InputGroupText>
-                      <Input
-                        type="number"
-                        name="systolic"
-                        id="systolic"
-                        min="90"
-                        max="2240"
-                        onChange={handleInputChange}
-                        value={props.chronicConditions.systolic}
-                        disabled={props.action === "view" ? true : false}
-                        //onKeyUp={handleInputValueCheckSystolic}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0rem",
-                        }}
-                      />
-                      <InputGroupText
-                        addonType="append"
-                        style={{
-                          backgroundColor: "#014D88",
-                          color: "#fff",
-                          border: "1px solid #014D88",
-                          borderRadius: "0rem",
-                        }}
-                      >
-                        diastolic(mmHg)
-                      </InputGroupText>
-                      <Input
-                        type="number"
-                        name="diastolic"
-                        id="diastolic"
-                        min={0}
-                        max={140}
-                        onChange={handleInputChange}
-                        value={props.chronicConditions.diastolic}
-                        disabled={props.action === "view" ? true : false}
-                        //onKeyUp={handleInputValueCheckDiastolic}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0rem",
-                        }}
-                      />
-                    </InputGroup>
-                  </FormGroup>
-                </div>
-              </div>
-              <div className="form-group mb-3 col-md-6">
-                <FormGroup>
-                  <Label>BP above 14080mmHg?</Label>
-                  <Input
-                    type="select"
-                    name="bp"
-                    id="bp"
-                    onChange={handleInputChange}
-                    value={props.chronicConditions.bp}
-                    disabled={props.action === "view" ? true : false}
-                  >
-                    <option value="">Select</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                  </Input>
-                </FormGroup>
-              </div>
+                    <div className="form-group mb-3 col-md-8"></div>   
+                    {props.isHypertensive !="" && props.isHypertensive === true?
 
+                      (<>
+                         <div className="row">
+                      
+                    
+                      <div className="form-group mb-3 col-md-6">                                    
+                              <FormGroup>
+                              <Label>First time identified within the programme?</Label>
+                                      <Input 
+                                          type="select"
+                                          name="firstTimeHypertensive"
+                                          id="firstTimeHypertensive"
+                                          onChange={handleInputChange} 
+                                          value={props.chronicConditions.firstTimeHypertensive}
+                                      >
+                                      <option value="">Select</option>
+                                      <option value="Yes">Yes</option>
+                                      <option value="No">No</option>
+                                      </Input>
+  
+                              </FormGroup>
+                      </div>
+                      <div className="row">
+                      <div className="form-group mb-3 col-md-12">
+                          <FormGroup>
+                          <Label >Blood Pressure</Label>
+                          <InputGroup>
+                          <InputGroupText addonType="append" style={{ backgroundColor:"#014D88", color:"#fff", border: "1px solid #014D88", borderRadius:"0rem"}}>
+                                  systolic(mmHg)
+                          </InputGroupText> 
+                              <Input 
+                                  type="number"
+                                  name="systolic"
+                                  id="systolic"
+                                  min="90"
+                                  max="2240"
+                                  onChange={handleInputChange}
+                                  value={props.chronicConditions.systolic}
+                                  //onKeyUp={handleInputValueCheckSystolic}
+                                  style={{border: "1px solid #014D88", borderRadius:"0rem"}} 
+                              />
+                              <InputGroupText addonType="append" style={{ backgroundColor:"#014D88", color:"#fff", border: "1px solid #014D88", borderRadius:"0rem"}}>
+                              diastolic(mmHg)
+                              </InputGroupText>
+                                  <Input 
+                                  type="number"
+                                  name="diastolic"
+                                  id="diastolic"
+                                  min={0}
+                                  max={140}
+                                  onChange={handleInputChange}
+                                  value={props.chronicConditions.diastolic}
+                                  //onKeyUp={handleInputValueCheckDiastolic} 
+                                  style={{border: "1px solid #014D88", borderRadius:"0rem"}}
+                                  />
+                              
+                              
+                          </InputGroup>
+                                  
+                          </FormGroup>
+                      </div>
+                      </div>
+                      <div className="form-group mb-3 col-md-6">                                    
+                              <FormGroup>
+                              <Label>BP above 14080mmHg?</Label>
+                                      <Input 
+                                          type="select"
+                                          name="bp"
+                                          id="bp"
+                                          onChange={handleInputChange} 
+                                          value={props.chronicConditions.bp}
+                                      >
+                                      <option value="">Select</option>
+                                      <option value="Yes">Yes</option>
+                                      <option value="No">No</option>
+                                      </Input>
+  
+                              </FormGroup>
+                      </div>
+  
+                  </div>
+                            
+                      </>) : 
+                      (<> 
+                 
+                    <div className="row">
+                      
+                    <div className="form-group mb-3 col-md-6">                                    
+                            <FormGroup>
+                            <Label>Known Hypertensive </Label>
+                                    <Input 
+                                        type="select"
+                                        name="hypertensive"
+                                        id="hypertensive"
+                                        onChange={handleInputChange} 
+                                        value={props.chronicConditions.hypertensive} 
+                                    >
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                    </Input>
+
+                            </FormGroup>
+                    </div>
+                    <div className="form-group mb-3 col-md-6">                                    
+                            <FormGroup>
+                            <Label>First time identified within the programme?</Label>
+                                    <Input 
+                                        type="select"
+                                        name="firstTimeHypertensive"
+                                        id="firstTimeHypertensive"
+                                        onChange={handleInputChange} 
+                                        value={props.chronicConditions.firstTimeHypertensive}
+                                    >
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                    </Input>
+
+                            </FormGroup>
+                    </div>
+                    <div className="row">
+                    <div className="form-group mb-3 col-md-12">
+                        <FormGroup>
+                        <Label >Blood Pressure</Label>
+                        <InputGroup>
+                        <InputGroupText addonType="append" style={{ backgroundColor:"#014D88", color:"#fff", border: "1px solid #014D88", borderRadius:"0rem"}}>
+                                systolic(mmHg)
+                        </InputGroupText> 
+                            <Input 
+                                type="number"
+                                name="systolic"
+                                id="systolic"
+                                min="90"
+                                max="2240"
+                                onChange={handleInputChange}
+                                value={props.chronicConditions.systolic}
+                                //onKeyUp={handleInputValueCheckSystolic}
+                                style={{border: "1px solid #014D88", borderRadius:"0rem"}} 
+                            />
+                            <InputGroupText addonType="append" style={{ backgroundColor:"#014D88", color:"#fff", border: "1px solid #014D88", borderRadius:"0rem"}}>
+                            diastolic(mmHg)
+                            </InputGroupText>
+                                <Input 
+                                type="number"
+                                name="diastolic"
+                                id="diastolic"
+                                min={0}
+                                max={140}
+                                onChange={handleInputChange}
+                                value={props.chronicConditions.diastolic}
+                                //onKeyUp={handleInputValueCheckDiastolic} 
+                                style={{border: "1px solid #014D88", borderRadius:"0rem"}}
+                                />
+                            
+                            
+                        </InputGroup>
+                                
+                        </FormGroup>
+                    </div>
+                    </div>
+                    <div className="form-group mb-3 col-md-6">                                    
+                            <FormGroup>
+                            <Label>BP above 14080mmHg?</Label>
+                                    <Input 
+                                        type="select"
+                                        name="bp"
+                                        id="bp"
+                                        onChange={handleInputChange} 
+                                        value={props.chronicConditions.bp}
+                                    >
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                    </Input>
+
+                            </FormGroup>
+                    </div>
+
+                </div>
+                </>)}      
+
+            
               <div className="row">
                 <div className="form-group mb-3 col-md-6">
                   <FormGroup>
