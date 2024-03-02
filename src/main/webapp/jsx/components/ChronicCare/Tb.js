@@ -98,6 +98,7 @@ const TbScreening = (props) => {
   const [tbTreatmentType, setTbTreatmentType] = useState([]);
   const [tbTreatmentOutCome, setTbTreatmentOutCome] = useState([]);
   const [tbScreeningType, setTbScreeningType] = useState([]);
+  const [tbScreeningType2, setTbScreeningType2] = useState([]);
   const [showAdditionalFields, setShowAdditionalFields] = useState(false);
   const patientAge = calculate_age_to_number(props.patientObj.dateOfBirth);
 
@@ -704,6 +705,7 @@ const TbScreening = (props) => {
     TB_TREATMENT_OUTCOME();
     TB_TREATMENT_TYPE();
     TB_SCREENING_TYPE();
+    CXR_SCREENING_TYPE();
   }, []);
   const TB_TREATMENT_TYPE = () => {
     axios
@@ -736,8 +738,24 @@ const TbScreening = (props) => {
       })
       .catch((error) => {});
   };
+  const CXR_SCREENING_TYPE = () => {
+    axios
+      .get(`${baseUrl}application-codesets/v2/CXR_SCREENING_TYPE	`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        setTbScreeningType2(response.data);
+      })
+      .catch((error) => {});
+  };
 
-  console.log("tbScreeningType", tbScreeningType);
+//   TB_SCREENING_TYPE	Care and Support form/TB/IPT Screening	Symptom screen (alone)
+// TB_SCREENING_TYPE	Care and Support form/TB/IPT Screening	Chest X-ray
+// CXR_SCREENING_TYPE	Care and Support form/TB/IPT Screening	X-ray suggestive
+// CXR_SCREENING_TYPE	Care and Support form/TB/IPT Screening	X-ray not suggestive
+
+  // console.log("tbScreeningType", tbScreeningType);
+  console.log("tbScreeningType2", tbScreeningType2);
 
   const handleInputChange = (e) => {
     props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.value });
