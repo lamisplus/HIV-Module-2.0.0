@@ -104,7 +104,7 @@ const Laboratory = (props) => {
     labTestId: "",
     labOrderIndication: "",
     dateResultReceived: "",
-    dateOrdered: "",
+    orderedDate: "",
     patientId: props.patientObj ? props.patientObj.id : "",
     result: "",
     sampleCollectionDate: null,
@@ -284,7 +284,7 @@ const Laboratory = (props) => {
         labTestId: "",
         labOrderIndication: "",
         dateResultReceived: "",
-        dateOrdered: "",
+        orderedDate: "",
         patientId: props.patientObj ? props.patientObj.id : "",
         result: "",
         sampleCollectionDate: "",
@@ -320,7 +320,7 @@ const Laboratory = (props) => {
     temp.labOrderIndication = tests.labOrderIndication
       ? ""
       : "This field is required";
-    temp.dateOrdered = tests.dateOrdered ? "" : "This field is required";
+    temp.orderedDate = tests.orderedDate ? "" : "This field is required";
     temp.sampleNumber = tests.sampleNumber ? "" : "This field is required";
     temp.sampleCollectionDate = tests.sampleCollectionDate
       ? ""
@@ -374,7 +374,7 @@ const Laboratory = (props) => {
           labTestGroupId: "",
           labTestId: "",
           labOrderIndication: "",
-          dateOrdered: "",
+          orderedDate: "",
           dateResultReceived: "",
           patientId: props.patientObj ? props.patientObj.id : "",
           result: "",
@@ -1301,10 +1301,10 @@ const Laboratory = (props) => {
                       <span style={{ color: "red" }}> *</span>
                       <Input
                         type="date"
-                        name="dateOrdered"
-                        id="dateOrdered"
-                        value={tests.dateOrdered}
-                        min={moment(tests.sampleCollectionDate).format(
+                        name="orderedDate"
+                        id="orderedDate"
+                        value={tests.orderedDate}
+                        min={moment(tests.orderedDate).format(
                           "YYYY-MM-DD"
                         )}
                         max={moment(new Date()).format("YYYY-MM-DD")}
@@ -1315,9 +1315,9 @@ const Laboratory = (props) => {
                         }}
                         required
                       />
-                      {errors.dateOrdered !== "" ? (
+                      {errors.orderedDate !== "" ? (
                         <span className={classes.error}>
-                          {errors.dateOrdered}
+                          {errors.orderedDate}
                         </span>
                       ) : (
                         ""
