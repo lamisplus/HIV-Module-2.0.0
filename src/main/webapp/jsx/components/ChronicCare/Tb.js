@@ -705,7 +705,7 @@ const TbScreening = (props) => {
     TB_TREATMENT_OUTCOME();
     TB_TREATMENT_TYPE();
     TB_SCREENING_TYPE();
-    CXR_SCREENING_TYPE();
+    // CXR_SCREENING_TYPE();
   }, []);
   const TB_TREATMENT_TYPE = () => {
     axios
@@ -738,16 +738,18 @@ const TbScreening = (props) => {
       })
       .catch((error) => {});
   };
-  const CXR_SCREENING_TYPE = () => {
-    axios
-      .get(`${baseUrl}application-codesets/v2/CXR_SCREENING_TYPE	`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        setTbScreeningType2(response.data);
-      })
-      .catch((error) => {});
-  };
+  // const CXR_SCREENING_TYPE = () => {
+  //   axios
+  //     .get(`${baseUrl}application-codesets/v2/LAB_ORDER_INDICATION`, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     })
+  //     .then((response) => {
+  //       setTbScreeningType2(response.data);
+  //     })
+  //     .catch((error) => {});
+  // };
+
+
 
 //   TB_SCREENING_TYPE	Care and Support form/TB/IPT Screening	Symptom screen (alone)
 // TB_SCREENING_TYPE	Care and Support form/TB/IPT Screening	Chest X-ray

@@ -279,33 +279,39 @@ const Laboratory = (props) => {
           { headers: { Authorization: `Bearer ${token}` } }
         )
         .then((response) => {
-          setSaving(false);
-          toast.success("Laboratory order & result updated successful", {
-            position: toast.POSITION.BOTTOM_CENTER,
-          });
-          setTests({
-            comments: "",
-            dateAssayed: "",
-            labNumber: "",
-            labTestGroupId: "",
-            labTestId: "",
-            labOrderIndication: "",
-            dateResultReceived: "",
-            orderedDate: "",
-            patientId: props.patientObj ? props.patientObj.id : "",
-            result: "",
-            sampleCollectionDate: "",
-            viralLoadIndication: "",
-            visitId: "",
-            checkedBy: "",
-            clinicianName: "",
-            dateChecked: "",
-            dateResultReported: "",
-            id: "",
-            orderId: "",
-            resultReportedBy: "",
-          });
-          setTestOrderList([]);
+
+
+              toast.success("Laboratory order & result updated successful", {
+                position: toast.POSITION.BOTTOM_CENTER,
+              });
+
+              setSaving(false);
+
+              setTests({
+                comments: "",
+                dateAssayed: "",
+                labNumber: "",
+                labTestGroupId: "",
+                labTestId: "",
+                labOrderIndication: "",
+                dateResultReceived: "",
+                orderedDate: "",
+                patientId: props.patientObj ? props.patientObj.id : "",
+                result: "",
+                sampleCollectionDate: "",
+                viralLoadIndication: "",
+                visitId: "",
+                checkedBy: "",
+                clinicianName: "",
+                dateChecked: "",
+                dateResultReported: "",
+                id: "",
+                orderId: "",
+                resultReportedBy: "",
+              });
+              setTestOrderList([]);
+          
+        
           props.setActiveContent({
             ...props.activeContent,
             route: "laboratoryOrderResult",
@@ -314,6 +320,7 @@ const Laboratory = (props) => {
             actionType: "update",
             obj: props.activeContent.obj,
           });
+     
         })
         .catch((error) => {
           setSaving(false);
@@ -325,11 +332,12 @@ const Laboratory = (props) => {
             toast.error(errorMessage, {
               position: toast.POSITION.BOTTOM_CENTER,
             });
-          } else {
-            toast.error("Something went wrong. Please try again...", {
-              position: toast.POSITION.BOTTOM_CENTER,
-            });
           }
+          // else {
+          //   toast.error("Something went wrong. Please try again...", {
+          //     position: toast.POSITION.BOTTOM_CENTER,
+          //   });
+          // }
         });
     } else {
       setSaving(false);
