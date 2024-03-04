@@ -64,6 +64,7 @@ public class EacController {
 	public ResponseEntity<HIVEacSessionDto> updateEacSession(
 			@PathVariable("id") Long id,
 			@RequestBody HIVEacSessionDto data) {
+		log.info("EAC SESSION DATA ***** {}", data);
 		return ResponseEntity.ok(hIVEacSessionService.updateEacSession(id, data));
 	}
 	

@@ -156,13 +156,18 @@ const EAC = (props) => {
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
-            setLoading(false)
-            const filterRegimen=response.data.filter((x)=> (x.id===1 || x.id===2 || x.id===3 || x.id===4 || x.id===14))
-            setRegimenLine(filterRegimen)
+                console.log("RESPONSE **** ", response.data)
+                setRegimenLine(response.data)
+                setLoading(false)
+                const filterRegimen=response.data.filter(item => [1, 2, 3, 4, 14].includes(item.id))
+                console.log("Filtered regemenLine ****", filterRegimen)
+                    // response.data.filter((x)=> (x.id===1 || x.id===2 || x.id===3 || x.id===4 || x.id===14))
+                setRegimenLine(filterRegimen)
+                console.log("Filtered Regimen line is ", filterRegimen)
             })
             .catch((error) => {
-            
-            });    
+                console.log("Error ", error)
+            });
     }
     ///GET CURRENT Regimen
     const CurrentRegimen =()=>{
@@ -173,6 +178,7 @@ const EAC = (props) => {
             )
             .then((response) => {
             setLoading(false)
+                console.log("Current regime value ****", response.data)
             setCurrentRegimen(response.data)
             if(response.data){
                 const regimenTypeID=response.data && response.data.regimenType ? response.data.regimenType.id :""
@@ -181,9 +187,8 @@ const EAC = (props) => {
                         { headers: {"Authorization" : `Bearer ${token}`} }
                     )
                     .then((response) => {
-                    setLoading(false)
-                    setRegimenType(response.data)
-                    
+                        setLoading(false)
+                        setRegimenType(response.data)
                     })
                     .catch((error) => {
                     
@@ -227,7 +232,6 @@ const EAC = (props) => {
             { headers: {"Authorization" : `Bearer ${token}`} })
             if(response.data.length >0){
                 setRegimenLineLineType(response.data)
-                    
             }
             }catch(e) {
 
@@ -393,12 +397,11 @@ const EAC = (props) => {
                                     id="switchRegimenLine"
                                     value={switchs.switchRegimenLine}
                                     onChange={handleSelectedRegimen}
-                                    
                                     style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                     
                                 >
-                                 <option value="">Select</option> 
-                                 {regimenLine.filter((x)=>x.id!==currentRegimen.regimenType.id).map((value) => (
+                                 <option value="">Select</option>
+                                    {regimenLine.map((value) => (
                                         <option key={value.id} value={value.id}>
                                             {value.description}
                                         </option>
