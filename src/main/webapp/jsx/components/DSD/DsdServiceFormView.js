@@ -151,6 +151,7 @@ const DsdServiceForm = (props) => {
                 })
                 .then((response) => {
                     setPayLoad(response.data);
+                    console.log("response", response.data);
                 })
                 .catch((error) => {
                     // console.log("error", error);
@@ -184,8 +185,7 @@ const DsdServiceForm = (props) => {
             if (payload.dsdEligibilityAssessment[key] === "Yes") {
                 score += 1;
             }
-        }``
-        console.log("score", score);
+        }
         return score;
     }
 
@@ -872,7 +872,7 @@ const DsdServiceForm = (props) => {
                                         type="select"
                                         name="dsdType"
                                         id="dsdType"
-                                        value={payload.dsdType}
+                                        value={payload.dsdAccept}
                                         onChange={handleOtherInputChange}
                                         style={{
                                             border: "1px solid #014D88",
