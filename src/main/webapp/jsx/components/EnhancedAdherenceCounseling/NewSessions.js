@@ -194,6 +194,14 @@ const NEWEACSESSION = (props) => {
     const onInterventionsSelect = (selectedValues) => {
         setSelectedInterventions(selectedValues);
     };
+    const minDate = () => {
+        if (objValues.sessionDate) {
+            const sessionDate = new Date(objValues.sessionDate);
+            sessionDate.setDate(sessionDate.getDate() + 1);
+            return sessionDate.toISOString().split('T')[0];
+        }
+        return '';
+    };
     const BackToSession = (row, actionType) =>{  
         // props.setActiveContent({...props.activeContent, route:'pharmacy', activeTab:"hsitory"})
         
@@ -465,7 +473,7 @@ const NEWEACSESSION = (props) => {
                                 id="followUpDate"
                                 value={objValues.followUpDate}
                                 onChange={handleInputChange}
-                                min={objValues.sessionDate}
+                                min={minDate()}
                                 //max= {moment(new Date()).format("YYYY-MM-DD") }
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 required

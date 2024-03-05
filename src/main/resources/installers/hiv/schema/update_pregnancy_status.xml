@@ -95,11 +95,7 @@
         </preConditions>
 
         <sql>
-
             DELETE FROM  base_application_codeset where codeset_group='REASON_DISCONTINUATION' AND id IN('1016','1017','1018','1019');
-
         </sql>
     </changeSet>
-
-
 </databaseChangeLog>

@@ -1,8 +1,23 @@
 package org.lamisplus.modules.hiv.domain.dto;
 
+import java.time.LocalDate;
+
 public interface LinkageResponseInterface {
 
     String getArtNumber();
+
+    //added entity
+    String getArvRegimen();
+
+    String getDateTested();
+
+    String getArtEnrollmentDate();
+
+    String getVlTestDate();
+
+    String getVlResult();
+
+    String getVlResultDate();
 
     String getLastName();
 
@@ -21,6 +36,11 @@ public interface LinkageResponseInterface {
     String getLgaOfResidence();
 
     String getEntryPoint();
+
+    //reent
+    String getOfferedOvcFromFacility();
+
+    String getOfferAccepted();
 
     YesNo getShareContactWithOvc();
 

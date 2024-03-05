@@ -153,6 +153,7 @@ public class HIVEacSessionService {
 		hIVEacSession.setEacSessionDate(dto.getSessionDate());
 		hIVEacSession.setReferral(dto.getReferral());
 		hIVEacSession.setAdherence(dto.getAdherence());
+		hIVEacSession.setStatus(dto.getStatus());
 		return hIVEacSession;
 		
 	}

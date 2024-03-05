@@ -25,6 +25,7 @@ import "react-widgets/dist/css/react-widgets.css";
 import "react-phone-input-2/lib/style.css";
 import { calculate_age_to_number } from "../../../utils";
 import { h } from "preact";
+import useFacilityId from "../../../hooks/useFacilityId";
 const useStyles = makeStyles((theme) => ({
   card: {
     margin: theme.spacing(20),
@@ -91,10 +92,15 @@ const useStyles = makeStyles((theme) => ({
 
 const Eligibility = (props) => {
   const classes = useStyles();
+
+  const [facilityId, setFacilityId] = useState(null);
   const [clientType, setClientType] = useState([]);
   const [pregnancyStatus, setPregnancyStatus] = useState([]);
   const [who, setWho] = useState([]);
   const [artStatus, setArtStatus] = useState([]);
+  const [lastCd4Result, setLastCd4Result] = useState({});
+  const getFacilityId = useFacilityId(baseUrl, token);
+
   const handleEligibility = (e) => {
     props.setEligibility({
       ...props.eligibility,
@@ -106,7 +112,8 @@ const Eligibility = (props) => {
     PREGNANCY_STATUS();
     ART_STATUS();
     WHO_STAGING_CRITERIA();
-  }, []);
+    getLastCD4Result();
+  }, [getFacilityId]);
   const CHRONIC_CARE_CLIENT_TYPE = () => {
     axios
       .get(`${baseUrl}application-codesets/v2/CHRONIC_CARE_CLIENT_TYPE`, {
@@ -127,17 +134,6 @@ const Eligibility = (props) => {
       })
       .catch((error) => {});
   };
-  // const PREGNANCY_STATUS = () => {
-  //   axios
-  //     .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS`, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     })
-  //     .then((response) => {
-  //       setPregnancyStatus(response.data);
-  //     })
-  //     .catch((error) => {});
-  // };
-
 
   const PREGNANCY_STATUS = () => {
     axios
@@ -167,6 +163,48 @@ const Eligibility = (props) => {
   };
 
   const patientAge = calculate_age_to_number(props.patientObj.dateOfBirth);
+
+  const getLastCD4Result = () => {
+    axios
+      .get(
+        `${baseUrl}laboratory/cs/page/load/${props.patientObj.id}/${getFacilityId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then((response) => {
+        const lastCd4Result = response.data;
+        setLastCd4Result(lastCd4Result);
+      })
+      .catch((error) => {
+        console.error("Error fetching Last CD4 Result:", error);
+      });
+  };
+
+  useEffect(() => {
+    // Update props.eligibility.lastCd4Result with the value of lastCd4Result.cd4?.resultReported
+    props.setEligibility((prevEligibility) => ({
+      ...prevEligibility,
+      lastCd4Result: lastCd4Result.cd4?.resultReported || "",
+      lastCd4ResultDate: formattedDate(lastCd4Result.cd4?.dateResultReported),
+      lastViralLoadResult: lastCd4Result.vl?.resultReported || "",
+      lastViralLoadResultDate: lastCd4Result.vl?.dateResultReported
+        ? formattedDate(lastCd4Result.vl?.dateResultReported)
+        : "",
+    }));
+  }, [lastCd4Result.cd4?.resultReported]);
+  const formattedDate = (inputDate) => {
+
+  
+    const dateObject = new Date(inputDate);
+      if (isNaN(dateObject)) {
+        return ""; 
+      }
+    const year = dateObject.getFullYear();
+    const month = String(dateObject.getMonth() + 1).padStart(2, "0");
+    const day = String(dateObject.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
   return (
     <>
@@ -245,7 +283,8 @@ const Eligibility = (props) => {
                   </InputGroup>
                 </FormGroup>
               </div>
-              <div className="form-group mb-3 col-md-6">
+              {/* To Be Reviewed */}
+              {/* <div className="form-group mb-3 col-md-6">
                 <FormGroup>
                   <Label>WHO Clinical Staging</Label>
                   <InputGroup>
@@ -266,7 +305,7 @@ const Eligibility = (props) => {
                     </Input>
                   </InputGroup>
                 </FormGroup>
-              </div>
+              </div> */}
               <div className="form-group mb-3 col-md-6">
                 <FormGroup>
                   <Label>Last CD4 Result</Label>
@@ -277,24 +316,25 @@ const Eligibility = (props) => {
                       id="lastCd4Result"
                       value={props.eligibility.lastCd4Result}
                       onChange={handleEligibility}
-                      disabled={props.action === "view" ? true : false}
+                      // disabled={props.action === "view" ? true : false}
+                      disabled={true}
                     />
                   </InputGroup>
                 </FormGroup>
+                {/* )} */}
               </div>
               <div className="form-group mb-3 col-md-6">
                 <FormGroup>
                   <Label>Last CD4 Result Date</Label>
                   <InputGroup>
                     <Input
-                      type="date"
+                      type="text"
                       name="lastCd4ResultDate"
                       id="lastCd4ResultDate"
                       value={props.eligibility.lastCd4ResultDate}
-                      min={props.encounterDate}
-                      max={moment(new Date()).format("YYYY-MM-DD")}
                       onChange={handleEligibility}
-                      disabled={props.action === "view" ? true : false}
+                      // disabled={props.action === "view" ? true : false}
+                      disabled={true}
                     />
                   </InputGroup>
                 </FormGroup>
@@ -310,7 +350,8 @@ const Eligibility = (props) => {
                       id="lastViralLoadResult"
                       value={props.eligibility.lastViralLoadResult}
                       onChange={handleEligibility}
-                      disabled={props.action === "view" ? true : false}
+                      // disabled={props.action === "view" ? true : false}
+                      disabled={true}
                     />
                   </InputGroup>
                 </FormGroup>
@@ -320,14 +361,13 @@ const Eligibility = (props) => {
                   <Label>Last Viral Load Result Date</Label>
                   <InputGroup>
                     <Input
-                      type="date"
+                      type="text"
                       name="lastViralLoadResultDate"
                       id="lastViralLoadResultDate"
                       value={props.eligibility.lastViralLoadResultDate}
-                      min={props.encounterDate}
-                      max={moment(new Date()).format("YYYY-MM-DD")}
                       onChange={handleEligibility}
-                      disabled={props.action === "view" ? true : false}
+                      // disabled={props.action === "view" ? true : false}
+                      disabled={true}
                     />
                   </InputGroup>
                 </FormGroup>

@@ -4,11 +4,9 @@ package org.lamisplus.modules.hiv.domain.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.lamisplus.modules.hiv.domain.dto.YesNo;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -17,6 +15,14 @@ import java.util.UUID;
 public class LinkageResponse {
     private UUID id;
     private String artNumber;
+    // added variables on ovc
+    private String arvRegimen;
+    private LocalDate dateTested;
+    private LocalDate artEnrollmentDate;
+    private LocalDate vlTestDate;
+    private String vlResult;
+    private LocalDate vlResultDate;
+
     private String lastName;
     private String otherName;
     private String gender;
@@ -26,6 +32,10 @@ public class LinkageResponse {
     private String stateOfResidence;
     private String lgaOfResidence;
     private String entryPoint;
+    //recent added entities
+    private String offeredOvcFromFacility;
+    private String offerAccepted;
+
     private YesNo shareContactWithOvc;
     private String reasonForDecline;
     private YesNo drugRefillNotification;
@@ -42,6 +52,7 @@ public class LinkageResponse {
     private String facilityStaffName;
     private Instant dateCreated;
     private Instant dateModified;
+
 
     public LinkageResponse(UUID id, String artNumber, String ovcUniqueId, String lastName, String otherName) {
         this.artNumber = artNumber;
