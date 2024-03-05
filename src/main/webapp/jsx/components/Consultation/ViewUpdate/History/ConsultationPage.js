@@ -265,7 +265,8 @@ const ClinicVisit = (props) => {
     CERVICAL_CANCER_SCREENING_STATUS();
     CERVICAL_CANCER_TREATMENT();
     HEPATITIS_SCREENING_RESULT();
-    PREGANACY_STATUS();
+    // PREGANACY_STATUS();
+    PREGNANCY_STATUS();
     FAMILY_PLANNING_METHOD();
     TestGroup();
     if (props.activeContent.id !== "") {
@@ -305,21 +306,35 @@ const ClinicVisit = (props) => {
       .then((response) => {
         setTestGroup(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   // PREGANACY_STATUS
-  const PREGANACY_STATUS = () => {
+  // const PREGANACY_STATUS = () => {
+  //   axios
+  //     .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS	`, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     })
+  //     .then((response) => {
+  //       setPregnancyStatus(response.data);
+  //     })
+  //     .catch((error) => {
+
+  //     });
+  // };
+  const PREGNANCY_STATUS = () => {
     axios
-      .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS	`, {
+      .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        setPregnancyStatus(response.data);
+        // Filter out "Post Partum" from the response.data array
+        const filteredData = response.data.filter(
+          (status) => status.display !== "Post Partum"
+        );
+        setPregnancyStatus(filteredData);
       })
       .catch((error) => {
-        
+        console.log(error);
       });
   };
   // CRYPTOCOCCAL_SCREENING_STATUS

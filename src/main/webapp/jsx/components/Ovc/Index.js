@@ -85,7 +85,7 @@ function Index(props) {
   };
   const panes = [
     {
-      menuItem: "OVC Patients",
+      menuItem: "OVC Beneficiary",
       render: () => (
         <Tab.Pane>
           <Patient permissions={permissions} />
