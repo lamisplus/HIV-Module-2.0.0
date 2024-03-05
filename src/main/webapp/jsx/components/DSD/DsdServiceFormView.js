@@ -87,28 +87,28 @@ const DsdServiceForm = (props) => {
 
     const isDisabled = props.activeContent?.actionType === "view" ? true : false;
     const [isUpdateState, setIsUpdateState] = useState(false);
-    const GetLatestViralLoadData = () => {
-        axios.get(`${baseUrl}laboratory/vl-results/patients/${patientObj.id}`, {
-            headers: {Authorization: `Bearer ${token}`},
-        }).then((response) => {
-            // get the latest result from the list in response.data, by sorting by dateResultReported
-            // and set the state  values individually with the latest result
-            if (response.data.length > 0) {
-                const latestResult = response.data.sort((a, b) => new Date(b.dateResultReported) - new Date(a.dateResultReported))[0];
-                setViralLoadData({
-                    viralLoadTestResult: latestResult.viralLoadIndication,
-                    viralLoadTestResultDate: latestResult.dateResultReported
-                });
-            }
-
-
-        }).catch((error) => {
-            console.log("error", error);
-        });
-    }
-    useEffect(() => {
-        GetLatestViralLoadData();
-    }, []);
+    // const GetLatestViralLoadData = () => {
+    //     axios.get(`${baseUrl}laboratory/vl-results/patients/${patientObj.id}`, {
+    //         headers: {Authorization: `Bearer ${token}`},
+    //     }).then((response) => {
+    //         // get the latest result from the list in response.data, by sorting by dateResultReported
+    //         // and set the state  values individually with the latest result
+    //         if (response.data.length > 0) {
+    //             const latestResult = response.data.sort((a, b) => new Date(b.dateResultReported) - new Date(a.dateResultReported))[0];
+    //             setViralLoadData({
+    //                 viralLoadTestResult: latestResult.viralLoadIndication,
+    //                 viralLoadTestResultDate: latestResult.dateResultReported
+    //             });
+    //         }
+    //
+    //
+    //     }).catch((error) => {
+    //         console.log("error", error);
+    //     });
+    // }
+    // useEffect(() => {
+    //     GetLatestViralLoadData();
+    // }, []);
 
     const payLoadObject = {
         personId: patientObj && patientObj.id ? patientObj.id : "",
