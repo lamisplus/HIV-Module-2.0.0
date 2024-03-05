@@ -7,6 +7,15 @@
     <property name="autoIncrement" value="true"/>
 
     <changeSet id="2022221-001" author="amos-data-fi">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sqlCheck expectedResult="1">
+                    SELECT COUNT(*)
+                    FROM information_schema.table_constraints
+                    WHERE table_name = 'hiv_enrollment' AND constraint_name = 'uc_hiv_enrollment_uuid';
+                </sqlCheck>
+            </not>
+        </preConditions>
         <sql>
             CREATE TABLE IF NOT EXISTS hiv_enrollment
             (
@@ -108,6 +117,15 @@
     </changeSet>
 
     <changeSet id="20220510-002" author="amos-data-fi" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sqlCheck expectedResult="1">
+                    SELECT COUNT(*)
+                    FROM information_schema.table_constraints
+                    WHERE table_name = 'hiv_art_clinical' AND constraint_name = 'uc_hiv_art_clinical_uuid';
+                </sqlCheck>
+            </not>
+        </preConditions>
         <sql>
             CREATE TABLE IF NOT EXISTS hiv_art_clinical
             (
@@ -237,6 +255,17 @@
         </sql>
     </changeSet>
     <changeSet id="20220513-003" author="amos-data-fi" runAlways="true">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sqlCheck expectedResult="1">
+                    SELECT COUNT(*)
+                    FROM information_schema.table_constraints
+                    WHERE table_name = 'hiv_status_tracker' AND constraint_name = 'uc_hiv_status_tracker_uuid';
+                </sqlCheck>
+            </not>
+        </preConditions>
+
         <sql>
             CREATE TABLE IF NOT EXISTS hiv_status_tracker
             (
@@ -391,6 +420,15 @@
         </sql>
     </changeSet>
     <changeSet id="20220606-009" author="amos-data-fi" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sqlCheck expectedResult="1">
+                    SELECT COUNT(*)
+                    FROM information_schema.table_constraints
+                    WHERE table_name = 'hiv_art_pharmacy' AND constraint_name = 'uc_hiv_art_pharmacy_uuid';
+                </sqlCheck>
+            </not>
+        </preConditions>
         <sql>
             CREATE TABLE IF NOT EXISTS hiv_art_pharmacy
             (
@@ -464,6 +502,22 @@
 
     </changeSet>
     <changeSet id="20220629-010" author="amos-data-fi" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sqlCheck expectedResult="1">
+                    SELECT COUNT(*)
+                    FROM information_schema.table_constraints
+                    WHERE table_name = 'hiv_observation' AND constraint_name = 'uc_hiv_observation_type';
+                </sqlCheck>
+            </not>
+            <not>
+                <sqlCheck expectedResult="1">
+                    SELECT COUNT(*)
+                    FROM information_schema.table_constraints
+                    WHERE table_name = 'hiv_observation' AND constraint_name = 'uc_hiv_observation_uuid';
+                </sqlCheck>
+            </not>
+        </preConditions>
         <sql>
             CREATE TABLE IF NOT EXISTS hiv_observation
             (
@@ -531,6 +585,24 @@
     </changeSet>
 
     <changeSet id="20220702-011" author="amos-data-fi" runAlways="true">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <!-- Check for the existence of the sequence -->
+                <sqlCheck expectedResult="1">
+                    SELECT COUNT(*)
+                    FROM information_schema.sequences
+                    WHERE sequence_name = 'hiv_art_pharmacy_regimens_id_seq';
+                </sqlCheck>
+
+                <!-- Check for the existence of the table -->
+                <sqlCheck expectedResult="1">
+                    SELECT COUNT(*)
+                    FROM information_schema.tables
+                    WHERE table_name = 'hiv_art_pharmacy_regimens';
+                </sqlCheck>
+            </not>
+        </preConditions>
         <sql>
 
             CREATE SEQUENCE hiv_art_pharmacy_regimens_id_seq
@@ -548,6 +620,15 @@
         </sql>
     </changeSet>
     <changeSet id="20220720-014" author="amos-data-fi" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sqlCheck expectedResult="1">
+                    SELECT COUNT(*)
+                    FROM information_schema.table_constraints
+                    WHERE table_name = 'hiv_eac' AND constraint_name = 'uc_hiv_eac_uuid';
+                </sqlCheck>
+            </not>
+        </preConditions>
         <sql>
             CREATE TABLE hiv_eac
             (
@@ -583,6 +664,7 @@
     </changeSet>
 
     <changeSet id="20220912-015" author="amos-data-fi">
+
         <sql>
             CREATE TABLE hiv_patient_tracker
             (
@@ -624,6 +706,16 @@
     </changeSet>
 
     <changeSet id="20220912-016" author="amos-data-fi">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sqlCheck expectedResult="1">
+                    SELECT COUNT(*)
+                    FROM information_schema.table_constraints
+                    WHERE table_name = 'hiv_eac_session' AND constraint_name = 'uc_hiv_eac_session_uuid';
+                </sqlCheck>
+            </not>
+        </preConditions>
         <sql>
             CREATE TABLE hiv_eac_session
             (

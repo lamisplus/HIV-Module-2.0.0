@@ -18,6 +18,23 @@
 <!--        </sql>-->
     </changeSet>
 
+    <changeSet failOnError="true" id="20240305-02" author="amos-data-fi">
+        <preConditions onFail="MARK_RAN">
+
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*)
+                FROM information_schema.table_constraints
+                WHERE table_name = 'hiv_art_clinical' AND constraint_name = 'uc_hiv_art_clinical_uuid';
+            </sqlCheck>
+        </preConditions>
+
+        <sql>
+            ALTER TABLE hiv_art_clinical
+                ADD CONSTRAINT uc_hiv_art_clinical_uuid UNIQUE (uuid);
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>
 
 
