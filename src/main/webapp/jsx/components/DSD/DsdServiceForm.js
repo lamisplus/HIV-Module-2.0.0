@@ -138,11 +138,8 @@ const DsdServiceForm = (props) => {
             .then((response) => {
                 console.log(response.data);
                 const {viralLoadTestResult, viralLoadTestResultDate } = response.data;
-                console.log("viralLoadTestResult", viralLoadTestResult);
 
-                const dateString = viralLoadTestResultDate.toString();
-
-                const dateObject = new Date(dateString);
+                const dateObject = new Date(viralLoadTestResultDate);
 
                 // Format the date object as desired (e.g., YYYY-MM-DD)
                 const formattedDate = dateObject.toISOString().split('T')[0];
