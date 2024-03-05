@@ -80,33 +80,7 @@ const DsdServiceForm = (props) => {
     const [setting, setSetting] = useState([]);
     const [dsdModelType, setDsdModelType] = useState([]);
     const [facId, setFacId] = useState(localStorage.getItem("facId"))
-    const [viralLoadData, setViralLoadData] = useState({
-        viralLoadTestResult: "",
-        viralLoadTestResultDate: ""
-    });
 
-    const GetLatestViralLoadData = () => {
-        axios.get(`${baseUrl}laboratory/vl-results/patients/${patientObj.id}`, {
-            headers: {Authorization: `Bearer ${token}`},
-        }).then((response) => {
-            // get the latest result from the list in response.data, by sorting by dateResultReported
-            // and set the state  values individually with the latest result
-            if (response.data.length > 0) {
-                const latestResult = response.data.sort((a, b) => new Date(b.dateResultReported) - new Date(a.dateResultReported))[0];
-                setViralLoadData({
-                    viralLoadTestResult: latestResult.viralLoadIndication,
-                    viralLoadTestResultDate: latestResult.dateResultReported
-                });
-            }
-
-
-        }).catch((error) => {
-            console.log("error", error);
-        });
-    }
-    useEffect(() => {
-        GetLatestViralLoadData();
-    }, []);
 
     const [payload, setPayLoad] = useState({
         personId: patientObj && patientObj.id ? patientObj.id : "",
@@ -157,20 +131,35 @@ const DsdServiceForm = (props) => {
     }
 
     // /api/v1/hiv/art/pharmacy/devolve/current-viral-load
-    const getVirlaoLoadAndDate = () => {
-        axios.get(`${baseUrl}hiv/art/pharmacy/devolve/current-viral-load`, {
-            headers: {Authorization: `Bearer ${token}`},
-        }).then((response) => {
-                console.log(response.data)
-            }
-        ).catch((error) => {
-            console.log(error);
-        });
+    const getViralLoadAndDate = () => {
+        axios.get(`${baseUrl}hiv/art/pharmacy/devolve/current-viral-load?personId=${patientObj.id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+            .then((response) => {
+                console.log(response.data);
+                const {viralLoadTestResult, viralLoadTestResultDate } = response.data;
+                console.log("viralLoadTestResult", viralLoadTestResult);
 
+                const dateString = viralLoadTestResultDate.toString();
+
+                const dateObject = new Date(dateString);
+
+                // Format the date object as desired (e.g., YYYY-MM-DD)
+                const formattedDate = dateObject.toISOString().split('T')[0];
+                setPayLoad({
+                    ...payload,
+                    viralLoadTestResult: viralLoadTestResult,
+                    viralLoadTestResultDate: formattedDate
+                });
+            })
+            .catch((error) => {
+                // console.error(error);
+            });
     }
 
+
     useEffect(() => {
-        getVirlaoLoadAndDate();
+        getViralLoadAndDate();
     }, []);
 
     // Method to calculate DSD Eligibility assessment score
@@ -246,7 +235,7 @@ const DsdServiceForm = (props) => {
         }));
     };
 
-    console.log("payload", payload);
+    // console.log("payload", payload);
 
     // handle for dsdModel,dsdAccept, dsdType, viralLoadOrderResult, viralLoadOrderDate,
     const handleOtherInputChange = (e) =>{
@@ -271,7 +260,7 @@ const DsdServiceForm = (props) => {
 
         if (validate()) {
             submitAssessmentForm(payload);
-            console.log("payload", payload);
+            // console.log("payload", payload);
             // setSaving(true);
             console.log("form submitted successfully")
         } else {
@@ -698,7 +687,7 @@ const DsdServiceForm = (props) => {
                                     type="text"
                                     name="viralLoadTestResult"
                                     id="viralLoadTestResult"
-                                    value={viralLoadData.viralLoadTestResult}
+                                    value={payload.viralLoadTestResult}
                                     onChange={handleOtherInputChange}
                                     style={{
                                         border: "1px solid #014D88", borderRadius: "0.2rem",
@@ -717,7 +706,7 @@ const DsdServiceForm = (props) => {
                                     type="date"
                                     name="viralLoadTestResultDate"
                                     id="viralLoadTestResultDate"
-                                    value={viralLoadData.viralLoadTestResultDate}
+                                    value={payload.viralLoadTestResultDate}
                                     onChange={handleOtherInputChange}
                                     min="1929-12-31"
                                     max={moment(new Date()).format("YYYY-MM-DD")}
