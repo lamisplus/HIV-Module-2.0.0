@@ -87,28 +87,6 @@ const DsdServiceForm = (props) => {
 
     const isDisabled = props.activeContent?.actionType === "view" ? true : false;
     const [isUpdateState, setIsUpdateState] = useState(false);
-    // const GetLatestViralLoadData = () => {
-    //     axios.get(`${baseUrl}laboratory/vl-results/patients/${patientObj.id}`, {
-    //         headers: {Authorization: `Bearer ${token}`},
-    //     }).then((response) => {
-    //         // get the latest result from the list in response.data, by sorting by dateResultReported
-    //         // and set the state  values individually with the latest result
-    //         if (response.data.length > 0) {
-    //             const latestResult = response.data.sort((a, b) => new Date(b.dateResultReported) - new Date(a.dateResultReported))[0];
-    //             setViralLoadData({
-    //                 viralLoadTestResult: latestResult.viralLoadIndication,
-    //                 viralLoadTestResultDate: latestResult.dateResultReported
-    //             });
-    //         }
-    //
-    //
-    //     }).catch((error) => {
-    //         console.log("error", error);
-    //     });
-    // }
-    // useEffect(() => {
-    //     GetLatestViralLoadData();
-    // }, []);
 
     const payLoadObject = {
         personId: patientObj && patientObj.id ? patientObj.id : "",
@@ -151,7 +129,7 @@ const DsdServiceForm = (props) => {
                 })
                 .then((response) => {
                     setPayLoad(response.data);
-                    console.log("response", response.data);
+                    // console.log("response.data", response.data);
                 })
                 .catch((error) => {
                     // console.log("error", error);
@@ -176,6 +154,34 @@ const DsdServiceForm = (props) => {
             })
             .catch((error) => {});
     }
+
+    useEffect(()=>{
+        if(payload.dsdModel){
+            DsdModelType(payload.dsdModel)
+        }
+    },[payload.dsdModel])
+
+    // useEffect(() => {
+    //     getViralLoadAndDate();
+    // }, []);
+
+    // const getViralLoadAndDate = () => {
+    //     axios.get(`${baseUrl}hiv/art/pharmacy/devolve/current-viral-load?personId=${patientObj.id}`, {
+    //         headers: { Authorization: `Bearer ${token}` },
+    //     })
+    //         .then((response) => {
+    //             const { viralLoadTestResult, viralLoadResultDate } = response.data;
+    //             setPayLoad({
+    //                 ...payload,
+    //                 viralLoadTestResult,
+    //                 viralLoadTestResultDate: viralLoadResultDate
+    //             });
+    //         })
+    //         .catch((error) => {
+    //             console.error(error);
+    //         });
+    // };
+
 
 
     // Method to calculate DSD Eligibility assessment score
@@ -257,15 +263,15 @@ const DsdServiceForm = (props) => {
         }));
     };
 
-    console.log("payload", payload);
+    // console.log("payload", payload);
 
     // handle for dsdModel,dsdAccept, dsdType, viralLoadOrderResult, viralLoadOrderDate,
     const handleOtherInputChange = (e) =>{
         const { name, value } = e.target;
-        if (name === "dsdModel" && value !== "") {
-            DsdModelType(value);
-            setPayLoad({ ...payload, [name]: value });
-        }
+        // if (name === "dsdModel" && value !== "") {
+        //     DsdModelType(value);
+        //     setPayLoad({ ...payload, [name]: value });
+        // }
         if (name === "dsdAccept" && value !== "Yes") {
             setPayLoad({ ...payload, dsdModel: "",dsdType: "", dsdAccept: value });
         }
@@ -281,9 +287,8 @@ const DsdServiceForm = (props) => {
 
         if (validate()) {
             submitAssessmentForm(payload);
-            console.log("payload", payload);
             // setSaving(true);
-            console.log("form submitted successfully")
+            // console.log("form submitted successfully")
         } else {
             window.scroll(0, 0);
         }
@@ -720,7 +725,7 @@ const DsdServiceForm = (props) => {
                                     type="text"
                                     name="viralLoadTestResult"
                                     id="viralLoadTestResult"
-                                    value={viralLoadData.viralLoadTestResult}
+                                    value={payload.viralLoadTestResult}
                                     onChange={handleOtherInputChange}
                                     style={{
                                         border: "1px solid #014D88", borderRadius: "0.2rem",
@@ -739,7 +744,7 @@ const DsdServiceForm = (props) => {
                                     type="date"
                                     name="viralLoadTestResultDate"
                                     id="viralLoadTestResultDate"
-                                    value={viralLoadData.viralLoadTestResultDate}
+                                    value={payload.viralLoadTestResultDate}
                                     onChange={handleOtherInputChange}
                                     min="1929-12-31"
                                     max={moment(new Date()).format("YYYY-MM-DD")}
@@ -827,7 +832,7 @@ const DsdServiceForm = (props) => {
                     </div>}
 
                     {payload.dsdEligible && payload.dsdEligible === "Yes"  &&
-                        payload.dsdAccept && payload.dsdAccept === "Yes" && <div className="row">
+                        payload.dsdAccept && payload.dsdAccept === "Yes" && props.activeContent.actionType ==="view" && <div className="row">
                             <div
                                 className="form-group  col-md-12 text-center pt-2 mb-4"
                                 style={{
@@ -872,7 +877,7 @@ const DsdServiceForm = (props) => {
                                         type="select"
                                         name="dsdType"
                                         id="dsdType"
-                                        value={payload.dsdAccept}
+                                        value={payload.dsdType}
                                         onChange={handleOtherInputChange}
                                         style={{
                                             border: "1px solid #014D88",

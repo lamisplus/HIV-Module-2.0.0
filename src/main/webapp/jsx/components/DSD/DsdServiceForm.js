@@ -114,7 +114,7 @@ const DsdServiceForm = (props) => {
     });
 
     useEffect(() => {
-        console.log("patientObj", patientObj);
+        // console.log("patientObj", patientObj);
     }, []);
     // get dsd model type
     function DsdModelType(dsdmodel) {
@@ -130,34 +130,34 @@ const DsdServiceForm = (props) => {
             .catch((error) => {});
     }
 
-    // /api/v1/hiv/art/pharmacy/devolve/current-viral-load
-    const getViralLoadAndDate = () => {
-        axios.get(`${baseUrl}hiv/art/pharmacy/devolve/current-viral-load?personId=${patientObj.id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-        })
-            .then((response) => {
-                console.log(response.data);
-                const {viralLoadTestResult, viralLoadTestResultDate } = response.data;
-
-                const dateObject = new Date(viralLoadTestResultDate);
-
-                // Format the date object as desired (e.g., YYYY-MM-DD)
-                const formattedDate = dateObject.toISOString().split('T')[0];
-                setPayLoad({
-                    ...payload,
-                    viralLoadTestResult: viralLoadTestResult,
-                    viralLoadTestResultDate: formattedDate
-                });
-            })
-            .catch((error) => {
-                // console.error(error);
-            });
-    }
+    useEffect(()=>{
+        if(payload.dsdModel){
+            DsdModelType(payload.dsdModel)
+        }
+    },[payload.dsdModel])
 
 
     useEffect(() => {
         getViralLoadAndDate();
     }, []);
+
+    const getViralLoadAndDate = () => {
+        axios.get(`${baseUrl}hiv/art/pharmacy/devolve/current-viral-load?personId=${patientObj.id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+            .then((response) => {
+                const { viralLoadTestResult, viralLoadResultDate } = response.data;
+                setPayLoad({
+                    ...payload,
+                    viralLoadTestResult,
+                    viralLoadTestResultDate: viralLoadResultDate
+                });
+            })
+            .catch((error) => {
+                // console.error(error);
+            });
+    };
+
 
     // Method to calculate DSD Eligibility assessment score
     const getEligibilityAssessmentScore = () => {
@@ -237,10 +237,10 @@ const DsdServiceForm = (props) => {
     // handle for dsdModel,dsdAccept, dsdType, viralLoadOrderResult, viralLoadOrderDate,
     const handleOtherInputChange = (e) =>{
         const { name, value } = e.target;
-        if (name === "dsdModel" && value !== "") {
-            DsdModelType(value);
-            setPayLoad({ ...payload, [name]: value });
-        }
+        // if (name === "dsdModel" && value !== "") {
+        //     DsdModelType(value);
+        //     setPayLoad({ ...payload, [name]: value });
+        // }
         if (name === "dsdAccept" && value !== "Yes") {
             setPayLoad({ ...payload, dsdModel: "",dsdType: "", dsdAccept: value });
         }
@@ -252,14 +252,13 @@ const DsdServiceForm = (props) => {
     }
 
 
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
         if (validate()) {
             submitAssessmentForm(payload);
-            // console.log("payload", payload);
-            // setSaving(true);
-            console.log("form submitted successfully")
         } else {
             window.scroll(0, 0);
         }
@@ -685,11 +684,12 @@ const DsdServiceForm = (props) => {
                                     name="viralLoadTestResult"
                                     id="viralLoadTestResult"
                                     value={payload.viralLoadTestResult}
-                                    onChange={handleOtherInputChange}
+                                    // onChange={handleOtherInputChange}
                                     style={{
                                         border: "1px solid #014D88", borderRadius: "0.2rem",
                                     }}
-                                    disabled
+                                    // disabled
+                                    readOnly
                                 />
                             </FormGroup>
                         </div>
@@ -704,13 +704,14 @@ const DsdServiceForm = (props) => {
                                     name="viralLoadTestResultDate"
                                     id="viralLoadTestResultDate"
                                     value={payload.viralLoadTestResultDate}
-                                    onChange={handleOtherInputChange}
+                                    // onChange={handleOtherInputChange}
                                     min="1929-12-31"
                                     max={moment(new Date()).format("YYYY-MM-DD")}
                                     style={{
                                         border: "1px solid #014D88", borderRadius: "0.25rem",
                                     }}
-                                    disabled
+                                    // disabled
+                                    readOnly
                                 />
 
                             </FormGroup>
