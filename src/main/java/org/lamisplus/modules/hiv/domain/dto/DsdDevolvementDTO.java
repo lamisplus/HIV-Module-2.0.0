@@ -26,6 +26,12 @@ public class DsdDevolvementDTO implements Serializable {
     private String dsdAccept;
     private String dsdModel;
     private Integer score;
+    private String clientReturnToSite;
+    @PastOrPresent
+    @Convert(converter = LocalDateConverter.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate dateReturnToSite;
+    private String serviceProvider;
     private String dsdType;
     private String comment;
     private String completedBy;
