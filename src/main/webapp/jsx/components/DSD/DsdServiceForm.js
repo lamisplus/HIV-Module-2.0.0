@@ -96,6 +96,9 @@ const DsdServiceForm = (props) => {
         dateDevolved: "",
         score: "",
         facilityId: facId ? facId : "",
+        clientReturnToSite: "",
+        dateReturnToSite: "",
+        servicesProvided:'',
         dsdEligibilityAssessment: {
             onArtForAtLeast1Year: "",
             goodUnderstandingOfAdherence: "",
@@ -158,7 +161,7 @@ const DsdServiceForm = (props) => {
             });
     };
 
-
+   console.log("payload", payload);
     // Method to calculate DSD Eligibility assessment score
     const getEligibilityAssessmentScore = () => {
         let score = 0;
@@ -186,8 +189,8 @@ const DsdServiceForm = (props) => {
         if (score < 11 || score < 13) {
             setPayLoad(prevState => ({
                 ...prevState,
-                dsdModel: "",
-                dsdType: "",
+                // dsdModel: "",
+                // dsdType: "",
                 dsdAccept: ""
             }))
         }
@@ -237,13 +240,9 @@ const DsdServiceForm = (props) => {
     // handle for dsdModel,dsdAccept, dsdType, viralLoadOrderResult, viralLoadOrderDate,
     const handleOtherInputChange = (e) =>{
         const { name, value } = e.target;
-        // if (name === "dsdModel" && value !== "") {
-        //     DsdModelType(value);
-        //     setPayLoad({ ...payload, [name]: value });
+        // if (name === "dsdAccept" && value !== "Yes") {
+        //     setPayLoad({ ...payload, dsdModel: "",dsdType: "", dsdAccept: value });
         // }
-        if (name === "dsdAccept" && value !== "Yes") {
-            setPayLoad({ ...payload, dsdModel: "",dsdType: "", dsdAccept: value });
-        }
         setPayLoad(prevPayload => ({
             ...prevPayload,
             [name]: value
@@ -790,8 +789,9 @@ const DsdServiceForm = (props) => {
 
                     </div>}
 
-                    {payload.dsdEligible && payload.dsdEligible === "Yes"  &&
-                        payload.dsdAccept && payload.dsdAccept === "Yes" && <div className="row">
+                    {/*{payload.dsdEligible && payload.dsdEligible === "Yes"  &&*/}
+                    {/*    payload.dsdAccept && payload.dsdAccept === "Yes" && */}
+                        <div className="row">
                             <div
                                 className="form-group  col-md-12 text-center pt-2 mb-4"
                                 style={{
@@ -854,7 +854,7 @@ const DsdServiceForm = (props) => {
                         </span>) : ("")}
                                 </FormGroup>
                             </div>
-                        </div>}
+                        </div>
                     {/*comment, resignation, date section */}
                     <div className="row">
                         <div className="form-group mb-3 col-md-12">
