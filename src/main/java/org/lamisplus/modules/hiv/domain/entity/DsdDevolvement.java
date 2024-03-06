@@ -52,6 +52,15 @@ public class DsdDevolvement extends HivAuditEntity implements Persistable<Long>,
     @Column(name = "score")
     private int score;
 
+    @Column(name="client_return_to_site")
+    private String clientReturnToSite;
+
+    @Column(name="date_return_to_site")
+    private LocalDate dateReturnToSite;
+
+    @Column(name="service_provider")
+    private String serviceProvider;
+
     @Column(name = "dsd_model")
     private  String dsdModel;
 
