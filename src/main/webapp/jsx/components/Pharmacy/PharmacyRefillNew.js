@@ -1353,49 +1353,49 @@ const Pharmacy = (props) => {
                   )}
                 </div>
 
-                <div className="form-group mb-3 col-md-6">
-                  <FormGroup>
-                    <Label>DSD Model</Label>
-                    <Input
-                      type="select"
-                      name="dsdModel"
-                      id="dsdModel"
-                      value={objValues.dsdModel}
-                      onChange={handleInputChange}
-                      style={{
-                        border: "1px solid #014D88",
-                        borderRadius: "0.25rem",
-                      }}
-                    >
-                      <option value="">Select </option>
-                      <option value="Facility">Facility </option>
-                      <option value="Community">Community </option>
-                    </Input>
-                  </FormGroup>
-                </div>
-                <div className="form-group mb-3 col-md-6">
-                  <FormGroup>
-                    <Label>DSD Model Type</Label>
-                    <Input
-                      type="select"
-                      name="dsdModelType"
-                      id="dsdModelType"
-                      value={objValues.dsdModelType}
-                      onChange={handleInputChange}
-                      style={{
-                        border: "1px solid #014D88",
-                        borderRadius: "0.25rem",
-                      }}
-                    >
-                      <option value="">Select </option>
-                      {dsdModelType.map((value) => (
-                        <option key={value.code} value={value.code}>
-                          {value.display}
-                        </option>
-                      ))}
-                    </Input>
-                  </FormGroup>
-                </div>
+                {/*<div className="form-group mb-3 col-md-6">*/}
+                {/*  <FormGroup>*/}
+                {/*    <Label>DSD Model</Label>*/}
+                {/*    <Input*/}
+                {/*      type="select"*/}
+                {/*      name="dsdModel"*/}
+                {/*      id="dsdModel"*/}
+                {/*      value={objValues.dsdModel}*/}
+                {/*      onChange={handleInputChange}*/}
+                {/*      style={{*/}
+                {/*        border: "1px solid #014D88",*/}
+                {/*        borderRadius: "0.25rem",*/}
+                {/*      }}*/}
+                {/*    >*/}
+                {/*      <option value="">Select </option>*/}
+                {/*      <option value="Facility">Facility </option>*/}
+                {/*      <option value="Community">Community </option>*/}
+                {/*    </Input>*/}
+                {/*  </FormGroup>*/}
+                {/*</div>*/}
+                {/*<div className="form-group mb-3 col-md-6">*/}
+                {/*  <FormGroup>*/}
+                {/*    <Label>DSD Model Type</Label>*/}
+                {/*    <Input*/}
+                {/*      type="select"*/}
+                {/*      name="dsdModelType"*/}
+                {/*      id="dsdModelType"*/}
+                {/*      value={objValues.dsdModelType}*/}
+                {/*      onChange={handleInputChange}*/}
+                {/*      style={{*/}
+                {/*        border: "1px solid #014D88",*/}
+                {/*        borderRadius: "0.25rem",*/}
+                {/*      }}*/}
+                {/*    >*/}
+                {/*      <option value="">Select </option>*/}
+                {/*      {dsdModelType.map((value) => (*/}
+                {/*        <option key={value.code} value={value.code}>*/}
+                {/*          {value.display}*/}
+                {/*        </option>*/}
+                {/*      ))}*/}
+                {/*    </Input>*/}
+                {/*  </FormGroup>*/}
+                {/*</div>*/}
 
                 {eacStatusObj &&
                   eacStatusObj.eacsession &&
