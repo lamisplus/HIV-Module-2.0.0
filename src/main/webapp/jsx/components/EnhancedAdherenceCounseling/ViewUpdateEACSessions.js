@@ -81,6 +81,7 @@ const NEWEACSESSION = (props) => {
     const [saving, setSaving] = useState(false);
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(true)
+    const [lastEACDate, setLastEACDate] = useState(null)
     const [eacStatusObj, setEacStatusObj] = useState()
     const [selectedBarriers,setSelectedBarriers] = useState([]);
     const [selectedInterventions,setSelectedInterventions] = useState([]);
@@ -91,7 +92,7 @@ const NEWEACSESSION = (props) => {
                                                 intervention: null,
                                                 interventionOthers:"",
                                                 comment: null,
-                                                followUpDate: "",
+                                                followUpDate: null,
                                                 referral:"",
                                                 adherence: "",
                                                 personId: props.patientObj.id,
@@ -169,6 +170,8 @@ const NEWEACSESSION = (props) => {
            )
            .then((response) => {
                setEacStatusObj(response.data);
+               const newEacDate= response.data && response.data.eacsession && response.data.eacsession!=='Default' ? response.data.eacsessionDate : null
+               setLastEACDate(newEacDate)
            })
            .catch((error) => {
            
@@ -287,7 +290,7 @@ const NEWEACSESSION = (props) => {
                                     type="date"
                                     name="sessionDate"
                                     id="sessionDate"
-                                    min={eacStatusObj && eacStatusObj.eacsession && eacStatusObj.eacsession!=='Default' ? eacStatusObj.eacsessionDate :enrollDate}
+                                    min={lastEACDate !==null ? moment(lastEACDate).format("YYYY-MM-DD") : enrollDate}
                                     value={objValues.sessionDate}
                                     max= {moment(new Date()).format("YYYY-MM-DD") }
                                     onChange={handleInputChange}
