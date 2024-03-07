@@ -389,7 +389,7 @@ const TPT = (props) => {
                 <div className="form-group mb-3 col-md-6">
                   <FormGroup>
                     <Label>
-                      Have you completed?{" "}
+                      Have you completed TB?{" "}
                       <span style={{ color: "red" }}> *</span>
                     </Label>
                     <InputGroup>
