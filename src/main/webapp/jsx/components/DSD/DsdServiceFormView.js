@@ -102,7 +102,7 @@ const DsdServiceForm = (props) => {
         score: "",
         clientReturnToSite: "",
         dateReturnToSite: "",
-        servicesProvided:'',
+        servicesProvided: '',
         dsdEligibilityAssessment: {
             onArtForAtLeast1Year: "",
             goodUnderstandingOfAdherence: "",
@@ -121,6 +121,7 @@ const DsdServiceForm = (props) => {
     }
 
     const [payload, setPayLoad] = useState(payLoadObject);
+    const [patientDsdRecords, setPatientDsdRecords] = useState([]);
 
     useEffect(() => {
         if (props.activeContent.id) {
@@ -160,36 +161,18 @@ const DsdServiceForm = (props) => {
 
     useEffect(() => {
         if (payload.dsdModel) {
-            DsdModelType(payload.dsdModel);
-            if (payload.dsdModel === "Community") {
+            // if isLastDsdModelInCommunity is true, and user change to Facility, then the clientReturnToSite should be true
+            if(isLastDsdModelInCommunity(patientDsdRecords)) {
                 setIsClientReturnToSite(true);
-            } else if (payload.dsdModel === "Facility") {
+            }
+            if(payload.dsdModel === "Community") {
                 setIsClientReturnToSite(false);
             }
+            DsdModelType(payload.dsdModel);
         }
     }, [payload.dsdModel]);
 
 
-    // useEffect(() => {
-    //     getViralLoadAndDate();
-    // }, []);
-
-    // const getViralLoadAndDate = () => {
-    //     axios.get(`${baseUrl}hiv/art/pharmacy/devolve/current-viral-load?personId=${patientObj.id}`, {
-    //         headers: { Authorization: `Bearer ${token}` },
-    //     })
-    //         .then((response) => {
-    //             const { viralLoadTestResult, viralLoadResultDate } = response.data;
-    //             setPayLoad({
-    //                 ...payload,
-    //                 viralLoadTestResult,
-    //                 viralLoadTestResultDate: viralLoadResultDate
-    //             });
-    //         })
-    //         .catch((error) => {
-    //             console.error(error);
-    //         });
-    // };
 
 
     // Method to calculate DSD Eligibility assessment score
@@ -273,13 +256,34 @@ const DsdServiceForm = (props) => {
     };
 
     // console.log("payload", payload);
-
-    // handle for dsdModel,dsdAccept, dsdType, viralLoadOrderResult, viralLoadOrderDate,
     const handleOtherInputChange = (e) => {
         const {name, value} = e.target;
-        // if (name === "dsdAccept" && value !== "Yes") {
-        //     setPayLoad({...payload, dsdModel: "", dsdType: "", dsdAccept: value});
-        // }
+        if (name === "clientReturnToSite" && value !== "Yes") {
+            setPayLoad({
+                ...payload,
+                dateReturnToSite: "",
+                servicesProvided: ""
+            });
+        }
+        // if there is changes in the DsdModel input fields always change empty the value
+        // of dsdType, ServicesProvided, dateReturnToSite, clientReturnToSite
+        if (name === "dsdModel") {
+            setPayLoad({
+                ...payload,
+                dsdType: "",
+                servicesProvided: "",
+                dateReturnToSite: "",
+                clientReturnToSite: ""
+            });
+        }
+        // if there is changes in the clientReturnToSite input fields, the value of dateReturnToSite and servicseProvided should be
+        if(name === "clientReturnToSite" && value !== "Yes") {
+            setPayLoad({
+                ...payload,
+                dateReturnToSite: "",
+                servicesProvided: ""
+            });
+        }
         setPayLoad(prevPayload => ({
             ...prevPayload,
             [name]: value
@@ -299,6 +303,42 @@ const DsdServiceForm = (props) => {
         }
     };
 
+    const getPatientDsdRecords = () => {
+        axios.get(`${baseUrl}hiv/art/pharmacy/devolve/devolvements?pageNo=0&pageSize=10&personId=${props.patientObj.id}`, {
+            headers: {Authorization: `Bearer ${token}`},
+        })
+            .then((response) => {
+                // console.log("response.data", response.data);
+                setPatientDsdRecords(response.data);
+            })
+            .catch((error) => {
+                // console.error(error);
+            });
+    }
+
+    const isLastDsdModelInCommunity = (data) => {
+        if (data.length === 0) {
+            // setIsClientReturnToSite(false);
+            return false;
+        }
+        // Find the object with the most recent dateDevolved
+        const mostRecentObject = data.reduce((prev, current) => {
+            return (new Date(current.dateDevolved) > new Date(prev.dateDevolved)) ? current : prev;
+        });
+        // Check if the dsdModel value of the most recent object is "Community"
+        if(mostRecentObject.dsdModel === "Community") {
+            // setIsClientReturnToSite(true);
+            return true;
+        }
+    }
+
+
+
+    useEffect(() => {
+        getPatientDsdRecords();
+        // console.log("patientObj", props.patientObj);
+    }, [props.patientObj.id]);
+
     // get services provided
     const getServicesProvided = () => {
         axios
@@ -306,7 +346,6 @@ const DsdServiceForm = (props) => {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
-                console.log("response.data", response.data);
                 setServicesProvided(response.data);
             })
             .catch((error) => {});
@@ -314,6 +353,7 @@ const DsdServiceForm = (props) => {
 
     useEffect(() => {
         getServicesProvided();
+        // console.log("patientObj", props.patientObj);
     }, []);
 
     /*****  Validation  */
@@ -331,10 +371,8 @@ const DsdServiceForm = (props) => {
         temp.doesNotHaveTBCoInfection = payload.dsdEligibilityAssessment.doesNotHaveTBCoInfection ? "" : "This field is required.";
         temp.dateDevolved = payload.dateDevolved ? "" : "This field is required.";
 
-
         temp.noChildOnArtLessThan3YearsOld = payload.dsdEligibilityAssessment.noChildOnArtLessThan3YearsOld ? "" : "This field is required.";
         temp.hasNoComorbidities = payload.dsdEligibilityAssessment.hasNoComorbidities ? "" : "This field is required.";
-
 
         if (props.patientObj && props.patientObj?.sex?.toLowerCase() == "female") {
             temp.notPregnant = payload.dsdEligibilityAssessment.notPregnant ? "" : "This field is required.";
@@ -920,7 +958,7 @@ const DsdServiceForm = (props) => {
                         </span>) : ("")}
                             </FormGroup>
                         </div>
-                        {isClientReturnToSite && props.activeContent.actionType === 'update' &&
+                        {isClientReturnToSite &&
                             <div className="form-group mb-3 col-md-6">
                                 <FormGroup>
                                     <Label>
@@ -937,6 +975,7 @@ const DsdServiceForm = (props) => {
                                         style={{
                                             border: "1px solid #014D88", borderRadius: "0.25rem",
                                         }}
+                                        disabled={isDisabled}
                                     >
                                         <option value=""> Select</option>
                                         <option value="Yes"> Yes</option>
@@ -950,7 +989,7 @@ const DsdServiceForm = (props) => {
 
                         {isClientReturnToSite && payload.clientReturnToSite !== ""
                             && payload.clientReturnToSite === "Yes" &&
-                              props.activeContent.actionType === 'update' &&
+                              // props.activeContent.actionType === 'update' &&
                             <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                                 <Label for="">
@@ -977,7 +1016,7 @@ const DsdServiceForm = (props) => {
                         </div>}
                         { isClientReturnToSite && payload.clientReturnToSite !=="" &&
                             payload.clientReturnToSite === "Yes" &&
-                               props.activeContent.actionType === 'update' &&
+                               // props.activeContent.actionType === 'update' &&
                             <div className="form-group mb-3 col-md-6">
                                 <FormGroup>
                                     <Label>
@@ -994,6 +1033,7 @@ const DsdServiceForm = (props) => {
                                         style={{
                                             border: "1px solid #014D88", borderRadius: "0.25rem",
                                         }}
+                                        disabled={isDisabled}
                                     >
                                         <option value="">Select</option>
                                         {servicesProvided.map((value) => (
