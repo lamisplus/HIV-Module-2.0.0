@@ -368,13 +368,17 @@ const DsdServiceForm = (props) => {
             temp.notBreastfeeding = payload.dsdEligibilityAssessment.notBreastfeeding ? "" : "This field is required.";
         }
 
-        if(payload.dsdEligible && payload.dsdEligible === "Yes"  && payload.dsdAccept && payload.dsdAccept === "Yes") {
             temp.dsdModel = payload.dsdModel ? "" : "This field is required.";
             temp.dsdType = payload.dsdType ? "" : "This field is required.";
+            temp.dsdAccept = payload.dsdAccept ? "": "This field is required.";
+
+        if(isClientReturnToSite){
+            temp.clientReturnToSite = payload.clientReturnToSite ? "" : "This field is required.";
         }
-        // the field dsd accept should be required if the field dsd eligible is yes
-        if(payload.dsdEligible && payload.dsdEligible === "Yes" && payload.dsdAccept === ""){
-            temp.dsdAccept = "This field is required.";
+
+        if(payload.clientReturnToSite && payload.clientReturnToSite === "Yes"){
+            temp.dateReturnToSite = payload.dateReturnToSite ? "" : "This field is required.";
+            temp.servicesProvided = payload.servicesProvided ? "" : "This field is required.";
         }
         setErrors({...temp});
         return Object.values(temp).every((x) => x === "");
@@ -465,7 +469,7 @@ const DsdServiceForm = (props) => {
                                 </Input>
                                 {errors.clinicallyStableNoOpportunisticInfections !== "" ? (
                                     <span className={classes.error}>
-                        {errors.clinicallyStableNoOpportunisticInfectionsn}
+                        {errors.clinicallyStableNoOpportunisticInfections}
                       </span>) : ("")}
                             </FormGroup>
                         </div>
@@ -489,7 +493,7 @@ const DsdServiceForm = (props) => {
                                     <option value="No"> No</option>
                                 </Input>
                                 {errors.noADRRequireRegularMonitoring !== "" ? (<span className={classes.error}>
-                        {errors.noADRRequireRegularMonitoringn}
+                        {errors.noADRRequireRegularMonitoring}
                       </span>) : ("")}
                             </FormGroup>
                         </div>
@@ -934,7 +938,8 @@ const DsdServiceForm = (props) => {
                         </span>) : ("")}
                                 </FormGroup>
                             </div>
-                            {isClientReturnToSite &&
+                            {isClientReturnToSite && props.activeContent.actionType === 'update' &&
+                                props.activeContent.actionType === 'view' &&
                                 <div className="form-group mb-3 col-md-6">
                                     <FormGroup>
                                         <Label>
@@ -957,8 +962,8 @@ const DsdServiceForm = (props) => {
                                             <option value="Yes"> Yes</option>
                                             <option value="No"> No</option>
                                         </Input>
-                                        {errors.dsdAccept !== "" ? (<span className={classes.error}>
-                        {errors.dsdAccept}
+                                        {errors.clientReturnToSite !== "" ? (<span className={classes.error}>
+                        {errors.clientReturnToSite}
                       </span>) : ("")}
                                     </FormGroup>
                                 </div>
@@ -986,8 +991,8 @@ const DsdServiceForm = (props) => {
                                             // disabled={isDisabled}
                                             // disabled
                                         />
-                                        {errors.dateDevolved !== "" ? (<span className={classes.error}>
-                        {errors.dateDevolved}
+                                        {errors.dateReturnToSite !== "" ? (<span className={classes.error}>
+                        {errors.dateReturnToSite}
                         </span>) : ("")}
                                     </FormGroup>
                                 </div>}
@@ -1019,8 +1024,8 @@ const DsdServiceForm = (props) => {
                                                 </option>
                                             ))}
                                         </Input>
-                                        {errors.dsdAccept !== "" ? (<span className={classes.error}>
-                        {errors.dsdAccept}
+                                        {errors.servicesProvided !== "" ? (<span className={classes.error}>
+                        {errors.servicesProvided}
                       </span>) : ("")}
                                     </FormGroup>
                                 </div>

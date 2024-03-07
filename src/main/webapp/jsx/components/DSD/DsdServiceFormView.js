@@ -359,7 +359,7 @@ const DsdServiceForm = (props) => {
     /*****  Validation  */
     const validate = () => {
         // var temp = { ...errors}
-        temp = {};
+        temp ={};
         temp.onArtForAtLeast1Year = payload.dsdEligibilityAssessment.onArtForAtLeast1Year ? "" : "This field is required.";
         temp.goodUnderstandingOfAdherence = payload.dsdEligibilityAssessment.goodUnderstandingOfAdherence ? "" : "This field is required.";
         temp.clinicallyStableNoOpportunisticInfections = payload.dsdEligibilityAssessment.clinicallyStableNoOpportunisticInfections ? "" : "This field is required.";
@@ -371,25 +371,33 @@ const DsdServiceForm = (props) => {
         temp.doesNotHaveTBCoInfection = payload.dsdEligibilityAssessment.doesNotHaveTBCoInfection ? "" : "This field is required.";
         temp.dateDevolved = payload.dateDevolved ? "" : "This field is required.";
 
+
         temp.noChildOnArtLessThan3YearsOld = payload.dsdEligibilityAssessment.noChildOnArtLessThan3YearsOld ? "" : "This field is required.";
         temp.hasNoComorbidities = payload.dsdEligibilityAssessment.hasNoComorbidities ? "" : "This field is required.";
 
-        if (props.patientObj && props.patientObj?.sex?.toLowerCase() == "female") {
+
+        if (props.patientObj && props.patientObj?.sex?.toLowerCase() == "female"){
             temp.notPregnant = payload.dsdEligibilityAssessment.notPregnant ? "" : "This field is required.";
             temp.notBreastfeeding = payload.dsdEligibilityAssessment.notBreastfeeding ? "" : "This field is required.";
         }
 
-        if (payload.dsdEligible && payload.dsdEligible === "Yes" && payload.dsdAccept && payload.dsdAccept === "Yes") {
-            temp.dsdModel = payload.dsdModel ? "" : "This field is required.";
-            temp.dsdType = payload.dsdType ? "" : "This field is required.";
+        temp.dsdModel = payload.dsdModel ? "" : "This field is required.";
+        temp.dsdType = payload.dsdType ? "" : "This field is required.";
+        temp.dsdAccept = payload.dsdAccept ? "": "This field is required.";
+
+        if(isClientReturnToSite){
+            temp.clientReturnToSite = payload.clientReturnToSite ? "" : "This field is required.";
         }
-        // the field dsd accept should be required if the field dsd eligible is yes
-        if (payload.dsdEligible && payload.dsdEligible === "Yes" && payload.dsdAccept === "") {
-            temp.dsdAccept = "This field is required.";
+
+        if(payload.clientReturnToSite && payload.clientReturnToSite === "Yes"){
+            temp.dateReturnToSite = payload.dateReturnToSite ? "" : "This field is required.";
+            temp.servicesProvided = payload.servicesProvided ? "" : "This field is required.";
         }
+
         setErrors({...temp});
         return Object.values(temp).every((x) => x === "");
     };
+
 
 
     return (<>
@@ -479,7 +487,7 @@ const DsdServiceForm = (props) => {
                                 </Input>
                                 {errors.clinicallyStableNoOpportunisticInfections !== "" ? (
                                     <span className={classes.error}>
-                        {errors.clinicallyStableNoOpportunisticInfectionsn}
+                        {errors.clinicallyStableNoOpportunisticInfections}
                       </span>) : ("")}
                             </FormGroup>
                         </div>
@@ -504,7 +512,7 @@ const DsdServiceForm = (props) => {
                                     <option value="No"> No</option>
                                 </Input>
                                 {errors.noADRRequireRegularMonitoring !== "" ? (<span className={classes.error}>
-                        {errors.noADRRequireRegularMonitoringn}
+                        {errors.noADRRequireRegularMonitoring}
                       </span>) : ("")}
                             </FormGroup>
                         </div>
@@ -819,7 +827,7 @@ const DsdServiceForm = (props) => {
 
                     </div>
 
-                    {payload.dsdEligible && payload.dsdEligible == "Yes" && <div className="row">
+                        <div className="row">
                         <div
                             className="form-group  col-md-12 text-center pt-2 mb-6"
                             style={{
@@ -860,7 +868,7 @@ const DsdServiceForm = (props) => {
                       </span>) : ("")}
                             </FormGroup>
                         </div>
-                        {payload.dsdEligible && payload.dsdEligible === "Yes" &&
+
                             <div className="form-group mb-3 col-md-6">
                                 <FormGroup>
                                     <Label>
@@ -887,9 +895,9 @@ const DsdServiceForm = (props) => {
                         {errors.dsdAccept}
                       </span>) : ("")}
                                 </FormGroup>
-                            </div>}
+                            </div>
 
-                    </div>}
+                    </div>
 
                     {/*{payload.dsdEligible && payload.dsdEligible === "Yes"  &&*/}
                     {/*    payload.dsdAccept && payload.dsdAccept === "Yes" && props.activeContent.actionType ==="view" && */}
@@ -981,8 +989,8 @@ const DsdServiceForm = (props) => {
                                         <option value="Yes"> Yes</option>
                                         <option value="No"> No</option>
                                     </Input>
-                                    {errors.dsdAccept !== "" ? (<span className={classes.error}>
-                        {errors.dsdAccept}
+                                    {errors.clientReturnToSite !== "" ? (<span className={classes.error}>
+                        {errors.clientReturnToSite}
                       </span>) : ("")}
                                 </FormGroup>
                             </div>}
@@ -1009,8 +1017,8 @@ const DsdServiceForm = (props) => {
                                     disabled={isDisabled}
                                     // disabled
                                 />
-                                {errors.dateDevolved !== "" ? (<span className={classes.error}>
-                        {errors.dateDevolved}
+                                {errors.dateReturnToSite !== "" ? (<span className={classes.error}>
+                        {errors.dateReturnToSite}
                         </span>) : ("")}
                             </FormGroup>
                         </div>}
@@ -1042,8 +1050,8 @@ const DsdServiceForm = (props) => {
                                             </option>
                                         ))}
                                     </Input>
-                                    {errors.dsdAccept !== "" ? (<span className={classes.error}>
-                        {errors.dsdAccept}
+                                    {errors.servicesProvided !== "" ? (<span className={classes.error}>
+                        {errors.servicesProvided}
                       </span>) : ("")}
                                 </FormGroup>
                             </div>
