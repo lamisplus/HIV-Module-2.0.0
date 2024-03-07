@@ -80,7 +80,9 @@ const DsdServiceForm = (props) => {
     const [setting, setSetting] = useState([]);
     const [dsdModelType, setDsdModelType] = useState([]);
     const [facId, setFacId] = useState(localStorage.getItem("facId"))
-
+    const [isClientReturnToSite, setIsClientReturnToSite] = useState(false);
+    const [servicesProvided, setServicesProvided] = useState([]);
+    const [patientDsdRecords, setPatientDsdRecords] = useState([]);
 
     const [payload, setPayLoad] = useState({
         personId: patientObj && patientObj.id ? patientObj.id : "",
@@ -96,6 +98,9 @@ const DsdServiceForm = (props) => {
         dateDevolved: "",
         score: "",
         facilityId: facId ? facId : "",
+        clientReturnToSite: "",
+        dateReturnToSite: "",
+        servicesProvided:'',
         dsdEligibilityAssessment: {
             onArtForAtLeast1Year: "",
             goodUnderstandingOfAdherence: "",
@@ -113,9 +118,6 @@ const DsdServiceForm = (props) => {
         }
     });
 
-    useEffect(() => {
-        console.log("patientObj", patientObj);
-    }, []);
     // get dsd model type
     function DsdModelType(dsdmodel) {
         const dsd =
@@ -130,34 +132,40 @@ const DsdServiceForm = (props) => {
             .catch((error) => {});
     }
 
-    // /api/v1/hiv/art/pharmacy/devolve/current-viral-load
-    const getViralLoadAndDate = () => {
-        axios.get(`${baseUrl}hiv/art/pharmacy/devolve/current-viral-load?personId=${patientObj.id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-        })
-            .then((response) => {
-                console.log(response.data);
-                const {viralLoadTestResult, viralLoadTestResultDate } = response.data;
-
-                const dateObject = new Date(viralLoadTestResultDate);
-
-                // Format the date object as desired (e.g., YYYY-MM-DD)
-                const formattedDate = dateObject.toISOString().split('T')[0];
-                setPayLoad({
-                    ...payload,
-                    viralLoadTestResult: viralLoadTestResult,
-                    viralLoadTestResultDate: formattedDate
-                });
-            })
-            .catch((error) => {
-                // console.error(error);
-            });
-    }
+    useEffect(() => {
+        if (payload.dsdModel) {
+            // if isLastDsdModelInCommunity is true, and user change to Facility, then the clientReturnToSite should be true
+            if(isLastDsdModelInCommunity(patientDsdRecords)) {
+                setIsClientReturnToSite(true);
+            }
+            if(payload.dsdModel === "Community") {
+                setIsClientReturnToSite(false);
+            }
+            DsdModelType(payload.dsdModel);
+        }
+    }, [payload.dsdModel]);
 
 
     useEffect(() => {
         getViralLoadAndDate();
     }, []);
+
+    const getViralLoadAndDate = () => {
+        axios.get(`${baseUrl}hiv/art/pharmacy/devolve/current-viral-load?personId=${patientObj.id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+            .then((response) => {
+                const { viralLoadTestResult, viralLoadResultDate } = response.data;
+                setPayLoad({
+                    ...payload,
+                    viralLoadTestResult,
+                    viralLoadTestResultDate: viralLoadResultDate
+                });
+            })
+            .catch((error) => {
+                // console.error(error);
+            });
+    };
 
     // Method to calculate DSD Eligibility assessment score
     const getEligibilityAssessmentScore = () => {
@@ -186,8 +194,8 @@ const DsdServiceForm = (props) => {
         if (score < 11 || score < 13) {
             setPayLoad(prevState => ({
                 ...prevState,
-                dsdModel: "",
-                dsdType: "",
+                // dsdModel: "",
+                // dsdType: "",
                 dsdAccept: ""
             }))
         }
@@ -235,14 +243,33 @@ const DsdServiceForm = (props) => {
     // console.log("payload", payload);
 
     // handle for dsdModel,dsdAccept, dsdType, viralLoadOrderResult, viralLoadOrderDate,
-    const handleOtherInputChange = (e) =>{
-        const { name, value } = e.target;
-        if (name === "dsdModel" && value !== "") {
-            DsdModelType(value);
-            setPayLoad({ ...payload, [name]: value });
+    const handleOtherInputChange = (e) => {
+        const {name, value} = e.target;
+        if (name === "clientReturnToSite" && value !== "Yes") {
+            setPayLoad({
+                ...payload,
+                dateReturnToSite: "",
+                servicesProvided: ""
+            });
         }
-        if (name === "dsdAccept" && value !== "Yes") {
-            setPayLoad({ ...payload, dsdModel: "",dsdType: "", dsdAccept: value });
+        // if there is changes in the DsdModel input fields always change empty the value
+        // of dsdType, ServicesProvided, dateReturnToSite, clientReturnToSite
+        if (name === "dsdModel") {
+            setPayLoad({
+                ...payload,
+                dsdType: "",
+                servicesProvided: "",
+                dateReturnToSite: "",
+                clientReturnToSite: ""
+            });
+        }
+        // if there is changes in the clientReturnToSite input fields, the value of dateReturnToSite and servicseProvided should be
+        if(name === "clientReturnToSite" && value !== "Yes") {
+            setPayLoad({
+                ...payload,
+                dateReturnToSite: "",
+                servicesProvided: ""
+            });
         }
         setPayLoad(prevPayload => ({
             ...prevPayload,
@@ -251,19 +278,70 @@ const DsdServiceForm = (props) => {
 
     }
 
-
     const handleSubmit = (e) => {
         e.preventDefault();
 
         if (validate()) {
             submitAssessmentForm(payload);
-            // console.log("payload", payload);
-            // setSaving(true);
-            console.log("form submitted successfully")
         } else {
             window.scroll(0, 0);
         }
     };
+
+    const getPatientDsdRecords = () => {
+        axios.get(`${baseUrl}hiv/art/pharmacy/devolve/devolvements?pageNo=0&pageSize=10&personId=${props.patientObj.id}`, {
+            headers: {Authorization: `Bearer ${token}`},
+        })
+            .then((response) => {
+                console.log("response.data", response.data);
+                setPatientDsdRecords(response.data);
+
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    const isLastDsdModelInCommunity = (data) => {
+        if (data.length === 0) {
+            // setIsClientReturnToSite(false);
+            return false;
+        }
+        // Find the object with the most recent dateDevolved
+        const mostRecentObject = data.reduce((prev, current) => {
+            return (new Date(current.dateDevolved) > new Date(prev.dateDevolved)) ? current : prev;
+        });
+        // Check if the dsdModel value of the most recent object is "Community"
+        if(mostRecentObject.dsdModel === "Community") {
+            // setIsClientReturnToSite(true);
+            return true;
+        }
+    }
+
+
+
+
+    useEffect(() => {
+        getPatientDsdRecords();
+        // console.log("patientObj", props.patientObj);
+    }, [props.patientObj.id]);
+
+    // get services provided
+    const getServicesProvided = () => {
+        axios
+            .get(`${baseUrl}application-codesets/v2/EAC_INTERVENTIONS_SERVICE`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then((response) => {
+                setServicesProvided(response.data);
+            })
+            .catch((error) => {});
+    }
+
+    useEffect(() => {
+        getServicesProvided();
+        // console.log("patientObj", props.patientObj);
+    }, []);
 
     /*****  Validation  */
     const validate = () => {
@@ -290,13 +368,17 @@ const DsdServiceForm = (props) => {
             temp.notBreastfeeding = payload.dsdEligibilityAssessment.notBreastfeeding ? "" : "This field is required.";
         }
 
-        if(payload.dsdEligible && payload.dsdEligible === "Yes"  && payload.dsdAccept && payload.dsdAccept === "Yes") {
             temp.dsdModel = payload.dsdModel ? "" : "This field is required.";
             temp.dsdType = payload.dsdType ? "" : "This field is required.";
+            temp.dsdAccept = payload.dsdAccept ? "": "This field is required.";
+
+        if(isClientReturnToSite){
+            temp.clientReturnToSite = payload.clientReturnToSite ? "" : "This field is required.";
         }
-        // the field dsd accept should be required if the field dsd eligible is yes
-        if(payload.dsdEligible && payload.dsdEligible === "Yes" && payload.dsdAccept === ""){
-            temp.dsdAccept = "This field is required.";
+
+        if(payload.clientReturnToSite && payload.clientReturnToSite === "Yes"){
+            temp.dateReturnToSite = payload.dateReturnToSite ? "" : "This field is required.";
+            temp.servicesProvided = payload.servicesProvided ? "" : "This field is required.";
         }
         setErrors({...temp});
         return Object.values(temp).every((x) => x === "");
@@ -387,7 +469,7 @@ const DsdServiceForm = (props) => {
                                 </Input>
                                 {errors.clinicallyStableNoOpportunisticInfections !== "" ? (
                                     <span className={classes.error}>
-                        {errors.clinicallyStableNoOpportunisticInfectionsn}
+                        {errors.clinicallyStableNoOpportunisticInfections}
                       </span>) : ("")}
                             </FormGroup>
                         </div>
@@ -411,7 +493,7 @@ const DsdServiceForm = (props) => {
                                     <option value="No"> No</option>
                                 </Input>
                                 {errors.noADRRequireRegularMonitoring !== "" ? (<span className={classes.error}>
-                        {errors.noADRRequireRegularMonitoringn}
+                        {errors.noADRRequireRegularMonitoring}
                       </span>) : ("")}
                             </FormGroup>
                         </div>
@@ -685,11 +767,12 @@ const DsdServiceForm = (props) => {
                                     name="viralLoadTestResult"
                                     id="viralLoadTestResult"
                                     value={payload.viralLoadTestResult}
-                                    onChange={handleOtherInputChange}
+                                    // onChange={handleOtherInputChange}
                                     style={{
                                         border: "1px solid #014D88", borderRadius: "0.2rem",
                                     }}
-                                    disabled
+                                    // disabled
+                                    readOnly
                                 />
                             </FormGroup>
                         </div>
@@ -704,13 +787,14 @@ const DsdServiceForm = (props) => {
                                     name="viralLoadTestResultDate"
                                     id="viralLoadTestResultDate"
                                     value={payload.viralLoadTestResultDate}
-                                    onChange={handleOtherInputChange}
+                                    // onChange={handleOtherInputChange}
                                     min="1929-12-31"
                                     max={moment(new Date()).format("YYYY-MM-DD")}
                                     style={{
                                         border: "1px solid #014D88", borderRadius: "0.25rem",
                                     }}
-                                    disabled
+                                    // disabled
+                                    readOnly
                                 />
 
                             </FormGroup>
@@ -718,7 +802,7 @@ const DsdServiceForm = (props) => {
 
                     </div>
 
-                    {payload.dsdEligible && payload.dsdEligible == "Yes" && <div className="row">
+                        <div className="row">
                         <div
                             className="form-group  col-md-12 text-center pt-2 mb-6"
                             style={{
@@ -759,7 +843,7 @@ const DsdServiceForm = (props) => {
                       </span>) : ("")}
                             </FormGroup>
                         </div>
-                        {payload.dsdEligible && payload.dsdEligible === "Yes" &&
+
                             <div className="form-group mb-3 col-md-6">
                                 <FormGroup>
                                     <Label>
@@ -785,12 +869,13 @@ const DsdServiceForm = (props) => {
                         {errors.dsdAccept}
                       </span>) : ("")}
                                 </FormGroup>
-                            </div>}
+                            </div>
 
-                    </div>}
+                    </div>
 
-                    {payload.dsdEligible && payload.dsdEligible === "Yes"  &&
-                        payload.dsdAccept && payload.dsdAccept === "Yes" && <div className="row">
+                    {/*{payload.dsdEligible && payload.dsdEligible === "Yes"  &&*/}
+                    {/*    payload.dsdAccept && payload.dsdAccept === "Yes" && */}
+                        <div className="row">
                             <div
                                 className="form-group  col-md-12 text-center pt-2 mb-4"
                                 style={{
@@ -853,8 +938,103 @@ const DsdServiceForm = (props) => {
                         </span>) : ("")}
                                 </FormGroup>
                             </div>
-                        </div>}
+                            {isClientReturnToSite && props.activeContent.actionType === 'update' &&
+                                props.activeContent.actionType === 'view' &&
+                                <div className="form-group mb-3 col-md-6">
+                                    <FormGroup>
+                                        <Label>
+                                            {" "}
+                                            Client Return to site ?
+                                            <span style={{color: "red"}}> *</span>
+                                        </Label>
+                                        <Input
+                                            type="select"
+                                            name="clientReturnToSite"
+                                            id="clientReturnToSite"
+                                            value={payload.clientReturnToSite}
+                                            onChange={handleOtherInputChange}
+                                            style={{
+                                                border: "1px solid #014D88", borderRadius: "0.25rem",
+                                            }}
+                                            // disabled={isDisabled}
+                                        >
+                                            <option value=""> Select</option>
+                                            <option value="Yes"> Yes</option>
+                                            <option value="No"> No</option>
+                                        </Input>
+                                        {errors.clientReturnToSite !== "" ? (<span className={classes.error}>
+                        {errors.clientReturnToSite}
+                      </span>) : ("")}
+                                    </FormGroup>
+                                </div>
+                            }
+
+                            {isClientReturnToSite && payload.clientReturnToSite !== ""
+                                && payload.clientReturnToSite === "Yes" &&
+                                // props.activeContent.actionType === 'update' &&
+                                <div className="form-group mb-3 col-md-6">
+                                    <FormGroup>
+                                        <Label for="">
+                                            Date Return to Site<span style={{color: "red"}}> *</span>{" "}
+                                        </Label>
+                                        <Input
+                                            type="date"
+                                            name="dateReturnToSite"
+                                            id="dateReturnToSite"
+                                            value={payload.dateReturnToSite}
+                                            onChange={handleOtherInputChange}
+                                            min="1929-12-31"
+                                            max={moment(new Date()).format("YYYY-MM-DD")}
+                                            style={{
+                                                border: "1px solid #014D88", borderRadius: "0.25rem",
+                                            }}
+                                            // disabled={isDisabled}
+                                            // disabled
+                                        />
+                                        {errors.dateReturnToSite !== "" ? (<span className={classes.error}>
+                        {errors.dateReturnToSite}
+                        </span>) : ("")}
+                                    </FormGroup>
+                                </div>}
+                            { isClientReturnToSite && payload.clientReturnToSite !=="" &&
+                                payload.clientReturnToSite === "Yes" &&
+                                // props.activeContent.actionType === 'update' &&
+                                <div className="form-group mb-3 col-md-6">
+                                    <FormGroup>
+                                        <Label>
+                                            {" "}
+                                            Services Provided
+                                            <span style={{color: "red"}}> *</span>
+                                        </Label>
+                                        <Input
+                                            type="select"
+                                            name="servicesProvided"
+                                            id="servicesProvided"
+                                            value={payload.servicesProvided}
+                                            onChange={handleOtherInputChange}
+                                            style={{
+                                                border: "1px solid #014D88", borderRadius: "0.25rem",
+                                            }}
+                                            // isDisabled={isDisabled}
+                                        >
+                                            <option value="">Select</option>
+                                            {servicesProvided.map((value) => (
+                                                <option key={value.code} value={value.code}>
+                                                    {value.display}
+                                                </option>
+                                            ))}
+                                        </Input>
+                                        {errors.servicesProvided !== "" ? (<span className={classes.error}>
+                        {errors.servicesProvided}
+                      </span>) : ("")}
+                                    </FormGroup>
+                                </div>
+                            }
+
+                        </div>
                     {/*comment, resignation, date section */}
+
+
                     <div className="row">
                         <div className="form-group mb-3 col-md-12">
                             <FormGroup>
