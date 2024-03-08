@@ -4,7 +4,7 @@ import com.foreach.across.core.annotations.Installer;
 import com.foreach.across.core.installers.AcrossLiquibaseInstaller;
 import org.springframework.core.annotation.Order;
 
-@Order(1)
+@Order(7)
 @Installer(name = "ovc-table-modifier",
         description = "Alter added columns on hiv-ovc-table",
         version = 1)
