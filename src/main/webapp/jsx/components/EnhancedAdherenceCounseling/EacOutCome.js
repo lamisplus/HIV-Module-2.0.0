@@ -188,6 +188,7 @@ const EAC = (props) => {
                     )
                     .then((response) => {
                         setLoading(false)
+                        console.log("Regimen type **** ", response.data)
                         setRegimenType(response.data)
                     })
                     .catch((error) => {

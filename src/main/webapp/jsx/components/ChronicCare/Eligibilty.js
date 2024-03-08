@@ -26,6 +26,7 @@ import "react-phone-input-2/lib/style.css";
 import { calculate_age_to_number } from "../../../utils";
 import { h } from "preact";
 import useFacilityId from "../../../hooks/useFacilityId";
+import { el } from "date-fns/locale";
 const useStyles = makeStyles((theme) => ({
   card: {
     margin: theme.spacing(20),
@@ -181,6 +182,8 @@ const Eligibility = (props) => {
       });
   };
 
+    console.log("Eligibility ", lastCd4Result);
+
   useEffect(() => {
     // Update props.eligibility.lastCd4Result with the value of lastCd4Result.cd4?.resultReported
     props.setEligibility((prevEligibility) => ({
@@ -192,10 +195,12 @@ const Eligibility = (props) => {
         ? formattedDate(lastCd4Result.vl?.dateResultReported)
         : "",
     }));
-  }, [lastCd4Result.cd4?.resultReported]);
+  }, [lastCd4Result.cd4?.resultReported, lastCd4Result.vl?.resultReported]);
   const formattedDate = (inputDate) => {
 
   
+  
+    console.log("Eligibility ", lastCd4Result)
     const dateObject = new Date(inputDate);
       if (isNaN(dateObject)) {
         return ""; 

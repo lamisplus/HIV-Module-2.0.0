@@ -9,13 +9,14 @@ import {
   Form,
   InputGroup,
   InputGroupText,
+  Col,
 } from "reactstrap";
 import { makeStyles } from "@material-ui/core/styles";
 import { Card, CardContent } from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
 // import AddIcon from "@material-ui/icons/Add";
 // import CancelIcon from "@material-ui/icons/Cancel";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer, Zoom, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "react-widgets/dist/css/react-widgets.css";
 import { useHistory } from "react-router-dom";
@@ -27,6 +28,8 @@ import "react-toastify/dist/ReactToastify.css";
 import "react-widgets/dist/css/react-widgets.css";
 import "react-phone-input-2/lib/style.css";
 import { Button } from "semantic-ui-react";
+import moment from "moment";
+import DualListBox from "react-dual-listbox";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -68,304 +71,554 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const optionsHTNRegiment = [
+  {
+    value: " Amiloride + hydrochlorothiazide",
+    label: "Amiloride + hydrochlorothiazide",
+  },
+  {
+    value: "Amlodipine",
+    label: "Amlodipine",
+  },
+
+  {
+    value: "Aspirin",
+    label: "Aspirin",
+  },
+  {
+    value: "Atenolol ",
+    label: "Atenolol ",
+  },
+  {
+    value: "Bendrofluazide",
+    label: "Bendrofluazide",
+  },
+  {
+    value: "Captopril",
+    label: "Captopril",
+  },
+  {
+    value: "Enalapril",
+    label: "Enalapril",
+  },
+  {
+    value: "Hydrochlorothiazide",
+    label: "Hydrochlorothiazide",
+  },
+  {
+    value: "Hydralazine",
+    label: "Hydralazine",
+  },
+  {
+    value: "Indapamine",
+    label: "Indapamine",
+  },
+  {
+    value: "Labetalol",
+    label: "Labetalol",
+  },
+  {
+    value: "Lisinopril",
+    label: "Lisinopril",
+  },
+  {
+    value: "Losartan",
+    label: "Losartan",
+  },
+  {
+    value: "Methyldopa",
+    label: "Methyldopa",
+  },
+  {
+    value: "Nifedipine",
+    label: "Nifedipine",
+  },
+  {
+    value: "Propanolol",
+    label: "Propanolol",
+  },
+  {
+    value: "Telmisartan",
+    label: "Telmisartan",
+  },
+  { value: "Others", label: "Others" },
+];
+
 const ChronicConditions = (props) => {
   const classes = useStyles();
   //const history = useHistory();
   const [errors, setErrors] = useState({});
+  const [selected, setSelected] = useState([]);
+  const [selected2, setSelected2] = useState([]);
+
+const handleInputChangeHtnRegimenAtStart = (selectedValues) => {
+  const updatedChronicConditions = {
+    ...props.chronicConditions,
+    htnRegimenAtStart: selectedValues,
+  };
+
+  props.setChronicConditions(updatedChronicConditions);
+};
+
+const handleInputChangeCurrentHtnRegimen = (selectedValues) => {
+  const updatedChronicConditions = {
+    ...props.chronicConditions,
+    currentHtnRegimen: selectedValues,
+  };
+
+  props.setChronicConditions(updatedChronicConditions);
+};
+  
+     const handleInputChange = (e) => {
+       props.setChronicConditions({
+         ...props.chronicConditions,
+         [e.target.name]: e.target.value,
+       });
+     };
+
   let temp = { ...errors };
 
-  useEffect(() => {}, []);
 
-  const handleInputChange = (e) => {
-    props.setChronicConditions({
-      ...props.chronicConditions,
-      [e.target.name]: e.target.value,
-    });
-  };
+
+ 
 
   return (
     <>
       <Card>
         <CardBody>
           <h2 style={{ color: "#000" }}>
-            Screening for Chronic Conditions(Hypertension & Diabetics)
+            Screening for Chronic Conditions(Hypertension)
           </h2>
           <br />
           <form>
             {/* Medical History form inputs */}
             <div className="row">
-                    <div className="form-group mb-3 col-md-8"></div>   
-                    {props.isHypertensive !="" && props.isHypertensive === true?
-
-                      (<>
-                         <div className="row">
-                      
-                    
-                      <div className="form-group mb-3 col-md-6">                                    
-                              <FormGroup>
-                              <Label>First time identified within the programme?</Label>
-                                      <Input 
-                                          type="select"
-                                          name="firstTimeHypertensive"
-                                          id="firstTimeHypertensive"
-                                          onChange={handleInputChange} 
-                                          value={props.chronicConditions.firstTimeHypertensive}
-                                      >
-                                      <option value="">Select</option>
-                                      <option value="Yes">Yes</option>
-                                      <option value="No">No</option>
-                                      </Input>
-  
-                              </FormGroup>
-                      </div>
-                      <div className="row">
+              <div className="form-group mb-3 col-md-8"></div>
+              {props.isHypertensive != "" && props.isHypertensive === true ? (
+                <>
+                  <div className="row">
+                    {/* <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>
+                          First time identified within the programme?
+                        </Label>
+                        <Input
+                          type="select"
+                          name="firstTimeHypertensive"
+                          id="firstTimeHypertensive"
+                          onChange={handleInputChange}
+                          value={props.chronicConditions.firstTimeHypertensive}
+                        >
+                          <option value="">Select</option>
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </Input>
+                      </FormGroup>
+                    </div> */}
+                    <div className="row">
                       <div className="form-group mb-3 col-md-12">
-                          <FormGroup>
-                          <Label >Blood Pressure</Label>
+                        <FormGroup>
+                          <Label>Blood Pressure</Label>
                           <InputGroup>
-                          <InputGroupText addonType="append" style={{ backgroundColor:"#014D88", color:"#fff", border: "1px solid #014D88", borderRadius:"0rem"}}>
-                                  systolic(mmHg)
-                          </InputGroupText> 
-                              <Input 
+                            <InputGroupText
+                              addonType="append"
+                              style={{
+                                backgroundColor: "#014D88",
+                                color: "#fff",
+                                border: "1px solid #014D88",
+                                borderRadius: "0rem",
+                              }}
+                            >
+                              systolic(mmHg)
+                            </InputGroupText>
+                            <Input
+                              type="number"
+                              name="systolic"
+                              id="systolic"
+                              min="90"
+                              max="2240"
+                              onChange={handleInputChange}
+                              value={props.chronicConditions.systolic}
+                              //onKeyUp={handleInputValueCheckSystolic}
+                              style={{
+                                border: "1px solid #014D88",
+                                borderRadius: "0rem",
+                              }}
+                            />
+                            <InputGroupText
+                              addonType="append"
+                              style={{
+                                backgroundColor: "#014D88",
+                                color: "#fff",
+                                border: "1px solid #014D88",
+                                borderRadius: "0rem",
+                              }}
+                            >
+                              diastolic(mmHg)
+                            </InputGroupText>
+                            <Input
+                              type="number"
+                              name="diastolic"
+                              id="diastolic"
+                              min={0}
+                              max={140}
+                              onChange={handleInputChange}
+                              value={props.chronicConditions.diastolic}
+                              //onKeyUp={handleInputValueCheckDiastolic}
+                              style={{
+                                border: "1px solid #014D88",
+                                borderRadius: "0rem",
+                              }}
+                            />
+                          </InputGroup>
+                        </FormGroup>
+                      </div>
+                    </div>
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>BP above 14080mmHg?</Label>
+                        <Input
+                          type="select"
+                          name="bp"
+                          id="bp"
+                          onChange={handleInputChange}
+                          value={props.chronicConditions.bp}
+                        >
+                          <option value="">Select</option>
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </Input>
+                      </FormGroup>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="row">
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>Known Hypertensive </Label>
+                        <Input
+                          type="select"
+                          name="hypertensive"
+                          id="hypertensive"
+                          onChange={handleInputChange}
+                          value={props.chronicConditions.hypertensive}
+                        >
+                          <option value="">Select</option>
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </Input>
+                      </FormGroup>
+                    </div>
+
+                    {/* <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>
+                          First time identified within the programme?
+                        </Label>
+                        <Input
+                          type="select"
+                          name="firstTimeHypertensive"
+                          id="firstTimeHypertensive"
+                          onChange={handleInputChange}
+                          value={props.chronicConditions.firstTimeHypertensive}
+                        >
+                          <option value="">Select</option>
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </Input>
+                      </FormGroup>
+                    </div> */}
+                    <div className="row">
+                      <div className="form-group mb-3 col-md-12">
+                        <FormGroup>
+                          <Label>Blood Pressure</Label>
+                          <InputGroup>
+                            <InputGroupText
+                              addonType="append"
+                              style={{
+                                backgroundColor: "#014D88",
+                                color: "#fff",
+                                border: "1px solid #014D88",
+                                borderRadius: "0rem",
+                              }}
+                            >
+                              systolic(mmHg)
+                            </InputGroupText>
+                            <Input
+                              type="number"
+                              name="systolic"
+                              id="systolic"
+                              min="90"
+                              max="2240"
+                              onChange={handleInputChange}
+                              value={props.chronicConditions.systolic}
+                              //onKeyUp={handleInputValueCheckSystolic}
+                              style={{
+                                border: "1px solid #014D88",
+                                borderRadius: "0rem",
+                              }}
+                            />
+                            <InputGroupText
+                              addonType="append"
+                              style={{
+                                backgroundColor: "#014D88",
+                                color: "#fff",
+                                border: "1px solid #014D88",
+                                borderRadius: "0rem",
+                              }}
+                            >
+                              diastolic(mmHg)
+                            </InputGroupText>
+                            <Input
+                              type="number"
+                              name="diastolic"
+                              id="diastolic"
+                              min={0}
+                              max={140}
+                              onChange={handleInputChange}
+                              value={props.chronicConditions.diastolic}
+                              //onKeyUp={handleInputValueCheckDiastolic}
+                              style={{
+                                border: "1px solid #014D88",
+                                borderRadius: "0rem",
+                              }}
+                            />
+                          </InputGroup>
+                        </FormGroup>
+                      </div>
+                    </div>
+
+                    <div className="row">
+                      <div className="form-group mb-3 col-md-6">
+                        <FormGroup>
+                          <Label>BP above 14080mmHg?</Label>
+                          <Input
+                            type="select"
+                            name="bp"
+                            id="bp"
+                            onChange={handleInputChange}
+                            value={props.chronicConditions.bp}
+                          >
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                          </Input>
+                        </FormGroup>
+                      </div>
+
+                      {props.chronicConditions.hypertensive === "Yes" && (
+                        <>
+                          <Col>
+                            <FormGroup>
+                              <Label for="dateofStartOfHTNTreatment">
+                                Date of start of HTN Treatment{" "}
+                              </Label>
+                              {""}
+                              <span style={{ color: "red" }}> *</span>
+                              <Input
+                                type="date"
+                                name="dateofStartOfHTNTreatment"
+                                id="dateofStartOfHTNTreatment"
+                                value={
+                                  props.chronicConditions
+                                    .dateofStartOfHTNTreatment
+                                }
+                                min={moment(
+                                  props.chronicConditions
+                                    .dateofStartOfHTNTreatment
+                                ).format("YYYY-MM-DD")}
+                                max={moment(new Date()).format("YYYY-MM-DD")}
+                                onChange={handleInputChange}
+                                style={{
+                                  border: "1px solid #014D88",
+                                  borderRadius: "0.25rem",
+                                }}
+                                required
+                              />
+                            </FormGroup>
+                          </Col>
+
+                          <hr />
+
+                          <FormGroup>
+                            <Label>HTN Regimen at Start</Label>
+                            <DualListBox
+                              value={props.chronicConditions.htnRegimenAtStart}
+                              options={optionsHTNRegiment}
+                              onChange={(value) =>
+                                handleInputChangeHtnRegimenAtStart(value)
+                              }
+                              selected={
+                                props.chronicConditions.htnRegimenAtStart
+                              }
+                            />
+                          </FormGroup>
+
+                          <FormGroup>
+                            <Label>Current HTN Regimen</Label>
+                            <DualListBox
+                              value={props.chronicConditions.currentHtnRegimen}
+                              options={optionsHTNRegiment}
+                              onChange={(value) =>
+                                handleInputChangeCurrentHtnRegimen(value)
+                              }
+                              selected={
+                                props.chronicConditions.currentHtnRegimen
+                              }
+                            />
+                          </FormGroup>
+
+                          <Col>
+                            <FormGroup>
+                              <Label for="dateofStartOfHTNTreatment">
+                                Last HTN Medication Pickup Date{" "}
+                              </Label>
+                              {""}
+                              <span style={{ color: "red" }}> *</span>
+                              <Input
+                                type="date"
+                                name="lastHTNMedicationPickupDate"
+                                id="lastHTNMedicationPickupDate"
+                                value={
+                                  props.chronicConditions
+                                    .lastHTNMedicationPickupDate
+                                }
+                                min={moment(
+                                  props.chronicConditions
+                                    .lastHTNMedicationPickupDate
+                                ).format("YYYY-MM-DD")}
+                                max={moment(new Date()).format("YYYY-MM-DD")}
+                                onChange={handleInputChange}
+                                style={{
+                                  border: "1px solid #014D88",
+                                  borderRadius: "0.25rem",
+                                }}
+                                required
+                              />
+                            </FormGroup>
+                          </Col>
+
+                          <Col>
+                            <FormGroup>
+                              <Label>Duration of HTN Drug Refill (Days)</Label>
+                              <InputGroup>
+                                <InputGroupText
+                                  addonType="append"
+                                  style={{
+                                    backgroundColor: "#014D88",
+                                    color: "#fff",
+                                    border: "1px solid #014D88",
+                                    borderRadius: "0rem",
+                                  }}
+                                >
+                                  Duration of HTN Drug Refill
+                                </InputGroupText>
+                                <Input
                                   type="number"
-                                  name="systolic"
-                                  id="systolic"
+                                  name="durationOfHtnDrugRefill"
+                                  id="durationOfHtnDrugRefill"
                                   min="90"
                                   max="2240"
                                   onChange={handleInputChange}
-                                  value={props.chronicConditions.systolic}
+                                  value={
+                                    props.chronicConditions
+                                      .durationOfHtnDrugRefill
+                                  }
                                   //onKeyUp={handleInputValueCheckSystolic}
-                                  style={{border: "1px solid #014D88", borderRadius:"0rem"}} 
-                              />
-                              <InputGroupText addonType="append" style={{ backgroundColor:"#014D88", color:"#fff", border: "1px solid #014D88", borderRadius:"0rem"}}>
-                              diastolic(mmHg)
-                              </InputGroupText>
-                                  <Input 
-                                  type="number"
-                                  name="diastolic"
-                                  id="diastolic"
-                                  min={0}
-                                  max={140}
-                                  onChange={handleInputChange}
-                                  value={props.chronicConditions.diastolic}
-                                  //onKeyUp={handleInputValueCheckDiastolic} 
-                                  style={{border: "1px solid #014D88", borderRadius:"0rem"}}
-                                  />
-                              
-                              
-                          </InputGroup>
-                                  
-                          </FormGroup>
-                      </div>
-                      </div>
-                      <div className="form-group mb-3 col-md-6">                                    
-                              <FormGroup>
-                              <Label>BP above 14080mmHg?</Label>
-                                      <Input 
-                                          type="select"
-                                          name="bp"
-                                          id="bp"
-                                          onChange={handleInputChange} 
-                                          value={props.chronicConditions.bp}
-                                      >
-                                      <option value="">Select</option>
-                                      <option value="Yes">Yes</option>
-                                      <option value="No">No</option>
-                                      </Input>
-  
-                              </FormGroup>
-                      </div>
-  
-                  </div>
-                            
-                      </>) : 
-                      (<> 
-                 
-                    <div className="row">
-                      
-                    <div className="form-group mb-3 col-md-6">                                    
-                            <FormGroup>
-                            <Label>Known Hypertensive </Label>
-                                    <Input 
-                                        type="select"
-                                        name="hypertensive"
-                                        id="hypertensive"
-                                        onChange={handleInputChange} 
-                                        value={props.chronicConditions.hypertensive} 
-                                    >
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                    </Input>
-
-                            </FormGroup>
-                    </div>
-                    <div className="form-group mb-3 col-md-6">                                    
-                            <FormGroup>
-                            <Label>First time identified within the programme?</Label>
-                                    <Input 
-                                        type="select"
-                                        name="firstTimeHypertensive"
-                                        id="firstTimeHypertensive"
-                                        onChange={handleInputChange} 
-                                        value={props.chronicConditions.firstTimeHypertensive}
-                                    >
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                    </Input>
-
-                            </FormGroup>
-                    </div>
-                    <div className="row">
-                    <div className="form-group mb-3 col-md-12">
-                        <FormGroup>
-                        <Label >Blood Pressure</Label>
-                        <InputGroup>
-                        <InputGroupText addonType="append" style={{ backgroundColor:"#014D88", color:"#fff", border: "1px solid #014D88", borderRadius:"0rem"}}>
-                                systolic(mmHg)
-                        </InputGroupText> 
-                            <Input 
-                                type="number"
-                                name="systolic"
-                                id="systolic"
-                                min="90"
-                                max="2240"
-                                onChange={handleInputChange}
-                                value={props.chronicConditions.systolic}
-                                //onKeyUp={handleInputValueCheckSystolic}
-                                style={{border: "1px solid #014D88", borderRadius:"0rem"}} 
-                            />
-                            <InputGroupText addonType="append" style={{ backgroundColor:"#014D88", color:"#fff", border: "1px solid #014D88", borderRadius:"0rem"}}>
-                            diastolic(mmHg)
-                            </InputGroupText>
-                                <Input 
-                                type="number"
-                                name="diastolic"
-                                id="diastolic"
-                                min={0}
-                                max={140}
-                                onChange={handleInputChange}
-                                value={props.chronicConditions.diastolic}
-                                //onKeyUp={handleInputValueCheckDiastolic} 
-                                style={{border: "1px solid #014D88", borderRadius:"0rem"}}
+                                  style={{
+                                    border: "1px solid #014D88",
+                                    borderRadius: "0rem",
+                                  }}
                                 />
-                            
-                            
-                        </InputGroup>
-                                
-                        </FormGroup>
-                    </div>
-                    </div>
-                    <div className="form-group mb-3 col-md-6">                                    
-                            <FormGroup>
-                            <Label>BP above 14080mmHg?</Label>
-                                    <Input 
-                                        type="select"
-                                        name="bp"
-                                        id="bp"
-                                        onChange={handleInputChange} 
-                                        value={props.chronicConditions.bp}
-                                    >
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                    </Input>
-
+                              </InputGroup>
                             </FormGroup>
+                          </Col>
+
+                          <Col>
+                            <FormGroup>
+                              <Label>Current HTN Status</Label>
+                              <Input
+                                type="select"
+                                name="currentHtnStatus"
+                                id="currentHtnStatus"
+                                onChange={handleInputChange}
+                                value={props.chronicConditions.currentHtnStatus}
+                              >
+                                <option value="">Select</option>
+                                <option value="Currently on HTN Treatment">
+                                  Currently on HTN Treatment
+                                </option>
+                                <option value="Interrupted Treatment">
+                                  Interrupted Treatment
+                                </option>
+                                <option value="Stopped">Stopped</option>
+                                <option value="Dead">Dead</option>
+                              </Input>
+                            </FormGroup>
+                          </Col>
+
+                          <div className="row">
+                            <Col>
+                              <FormGroup>
+                                <Label for="dateofStartOfHTNTreatment">
+                                  Date of Current HTN Status{" "}
+                                </Label>
+                                {""}
+                                <span style={{ color: "red" }}> *</span>
+                                <Input
+                                  type="date"
+                                  name="dateOfCurrentHtnStatus"
+                                  id="dateOfCurrentHtnStatus"
+                                  value={
+                                    props.chronicConditions
+                                      .dateOfCurrentHtnStatus
+                                  }
+                                  min={moment(
+                                    props.chronicConditions
+                                      .dateOfCurrentHtnStatus
+                                  ).format("YYYY-MM-DD")}
+                                  max={moment(new Date()).format("YYYY-MM-DD")}
+                                  onChange={handleInputChange}
+                                  style={{
+                                    border: "1px solid #014D88",
+                                    borderRadius: "0.25rem",
+                                  }}
+                                  required
+                                />
+                              </FormGroup>
+                            </Col>
+                            <Col>
+                              <FormGroup>
+                                <Label for="dateofStartOfHTNTreatment">
+                                  Reasons for Stopped/IIT{" "}
+                                </Label>
+                                {""}
+
+                                <Input
+                                  type="text"
+                                  name="reasonForStoppedIIT"
+                                  id="reasonForStoppedIIT"
+                                  value={
+                                    props.chronicConditions.reasonForStoppedIIT
+                                  }
+                                  onChange={handleInputChange}
+                                  style={{
+                                    border: "1px solid #014D88",
+                                    borderRadius: "0.25rem",
+                                  }}
+                                  required
+                                />
+                              </FormGroup>
+                            </Col>
+                          </div>
+                        </>
+                      )}
                     </div>
-
-                </div>
-                </>)}      
-
-            
-              <div className="row">
-                <div className="form-group mb-3 col-md-6">
-                  <FormGroup>
-                    <Label>Know diabetic?</Label>
-                    <Input
-                      type="select"
-                      name="diabetic"
-                      id="diabetic"
-                      onChange={handleInputChange}
-                      value={props.chronicConditions.diabetic}
-                      disabled={props.action === "view" ? true : false}
-                    >
-                      <option value="">Select</option>
-                      <option value="Yes">Yes</option>
-                      <option value="No">No</option>
-                    </Input>
-                  </FormGroup>
-                </div>
-                <div className="form-group mb-3 col-md-6">
-                  <FormGroup>
-                    <Label>First time identified within the programme?</Label>
-                    <Input
-                      type="select"
-                      name="firstTimeDiabetic"
-                      id="firstTimeDiabetic"
-                      onChange={handleInputChange}
-                      value={props.chronicConditions.firstTimeDiabetic}
-                      disabled={props.action === "view" ? true : false}
-                    >
-                      <option value="">Select</option>
-                      <option value="Yes">Yes</option>
-                      <option value="No">No</option>
-                    </Input>
-                  </FormGroup>
-                </div>
-                <div className="form-group mb-3 col-md-6">
-                  <FormGroup>
-                    <Label>Increased frequency of urination</Label>
-                    <Input
-                      type="select"
-                      name="frequencyUrination"
-                      id="frequencyUrination"
-                      onChange={handleInputChange}
-                      value={props.chronicConditions.frequencyUrination}
-                      disabled={props.action === "view" ? true : false}
-                    >
-                      <option value="">Select</option>
-                      <option value="Yes">Yes</option>
-                      <option value="No">No</option>
-                    </Input>
-                  </FormGroup>
-                </div>
-                <div className="form-group mb-3 col-md-6">
-                  <FormGroup>
-                    <Label>Increased water(fluid) intake?</Label>
-                    <Input
-                      type="select"
-                      name="increaseWater"
-                      id="increaseWater"
-                      onChange={handleInputChange}
-                      value={props.chronicConditions.increaseWater}
-                      disabled={props.action === "view" ? true : false}
-                    >
-                      <option value="">Select</option>
-                      <option value="Yes">Yes</option>
-                      <option value="No">No</option>
-                    </Input>
-                  </FormGroup>
-                </div>
-                <div className="form-group mb-3 col-md-6">
-                  <FormGroup>
-                    <Label>Increased food intake (without weight gain)</Label>
-                    <Input
-                      type="select"
-                      name="increaseFood"
-                      id="increaseFood"
-                      onChange={handleInputChange}
-                      value={props.chronicConditions.increaseFood}
-                      disabled={props.action === "view" ? true : false}
-                    >
-                      <option value="">Select</option>
-                      <option value="Yes">Yes</option>
-                      <option value="No">No</option>
-                    </Input>
-                  </FormGroup>
-                </div>
-              </div>
+                  </div>
+                </>
+              )}
             </div>
           </form>
         </CardBody>

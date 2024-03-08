@@ -22,6 +22,7 @@ import PositiveHealthDignity from "./PositiveHealthDignity";
 import ReproductiveIntentions from "./ReproductiveIntentions";
 import Tb from "./Tb";
 import Tpt from "./Tpt";
+import ChronicConditionsTwo from "./ChronicConditionsTwo";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -104,6 +105,7 @@ const ChronicCare = (props) => {
   const [showNutrition, setShowNutrition] = useState(false);
   const [showGenderBase, setShowGenderBase] = useState(false);
   const [showChronicCondition, setShowChronicCondition] = useState(false);
+  const [showChronicConditionTwo, setShowChronicConditionTwo] = useState(false);
   const [showPositiveHealth, setShowPositiveHealth] = useState(false);
   const [showReproductive, setShowReproductive] = useState(false);
   const [showTb, setShowTb] = useState(false); //Tpt
@@ -112,7 +114,7 @@ const ChronicCare = (props) => {
   const [chronicDateExist, setChronicDateExist] = useState(null);
   const [lastDateOfObservation, setlastDateOfObservation] = useState(null);
   const [isUpdate, setIsUpdate] = useState(false);
-  const [isHypertensive, setHypertensive] = useState("")
+  const [isHypertensive, setHypertensive] = useState("");
   //GenderBase Object
   const [genderBase, setGenderBase] = useState({
     partnerEverPhysically: "",
@@ -143,6 +145,15 @@ const ChronicCare = (props) => {
     diabetic: "",
     bp: "",
     firstTimeHypertensive: "",
+    dateofStartOfHTNTreatment: "",
+    htnRegimenAtStart: [],
+    currentHtnRegimen: [],
+    lastHTNMedicationPickupDate: "",
+    durationOfHtnDrugRefill: "",
+    currentHtnStatus: "",
+    dateOfCurrentHtnStatus: "",
+    reasonForStoppedIIT: "",
+    dateOfStartOfDiabetesTreatment: "",
   });
   //Nutrition Object
   const [nutrition, setNutrition] = useState({
@@ -183,12 +194,18 @@ const ChronicCare = (props) => {
     tbSymptoms: "",
     resonForStoppingIpt: "",
     outComeOfIpt: "",
+    tbTreatment: "",
+    tbTreatmentStartDate: "",
+    treatementType: "",
+    treatmentOutcome: "",
+    completionDate: "",
+    treatmentCompletionResult:""
   });
   const [tbObj, setTbObj] = useState({
     //TB and IPT Screening Object
     currentlyOnTuberculosis: "",
-    tbTreatment: "",
-    tbTreatmentStartDate: "",
+    // tbTreatment: "",
+    // tbTreatmentStartDate: "",
     coughing: "",
     fever: "",
     losingWeight: "",
@@ -205,9 +222,9 @@ const ChronicCare = (props) => {
     activeTb: false,
     contraindications: "",
     eligibleForTPT: "",
-    treatementOutcome: "",
-    treatementType: "",
-    completionDate: "",
+    // treatementOutcome: "",
+    // treatementType: "",
+    // completionDate: "",
   });
   const [observationObj, setObservationObj] = useState({
     //Predefine object for chronic care DTO
@@ -292,30 +309,27 @@ const ChronicCare = (props) => {
   //     .catch((error) => {});
   // };
 
-
   const getIsHypertensive = async () => {
     try {
       //function to get is hypertensive
-      const response = await axios.get(`${baseUrl}observation/is-hypertensive/${patientObj.id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-  
-      if (response.data) {
+      const response = await axios.get(
+        `${baseUrl}observation/is-hypertensive/${patientObj.id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-        console.log("Got here" + response.data['isHypertensive']);
-  
+      if (response.data) {
+        console.log("Got here" + response.data["isHypertensive"]);
+
         //To get the latest Chronic Hypertensive response
-        setHypertensive(response.data['isHypertensive']);
+        setHypertensive(response.data["isHypertensive"]);
       }
     } catch (error) {
       // Handle error here
       console.error(error);
     }
   };
-
- 
-
-  
 
   const GetChronicCareData = () => {
     //function to get chronic care data check if record exist using date for validation
@@ -336,7 +350,6 @@ const ChronicCare = (props) => {
       })
       .catch((error) => {});
   };
-
 
   const handleInputChange = (e) => {
     setErrors({ ...temp, [e.target.name]: "" });
@@ -499,6 +512,9 @@ const ChronicCare = (props) => {
   const onClickChronicCondition = () => {
     setShowChronicCondition(!showChronicCondition);
   };
+  const onClickChronicConditionTwo = () => {
+    setShowChronicConditionTwo(!showChronicConditionTwo);
+  };
   const onClickPositiveHealth = () => {
     setShowPositiveHealth(!showPositiveHealth);
   };
@@ -512,7 +528,6 @@ const ChronicCare = (props) => {
   const handleCancel = () => {
     //history.push({ pathname: '/' });
   };
-
 
   return (
     <>
@@ -668,7 +683,7 @@ const ChronicCare = (props) => {
                   }}
                 >
                   <h5 className="card-title" style={{ color: "#fff" }}>
-                    TPT Monitoring
+                    TB/TPT Monitoring
                   </h5>
                   {showTpt === false ? (
                     <>
@@ -817,7 +832,7 @@ const ChronicCare = (props) => {
                   }}
                 >
                   <h5 className="card-title" style={{ color: "#fff" }}>
-                    Screening for Chronic Conditions
+                    Screening for Chronic Conditions Hypertension
                   </h5>
                   {showChronicCondition === false ? (
                     <>
@@ -845,6 +860,58 @@ const ChronicCare = (props) => {
                   <div className="card-body">
                     <div className="row">
                       <ChronicConditions
+                        chronicConditions={chronicConditions}
+                        setChronicConditions={setChronicConditions}
+                        setErrors={setErrors}
+                        errors={errors}
+                        encounterDate={observation.dateOfObservation}
+                        patientObj={patientObj}
+                        isHypertensive={isHypertensive}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="card">
+                <div
+                  className="card-header"
+                  style={{
+                    backgroundColor: "#014d88",
+                    color: "#fff",
+                    fontWeight: "bolder",
+                    borderRadius: "0.2rem",
+                  }}
+                >
+                  <h5 className="card-title" style={{ color: "#fff" }}>
+                    Screening for Chronic Conditions Diabetics
+                  </h5>
+                  {showChronicConditionTwo === false ? (
+                    <>
+                      <span
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickChronicConditionTwo}
+                      >
+                        <FaPlus />
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickChronicConditionTwo}
+                      >
+                        <FaAngleDown />
+                      </span>{" "}
+                    </>
+                  )}
+                </div>
+                {showChronicConditionTwo && (
+                  <div className="card-body">
+                    <div className="row">
+                      <ChronicConditionsTwo
                         chronicConditions={chronicConditions}
                         setChronicConditions={setChronicConditions}
                         setErrors={setErrors}

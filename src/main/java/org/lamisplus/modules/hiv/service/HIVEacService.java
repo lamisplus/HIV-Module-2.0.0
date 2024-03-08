@@ -94,7 +94,7 @@ public class HIVEacService {
 						viralLoad,
 						dateOfLastViralLoad,
 						currentSession.get().getStatus(),
-						currentSession.get().getEacSessionDate()
+						currentSession.get().getFollowUpDate()
 				);
 			}
 			
