@@ -2098,7 +2098,7 @@ const Pharmacy = (props) => {
                           ))}
                         </>
                       )}
-                      {patientAge <= 15 && (
+                      {patientAge < 15 && (
                         <>
                           {childrenTB.map((value) => (
                             <option key={value.id} value={value.id}>
