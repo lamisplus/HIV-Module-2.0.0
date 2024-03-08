@@ -5,7 +5,7 @@ import com.foreach.across.core.annotations.Installer;
 import com.foreach.across.core.installers.AcrossLiquibaseInstaller;
 import org.springframework.core.annotation.Order;
 
-@Order(2)
+@Order(3)
 @Installer(name = "update-hiv_art_clinical_pregnancy_status",
 		description = "add new columns",
 		version = 14)

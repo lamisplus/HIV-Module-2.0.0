@@ -5,7 +5,7 @@ import com.foreach.across.core.annotations.Installer;
 import com.foreach.across.core.installers.AcrossLiquibaseInstaller;
 import org.springframework.core.annotation.Order;
 
-@Order(2)
+@Order(4)
 @Installer(name = "regimen-installer",
         description = "Populate regimen values",
         version = 1)
