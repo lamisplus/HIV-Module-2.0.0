@@ -197,7 +197,7 @@ const handleInputChangeCurrentHtnRegimen = (selectedValues) => {
               {props.isHypertensive != "" && props.isHypertensive === true ? (
                 <>
                   <div className="row">
-                    <div className="form-group mb-3 col-md-6">
+                    {/* <div className="form-group mb-3 col-md-6">
                       <FormGroup>
                         <Label>
                           First time identified within the programme?
@@ -214,7 +214,7 @@ const handleInputChangeCurrentHtnRegimen = (selectedValues) => {
                           <option value="No">No</option>
                         </Input>
                       </FormGroup>
-                    </div>
+                    </div> */}
                     <div className="row">
                       <div className="form-group mb-3 col-md-12">
                         <FormGroup>

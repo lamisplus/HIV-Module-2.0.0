@@ -347,7 +347,7 @@ const TPT = (props) => {
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
                         }}
-                        min={props.encounterDate}
+                        // min={props.encounterDate}
                         max={moment(new Date()).format("YYYY-MM-DD")}
                         disabled={props.action === "view" ? true : false}
                       ></Input>
@@ -389,7 +389,7 @@ const TPT = (props) => {
                 <div className="form-group mb-3 col-md-6">
                   <FormGroup>
                     <Label>
-                      Have you completed TB?{" "}
+                      Have you completed TB Treatment?{" "}
                       <span style={{ color: "red" }}> *</span>
                     </Label>
                     <InputGroup>
@@ -424,7 +424,7 @@ const TPT = (props) => {
                             id="tbTreatmentStartDate"
                             onChange={handleTpt}
                             value={props.tpt.tbTreatmentStartDate}
-                            min={props.encounterDate}
+                            // min={props.encounterDate}
                             max={moment(new Date()).format("YYYY-MM-DD")}
                             disabled={props.action === "view" ? true : false}
                           ></Input>
@@ -501,7 +501,7 @@ const TPT = (props) => {
                                   id="completionDate"
                                   onChange={handleTpt}
                                   value={props.tpt.completionDate}
-                                  min={props.encounterDate}
+                                  // min={props.encounterDate}
                                   disabled={
                                     props.action === "view" ? true : false
                                   }
@@ -513,17 +513,17 @@ const TPT = (props) => {
 
                           <div className="form-group mb-3 col-md-6">
                             <FormGroup>
-                              <Label>TB Treatment Completion Result</Label>
+                              <Label>TB Treatment Completion Status</Label>
                               <InputGroup>
                                 <Input
                                   type="select"
-                                  name="treatmentCompletionResult"
+                                  name="treatmentCompletionStatus"
                                   id="treatmentCompletionResult"
                                   onChange={handleTpt}
                                   disabled={
                                     props.action === "view" ? true : false
                                   }
-                                  value={props.tpt.treatmentCompletionResult}
+                                  value={props.tpt.treatmentCompletionStatus}
                                 >
                                   <option value="">Select</option>
                                   <option value="Treatment failed">
