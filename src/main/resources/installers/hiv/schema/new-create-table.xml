@@ -73,9 +73,6 @@
 			dsd_accept VARCHAR(255),
 			dsd_model VARCHAR(255),
             score INT,
-            client_return_to_site VARCHAR(255),
-            date_return_to_site DATE,
-            service_provider VARCHAR(255),
 			dsd_type VARCHAR(255),
 			comment VARCHAR(255),
 			completed_by VARCHAR(255),
@@ -110,4 +107,22 @@
             UPDATE public.hiv_regimen SET active = false WHERE id IN (102,103,104,105,118,109,33,119,6,5,15,16,96,124,26,39,3,2,40,13,41,1,233,4,93,113,94,114,14,101,99,100,97,98,35,23,24,8,17,7,34,28,27,22,21,110,213,215,128,228,229,201,20,19,10,122,11,42,222,223,220,221);
         </sql>
     </changeSet>
+
+    <changeSet failOnError="true" author="Taiwo Gboyegun" id="20240308-002">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="dsd_devolvement" columnName="client_return_to_site" />
+<!--                <columnExists tableName="dsd_devolvement" columnName="date_return_to_site" />-->
+<!--                <columnExists tableName="dsd_devolvement" columnName="service_provider" />-->
+            </not>
+        </preConditions>
+        <sql>
+            ALTER TABLE dsd_devolvement
+            ADD client_return_to_site VARCHAR(255),
+            ADD date_return_to_site DATE,
+            ADD service_provider VARCHAR(255);
+
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
