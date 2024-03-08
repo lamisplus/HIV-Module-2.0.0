@@ -651,7 +651,11 @@ const Laboratory = (props) => {
                     </FormGroup>
                   </Col>
 
-                  {tests.labTestId === 73 ? (
+                  {tests.labTestId === 73 ||
+                  tests.labTestId === 75 ||
+                  tests.labTestId === 78 ||
+                  tests.labTestId === 79 ||
+                  tests.labTestId === 80 ? (
                     <>
                       <Col md={4} className="form-group mb-3">
                         <FormGroup>
@@ -1297,16 +1301,15 @@ const Laboratory = (props) => {
                   {/* Date Ordered */}
                   <Col md={4} className="form-group mb-3">
                     <FormGroup>
-                      <Label for="encounterDate">Date Ordered</Label>{""}
+                      <Label for="encounterDate">Date Ordered</Label>
+                      {""}
                       <span style={{ color: "red" }}> *</span>
                       <Input
                         type="date"
                         name="orderedDate"
                         id="orderedDate"
                         value={tests.orderedDate}
-                        min={moment(tests.orderedDate).format(
-                          "YYYY-MM-DD"
-                        )}
+                        min={moment(tests.orderedDate).format("YYYY-MM-DD")}
                         max={moment(new Date()).format("YYYY-MM-DD")}
                         onChange={handleInputChange}
                         style={{
