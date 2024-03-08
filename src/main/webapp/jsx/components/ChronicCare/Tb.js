@@ -125,6 +125,42 @@ const TbScreening = (props) => {
       }
     }
 
+     if (
+       props.tbObj.tbTreatment === "No" &&
+       props.tbObj.tbScreeningType === "Symptom screening" &&
+       props.tbObj.currentlyOnTuberculosis === "No" &&
+       props.tbObj.previouslyCompletedTPT === "No"
+     ) {
+       if (
+         props.tbObj.coughing === "No" &&
+         props.tbObj.fever === "No" &&
+         props.tbObj.nightSweats === "No" &&
+         props.tbObj.losingWeight === "No"
+       ) {
+         props.setTbObj({
+           ...props.tbObj,
+           outcome: "Not Presumptive",
+           status: "No signs or symptoms of TB",
+           eligibleForTPT: "Yes",
+         });
+       }
+     }
+
+     if (
+       props.tbObj.tbTreatment === "No" &&
+       props.tbObj.tbScreeningType === "Chest X-ray" &&
+       props.tbObj.chestXray === "X-ray not suggestive" &&
+       props.tbObj.currentlyOnTuberculosis === "No" &&
+       props.tbObj.previouslyCompletedTPT === "No"
+     ) {
+       props.setTbObj({
+         ...props.tbObj,
+         outcome: "Not Presumptive",
+         status: "No signs or symptoms of TB",
+         eligibleForTPT: "Yes",
+       });
+     }
+
     if (
       props.tbObj.tbTreatment === "No" &&
       props.tbObj.tbScreeningType === "Symptom screening"
@@ -388,6 +424,45 @@ const TbScreening = (props) => {
           });
         }
       }
+
+        if (
+          props.tbObj.tbTreatment === "No" &&
+          props.tbObj.tbScreeningType === "Symptom screening" &&
+          props.tbObj.currentlyOnTuberculosis === "No" &&
+          props.tbObj.previouslyCompletedTPT === "No"
+        ) {
+          if (
+            props.tbObj.coughing === "No" &&
+            props.tbObj.fever === "No" &&
+            props.tbObj.nightSweats === "No" &&
+            props.tbObj.losingWeight === "No" &&
+            props.tbObj.historyWithAdults === "No" &&
+            props.tbObj.poorWeightGain === "No"
+          ) {
+            props.setTbObj({
+              ...props.tbObj,
+              outcome: "Not Presumptive",
+              status: "No signs or symptoms of TB",
+              eligibleForTPT: "Yes",
+            });
+          }
+        }
+
+        if (
+          props.tbObj.tbTreatment === "No" &&
+          props.tbObj.tbScreeningType === "Chest X-ray" &&
+          props.tbObj.chestXray === "X-ray not suggestive" &&
+          props.tbObj.currentlyOnTuberculosis === "No" &&
+          props.tbObj.previouslyCompletedTPT === "No"
+        ) {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Not Presumptive",
+            status: "No signs or symptoms of TB",
+            eligibleForTPT: "Yes",
+          });
+        }
+
 
       if (
         props.tbObj.tbTreatment === "No" &&
