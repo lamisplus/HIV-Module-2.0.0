@@ -94,6 +94,7 @@ const Laboratory = (props) => {
   const [labNumbers, setLabNumbers] = useState([]); //
   const [selectedOption, setSelectedOption] = useState([]);
   const [labTestOptions, setLabTestOptions] = useState([]);
+  const [labOrderIndication, setLabOrderIndication] = useState([]);
   let testsOptions = [];
   let temp = { ...errors };
   const [tests, setTests] = useState({
@@ -128,6 +129,7 @@ const Laboratory = (props) => {
     GetPatientDTOObj();
     CheckEACStatus();
     LabNumbers();
+    LAB_ORDER_INDICATION();
   }, [props.patientObj.id, tests.labTestId]);
   const GetPatientDTOObj = () => {
     axios
@@ -346,1165 +348,1183 @@ const Laboratory = (props) => {
     return Object.values(temp).every((x) => x == "");
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setSaving(true);
-    tests.sampleCollectionDate = moment(tests.sampleCollectionDate).format(
-      "YYYY-MM-DD HH:MM:SS"
-    );
-    tests.dateResultReceived =
-      tests.dateResultReceived !== ""
-        ? moment(tests.dateResultReceived).format("YYYY-MM-DD HH:MM:SS")
-        : "";
+  const LAB_ORDER_INDICATION = () => {
     axios
-      .post(`${baseUrl}laboratory/rde-orders`, testOrderList, {
+      .get(`${baseUrl}application-codesets/v2/LAB_ORDER_INDICATION`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        setSaving(false);
-        props.LabOrders();
-        toast.success("Laboratory order & result created successful!", {
-          position: toast.POSITION.BOTTOM_CENTER,
-        });
-        setTests({
-          comments: "",
-          dateAssayed: "",
-          labNumber: "",
-          sampleNumber: "",
-          labTestGroupId: "",
-          labTestId: "",
-          labOrderIndication: "",
-          orderedDate: "",
-          dateResultReceived: "",
-          patientId: props.patientObj ? props.patientObj.id : "",
-          result: "",
-          sampleCollectionDate: "",
-          viralLoadIndication: "",
-          visitId: "",
-          checkedBy: "",
-          clinicianName: "",
-          dateChecked: "",
-          dateResultReported: "",
-          id: "",
-          orderId: "",
-          resultReportedBy: "",
-        });
-        setTestOrderList([]);
-        props.setActiveContent({
-          ...props.activeContent,
-          route: "laboratoryOrderResult",
-          activeTab: "history",
-        });
+        setLabOrderIndication(response.data);
       })
-      .catch((error) => {
-        setSaving(false);
-        if (error.response && error.response.data) {
-          let errorMessage =
-            error.response.data && error.response.data.apierror.message !== ""
-              ? error.response.data.apierror.message
-              : "Something went wrong, please try again";
-          toast.error(errorMessage, { position: toast.POSITION.BOTTOM_CENTER });
-        } else {
-          toast.error("Something went wrong, please try again...", {
-            position: toast.POSITION.BOTTOM_CENTER,
-          });
-        }
-      });
+      .catch((error) => {});
   };
 
-  return (
-    <div>
-      <div className="row">
-        <div className="col-md-6">
-          <h2>Laboratory Order and Result </h2>
-        </div>
+  
 
-        <br />
-        <br />
-        <Card className={classes.root}>
-          <CardBody>
-            {/* {moduleStatus==="1" && ( */}
-            <form>
-              <div className="row">
-                <Row>
-                  <Col md={4} className="form-group mb-3">
-                    <FormGroup>
-                      <Label for="encounterDate">laboratory Number</Label>
-                      <Input
-                        type="select"
-                        name="labNumber"
-                        id="labNumber"
-                        value={tests.labNumber}
-                        onChange={handleInputChange}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                        required
-                      >
-                        <option value="">Select </option>
+   const handleSubmit = (e) => {
+     e.preventDefault();
+     setSaving(true);
+     tests.sampleCollectionDate = moment(tests.sampleCollectionDate).format(
+       "YYYY-MM-DD HH:MM:SS"
+     );
+     tests.dateResultReceived =
+       tests.dateResultReceived !== ""
+         ? moment(tests.dateResultReceived).format("YYYY-MM-DD HH:MM:SS")
+         : "";
+     axios
+       .post(`${baseUrl}laboratory/rde-orders`, testOrderList, {
+         headers: { Authorization: `Bearer ${token}` },
+       })
+       .then((response) => {
+         setSaving(false);
+         props.LabOrders();
+         toast.success("Laboratory order & result created successful!", {
+           position: toast.POSITION.BOTTOM_CENTER,
+         });
+         setTests({
+           comments: "",
+           dateAssayed: "",
+           labNumber: "",
+           sampleNumber: "",
+           labTestGroupId: "",
+           labTestId: "",
+           labOrderIndication: "",
+           orderedDate: "",
+           dateResultReceived: "",
+           patientId: props.patientObj ? props.patientObj.id : "",
+           result: "",
+           sampleCollectionDate: "",
+           viralLoadIndication: "",
+           visitId: "",
+           checkedBy: "",
+           clinicianName: "",
+           dateChecked: "",
+           dateResultReported: "",
+           id: "",
+           orderId: "",
+           resultReportedBy: "",
+         });
+         setTestOrderList([]);
+         props.setActiveContent({
+           ...props.activeContent,
+           route: "laboratoryOrderResult",
+           activeTab: "history",
+         });
+       })
+       .catch((error) => {
+         setSaving(false);
+         if (error.response && error.response.data) {
+           let errorMessage =
+             error.response.data && error.response.data.apierror.message !== ""
+               ? error.response.data.apierror.message
+               : "Something went wrong, please try again";
+           toast.error(errorMessage, {
+             position: toast.POSITION.BOTTOM_CENTER,
+           });
+         } else {
+           toast.error("Something went wrong, please try again...", {
+             position: toast.POSITION.BOTTOM_CENTER,
+           });
+         }
+       });
+   };
 
-                        {labNumbers.map((value) => (
-                          <option key={value.id} value={value.id}>
-                            {value.labNumber}
-                          </option>
-                        ))}
-                      </Input>
-                    </FormGroup>
-                  </Col>
-                  <Col md={4} className="form-group mb-3">
-                    <FormGroup>
-                      <Label for="encounterDate">
-                        Sample Number <span style={{ color: "red" }}> *</span>
-                      </Label>
-                      <Input
-                        type="text"
-                        name="sampleNumber"
-                        id="sampleNumber"
-                        //min={0}
-                        value={tests.sampleNumber}
-                        onChange={handleInputChange}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                        required
-                      />
-                      {errors.sampleNumber !== "" ? (
-                        <span className={classes.error}>
-                          {errors.sampleNumber}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </FormGroup>
-                  </Col>
+   return (
+     <div>
+       <div className="row">
+         <div className="col-md-6">
+           <h2>Laboratory Order and Result </h2>
+         </div>
 
-                  <Col md={4} className="form-group mb-3">
-                    <FormGroup>
-                      <Label for="testGroup">
-                        Select Test <span style={{ color: "red" }}> *</span>
-                      </Label>
+         <br />
+         <br />
+         <Card className={classes.root}>
+           <CardBody>
+             {/* {moduleStatus==="1" && ( */}
+             <form>
+               <div className="row">
+                 <Row>
+                   <Col md={4} className="form-group mb-3">
+                     <FormGroup>
+                       <Label for="encounterDate">laboratory Number</Label>
+                       <Input
+                         type="select"
+                         name="labNumber"
+                         id="labNumber"
+                         value={tests.labNumber}
+                         onChange={handleInputChange}
+                         style={{
+                           border: "1px solid #014D88",
+                           borderRadius: "0.25rem",
+                         }}
+                         required
+                       >
+                         <option value="">Select </option>
 
-                      <Select
-                        value={selectedOption}
-                        onChange={handleInputChangeObject}
-                        options={labTestOptions}
-                        theme={(theme) => ({
-                          ...theme,
-                          borderRadius: "0.25rem",
-                          border: "1px solid #014D88",
-                          colors: {
-                            ...theme.colors,
-                            primary25: "#014D88",
-                            primary: "#014D88",
-                          },
-                        })}
-                      />
-                      {errors.labTestId !== "" ? (
-                        <span className={classes.error}>
-                          {errors.labTestId}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </FormGroup>
-                  </Col>
-                  {/* Indications */}
-                  <>
-                    <Col md={4} className="form-group mb-3">
-                      {/* <div className="form-group col-md-3"> */}
-                      <FormGroup>
-                        <Label>
-                          Lab Order Indication{" "}
-                          <span style={{ color: "red" }}> *</span>
-                        </Label>
-                        <select
-                          className="form-control"
-                          name="labOrderIndication"
-                          id="labOrderIndication"
-                          value={tests.labOrderIndication}
-                          onChange={handleInputChange}
-                          style={{
-                            border: "1px solid #014D88",
-                            borderRadius: "0.2rem",
-                          }}
-                        >
-                          <option value={""}>Select</option>
-                          <option value="Routine">Routine</option>
-                          <option value="AHD Screening">AHD Screening</option>
-                          <option value="Other OI Screening">
-                            Other OI Screening
-                          </option>
-                        </select>
-                        {errors.labOrderIndication !== "" ? (
-                          <span className={classes.error}>
-                            {errors.labOrderIndication}
-                          </span>
-                        ) : (
-                          ""
-                        )}
-                      </FormGroup>
-                      {/* </div> */}
-                    </Col>
-                  </>
-                  {tests.labTestId === "16" && (
-                    <Col md={4} className="form-group mb-3">
-                      <FormGroup>
-                        <Label for="vlIndication">
-                          VL Indication <span style={{ color: "red" }}> *</span>
-                        </Label>
-                        <Input
-                          type="select"
-                          name="viralLoadIndication"
-                          id="viralLoadIndication"
-                          value={tests.viralLoadIndication}
-                          onChange={handleInputChange}
-                          style={{
-                            border: "1px solid #014D88",
-                            borderRadius: "0.25rem",
-                          }}
-                        >
-                          <option value="">Select </option>
+                         {labNumbers.map((value) => (
+                           <option key={value.id} value={value.id}>
+                             {value.labNumber}
+                           </option>
+                         ))}
+                       </Input>
+                     </FormGroup>
+                   </Col>
+                   <Col md={4} className="form-group mb-3">
+                     <FormGroup>
+                       <Label for="encounterDate">
+                         Sample Number <span style={{ color: "red" }}> *</span>
+                       </Label>
+                       <Input
+                         type="text"
+                         name="sampleNumber"
+                         id="sampleNumber"
+                         //min={0}
+                         value={tests.sampleNumber}
+                         onChange={handleInputChange}
+                         style={{
+                           border: "1px solid #014D88",
+                           borderRadius: "0.25rem",
+                         }}
+                         required
+                       />
+                       {errors.sampleNumber !== "" ? (
+                         <span className={classes.error}>
+                           {errors.sampleNumber}
+                         </span>
+                       ) : (
+                         ""
+                       )}
+                     </FormGroup>
+                   </Col>
 
-                          {vLIndication.map((value) => (
-                            <option key={value.id} value={value.id}>
-                              {value.display}
-                            </option>
-                          ))}
-                        </Input>
-                        {errors.viralLoadIndication !== "" ? (
-                          <span className={classes.error}>
-                            {errors.viralLoadIndication}
-                          </span>
-                        ) : (
-                          ""
-                        )}
-                      </FormGroup>
-                    </Col>
-                  )}
-                  <Col md={4} className="form-group mb-3">
-                    <FormGroup>
-                      <Label for="encounterDate">
-                        {" "}
-                        Date Sample Collected{" "}
-                        <span style={{ color: "red" }}> *</span>
-                      </Label>
-                      <Input
-                        type="datetime-local"
-                        name="sampleCollectionDate"
-                        id="sampleCollectionDate"
-                        value={tests.sampleCollectionDate}
-                        onChange={handleInputChange}
-                        //min={eacStatusObj && eacStatusObj.eacsession && eacStatusObj.eacsession!=='Default' ? eacStatusObj.eacsessionDate :enrollDate}
-                        min={moment(enrollDate).format("YYYY-MM-DDTHH:mm")}
-                        max={moment(new Date()).format("YYYY-MM-DDTHH:mm")}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                        required
-                      />
-                      {errors.sampleCollectionDate !== "" ? (
-                        <span className={classes.error}>
-                          {errors.sampleCollectionDate}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </FormGroup>
-                  </Col>
-                  <Col md={4} className="form-group mb-3">
-                    <FormGroup>
-                      <Label for="">
-                        Date Result Received{" "}
-                        {tests.result !== "" ? (
-                          <span style={{ color: "red" }}> *</span>
-                        ) : (
-                          ""
-                        )}
-                      </Label>
-                      <Input
-                        type="datetime-local"
-                        name="dateResultReceived"
-                        id="dateResultReceived"
-                        value={tests.dateResultReceived}
-                        //min={tests.sampleCollectionDate}
-                        min={moment(tests.sampleCollectionDate).format(
-                          "YYYY-MM-DDTHH:mm"
-                        )}
-                        onChange={handleInputChange}
-                        max={moment(new Date()).format("YYYY-MM-DDTHH:mm")}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                        required
-                      />
-                      {errors.dateResultReceived !== "" ? (
-                        <span className={classes.error}>
-                          {errors.dateResultReceived}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </FormGroup>
-                  </Col>
+                   <Col md={4} className="form-group mb-3">
+                     <FormGroup>
+                       <Label for="testGroup">
+                         Select Test <span style={{ color: "red" }}> *</span>
+                       </Label>
 
-                  {tests.labTestId === 73 ||
-                  tests.labTestId === 75 ||
-                  tests.labTestId === 78 ||
-                  tests.labTestId === 79 ||
-                  tests.labTestId === 80 ? (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label>
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              ""
-                            )}
-                          </Label>
-                          <select
-                            className="form-control"
-                            name="result"
-                            id="result"
-                            value={tests.result}
-                            onChange={handleInputChange}
-                            style={{
-                              border: "1px solid #014D88",
-                              borderRadius: "0.2rem",
-                            }}
-                          >
-                            <option value={""}>Select</option>
-                            <option value="Positive">Positive</option>
-                            <option value="Negative">Negative</option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </>
-                  ) : tests.labTestId === 72 ? (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label>
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              ""
-                            )}
-                          </Label>
-                          <select
-                            className="form-control"
-                            name="result"
-                            id="result"
-                            value={tests.result}
-                            onChange={handleInputChange}
-                            style={{
-                              border: "1px solid #014D88",
-                              borderRadius: "0.2rem",
-                            }}
-                          >
-                            <option value={""}>Select</option>
-                            <option value="Detected">Detected</option>
-                            <option value="Not Detected">Not Detected</option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </>
-                  ) : tests.labTestId === 71 ? (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label>
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              ""
-                            )}
-                          </Label>
-                          <select
-                            className="form-control"
-                            name="result"
-                            id="result"
-                            value={tests.result}
-                            onChange={handleInputChange}
-                            style={{
-                              border: "1px solid #014D88",
-                              borderRadius: "0.2rem",
-                            }}
-                          >
-                            <option value={""}>Select</option>
-                            <option value="Positive">Positive</option>
-                            <option value="Negative">Negative</option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </>
-                  ) : tests.labTestId === 70 ? (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label>
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              ""
-                            )}
-                          </Label>
-                          <select
-                            className="form-control"
-                            name="result"
-                            id="result"
-                            value={tests.result}
-                            onChange={handleInputChange}
-                            style={{
-                              border: "1px solid #014D88",
-                              borderRadius: "0.2rem",
-                            }}
-                          >
-                            <option value={""}>Select</option>
-                            <option value="Positive">Positive</option>
-                            <option value="Negative">Negative</option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </>
-                  ) : tests.labTestId === 69 ? (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label>
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              ""
-                            )}
-                          </Label>
-                          <select
-                            className="form-control"
-                            name="result"
-                            id="result"
-                            value={tests.result}
-                            onChange={handleInputChange}
-                            style={{
-                              border: "1px solid #014D88",
-                              borderRadius: "0.2rem",
-                            }}
-                          >
-                            <option value={""}>Select</option>
-                            <option value="Positive">Positive</option>
-                            <option value="Negative">Negative</option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </>
-                  ) : tests.labTestId === 66 ? (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label>
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              ""
-                            )}
-                          </Label>
-                          <select
-                            className="form-control"
-                            name="result"
-                            id="result"
-                            value={tests.result}
-                            onChange={handleInputChange}
-                            style={{
-                              border: "1px solid #014D88",
-                              borderRadius: "0.2rem",
-                            }}
-                          >
-                            <option value={""}>Select</option>
-                            <option value="X-ray suggestive">
-                              X-ray suggestive
-                            </option>
-                            <option value="X-ray not suggestive">
-                              X-ray not suggestive
-                            </option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </>
-                  ) : tests.labTestId === 64 ? (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label>
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              ""
-                            )}
-                          </Label>
-                          <select
-                            className="form-control"
-                            name="result"
-                            id="result"
-                            value={tests.result}
-                            onChange={handleInputChange}
-                            style={{
-                              border: "1px solid #014D88",
-                              borderRadius: "0.2rem",
-                            }}
-                          >
-                            <option value={""}>Select</option>
-                            <option value="AFB Positive">AFB Positive</option>
-                            <option value="AFB Negative">AFB Negative</option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </>
-                  ) : tests.labTestId === 52 ? (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label>
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              ""
-                            )}
-                          </Label>
-                          <select
-                            className="form-control"
-                            name="result"
-                            id="result"
-                            value={tests.result}
-                            onChange={handleInputChange}
-                            style={{
-                              border: "1px solid #014D88",
-                              borderRadius: "0.2rem",
-                            }}
-                          >
-                            <option value={""}>Select</option>
-                            <option value="Positive">Positive</option>
-                            <option value="Negative">Negative</option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </>
-                  ) : tests.labTestId === 51 ? (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label>
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              ""
-                            )}
-                          </Label>
-                          <select
-                            className="form-control"
-                            name="result"
-                            id="result"
-                            value={tests.result}
-                            onChange={handleInputChange}
-                            style={{
-                              border: "1px solid #014D88",
-                              borderRadius: "0.2rem",
-                            }}
-                          >
-                            <option value={""}>Select</option>
-                            <option value="Positive">Positive</option>
-                            <option value="Negative">Negative</option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </>
-                  ) : tests.labTestId === 37 ? (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label>
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              ""
-                            )}
-                          </Label>
-                          <select
-                            className="form-control"
-                            name="result"
-                            id="result"
-                            value={tests.result}
-                            onChange={handleInputChange}
-                            style={{
-                              border: "1px solid #014D88",
-                              borderRadius: "0.2rem",
-                            }}
-                          >
-                            <option value={""}>Select</option>
-                            <option value="Seen">Seen</option>
-                            <option value="Not seen">Not seen</option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </>
-                  ) : tests.labTestId === 36 ? (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label>
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              ""
-                            )}
-                          </Label>
-                          <select
-                            className="form-control"
-                            name="result"
-                            id="result"
-                            value={tests.result}
-                            onChange={handleInputChange}
-                            style={{
-                              border: "1px solid #014D88",
-                              borderRadius: "0.2rem",
-                            }}
-                          >
-                            <option value={""}>Select</option>
-                            <option value="Reactive">Reactive</option>
-                            <option value="Non-reactive">Non-reactive</option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </>
-                  ) : tests.labTestId === 34 ? (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label>
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              ""
-                            )}
-                          </Label>
-                          <select
-                            className="form-control"
-                            name="result"
-                            id="result"
-                            value={tests.result}
-                            onChange={handleInputChange}
-                            style={{
-                              border: "1px solid #014D88",
-                              borderRadius: "0.2rem",
-                            }}
-                          >
-                            <option value={""}>Select</option>
-                            <option value="Positive">Positive</option>
-                            <option value="Negative">Negative</option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </>
-                  ) : tests.labTestId === 32 ? (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label>
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              ""
-                            )}
-                          </Label>
-                          <select
-                            className="form-control"
-                            name="result"
-                            id="result"
-                            value={tests.result}
-                            onChange={handleInputChange}
-                            style={{
-                              border: "1px solid #014D88",
-                              borderRadius: "0.2rem",
-                            }}
-                          >
-                            <option value={""}>Select</option>
-                            <option value="Reactive">Reactive</option>
-                            <option value="Non-reactive">Non-reactive</option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </>
-                  ) : tests.labTestId === 30 ? (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label>
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              ""
-                            )}
-                          </Label>
-                          <select
-                            className="form-control"
-                            name="result"
-                            id="result"
-                            value={tests.result}
-                            onChange={handleInputChange}
-                            style={{
-                              border: "1px solid #014D88",
-                              borderRadius: "0.2rem",
-                            }}
-                          >
-                            <option value={""}>Select</option>
-                            <option value="Positive">Positive</option>
-                            <option value="Negative">Negative</option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </>
-                  ) : tests.labTestId === 29 ? (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label>
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              ""
-                            )}
-                          </Label>
-                          <select
-                            className="form-control"
-                            name="result"
-                            id="result"
-                            value={tests.result}
-                            onChange={handleInputChange}
-                            style={{
-                              border: "1px solid #014D88",
-                              borderRadius: "0.2rem",
-                            }}
-                          >
-                            <option value={""}>Select</option>
-                            <option value="Positive">Positive</option>
-                            <option value="Negative">Negative</option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </>
-                  ) : tests.labTestId === 28 ? (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label>
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              ""
-                            )}
-                          </Label>
-                          <select
-                            className="form-control"
-                            name="result"
-                            id="result"
-                            value={tests.result}
-                            onChange={handleInputChange}
-                            style={{
-                              border: "1px solid #014D88",
-                              borderRadius: "0.2rem",
-                            }}
-                          >
-                            <option value={""}>Select</option>
-                            <option value="Positive">Positive</option>
-                            <option value="Negative">Negative</option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </>
-                  ) : tests.labTestId === 27 ? (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label>
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              ""
-                            )}
-                          </Label>
-                          <select
-                            className="form-control"
-                            name="result"
-                            id="result"
-                            value={tests.result}
-                            onChange={handleInputChange}
-                            style={{
-                              border: "1px solid #014D88",
-                              borderRadius: "0.2rem",
-                            }}
-                          >
-                            <option value={""}>Select</option>
-                            <option value="Positive">Positive</option>
-                            <option value="Negative">Negative</option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </>
-                  ) : tests.labTestId === 65 ? (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label>
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              ""
-                            )}
-                          </Label>
-                          <select
-                            className="form-control"
-                            name="result"
-                            id="result"
-                            value={tests.result}
-                            onChange={handleInputChange}
-                            style={{
-                              border: "1px solid #014D88",
-                              borderRadius: "0.2rem",
-                            }}
-                          >
-                            <option value={""}>Select</option>
-                            <option value="MTB Detected (Rifampicin not Resistance)">
-                              {"MTB Detected (Rifampicin not Resistance)"}
-                            </option>
-                            <option value="MTB Detected (Rifampicin Resistance Detected)">
-                              {"MTB Detected (Rifampicin Resistance Detected)"}
-                            </option>
-                            <option value="MTb Not Detected">
-                              MTb Not Detected
-                            </option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </>
-                  ) : tests.labTestId === 50 ? (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label>
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              ""
-                            )}
-                          </Label>
-                          <select
-                            className="form-control"
-                            name="result"
-                            id="result"
-                            value={tests.result}
-                            onChange={handleInputChange}
-                            style={{
-                              border: "1px solid #014D88",
-                              borderRadius: "0.2rem",
-                            }}
-                          >
-                            <option value={""}>Select</option>
-                            <option value="<200">{"<200"}</option>
-                            <option value=">=200">{">=200"}</option>
-                          </select>
-                        </FormGroup>
-                      </Col>
-                    </>
-                  ) : (
-                    <>
-                      <Col md={4} className="form-group mb-3">
-                        <FormGroup>
-                          <Label for="priority">
-                            Result{" "}
-                            {tests.dateResultReceived !== "" ? (
-                              <span style={{ color: "red" }}> *</span>
-                            ) : (
-                              "test"
-                            )}
-                          </Label>
-                          <InputGroup>
-                            <Input
-                              type="text"
-                              name="result"
-                              id="result"
-                              value={tests.result}
-                              onChange={handleInputChange}
-                              style={{
-                                border: "1px solid #014D88",
-                                borderRadius: "0rem",
-                              }}
-                            />
-                          </InputGroup>
+                       <Select
+                         value={selectedOption}
+                         onChange={handleInputChangeObject}
+                         options={labTestOptions}
+                         theme={(theme) => ({
+                           ...theme,
+                           borderRadius: "0.25rem",
+                           border: "1px solid #014D88",
+                           colors: {
+                             ...theme.colors,
+                             primary25: "#014D88",
+                             primary: "#014D88",
+                           },
+                         })}
+                       />
+                       {errors.labTestId !== "" ? (
+                         <span className={classes.error}>
+                           {errors.labTestId}
+                         </span>
+                       ) : (
+                         ""
+                       )}
+                     </FormGroup>
+                   </Col>
+                   {/* Indications */}
+                   <>
+                     <Col md={4} className="form-group mb-3">
+                       {/* <div className="form-group col-md-3"> */}
+                       <FormGroup>
+                         <Label>
+                           Lab Order Indication{" "}
+                           <span style={{ color: "red" }}> *</span>
+                         </Label>
+                         <select
+                           className="form-control"
+                           name="labOrderIndication"
+                           id="labOrderIndication"
+                           value={tests.labOrderIndication}
+                           onChange={handleInputChange}
+                           style={{
+                             border: "1px solid #014D88",
+                             borderRadius: "0.2rem",
+                           }}
+                         >
+                           <option value="">Select</option>
+                           {labOrderIndication.map((value) => (
+                             <option key={value.id} value={value.display}>
+                               {value.display}
+                             </option>
+                           ))}
+                         </select>
+                         {errors.labOrderIndication !== "" ? (
+                           <span className={classes.error}>
+                             {errors.labOrderIndication}
+                           </span>
+                         ) : (
+                           ""
+                         )}
+                       </FormGroup>
+                       {/* </div> */}
+                     </Col>
+                   </>
+                   {tests.labTestId === "16" && (
+                     <Col md={4} className="form-group mb-3">
+                       <FormGroup>
+                         <Label for="vlIndication">
+                           VL Indication{" "}
+                           <span style={{ color: "red" }}> *</span>
+                         </Label>
+                         <Input
+                           type="select"
+                           name="viralLoadIndication"
+                           id="viralLoadIndication"
+                           value={tests.viralLoadIndication}
+                           onChange={handleInputChange}
+                           style={{
+                             border: "1px solid #014D88",
+                             borderRadius: "0.25rem",
+                           }}
+                         >
+                           <option value="">Select </option>
 
-                          {errors.result !== "" ? (
-                            <span className={classes.error}>
-                              {errors.result}
-                            </span>
-                          ) : (
-                            ""
-                          )}
-                        </FormGroup>
-                      </Col>
-                    </>
-                  )}
+                           {vLIndication.map((value) => (
+                             <option key={value.id} value={value.id}>
+                               {value.display}
+                             </option>
+                           ))}
+                         </Input>
+                         {errors.viralLoadIndication !== "" ? (
+                           <span className={classes.error}>
+                             {errors.viralLoadIndication}
+                           </span>
+                         ) : (
+                           ""
+                         )}
+                       </FormGroup>
+                     </Col>
+                   )}
+                   <Col md={4} className="form-group mb-3">
+                     <FormGroup>
+                       <Label for="encounterDate">
+                         {" "}
+                         Date Sample Collected{" "}
+                         <span style={{ color: "red" }}> *</span>
+                       </Label>
+                       <Input
+                         type="datetime-local"
+                         name="sampleCollectionDate"
+                         id="sampleCollectionDate"
+                         value={tests.sampleCollectionDate}
+                         onChange={handleInputChange}
+                         //min={eacStatusObj && eacStatusObj.eacsession && eacStatusObj.eacsession!=='Default' ? eacStatusObj.eacsessionDate :enrollDate}
+                         min={moment(enrollDate).format("YYYY-MM-DDTHH:mm")}
+                         max={moment(new Date()).format("YYYY-MM-DDTHH:mm")}
+                         style={{
+                           border: "1px solid #014D88",
+                           borderRadius: "0.25rem",
+                         }}
+                         required
+                       />
+                       {errors.sampleCollectionDate !== "" ? (
+                         <span className={classes.error}>
+                           {errors.sampleCollectionDate}
+                         </span>
+                       ) : (
+                         ""
+                       )}
+                     </FormGroup>
+                   </Col>
+                   <Col md={4} className="form-group mb-3">
+                     <FormGroup>
+                       <Label for="">
+                         Date Result Received{" "}
+                         {tests.result !== "" ? (
+                           <span style={{ color: "red" }}> *</span>
+                         ) : (
+                           ""
+                         )}
+                       </Label>
+                       <Input
+                         type="datetime-local"
+                         name="dateResultReceived"
+                         id="dateResultReceived"
+                         value={tests.dateResultReceived}
+                         //min={tests.sampleCollectionDate}
+                         min={moment(tests.sampleCollectionDate).format(
+                           "YYYY-MM-DDTHH:mm"
+                         )}
+                         onChange={handleInputChange}
+                         max={moment(new Date()).format("YYYY-MM-DDTHH:mm")}
+                         style={{
+                           border: "1px solid #014D88",
+                           borderRadius: "0.25rem",
+                         }}
+                         required
+                       />
+                       {errors.dateResultReceived !== "" ? (
+                         <span className={classes.error}>
+                           {errors.dateResultReceived}
+                         </span>
+                       ) : (
+                         ""
+                       )}
+                     </FormGroup>
+                   </Col>
 
-                  <Col md={4} className="form-group mb-3">
-                    <FormGroup>
-                      <Label for="encounterDate">Reported by</Label>
-                      <Input
-                        type="text"
-                        name="resultReportedBy"
-                        id="resultReportedBy"
-                        value={tests.resultReportedBy}
-                        onChange={handleInputChange}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                        required
-                      />
-                      {errors.resultReportedBy !== "" ? (
-                        <span className={classes.error}>
-                          {errors.resultReportedBy}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </FormGroup>
-                  </Col>
-                  {/* Date Ordered */}
-                  <Col md={4} className="form-group mb-3">
-                    <FormGroup>
-                      <Label for="encounterDate">Date Ordered</Label>
-                      {""}
-                      <span style={{ color: "red" }}> *</span>
-                      <Input
-                        type="date"
-                        name="orderedDate"
-                        id="orderedDate"
-                        value={tests.orderedDate}
-                        min={moment(tests.orderedDate).format("YYYY-MM-DD")}
-                        max={moment(new Date()).format("YYYY-MM-DD")}
-                        onChange={handleInputChange}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                        required
-                      />
-                      {errors.orderedDate !== "" ? (
-                        <span className={classes.error}>
-                          {errors.orderedDate}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </FormGroup>
-                  </Col>
-                  <Col md={4} className="form-group mb-3">
-                    <FormGroup>
-                      <Label for="encounterDate">Reported Date</Label>
-                      <Input
-                        type="date"
-                        name="dateResultReported"
-                        id="dateResultReported"
-                        value={tests.dateResultReported}
-                        min={moment(tests.sampleCollectionDate).format(
-                          "YYYY-MM-DD"
-                        )}
-                        max={moment(new Date()).format("YYYY-MM-DD")}
-                        onChange={handleInputChange}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                        required
-                      />
-                      {errors.dateResultReported !== "" ? (
-                        <span className={classes.error}>
-                          {errors.dateResultReported}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </FormGroup>
-                  </Col>
-                  <Col md={4} className="form-group mb-3">
-                    <FormGroup>
-                      <Label for="encounterDate">Checked by</Label>
-                      <Input
-                        type="text"
-                        name="checkedBy"
-                        id="checkedBy"
-                        value={tests.checkedBy}
-                        onChange={handleInputChange}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                        required
-                      />
-                      {errors.checkedBy !== "" ? (
-                        <span className={classes.error}>
-                          {errors.checkedBy}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </FormGroup>
-                  </Col>
-                  <Col md={4} className="form-group mb-3">
-                    <FormGroup>
-                      <Label for="encounterDate">Checked Date</Label>
-                      <Input
-                        type="date"
-                        name="dateChecked"
-                        id="dateChecked"
-                        value={tests.dateChecked}
-                        min={moment(tests.sampleCollectionDate).format(
-                          "YYYY-MM-DD"
-                        )}
-                        max={moment(new Date()).format("YYYY-MM-DD")}
-                        onChange={handleInputChange}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                        required
-                      />
-                      {errors.dateChecked !== "" ? (
-                        <span className={classes.error}>
-                          {errors.dateChecked}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </FormGroup>
-                  </Col>
-                  <Col md={4} className="form-group mb-3">
-                    <FormGroup>
-                      <Label for="encounterDate">Clinician Name</Label>
-                      <Input
-                        type="text"
-                        name="clinicianName"
-                        id="clinicianName"
-                        value={tests.clinicianName}
-                        onChange={handleInputChange}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                        required
-                      />
-                      {errors.clinicianName !== "" ? (
-                        <span className={classes.error}>
-                          {errors.clinicianName}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </FormGroup>
-                  </Col>
+                   {tests.labTestId === 73 ||
+                   tests.labTestId === 75 ||
+                   tests.labTestId === 78 ||
+                   tests.labTestId === 79 ||
+                   tests.labTestId === 80 ? (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label>
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               ""
+                             )}
+                           </Label>
+                           <select
+                             className="form-control"
+                             name="result"
+                             id="result"
+                             value={tests.result}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                           >
+                             <option value={""}>Select</option>
+                             <option value="Positive">Positive</option>
+                             <option value="Negative">Negative</option>
+                           </select>
+                         </FormGroup>
+                       </Col>
+                     </>
+                   ) : tests.labTestId === 72 ? (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label>
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               ""
+                             )}
+                           </Label>
+                           <select
+                             className="form-control"
+                             name="result"
+                             id="result"
+                             value={tests.result}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                           >
+                             <option value={""}>Select</option>
+                             <option value="Detected">Detected</option>
+                             <option value="Not Detected">Not Detected</option>
+                           </select>
+                         </FormGroup>
+                       </Col>
+                     </>
+                   ) : tests.labTestId === 71 ? (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label>
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               ""
+                             )}
+                           </Label>
+                           <select
+                             className="form-control"
+                             name="result"
+                             id="result"
+                             value={tests.result}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                           >
+                             <option value={""}>Select</option>
+                             <option value="Positive">Positive</option>
+                             <option value="Negative">Negative</option>
+                           </select>
+                         </FormGroup>
+                       </Col>
+                     </>
+                   ) : tests.labTestId === 70 ? (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label>
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               ""
+                             )}
+                           </Label>
+                           <select
+                             className="form-control"
+                             name="result"
+                             id="result"
+                             value={tests.result}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                           >
+                             <option value={""}>Select</option>
+                             <option value="Positive">Positive</option>
+                             <option value="Negative">Negative</option>
+                           </select>
+                         </FormGroup>
+                       </Col>
+                     </>
+                   ) : tests.labTestId === 69 ? (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label>
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               ""
+                             )}
+                           </Label>
+                           <select
+                             className="form-control"
+                             name="result"
+                             id="result"
+                             value={tests.result}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                           >
+                             <option value={""}>Select</option>
+                             <option value="Positive">Positive</option>
+                             <option value="Negative">Negative</option>
+                           </select>
+                         </FormGroup>
+                       </Col>
+                     </>
+                   ) : tests.labTestId === 66 ? (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label>
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               ""
+                             )}
+                           </Label>
+                           <select
+                             className="form-control"
+                             name="result"
+                             id="result"
+                             value={tests.result}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                           >
+                             <option value={""}>Select</option>
+                             <option value="X-ray suggestive">
+                               X-ray suggestive
+                             </option>
+                             <option value="X-ray not suggestive">
+                               X-ray not suggestive
+                             </option>
+                           </select>
+                         </FormGroup>
+                       </Col>
+                     </>
+                   ) : tests.labTestId === 64 ? (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label>
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               ""
+                             )}
+                           </Label>
+                           <select
+                             className="form-control"
+                             name="result"
+                             id="result"
+                             value={tests.result}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                           >
+                             <option value={""}>Select</option>
+                             <option value="AFB Positive">AFB Positive</option>
+                             <option value="AFB Negative">AFB Negative</option>
+                           </select>
+                         </FormGroup>
+                       </Col>
+                     </>
+                   ) : tests.labTestId === 52 ? (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label>
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               ""
+                             )}
+                           </Label>
+                           <select
+                             className="form-control"
+                             name="result"
+                             id="result"
+                             value={tests.result}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                           >
+                             <option value={""}>Select</option>
+                             <option value="Positive">Positive</option>
+                             <option value="Negative">Negative</option>
+                           </select>
+                         </FormGroup>
+                       </Col>
+                     </>
+                   ) : tests.labTestId === 51 ? (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label>
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               ""
+                             )}
+                           </Label>
+                           <select
+                             className="form-control"
+                             name="result"
+                             id="result"
+                             value={tests.result}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                           >
+                             <option value={""}>Select</option>
+                             <option value="Positive">Positive</option>
+                             <option value="Negative">Negative</option>
+                           </select>
+                         </FormGroup>
+                       </Col>
+                     </>
+                   ) : tests.labTestId === 37 ? (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label>
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               ""
+                             )}
+                           </Label>
+                           <select
+                             className="form-control"
+                             name="result"
+                             id="result"
+                             value={tests.result}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                           >
+                             <option value={""}>Select</option>
+                             <option value="Seen">Seen</option>
+                             <option value="Not seen">Not seen</option>
+                           </select>
+                         </FormGroup>
+                       </Col>
+                     </>
+                   ) : tests.labTestId === 36 ? (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label>
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               ""
+                             )}
+                           </Label>
+                           <select
+                             className="form-control"
+                             name="result"
+                             id="result"
+                             value={tests.result}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                           >
+                             <option value={""}>Select</option>
+                             <option value="Reactive">Reactive</option>
+                             <option value="Non-reactive">Non-reactive</option>
+                           </select>
+                         </FormGroup>
+                       </Col>
+                     </>
+                   ) : tests.labTestId === 34 ? (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label>
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               ""
+                             )}
+                           </Label>
+                           <select
+                             className="form-control"
+                             name="result"
+                             id="result"
+                             value={tests.result}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                           >
+                             <option value={""}>Select</option>
+                             <option value="Positive">Positive</option>
+                             <option value="Negative">Negative</option>
+                           </select>
+                         </FormGroup>
+                       </Col>
+                     </>
+                   ) : tests.labTestId === 32 ? (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label>
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               ""
+                             )}
+                           </Label>
+                           <select
+                             className="form-control"
+                             name="result"
+                             id="result"
+                             value={tests.result}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                           >
+                             <option value={""}>Select</option>
+                             <option value="Reactive">Reactive</option>
+                             <option value="Non-reactive">Non-reactive</option>
+                           </select>
+                         </FormGroup>
+                       </Col>
+                     </>
+                   ) : tests.labTestId === 30 ? (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label>
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               ""
+                             )}
+                           </Label>
+                           <select
+                             className="form-control"
+                             name="result"
+                             id="result"
+                             value={tests.result}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                           >
+                             <option value={""}>Select</option>
+                             <option value="Positive">Positive</option>
+                             <option value="Negative">Negative</option>
+                           </select>
+                         </FormGroup>
+                       </Col>
+                     </>
+                   ) : tests.labTestId === 29 ? (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label>
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               ""
+                             )}
+                           </Label>
+                           <select
+                             className="form-control"
+                             name="result"
+                             id="result"
+                             value={tests.result}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                           >
+                             <option value={""}>Select</option>
+                             <option value="Positive">Positive</option>
+                             <option value="Negative">Negative</option>
+                           </select>
+                         </FormGroup>
+                       </Col>
+                     </>
+                   ) : tests.labTestId === 28 ? (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label>
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               ""
+                             )}
+                           </Label>
+                           <select
+                             className="form-control"
+                             name="result"
+                             id="result"
+                             value={tests.result}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                           >
+                             <option value={""}>Select</option>
+                             <option value="Positive">Positive</option>
+                             <option value="Negative">Negative</option>
+                           </select>
+                         </FormGroup>
+                       </Col>
+                     </>
+                   ) : tests.labTestId === 27 ? (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label>
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               ""
+                             )}
+                           </Label>
+                           <select
+                             className="form-control"
+                             name="result"
+                             id="result"
+                             value={tests.result}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                           >
+                             <option value={""}>Select</option>
+                             <option value="Positive">Positive</option>
+                             <option value="Negative">Negative</option>
+                           </select>
+                         </FormGroup>
+                       </Col>
+                     </>
+                   ) : tests.labTestId === 65 ? (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label>
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               ""
+                             )}
+                           </Label>
+                           <select
+                             className="form-control"
+                             name="result"
+                             id="result"
+                             value={tests.result}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                           >
+                             <option value={""}>Select</option>
+                             <option value="MTB Detected (Rifampicin not Resistance)">
+                               {"MTB Detected (Rifampicin not Resistance)"}
+                             </option>
+                             <option value="MTB Detected (Rifampicin Resistance Detected)">
+                               {"MTB Detected (Rifampicin Resistance Detected)"}
+                             </option>
+                             <option value="MTb Not Detected">
+                               MTb Not Detected
+                             </option>
+                           </select>
+                         </FormGroup>
+                       </Col>
+                     </>
+                   ) : tests.labTestId === 50 ? (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label>
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               ""
+                             )}
+                           </Label>
+                           <select
+                             className="form-control"
+                             name="result"
+                             id="result"
+                             value={tests.result}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                           >
+                             <option value={""}>Select</option>
+                             <option value="<200">{"<200"}</option>
+                             <option value=">=200">{">=200"}</option>
+                           </select>
+                         </FormGroup>
+                       </Col>
+                     </>
+                   ) : (
+                     <>
+                       <Col md={4} className="form-group mb-3">
+                         <FormGroup>
+                           <Label for="priority">
+                             Result{" "}
+                             {tests.dateResultReceived !== "" ? (
+                               <span style={{ color: "red" }}> *</span>
+                             ) : (
+                               "test"
+                             )}
+                           </Label>
+                           <InputGroup>
+                             <Input
+                               type="text"
+                               name="result"
+                               id="result"
+                               value={tests.result}
+                               onChange={handleInputChange}
+                               style={{
+                                 border: "1px solid #014D88",
+                                 borderRadius: "0rem",
+                               }}
+                             />
+                           </InputGroup>
 
-                  <Col md={12}>
-                    <LabelSui
-                      as="a"
-                      color="black"
-                      className="float-end"
-                      onClick={addOrder}
-                      size="small"
-                      style={{ marginTop: 20, marginBottom: 20 }}
-                    >
-                      <Icon name="plus" /> Add Test
-                    </LabelSui>
-                  </Col>
-                  <hr />
-                  <br />
-                  {/* List of Test Order */}
-                  {testOrderList.length > 0 ? (
-                    <List>
-                      <Table striped responsive>
-                        <thead>
-                          <tr>
-                            <th>Test Group</th>
-                            <th>Test</th>
-                            <th>Date Sample Collected</th>
-                            <th>Date Result Received</th>
-                            <th>Result</th>
-                            <th></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {testOrderList.map((tests, index) => (
-                            <TestOrdersList
-                              key={index}
-                              index={index}
-                              order={tests}
-                              testGroupObj={testGroup}
-                              removeOrder={removeOrder}
-                              editTestOrder={editTestOrder}
-                            />
-                          ))}
-                        </tbody>
-                      </Table>
-                      <br />
-                      <br />
-                    </List>
-                  ) : (
-                    ""
-                  )}
-                </Row>
-              </div>
+                           {errors.result !== "" ? (
+                             <span className={classes.error}>
+                               {errors.result}
+                             </span>
+                           ) : (
+                             ""
+                           )}
+                         </FormGroup>
+                       </Col>
+                     </>
+                   )}
 
-              {saving ? <Spinner /> : ""}
-              <br />
+                   <Col md={4} className="form-group mb-3">
+                     <FormGroup>
+                       <Label for="encounterDate">Reported by</Label>
+                       <Input
+                         type="text"
+                         name="resultReportedBy"
+                         id="resultReportedBy"
+                         value={tests.resultReportedBy}
+                         onChange={handleInputChange}
+                         style={{
+                           border: "1px solid #014D88",
+                           borderRadius: "0.25rem",
+                         }}
+                         required
+                       />
+                       {errors.resultReportedBy !== "" ? (
+                         <span className={classes.error}>
+                           {errors.resultReportedBy}
+                         </span>
+                       ) : (
+                         ""
+                       )}
+                     </FormGroup>
+                   </Col>
+                   {/* Date Ordered */}
+                   <Col md={4} className="form-group mb-3">
+                     <FormGroup>
+                       <Label for="encounterDate">Date Ordered</Label>
+                       {""}
+                       <span style={{ color: "red" }}> *</span>
+                       <Input
+                         type="date"
+                         name="orderedDate"
+                         id="orderedDate"
+                         value={tests.orderedDate}
+                         min={moment(tests.orderedDate).format("YYYY-MM-DD")}
+                         max={moment(new Date()).format("YYYY-MM-DD")}
+                         onChange={handleInputChange}
+                         style={{
+                           border: "1px solid #014D88",
+                           borderRadius: "0.25rem",
+                         }}
+                         required
+                       />
+                       {errors.orderedDate !== "" ? (
+                         <span className={classes.error}>
+                           {errors.orderedDate}
+                         </span>
+                       ) : (
+                         ""
+                       )}
+                     </FormGroup>
+                   </Col>
+                   <Col md={4} className="form-group mb-3">
+                     <FormGroup>
+                       <Label for="encounterDate">Reported Date</Label>
+                       <Input
+                         type="date"
+                         name="dateResultReported"
+                         id="dateResultReported"
+                         value={tests.dateResultReported}
+                         min={moment(tests.sampleCollectionDate).format(
+                           "YYYY-MM-DD"
+                         )}
+                         max={moment(new Date()).format("YYYY-MM-DD")}
+                         onChange={handleInputChange}
+                         style={{
+                           border: "1px solid #014D88",
+                           borderRadius: "0.25rem",
+                         }}
+                         required
+                       />
+                       {errors.dateResultReported !== "" ? (
+                         <span className={classes.error}>
+                           {errors.dateResultReported}
+                         </span>
+                       ) : (
+                         ""
+                       )}
+                     </FormGroup>
+                   </Col>
+                   <Col md={4} className="form-group mb-3">
+                     <FormGroup>
+                       <Label for="encounterDate">Checked by</Label>
+                       <Input
+                         type="text"
+                         name="checkedBy"
+                         id="checkedBy"
+                         value={tests.checkedBy}
+                         onChange={handleInputChange}
+                         style={{
+                           border: "1px solid #014D88",
+                           borderRadius: "0.25rem",
+                         }}
+                         required
+                       />
+                       {errors.checkedBy !== "" ? (
+                         <span className={classes.error}>
+                           {errors.checkedBy}
+                         </span>
+                       ) : (
+                         ""
+                       )}
+                     </FormGroup>
+                   </Col>
+                   <Col md={4} className="form-group mb-3">
+                     <FormGroup>
+                       <Label for="encounterDate">Checked Date</Label>
+                       <Input
+                         type="date"
+                         name="dateChecked"
+                         id="dateChecked"
+                         value={tests.dateChecked}
+                         min={moment(tests.sampleCollectionDate).format(
+                           "YYYY-MM-DD"
+                         )}
+                         max={moment(new Date()).format("YYYY-MM-DD")}
+                         onChange={handleInputChange}
+                         style={{
+                           border: "1px solid #014D88",
+                           borderRadius: "0.25rem",
+                         }}
+                         required
+                       />
+                       {errors.dateChecked !== "" ? (
+                         <span className={classes.error}>
+                           {errors.dateChecked}
+                         </span>
+                       ) : (
+                         ""
+                       )}
+                     </FormGroup>
+                   </Col>
+                   <Col md={4} className="form-group mb-3">
+                     <FormGroup>
+                       <Label for="encounterDate">Clinician Name</Label>
+                       <Input
+                         type="text"
+                         name="clinicianName"
+                         id="clinicianName"
+                         value={tests.clinicianName}
+                         onChange={handleInputChange}
+                         style={{
+                           border: "1px solid #014D88",
+                           borderRadius: "0.25rem",
+                         }}
+                         required
+                       />
+                       {errors.clinicianName !== "" ? (
+                         <span className={classes.error}>
+                           {errors.clinicianName}
+                         </span>
+                       ) : (
+                         ""
+                       )}
+                     </FormGroup>
+                   </Col>
 
-              <MatButton
-                type="submit"
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                startIcon={<SaveIcon />}
-                hidden={buttonHidden}
-                style={{ backgroundColor: "#014d88" }}
-                disabled={testOrderList.length > 0 && !saving ? false : true}
-                onClick={handleSubmit}
-              >
-                {!saving ? (
-                  <span style={{ textTransform: "capitalize" }}>Save</span>
-                ) : (
-                  <span style={{ textTransform: "capitalize" }}>Saving...</span>
-                )}
-              </MatButton>
-            </form>
-            {/* )} */}
-            {/* {moduleStatus==="2" && (
+                   <Col md={12}>
+                     <LabelSui
+                       as="a"
+                       color="black"
+                       className="float-end"
+                       onClick={addOrder}
+                       size="small"
+                       style={{ marginTop: 20, marginBottom: 20 }}
+                     >
+                       <Icon name="plus" /> Add Test
+                     </LabelSui>
+                   </Col>
+                   <hr />
+                   <br />
+                   {/* List of Test Order */}
+                   {testOrderList.length > 0 ? (
+                     <List>
+                       <Table striped responsive>
+                         <thead>
+                           <tr>
+                             <th>Test Group</th>
+                             <th>Test</th>
+                             <th>Date Sample Collected</th>
+                             <th>Date Result Received</th>
+                             <th>Result</th>
+                             <th></th>
+                           </tr>
+                         </thead>
+                         <tbody>
+                           {testOrderList.map((tests, index) => (
+                             <TestOrdersList
+                               key={index}
+                               index={index}
+                               order={tests}
+                               testGroupObj={testGroup}
+                               removeOrder={removeOrder}
+                               editTestOrder={editTestOrder}
+                             />
+                           ))}
+                         </tbody>
+                       </Table>
+                       <br />
+                       <br />
+                     </List>
+                   ) : (
+                     ""
+                   )}
+                 </Row>
+               </div>
+
+               {saving ? <Spinner /> : ""}
+               <br />
+
+               <MatButton
+                 type="submit"
+                 variant="contained"
+                 color="primary"
+                 className={classes.button}
+                 startIcon={<SaveIcon />}
+                 hidden={buttonHidden}
+                 style={{ backgroundColor: "#014d88" }}
+                 disabled={testOrderList.length > 0 && !saving ? false : true}
+                 onClick={handleSubmit}
+               >
+                 {!saving ? (
+                   <span style={{ textTransform: "capitalize" }}>Save</span>
+                 ) : (
+                   <span style={{ textTransform: "capitalize" }}>
+                     Saving...
+                   </span>
+                 )}
+               </MatButton>
+             </form>
+             {/* )} */}
+             {/* {moduleStatus==="2" && (
             <>
             <Alert
                 variant="warning"
@@ -1515,11 +1535,11 @@ const Laboratory = (props) => {
            
             </>
             )}  */}
-          </CardBody>
-        </Card>
-      </div>
-    </div>
-  );
+           </CardBody>
+         </Card>
+       </div>
+     </div>
+   );
 };
 function TestOrdersList({
   order,

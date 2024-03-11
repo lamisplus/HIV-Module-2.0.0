@@ -63,7 +63,7 @@ public class LinkageService {
     
     
     public List<OvcLinkage> getOvcLinkageList() {
-      return repository.findAll()
+      return repository.getAllOvcLinages()
                .stream()
                .filter(o-> o.getArchived()== 0)
                .collect(Collectors.toList());

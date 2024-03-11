@@ -77,4 +77,9 @@ public interface LinkageRepository extends JpaRepository<OvcLinkage, UUID> {
             "           ) as pr2\n" +
             "         where pr2.rnk3 = 1) pharmacy ON pharmacy.person_id = e.person_uuid", nativeQuery = true)
     List<LinkageResponseInterface> findAllEnrolledOvcClients();
+
+
+    @Query(value = "SELECT * from hiv_ovc_linkage as l \n" +
+            "JOIN hiv_enrollment h on h.ovc_number != l.ovc_unique_id", nativeQuery = true)
+    List<OvcLinkage> getAllOvcLinages();
 }

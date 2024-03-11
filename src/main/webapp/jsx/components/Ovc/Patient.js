@@ -211,6 +211,7 @@ const Patient = (props) => {
                 })
                 .then((response) => response)
                 .then((result) => {
+                  console.log(result)
                   resolve({
                     data: result.data.map((row) => ({
                       name: row.lastName,
