@@ -24,4 +24,7 @@ public interface HIVEacSessionRepository extends JpaRepository<HIVEacSession, Lo
 	List<HIVEacSession> getAllDueForServerUpload(LocalDateTime dateLastSync, Long facilityId);
 
 	Optional<HIVEacSession> findByUuid(String uuid);
+
+	@Query(value = "select * from hiv_eac_session where archived = 0 and eac_id = ?1", nativeQuery = true)
+	List<HIVEacSession> getAllSessionInEac(String hivEacId);
 }

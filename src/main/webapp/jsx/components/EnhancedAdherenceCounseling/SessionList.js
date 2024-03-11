@@ -149,7 +149,7 @@ const LabHistory = (props) => {
     const LoadDeletePage =(row)=>{
 
             axios
-            .delete(`${baseUrl}hiv/eac/delete/${row.id}`,
+            .delete(`${baseUrl}hiv/eac/session/delete/${row.id}`,
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
@@ -247,7 +247,7 @@ const LabHistory = (props) => {
                       <Dropdown.Menu style={{ marginTop:"10px", }}>
                        <Dropdown.Item onClick={()=>LoadViewPage(row, 'view')}> <Icon name='eye' />View  </Dropdown.Item>
                           <Dropdown.Item  onClick={()=>LoadViewPage(row, 'update')}><Icon name='edit' />Edit</Dropdown.Item>
-                          <Dropdown.Item  onClick={()=>LoadDeletePage(row, 'delete')}> <Icon name='trash' /> Delete</Dropdown.Item>
+                          {/*<Dropdown.Item  onClick={()=>LoadDeletePage(row, 'delete')}> <Icon name='trash' /> Delete</Dropdown.Item>*/}
                       </Dropdown.Menu>
                   </Dropdown>
                       </Button>
