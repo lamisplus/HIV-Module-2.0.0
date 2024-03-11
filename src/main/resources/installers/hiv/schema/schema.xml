@@ -829,4 +829,12 @@
             VALUES (1141, 'LAB_ORDER_INDICATION', 'Other OI Screening', 'en', '1 ', 'LAB_ORDER_INDICATION_OTHER', 'DATA FI', 'DATA FI', 0, now(), now());
         </sql>
     </changeSet>
+
+    <changeSet id="20240311-001-001" author="Anana">
+        <sql>
+            update hiv_eac_session set status = 'SECOND EAC' where status = 'SECOND  EAC';
+            update hiv_eac_session set status = 'FIFTH EAC' where status = 'FIFTY EAC';
+            update hiv_eac_session set status = 'SIXTH EAC' where status = 'SIXTY EAC';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
