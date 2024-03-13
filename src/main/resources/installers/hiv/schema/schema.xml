@@ -826,4 +826,48 @@
 <!--            VALUES (1141, 'LAB_ORDER_INDICATION', 'Other OI Screening', 'en', '1 ', 'LAB_ORDER_INDICATION_OTHER', 'DATA FI', 'DATA FI', 0, now(), now());-->
 <!--        </sql>-->
 <!--    </changeSet>-->
+    <changeSet id="20240227-001-001" author="Anana">
+
+        <preConditions onFail="MARK_RAN">
+
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM base_application_codeset WHERE codeset_group in ('TB_SCREENING_TYPE', 'LAB_ORDER_INDICATION', 'CXR_SCREENING_TYPE');
+            </sqlCheck>
+
+        </preConditions>
+        <sql>
+            INSERT INTO public.base_application_codeset(
+                id, codeset_group, display, language, version, code, created_by, modified_by, archived, date_created, date_modified)
+            VALUES (1134, 'TB_SCREENING_TYPE', 'Symptom screening', 'en', '1', 'TB_SCREENING_TYPE_SYMPTOM_SCREENING', 'DATA FI', 'DATA FI', 0, now(), now());
+            INSERT INTO public.base_application_codeset(
+                id, codeset_group, display, language, version, code, created_by, modified_by, archived, date_created, date_modified)
+            VALUES (1135, 'TB_SCREENING_TYPE', 'Chest X-ray', 'en', '1', 'TB_SCREENING_TYPE_CHEST_X_RAY', 'DATA FI', 'DATA FI', 0, now(), now());
+            INSERT INTO public.base_application_codeset(
+                id, codeset_group, display, language, version, code, created_by, modified_by, archived, date_created, date_modified)
+            VALUES (1136, 'TB_SCREENING_TYPE', 'mWRD', 'en', '1 ', 'TB_SCREENING_TYPE_MWRD', 'DATA FI', 'DATA FI', 0, now(), now());
+            INSERT INTO public.base_application_codeset(
+                id, codeset_group, display, language, version, code, created_by, modified_by, archived, date_created, date_modified)
+            VALUES (1137, 'CXR_SCREENING_TYPE', 'X-ray suggestive', 'en', '1 ', 'CXR_SCREENING_TYPE_SUGGESTIVE', 'DATA FI', 'DATA FI', 0, now(), now());
+            INSERT INTO public.base_application_codeset(
+                id, codeset_group, display, language, version, code, created_by, modified_by, archived, date_created, date_modified)
+            VALUES (1138, 'CXR_SCREENING_TYPE', 'X-ray not suggestive', 'en', '1 ', 'CXR_SCREENING_TYPE_NOT_SUGGESTIVE', 'DATA FI', 'DATA FI', 0, now(), now());
+            INSERT INTO public.base_application_codeset(
+                id, codeset_group, display, language, version, code, created_by, modified_by, archived, date_created, date_modified)
+            VALUES (1139, 'LAB_ORDER_INDICATION', 'Routine', 'en', '1 ', 'LAB_ORDER_INDICATION_ROUTINE', 'DATA FI', 'DATA FI', 0, now(), now());
+            INSERT INTO public.base_application_codeset(
+                id, codeset_group, display, language, version, code, created_by, modified_by, archived, date_created, date_modified)
+            VALUES (1140, 'LAB_ORDER_INDICATION', 'AHD Screening', 'en', '1 ', 'LAB_ORDER_INDICATION_AHD', 'DATA FI', 'DATA FI', 0, now(), now());
+            INSERT INTO public.base_application_codeset(
+                id, codeset_group, display, language, version, code, created_by, modified_by, archived, date_created, date_modified)
+            VALUES (1141, 'LAB_ORDER_INDICATION', 'Other OI Screening', 'en', '1 ', 'LAB_ORDER_INDICATION_OTHER', 'DATA FI', 'DATA FI', 0, now(), now());
+        </sql>
+    </changeSet>
+
+    <changeSet id="20240311-001-001" author="Anana">
+        <sql>
+            update hiv_eac_session set status = 'SECOND EAC' where status = 'SECOND  EAC';
+            update hiv_eac_session set status = 'FIFTH EAC' where status = 'FIFTY EAC';
+            update hiv_eac_session set status = 'SIXTH EAC' where status = 'SIXTY EAC';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
