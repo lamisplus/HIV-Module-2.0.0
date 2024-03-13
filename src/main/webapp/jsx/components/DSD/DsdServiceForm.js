@@ -938,8 +938,7 @@ const DsdServiceForm = (props) => {
                         </span>) : ("")}
                                 </FormGroup>
                             </div>
-                            {isClientReturnToSite && props.activeContent.actionType === 'update' &&
-                                props.activeContent.actionType === 'view' &&
+                            {isClientReturnToSite &&
                                 <div className="form-group mb-3 col-md-6">
                                     <FormGroup>
                                         <Label>
@@ -996,40 +995,42 @@ const DsdServiceForm = (props) => {
                         </span>) : ("")}
                                     </FormGroup>
                                 </div>}
-                            { isClientReturnToSite && payload.clientReturnToSite !=="" &&
-                                payload.clientReturnToSite === "Yes" &&
-                                // props.activeContent.actionType === 'update' &&
-                                <div className="form-group mb-3 col-md-6">
-                                    <FormGroup>
-                                        <Label>
-                                            {" "}
-                                            Services Provided
-                                            <span style={{color: "red"}}> *</span>
-                                        </Label>
-                                        <Input
-                                            type="select"
-                                            name="servicesProvided"
-                                            id="servicesProvided"
-                                            value={payload.servicesProvided}
-                                            onChange={handleOtherInputChange}
-                                            style={{
-                                                border: "1px solid #014D88", borderRadius: "0.25rem",
-                                            }}
-                                            // isDisabled={isDisabled}
-                                        >
-                                            <option value="">Select</option>
-                                            {servicesProvided.map((value) => (
-                                                <option key={value.code} value={value.code}>
-                                                    {value.display}
-                                                </option>
-                                            ))}
-                                        </Input>
-                                        {errors.servicesProvided !== "" ? (<span className={classes.error}>
-                        {errors.servicesProvided}
-                      </span>) : ("")}
-                                    </FormGroup>
-                                </div>
-                            }
+                      {/*      { isClientReturnToSite && payload.clientReturnToSite !=="" &&*/}
+                      {/*          payload.clientReturnToSite === "Yes" &&*/}
+                      {/*          // props.activeContent.actionType === 'update' &&*/}
+                      {/*          <div className="form-group mb-3 col-md-6">*/}
+                      {/*              <FormGroup>*/}
+                      {/*                  <Label>*/}
+                      {/*                      {" "}*/}
+                      {/*                      Services Provided*/}
+                      {/*                      <span style={{color: "red"}}> *</span>*/}
+                      {/*                  </Label>*/}
+                      {/*                  <Input*/}
+                      {/*                      type="select"*/}
+                      {/*                      name="servicesProvided"*/}
+                      {/*                      id="servicesProvided"*/}
+                      {/*                      value={payload.servicesProvided}*/}
+                      {/*                      onChange={handleOtherInputChange}*/}
+                      {/*                      style={{*/}
+                      {/*                          border: "1px solid #014D88", borderRadius: "0.25rem",*/}
+                      {/*                      }}*/}
+                      {/*                      // isDisabled={isDisabled}*/}
+                      {/*                  >*/}
+                      {/*                      <option value="">Select</option>*/}
+                      {/*                      {servicesProvided.map((value) => (*/}
+                      {/*                          <option key={value.code} value={value.code}>*/}
+                      {/*                              {value.display}*/}
+                      {/*                          </option>*/}
+                      {/*                      ))}*/}
+                      {/*                  </Input>*/}
+                      {/*                  {errors.servicesProvided !== "" ? (<span className={classes.error}>*/}
+                      {/*  {errors.servicesProvided}*/}
+                      {/*</span>) : ("")}*/}
+                      {/*              </FormGroup>*/}
+                      {/*          </div>*/}
+                      {/*      }*/}
+
+
 
                         </div>
                     {/*comment, resignation, date section */}
