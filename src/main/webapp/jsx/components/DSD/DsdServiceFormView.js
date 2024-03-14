@@ -14,6 +14,7 @@ import {useTheme} from "@mui/material/styles";
 import {Label as LabelRibbon, Message} from "semantic-ui-react";
 import MatButton from "@material-ui/core/Button";
 import SaveIcon from "@material-ui/icons/Save";
+import DualListBox from "react-dual-listbox";
 
 const useStyles = makeStyles((theme) => ({
     card: {
@@ -84,7 +85,8 @@ const DsdServiceForm = (props) => {
     const isDisabled = props.activeContent?.actionType === "view" ? true : false;
     const [isUpdateState, setIsUpdateState] = useState(false);
     const [isClientReturnToSite, setIsClientReturnToSite] = useState(false);
-    const [servicesProvided, setServicesProvided] = useState([]);
+    const [selectedServiceProvided,setSelectedServiceProvided] = useState([]);
+    const [serviceProvided, setServiceProvided] = useState([]);
 
     const payLoadObject = {
         personId: patientObj && patientObj.id ? patientObj.id : "",
@@ -102,7 +104,7 @@ const DsdServiceForm = (props) => {
         score: "",
         clientReturnToSite: "",
         dateReturnToSite: "",
-        servicesProvided: '',
+        serviceProvided: '',
         dsdEligibilityAssessment: {
             onArtForAtLeast1Year: "",
             goodUnderstandingOfAdherence: "",
@@ -132,10 +134,12 @@ const DsdServiceForm = (props) => {
                 .then((response) => {
                     setPayLoad(response.data);
                     // console.log("response.data", response.data);
+                    console.log("props.activeContent.obj", props.activeContent);
                 })
                 .catch((error) => {
                     // console.log("error", error);
                 });
+             // setSelectedServiceProvided(Object.values(payload.serviceProvided));
             setIsUpdateState(true);
         } else {
             setPayLoad(payLoadObject);
@@ -144,6 +148,19 @@ const DsdServiceForm = (props) => {
 
     }, [props.activeContent.id]);
 
+   // console.log("payload", payload);
+   // conseol.log()
+   //  console.log("selectedServiceProvided", selectedServiceProvided);
+
+    // useEffect(() => {
+    //     //GetFormDetail();
+    //     if(props.activeContent && props.activeContent.obj){
+    //         setPayLoad({...props.activeContent.obj})
+    //         setSelectedBarriers(Object.values(props.activeContent.obj.barriers))
+    //         setSelectedInterventions(Object.values(props.activeContent.obj.intervention))
+    //     }
+    //
+    // }, [props.activeContent, props.patientObj.id]);
     // get dsd model type
     function DsdModelType(dsdmodel) {
         const dsd =
@@ -256,33 +273,61 @@ const DsdServiceForm = (props) => {
     };
 
     // console.log("payload", payload);
+    // const handleOtherInputChange = (e) => {
+    //     const {name, value} = e.target;
+    //     if (name === "clientReturnToSite" && value !== "Yes") {
+    //         setPayLoad({
+    //             ...payload,
+    //             dateReturnToSite: "",
+    //             servicesProvided: ""
+    //         });
+    //     }
+    //     // if there is changes in the DsdModel input fields always change empty the value
+    //     // of dsdType, ServicesProvided, dateReturnToSite, clientReturnToSite
+    //     if (name === "dsdModel") {
+    //         setPayLoad({
+    //             ...payload,
+    //             dsdType: "",
+    //             servicesProvided: "",
+    //             dateReturnToSite: "",
+    //             clientReturnToSite: ""
+    //         });
+    //     }
+    //     // if there is changes in the clientReturnToSite input fields, the value of dateReturnToSite and servicseProvided should be
+    //     if(name === "clientReturnToSite" && value !== "Yes") {
+    //         setPayLoad({
+    //             ...payload,
+    //             dateReturnToSite: "",
+    //             servicesProvided: ""
+    //         });
+    //     }
+    //     setPayLoad(prevPayload => ({
+    //         ...prevPayload,
+    //         [name]: value
+    //     }))
+    //
+    // }
+
     const handleOtherInputChange = (e) => {
         const {name, value} = e.target;
-        if (name === "clientReturnToSite" && value !== "Yes") {
-            setPayLoad({
-                ...payload,
-                dateReturnToSite: "",
-                servicesProvided: ""
-            });
-        }
-        // if there is changes in the DsdModel input fields always change empty the value
-        // of dsdType, ServicesProvided, dateReturnToSite, clientReturnToSite
         if (name === "dsdModel") {
             setPayLoad({
                 ...payload,
                 dsdType: "",
-                servicesProvided: "",
+                // serviceProvided: null,
                 dateReturnToSite: "",
                 clientReturnToSite: ""
             });
+            setSelectedServiceProvided([]);
         }
         // if there is changes in the clientReturnToSite input fields, the value of dateReturnToSite and servicseProvided should be
         if(name === "clientReturnToSite" && value !== "Yes") {
             setPayLoad({
                 ...payload,
                 dateReturnToSite: "",
-                servicesProvided: ""
+                // serviceProvided: null
             });
+            setSelectedServiceProvided([]);
         }
         setPayLoad(prevPayload => ({
             ...prevPayload,
@@ -295,6 +340,7 @@ const DsdServiceForm = (props) => {
         e.preventDefault();
 
         if (validate()) {
+            payload.serviceProvided=Object.assign({}, selectedServiceProvided);
             submitAssessmentForm(payload);
             // setSaving(true);
             // console.log("form submitted successfully")
@@ -330,7 +376,13 @@ const DsdServiceForm = (props) => {
             // setIsClientReturnToSite(true);
             return true;
         }
+
     }
+
+
+    const onServiceProvidedSelected = (selectedValues) => {
+        setSelectedServiceProvided(selectedValues);
+    };
 
 
 
@@ -340,15 +392,32 @@ const DsdServiceForm = (props) => {
     }, [props.patientObj.id]);
 
     // get services provided
+    // const getServicesProvided = () => {
+    //     axios
+    //         .get(`${baseUrl}application-codesets/v2/EAC_INTERVENTIONS_SERVICE`, {
+    //             headers: { Authorization: `Bearer ${token}` },
+    //         })
+    //         .then((response) => {
+    //             setServicesProvided(response.data);
+    //         })
+    //         .catch((error) => {});
+    // }
+
     const getServicesProvided = () => {
         axios
             .get(`${baseUrl}application-codesets/v2/EAC_INTERVENTIONS_SERVICE`, {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
-                setServicesProvided(response.data);
+                const transformedData = response.data.map(item => {
+                    const displayValue = item.display.replace(/["']/g, '').trim();
+                    return { value: displayValue, label: displayValue };
+                });
+                setServiceProvided(transformedData);
             })
-            .catch((error) => {});
+            .catch((error) => {
+                // console.error('Error fetching services provided:', error);
+            });
     }
 
     useEffect(() => {
@@ -391,7 +460,8 @@ const DsdServiceForm = (props) => {
 
         if(payload.clientReturnToSite && payload.clientReturnToSite === "Yes"){
             temp.dateReturnToSite = payload.dateReturnToSite ? "" : "This field is required.";
-            temp.servicesProvided = payload.servicesProvided ? "" : "This field is required.";
+            // temp.servicesProvided = payload.servicesProvided ? "" : "This field is required.";
+            temp.serviceProvided = selectedServiceProvided.length !== 0 ? "" : "This field is required.";
         }
 
         setErrors({...temp});
@@ -399,6 +469,7 @@ const DsdServiceForm = (props) => {
     };
 
 
+    // console.log("payload", payload);
 
     return (<>
         <Card className={classes.root}>
@@ -1022,37 +1093,55 @@ const DsdServiceForm = (props) => {
                         </span>) : ("")}
                             </FormGroup>
                         </div>}
-                        { isClientReturnToSite && payload.clientReturnToSite !=="" &&
-                            payload.clientReturnToSite === "Yes" &&
-                               // props.activeContent.actionType === 'update' &&
-                            <div className="form-group mb-3 col-md-6">
+                      {/*  { isClientReturnToSite && payload.clientReturnToSite !=="" &&*/}
+                      {/*      payload.clientReturnToSite === "Yes" &&*/}
+                      {/*         // props.activeContent.actionType === 'update' &&*/}
+                      {/*      <div className="form-group mb-3 col-md-6">*/}
+                      {/*          <FormGroup>*/}
+                      {/*              <Label>*/}
+                      {/*                  {" "}*/}
+                      {/*                  Services Provided*/}
+                      {/*                  <span style={{color: "red"}}> *</span>*/}
+                      {/*              </Label>*/}
+                      {/*              <Input*/}
+                      {/*                  type="select"*/}
+                      {/*                  name="servicesProvided"*/}
+                      {/*                  id="servicesProvided"*/}
+                      {/*                  value={payload.servicesProvided}*/}
+                      {/*                  onChange={handleOtherInputChange}*/}
+                      {/*                  style={{*/}
+                      {/*                      border: "1px solid #014D88", borderRadius: "0.25rem",*/}
+                      {/*                  }}*/}
+                      {/*                  disabled={isDisabled}*/}
+                      {/*              >*/}
+                      {/*                  <option value="">Select</option>*/}
+                      {/*                  {servicesProvided.map((value) => (*/}
+                      {/*                      <option key={value.code} value={value.code}>*/}
+                      {/*                          {value.display}*/}
+                      {/*                      </option>*/}
+                      {/*                  ))}*/}
+                      {/*              </Input>*/}
+                      {/*              {errors.servicesProvided !== "" ? (<span className={classes.error}>*/}
+                      {/*  {errors.servicesProvided}*/}
+                      {/*</span>) : ("")}*/}
+                      {/*          </FormGroup>*/}
+                      {/*      </div>*/}
+                      {/*  }*/}
+
+                        {isClientReturnToSite && payload.clientReturnToSite !== ""
+                            && payload.clientReturnToSite === "Yes" && <div className="form-group mb-3 col-md-6">
                                 <FormGroup>
-                                    <Label>
-                                        {" "}
-                                        Services Provided
-                                        <span style={{color: "red"}}> *</span>
-                                    </Label>
-                                    <Input
-                                        type="select"
-                                        name="servicesProvided"
-                                        id="servicesProvided"
-                                        value={payload.servicesProvided}
-                                        onChange={handleOtherInputChange}
-                                        style={{
-                                            border: "1px solid #014D88", borderRadius: "0.25rem",
-                                        }}
-                                        disabled={isDisabled}
-                                    >
-                                        <option value="">Select</option>
-                                        {servicesProvided.map((value) => (
-                                            <option key={value.code} value={value.code}>
-                                                {value.display}
-                                            </option>
-                                        ))}
-                                    </Input>
-                                    {errors.servicesProvided !== "" ? (<span className={classes.error}>
-                        {errors.servicesProvided}
-                      </span>) : ("")}
+                                    <Label for="permissions" style={{color: '#014d88', fontWeight: 'bolder'}}>Service
+                                        Provided</Label>
+                                    <DualListBox
+                                        //canFilter
+                                        options={serviceProvided}
+                                        onChange={onServiceProvidedSelected}
+                                        selected={selectedServiceProvided}
+                                    />
+                                    {errors.serviceProvided !== "" ? (<span className={classes.error}>
+                        {errors.serviceProvided}
+                        </span>) : ("")}
                                 </FormGroup>
                             </div>
                         }
