@@ -110,6 +110,7 @@ public class PatientTrackerService {
 		patentTrackingDto.setDateMissedAppointment(entity.getDateMissedAppointment());
 		patentTrackingDto.setFacilityId(entity.getFacilityId());
 		patentTrackingDto.setPatientId(entity.getPerson().getId());
+		patentTrackingDto.setDateOfObservation(entity.getDateOfObservation());
 //		HIVStatusTrackerDto statusTracker =
 //				statusTrackerService.convertEntityToDto(entity.getStatusTracker());
 //		patentTrackingDto.setStatusTracker(statusTracker);
@@ -147,6 +148,7 @@ public class PatientTrackerService {
 				.dateOfDiscontinuation(dto.getDateOfDiscontinuation())
 				.dateMissedAppointment(dto.getDateMissedAppointment())
 				.person(getPatient(dto.getPatientId()))
+				.dateOfObservation(dto.getDateOfObservation())
 				.archived(0)
 				.build();
 	}
