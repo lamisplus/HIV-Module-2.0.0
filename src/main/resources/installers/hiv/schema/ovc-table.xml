@@ -32,6 +32,4 @@
             ADD offer_accepted VARCHAR(255);
         </sql>
     </changeSet>
-
-
 </databaseChangeLog>
