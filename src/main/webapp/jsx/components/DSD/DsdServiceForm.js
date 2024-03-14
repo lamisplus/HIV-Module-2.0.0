@@ -14,6 +14,7 @@ import {useTheme} from "@mui/material/styles";
 import {Label as LabelRibbon, Message} from "semantic-ui-react";
 import MatButton from "@material-ui/core/Button";
 import SaveIcon from "@material-ui/icons/Save";
+import DualListBox from "react-dual-listbox";
 
 const useStyles = makeStyles((theme) => ({
     card: {
@@ -81,8 +82,9 @@ const DsdServiceForm = (props) => {
     const [dsdModelType, setDsdModelType] = useState([]);
     const [facId, setFacId] = useState(localStorage.getItem("facId"))
     const [isClientReturnToSite, setIsClientReturnToSite] = useState(false);
-    const [servicesProvided, setServicesProvided] = useState([]);
+    const [serviceProvided, setServiceProvided] = useState([]);
     const [patientDsdRecords, setPatientDsdRecords] = useState([]);
+    const [selectedServiceProvided,setSelectedServiceProvided] = useState([]);
 
     const [payload, setPayLoad] = useState({
         personId: patientObj && patientObj.id ? patientObj.id : "",
@@ -100,7 +102,7 @@ const DsdServiceForm = (props) => {
         facilityId: facId ? facId : "",
         clientReturnToSite: "",
         dateReturnToSite: "",
-        servicesProvided:'',
+        serviceProvided:null,
         dsdEligibilityAssessment: {
             onArtForAtLeast1Year: "",
             goodUnderstandingOfAdherence: "",
@@ -239,37 +241,32 @@ const DsdServiceForm = (props) => {
             }
         }));
     };
-
+    //
     // console.log("payload", payload);
-
+    //  console.log("selectedServiceProvided", selectedServiceProvided);
     // handle for dsdModel,dsdAccept, dsdType, viralLoadOrderResult, viralLoadOrderDate,
     const handleOtherInputChange = (e) => {
         const {name, value} = e.target;
-        if (name === "clientReturnToSite" && value !== "Yes") {
-            setPayLoad({
-                ...payload,
-                dateReturnToSite: "",
-                servicesProvided: ""
-            });
-        }
         // if there is changes in the DsdModel input fields always change empty the value
         // of dsdType, ServicesProvided, dateReturnToSite, clientReturnToSite
         if (name === "dsdModel") {
             setPayLoad({
                 ...payload,
                 dsdType: "",
-                servicesProvided: "",
+                // serviceProvided: null,
                 dateReturnToSite: "",
                 clientReturnToSite: ""
             });
+            setSelectedServiceProvided([]);
         }
         // if there is changes in the clientReturnToSite input fields, the value of dateReturnToSite and servicseProvided should be
         if(name === "clientReturnToSite" && value !== "Yes") {
             setPayLoad({
                 ...payload,
                 dateReturnToSite: "",
-                servicesProvided: ""
+                // serviceProvided: null
             });
+            setSelectedServiceProvided([]);
         }
         setPayLoad(prevPayload => ({
             ...prevPayload,
@@ -282,6 +279,7 @@ const DsdServiceForm = (props) => {
         e.preventDefault();
 
         if (validate()) {
+            payload.serviceProvided=Object.assign({}, selectedServiceProvided);
             submitAssessmentForm(payload);
         } else {
             window.scroll(0, 0);
@@ -293,12 +291,12 @@ const DsdServiceForm = (props) => {
             headers: {Authorization: `Bearer ${token}`},
         })
             .then((response) => {
-                console.log("response.data", response.data);
+                // console.log("response.data", response.data);
                 setPatientDsdRecords(response.data);
 
             })
             .catch((error) => {
-                console.error(error);
+                // console.error(error);
             });
     }
 
@@ -319,7 +317,9 @@ const DsdServiceForm = (props) => {
     }
 
 
-
+    const onServiceProvidedSelected = (selectedValues) => {
+        setSelectedServiceProvided(selectedValues);
+    };
 
     useEffect(() => {
         getPatientDsdRecords();
@@ -333,9 +333,15 @@ const DsdServiceForm = (props) => {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
-                setServicesProvided(response.data);
+                const transformedData = response.data.map(item => {
+                    const displayValue = item.display.replace(/["']/g, '').trim();
+                    return { value: displayValue, label: displayValue };
+                });
+                setServiceProvided(transformedData);
             })
-            .catch((error) => {});
+            .catch((error) => {
+                // console.error('Error fetching services provided:', error);
+            });
     }
 
     useEffect(() => {
@@ -378,7 +384,8 @@ const DsdServiceForm = (props) => {
 
         if(payload.clientReturnToSite && payload.clientReturnToSite === "Yes"){
             temp.dateReturnToSite = payload.dateReturnToSite ? "" : "This field is required.";
-            temp.servicesProvided = payload.servicesProvided ? "" : "This field is required.";
+            // temp.serviceProvided = payload.serviceProvided ? "" : "This field is required.";
+            temp.serviceProvided = selectedServiceProvided.length !== 0 ? "" : "This field is required.";
         }
         setErrors({...temp});
         return Object.values(temp).every((x) => x === "");
@@ -802,7 +809,7 @@ const DsdServiceForm = (props) => {
 
                     </div>
 
-                        <div className="row">
+                    <div className="row">
                         <div
                             className="form-group  col-md-12 text-center pt-2 mb-6"
                             style={{
@@ -844,197 +851,211 @@ const DsdServiceForm = (props) => {
                             </FormGroup>
                         </div>
 
-                            <div className="form-group mb-3 col-md-6">
-                                <FormGroup>
-                                    <Label>
-                                        {" "}
-                                        Client accepts DSD?
-                                        <span style={{color: "red"}}> *</span>
-                                    </Label>
-                                    <Input
-                                        type="select"
-                                        name="dsdAccept"
-                                        id="dsdAccept"
-                                        value={payload.dsdAccept}
-                                        onChange={handleOtherInputChange}
-                                        style={{
-                                            border: "1px solid #014D88", borderRadius: "0.25rem",
-                                        }}
-                                    >
-                                        <option value=""> Select</option>
-                                        <option value="Yes"> Yes</option>
-                                        <option value="No"> No</option>
-                                    </Input>
-                                    {errors.dsdAccept !== "" ? (<span className={classes.error}>
+                        <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                                <Label>
+                                    {" "}
+                                    Client accepts DSD?
+                                    <span style={{color: "red"}}> *</span>
+                                </Label>
+                                <Input
+                                    type="select"
+                                    name="dsdAccept"
+                                    id="dsdAccept"
+                                    value={payload.dsdAccept}
+                                    onChange={handleOtherInputChange}
+                                    style={{
+                                        border: "1px solid #014D88", borderRadius: "0.25rem",
+                                    }}
+                                >
+                                    <option value=""> Select</option>
+                                    <option value="Yes"> Yes</option>
+                                    <option value="No"> No</option>
+                                </Input>
+                                {errors.dsdAccept !== "" ? (<span className={classes.error}>
                         {errors.dsdAccept}
                       </span>) : ("")}
-                                </FormGroup>
-                            </div>
+                            </FormGroup>
+                        </div>
 
                     </div>
 
                     {/*{payload.dsdEligible && payload.dsdEligible === "Yes"  &&*/}
                     {/*    payload.dsdAccept && payload.dsdAccept === "Yes" && */}
-                        <div className="row">
-                            <div
-                                className="form-group  col-md-12 text-center pt-2 mb-4"
-                                style={{
-                                    backgroundColor: "#992E62",
-                                    width: "125%",
-                                    height: "35px",
-                                    color: "#fff",
-                                    fontWeight: "bold",
-                                }}
-                            >
-                                Client DSD Models
-                            </div>
+                    <div className="row">
+                        <div
+                            className="form-group  col-md-12 text-center pt-2 mb-4"
+                            style={{
+                                backgroundColor: "#992E62",
+                                width: "125%",
+                                height: "35px",
+                                color: "#fff",
+                                fontWeight: "bold",
+                            }}
+                        >
+                            Client DSD Models
+                        </div>
 
-                            <div className="form-group mb-3 col-md-6">
-                                <FormGroup>
-                                    <Label>DSD Model <span style={{color: "red"}}> *</span></Label>
-                                    <Input
-                                        type="select"
-                                        name="dsdModel"
-                                        id="dsdModel"
-                                        value={payload.dsdModel}
-                                        onChange={handleOtherInputChange}
-                                        style={{
-                                            border: "1px solid #014D88",
-                                            borderRadius: "0.25rem",
-                                        }}
-                                    >
-                                        <option value="">Select</option>
-                                        <option value="Facility">Facility</option>
-                                        <option value="Community">Community</option>
-                                    </Input>
-                                    {errors.dsdModel !== "" ? (<span className={classes.error}>
-                        {errors.dsdModel }
+                        <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                                <Label>DSD Model <span style={{color: "red"}}> *</span></Label>
+                                <Input
+                                    type="select"
+                                    name="dsdModel"
+                                    id="dsdModel"
+                                    value={payload.dsdModel}
+                                    onChange={handleOtherInputChange}
+                                    style={{
+                                        border: "1px solid #014D88",
+                                        borderRadius: "0.25rem",
+                                    }}
+                                >
+                                    <option value="">Select</option>
+                                    <option value="Facility">Facility</option>
+                                    <option value="Community">Community</option>
+                                </Input>
+                                {errors.dsdModel !== "" ? (<span className={classes.error}>
+                        {errors.dsdModel}
                       </span>) : ("")}
-                                </FormGroup>
-                            </div>
-                            <div className="form-group mb-3 col-md-6">
-                                <FormGroup>
-                                    <Label>DSD Model Type<span style={{color: "red"}}> *</span></Label>
-                                    <Input
-                                        type="select"
-                                        name="dsdType"
-                                        id="dsdType"
-                                        value={payload.dsdType}
-                                        onChange={handleOtherInputChange}
-                                        style={{
-                                            border: "1px solid #014D88",
-                                            borderRadius: "0.25rem",
-                                        }}
-                                    >
-                                        <option value="">Select</option>
-                                        {dsdModelType.map((value) => (
-                                            <option key={value.code} value={value.code}>
-                                                {value.display}
-                                            </option>
-                                        ))}
-                                    </Input>
-                                    {errors.dsdType !== "" ? (<span className={classes.error}>
+                            </FormGroup>
+                        </div>
+                        <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                                <Label>DSD Model Type<span style={{color: "red"}}> *</span></Label>
+                                <Input
+                                    type="select"
+                                    name="dsdType"
+                                    id="dsdType"
+                                    value={payload.dsdType}
+                                    onChange={handleOtherInputChange}
+                                    style={{
+                                        border: "1px solid #014D88",
+                                        borderRadius: "0.25rem",
+                                    }}
+                                >
+                                    <option value="">Select</option>
+                                    {dsdModelType.map((value) => (
+                                        <option key={value.code} value={value.code}>
+                                            {value.display}
+                                        </option>
+                                    ))}
+                                </Input>
+                                {errors.dsdType !== "" ? (<span className={classes.error}>
                         {errors.dsdType}
                         </span>) : ("")}
-                                </FormGroup>
-                            </div>
-                            {isClientReturnToSite &&
-                                <div className="form-group mb-3 col-md-6">
-                                    <FormGroup>
-                                        <Label>
-                                            {" "}
-                                            Client Return to site ?
-                                            <span style={{color: "red"}}> *</span>
-                                        </Label>
-                                        <Input
-                                            type="select"
-                                            name="clientReturnToSite"
-                                            id="clientReturnToSite"
-                                            value={payload.clientReturnToSite}
-                                            onChange={handleOtherInputChange}
-                                            style={{
-                                                border: "1px solid #014D88", borderRadius: "0.25rem",
-                                            }}
-                                            // disabled={isDisabled}
-                                        >
-                                            <option value=""> Select</option>
-                                            <option value="Yes"> Yes</option>
-                                            <option value="No"> No</option>
-                                        </Input>
-                                        {errors.clientReturnToSite !== "" ? (<span className={classes.error}>
+                            </FormGroup>
+                        </div>
+                        {isClientReturnToSite &&
+                            <div className="form-group mb-3 col-md-6">
+                                <FormGroup>
+                                    <Label>
+                                        {" "}
+                                        Client Return to site ?
+                                        <span style={{color: "red"}}> *</span>
+                                    </Label>
+                                    <Input
+                                        type="select"
+                                        name="clientReturnToSite"
+                                        id="clientReturnToSite"
+                                        value={payload.clientReturnToSite}
+                                        onChange={handleOtherInputChange}
+                                        style={{
+                                            border: "1px solid #014D88", borderRadius: "0.25rem",
+                                        }}
+                                        // disabled={isDisabled}
+                                    >
+                                        <option value=""> Select</option>
+                                        <option value="Yes"> Yes</option>
+                                        <option value="No"> No</option>
+                                    </Input>
+                                    {errors.clientReturnToSite !== "" ? (<span className={classes.error}>
                         {errors.clientReturnToSite}
                       </span>) : ("")}
-                                    </FormGroup>
-                                </div>
-                            }
+                                </FormGroup>
+                            </div>
+                        }
 
-                            {isClientReturnToSite && payload.clientReturnToSite !== ""
-                                && payload.clientReturnToSite === "Yes" &&
-                                // props.activeContent.actionType === 'update' &&
-                                <div className="form-group mb-3 col-md-6">
-                                    <FormGroup>
-                                        <Label for="">
-                                            Date Return to Site<span style={{color: "red"}}> *</span>{" "}
-                                        </Label>
-                                        <Input
-                                            type="date"
-                                            name="dateReturnToSite"
-                                            id="dateReturnToSite"
-                                            value={payload.dateReturnToSite}
-                                            onChange={handleOtherInputChange}
-                                            min="1929-12-31"
-                                            max={moment(new Date()).format("YYYY-MM-DD")}
-                                            style={{
-                                                border: "1px solid #014D88", borderRadius: "0.25rem",
-                                            }}
-                                            // disabled={isDisabled}
-                                            // disabled
-                                        />
-                                        {errors.dateReturnToSite !== "" ? (<span className={classes.error}>
+                        {isClientReturnToSite && payload.clientReturnToSite !== ""
+                            && payload.clientReturnToSite === "Yes" &&
+                            // props.activeContent.actionType === 'update' &&
+                            <div className="form-group mb-3 col-md-6">
+                                <FormGroup>
+                                    <Label for="">
+                                        Date Return to Site<span style={{color: "red"}}> *</span>{" "}
+                                    </Label>
+                                    <Input
+                                        type="date"
+                                        name="dateReturnToSite"
+                                        id="dateReturnToSite"
+                                        value={payload.dateReturnToSite}
+                                        onChange={handleOtherInputChange}
+                                        min="1929-12-31"
+                                        max={moment(new Date()).format("YYYY-MM-DD")}
+                                        style={{
+                                            border: "1px solid #014D88", borderRadius: "0.25rem",
+                                        }}
+                                        // disabled={isDisabled}
+                                        // disabled
+                                    />
+                                    {errors.dateReturnToSite !== "" ? (<span className={classes.error}>
                         {errors.dateReturnToSite}
                         </span>) : ("")}
-                                    </FormGroup>
-                                </div>}
-                      {/*      { isClientReturnToSite && payload.clientReturnToSite !=="" &&*/}
-                      {/*          payload.clientReturnToSite === "Yes" &&*/}
-                      {/*          // props.activeContent.actionType === 'update' &&*/}
-                      {/*          <div className="form-group mb-3 col-md-6">*/}
-                      {/*              <FormGroup>*/}
-                      {/*                  <Label>*/}
-                      {/*                      {" "}*/}
-                      {/*                      Services Provided*/}
-                      {/*                      <span style={{color: "red"}}> *</span>*/}
-                      {/*                  </Label>*/}
-                      {/*                  <Input*/}
-                      {/*                      type="select"*/}
-                      {/*                      name="servicesProvided"*/}
-                      {/*                      id="servicesProvided"*/}
-                      {/*                      value={payload.servicesProvided}*/}
-                      {/*                      onChange={handleOtherInputChange}*/}
-                      {/*                      style={{*/}
-                      {/*                          border: "1px solid #014D88", borderRadius: "0.25rem",*/}
-                      {/*                      }}*/}
-                      {/*                      // isDisabled={isDisabled}*/}
-                      {/*                  >*/}
-                      {/*                      <option value="">Select</option>*/}
-                      {/*                      {servicesProvided.map((value) => (*/}
-                      {/*                          <option key={value.code} value={value.code}>*/}
-                      {/*                              {value.display}*/}
-                      {/*                          </option>*/}
-                      {/*                      ))}*/}
-                      {/*                  </Input>*/}
-                      {/*                  {errors.servicesProvided !== "" ? (<span className={classes.error}>*/}
-                      {/*  {errors.servicesProvided}*/}
-                      {/*</span>) : ("")}*/}
-                      {/*              </FormGroup>*/}
-                      {/*          </div>*/}
-                      {/*      }*/}
+                                </FormGroup>
+                            </div>}
+                        {/*      { isClientReturnToSite && payload.clientReturnToSite !=="" &&*/}
+                        {/*          payload.clientReturnToSite === "Yes" &&*/}
+                        {/*          // props.activeContent.actionType === 'update' &&*/}
+                        {/*          <div className="form-group mb-3 col-md-6">*/}
+                        {/*              <FormGroup>*/}
+                        {/*                  <Label>*/}
+                        {/*                      {" "}*/}
+                        {/*                      Services Provided*/}
+                        {/*                      <span style={{color: "red"}}> *</span>*/}
+                        {/*                  </Label>*/}
+                        {/*                  <Input*/}
+                        {/*                      type="select"*/}
+                        {/*                      name="servicesProvided"*/}
+                        {/*                      id="servicesProvided"*/}
+                        {/*                      value={payload.servicesProvided}*/}
+                        {/*                      onChange={handleOtherInputChange}*/}
+                        {/*                      style={{*/}
+                        {/*                          border: "1px solid #014D88", borderRadius: "0.25rem",*/}
+                        {/*                      }}*/}
+                        {/*                      // isDisabled={isDisabled}*/}
+                        {/*                  >*/}
+                        {/*                      <option value="">Select</option>*/}
+                        {/*                      {servicesProvided.map((value) => (*/}
+                        {/*                          <option key={value.code} value={value.code}>*/}
+                        {/*                              {value.display}*/}
+                        {/*                          </option>*/}
+                        {/*                      ))}*/}
+                        {/*                  </Input>*/}
+                        {/*                  {errors.servicesProvided !== "" ? (<span className={classes.error}>*/}
+                        {/*  {errors.servicesProvided}*/}
+                        {/*</span>) : ("")}*/}
+                        {/*              </FormGroup>*/}
+                        {/*          </div>*/}
+                        {/*      }*/}
 
-
-
+                        {isClientReturnToSite && payload.clientReturnToSite !== ""
+                            && payload.clientReturnToSite === "Yes" && <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                                <Label for="permissions" style={{color: '#014d88', fontWeight: 'bolder'}}>Service
+                                    Provided</Label>
+                                <DualListBox
+                                    //canFilter
+                                    options={serviceProvided}
+                                    onChange={onServiceProvidedSelected}
+                                    selected={selectedServiceProvided}
+                                />
+                                {errors.serviceProvided !== "" ? (<span className={classes.error}>
+                        {errors.serviceProvided}
+                        </span>) : ("")}
+                            </FormGroup>
                         </div>
+             }
+                    </div>
                     {/*comment, resignation, date section */}
-
 
                     <div className="row">
                         <div className="form-group mb-3 col-md-12">

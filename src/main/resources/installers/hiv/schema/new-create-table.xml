@@ -125,4 +125,27 @@
         </sql>
     </changeSet>
 
+    <changeSet id="20240313-003" author="Taiwo Gboyegun">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="dsd_devolvement" columnName="service_provided" />
+            </not>
+        </preConditions>
+        <sql>
+            ALTER TABLE dsd_devolvement
+                RENAME COLUMN service_provider TO service_provided;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20240313-004" author="Taiwo Gboyegun">
+        <sql>
+            ALTER TABLE dsd_devolvement
+                ALTER COLUMN service_provided DROP DEFAULT;
+
+            ALTER TABLE dsd_devolvement
+                ALTER COLUMN service_provided TYPE JSONB USING service_provided::JSONB;
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>

@@ -107,10 +107,10 @@ public class HIVEacSessionService {
 				hivEacSession.setStatus("FOURTH EAC");
 				break;
 			case 4:
-				hivEacSession.setStatus("FIFTY EAC");
+				hivEacSession.setStatus("FIFTH EAC");
 				break;
 			case 5:
-				hivEacSession.setStatus("SIXTY EAC");
+				hivEacSession.setStatus("SIXTH EAC");
 				break;
 			default:
 				throw new IllegalStateException("You are not allowed to have more than one extended EAC sessions: " + hivEacSesByEac.size());

@@ -31,7 +31,7 @@ public class DsdDevolvementDTO implements Serializable {
     @Convert(converter = LocalDateConverter.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateReturnToSite;
-    private String serviceProvider;
+    private JsonNode serviceProvided;
     private String dsdType;
     private String comment;
     private String completedBy;
