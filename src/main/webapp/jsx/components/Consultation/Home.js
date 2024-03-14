@@ -1070,9 +1070,9 @@ const ClinicVisit = (props) => {
     }
   }
 
-  if (careSupportTb === "Presumptive TB and referred for evaluation") {
-    setCareSupportTb("Presumptive TB");
-  }
+  // if (careSupportTb === "Presumptive TB and referred for evaluation") {
+  //   setCareSupportTb("Presumptive TB");
+  // }
 
   return (
     <div className={classes.root}>

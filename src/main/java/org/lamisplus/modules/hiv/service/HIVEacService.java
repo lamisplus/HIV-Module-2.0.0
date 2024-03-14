@@ -167,5 +167,6 @@ public class HIVEacService {
 				.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException(HIVEac.class, "id", String.valueOf(id)));
 		hivEac.setArchived(1);
+		hivEacRepository.save(hivEac);
 	}
 }

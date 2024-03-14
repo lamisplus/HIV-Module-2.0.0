@@ -108,7 +108,7 @@ const TbScreening = (props) => {
 
     if (
       props.tbObj.tbTreatment === "No" &&
-      props.tbObj.tbScreeningType === "Symptom screening"
+      props.tbObj.tbScreeningType === "Symptom screen (alone)"
     ) {
       if (
         props.tbObj.coughing === "No" &&
@@ -127,7 +127,7 @@ const TbScreening = (props) => {
 
      if (
        props.tbObj.tbTreatment === "No" &&
-       props.tbObj.tbScreeningType === "Symptom screening" &&
+       props.tbObj.tbScreeningType === "Symptom screen (alone)" &&
        props.tbObj.currentlyOnTuberculosis === "No" &&
        props.tbObj.previouslyCompletedTPT === "No"
      ) {
@@ -163,7 +163,7 @@ const TbScreening = (props) => {
 
     if (
       props.tbObj.tbTreatment === "No" &&
-      props.tbObj.tbScreeningType === "Symptom screening"
+      props.tbObj.tbScreeningType === "Symptom screen (alone)"
     ) {
       if (
         props.tbObj.coughing === "Yes" ||
@@ -194,18 +194,18 @@ const TbScreening = (props) => {
       });
     }
 
-    if (
-      props.tbObj.tbTreatment === "No" &&
-      props.tbObj.tbScreeningType === "Chest X-ray" &&
-      props.tbObj.chestXray === "X-ray not suggestive"
-    ) {
-      props.setTbObj({
-        ...props.tbObj,
-        outcome: "",
-        status: "No signs or symptoms of TB",
-        eligibleForTPT: "",
-      });
-    }
+    // if (
+    //   props.tbObj.tbTreatment === "No" &&
+    //   props.tbObj.tbScreeningType === "Chest X-ray" &&
+    //   props.tbObj.chestXray === "X-ray not suggestive"
+    // ) {
+    //   props.setTbObj({
+    //     ...props.tbObj,
+    //     outcome: "",
+    //     status: "No signs or symptoms of TB",
+    //     eligibleForTPT: "",
+    //   });
+    // }
 
     //Second Logic
     if (props.tbObj.tbTreatment === "Yes") {
@@ -222,7 +222,7 @@ const TbScreening = (props) => {
       props.tbObj.tbTreatment === "No" &&
       props.tbObj.currentlyOnTuberculosis === "No" &&
       props.tbObj.previouslyCompletedTPT === "No" &&
-      props.tbObj.tbScreeningType === "Symptom screening"
+      props.tbObj.tbScreeningType === "Symptom screen (alone)"
     ) {
       if (
         props.tbObj.coughing === "Yes" ||
@@ -243,7 +243,7 @@ const TbScreening = (props) => {
     if (
       props.tbObj.tbTreatment === "No" &&
       props.tbObj.currentlyOnTuberculosis === "No" &&
-      props.tbObj.tbScreeningType === "Symptom screening" &&
+      props.tbObj.tbScreeningType === "Symptom screen (alone)" &&
       props.tbObj.previouslyCompletedTPT === "Yes"
     ) {
       if (
@@ -312,7 +312,7 @@ const TbScreening = (props) => {
     if (
       props.tbObj.tbTreatment === "No" &&
       props.tbObj.currentlyOnTuberculosis === "Yes" &&
-      props.tbObj.tbScreeningType === "Symptom screening" &&
+      props.tbObj.tbScreeningType === "Symptom screen (alone)" &&
       props.tbObj.previouslyCompletedTPT === "No"
     ) {
       if (
@@ -406,7 +406,7 @@ const TbScreening = (props) => {
 
       if (
         props.tbObj.tbTreatment === "No" &&
-        props.tbObj.tbScreeningType === "Symptom screening"
+        props.tbObj.tbScreeningType === "Symptom screen (alone)"
       ) {
         if (
           props.tbObj.coughing === "No" &&
@@ -427,7 +427,7 @@ const TbScreening = (props) => {
 
         if (
           props.tbObj.tbTreatment === "No" &&
-          props.tbObj.tbScreeningType === "Symptom screening" &&
+          props.tbObj.tbScreeningType === "Symptom screen (alone)" &&
           props.tbObj.currentlyOnTuberculosis === "No" &&
           props.tbObj.previouslyCompletedTPT === "No"
         ) {
@@ -466,7 +466,7 @@ const TbScreening = (props) => {
 
       if (
         props.tbObj.tbTreatment === "No" &&
-        props.tbObj.tbScreeningType === "Symptom screening"
+        props.tbObj.tbScreeningType === "Symptom screen (alone)"
       ) {
         if (
           props.tbObj.coughing === "Yes" ||
@@ -527,7 +527,7 @@ const TbScreening = (props) => {
         props.tbObj.tbTreatment === "No" &&
         props.tbObj.currentlyOnTuberculosis === "No" &&
         props.tbObj.previouslyCompletedTPT === "No" &&
-        props.tbObj.tbScreeningType === "Symptom screening"
+        props.tbObj.tbScreeningType === "Symptom screen (alone)"
       ) {
         if (
           props.tbObj.coughing === "Yes" ||
@@ -550,7 +550,7 @@ const TbScreening = (props) => {
       if (
         props.tbObj.tbTreatment === "No" &&
         props.tbObj.currentlyOnTuberculosis === "No" &&
-        props.tbObj.tbScreeningType === "Symptom screening" &&
+        props.tbObj.tbScreeningType === "Symptom screen (alone)" &&
         props.tbObj.previouslyCompletedTPT === "Yes"
       ) {
         if (
@@ -621,7 +621,7 @@ const TbScreening = (props) => {
       if (
         props.tbObj.tbTreatment === "No" &&
         props.tbObj.currentlyOnTuberculosis === "Yes" &&
-        props.tbObj.tbScreeningType === "Symptom screening" &&
+        props.tbObj.tbScreeningType === "Symptom screen (alone)" &&
         props.tbObj.previouslyCompletedTPT === "No"
       ) {
         if (
@@ -912,7 +912,7 @@ const TbScreening = (props) => {
                   </div>
 
                   {/* SCREENING QUESTIONS */}
-                  {props.tbObj.tbScreeningType === "Symptom screening" && (
+                  {props.tbObj.tbScreeningType === "Symptom screen (alone)" && (
                     <>
                       <div className="form-group mb-3 col-md-6">
                         <FormGroup>

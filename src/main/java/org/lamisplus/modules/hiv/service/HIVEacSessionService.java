@@ -73,6 +73,15 @@ public class HIVEacSessionService {
 	public void deleteEacSessionById(Long id) {
 		HIVEacSession eacSession = getEacSession(id);
 		eacSession.setArchived(1);
+		List<HIVEacSession> eacSessionList = hiveacSessionRepository.getAllSessionInEac(eacSession.getEac().getUuid());
+		hiveacSessionRepository.save(eacSession);
+
+		// Checking if any other Eac session exist
+		/*if (eacSessionList.isEmpty()){
+			HIVEac hivEac = getEac(eacSession.getEac().getId());
+			hivEac.setStatus("NOT COMMENCED");
+			hiveacRepository.save(hivEac);
+		}*/
 	}
 	
 	private HIVEacSession getEacSession(Long id) {
@@ -98,7 +107,7 @@ public class HIVEacSessionService {
 				hivEacSession.setStatus("FIRST EAC");
 				break;
 			case 1:
-				hivEacSession.setStatus("SECOND  EAC");
+				hivEacSession.setStatus("SECOND EAC");
 				break;
 			case 2:
 				hivEacSession.setStatus("THIRD EAC");

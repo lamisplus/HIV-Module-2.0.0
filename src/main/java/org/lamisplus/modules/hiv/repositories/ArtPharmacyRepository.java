@@ -46,35 +46,36 @@ public interface ArtPharmacyRepository extends JpaRepository<ArtPharmacy, Long> 
 			"and visit_date BETWEEN ?2 and ?3 ", nativeQuery = true)
 	Integer sumRefillPeriodsByPersonAndDateRange(String personUuid, LocalDate startDate, LocalDate endDate);
 
-	@Query(nativeQuery = true, value = "SELECT DISTINCT ON (p.uuid, result.next_appointment) " +
-			"    result.id, " +
-			"    result.facility_id AS facilityId, " +
-			"    oi.code AS datimId, " +
-			"    org.name AS facilityName, " +
-			"    p.uuid AS patientId, " +
-			"    p.hospital_number AS hospitalNum, " +
-			"    hrt.description AS regimenLine, " +
-			"    result.mmd_type AS mmdType, " +
-			"    result.next_appointment AS nextAppointment, " +
-			"    result.dsd_model AS dsdModel, " +
-			"    result.visit_date AS dateVisit, " +
-			"    result.duration AS refillPeriod, " +
-			"    result.regimen_name AS regimens " +
-			"FROM ( " +
-			"    SELECT " +
-			"        h.*, " +
-			"        pharmacy_object ->> 'duration' AS duration, " +
-			"        pharmacy_object ->> 'regimenName'::VARCHAR AS regimen_name " +
-			"    FROM hiv_art_pharmacy h, " +
-			"        jsonb_array_elements(h.extra->'regimens') WITH ORDINALITY p(pharmacy_object) " +
-			") AS result " +
-			"INNER JOIN patient_person p ON p.uuid = result.person_uuid " +
-			"INNER JOIN base_organisation_unit org ON org.id = result.facility_id " +
-			"INNER JOIN base_organisation_unit_identifier oi ON oi.organisation_unit_id = result.facility_id " +
-			"INNER JOIN hiv_regimen hr ON hr.description = result.regimen_name " +
-			"INNER JOIN hiv_regimen_type hrt ON hrt.id = hr.regimen_type_id " +
-			"WHERE result.facility_id = :facilityId " +
-			"ORDER BY p.uuid, result.next_appointment, result.visit_date DESC;")
+	@Query(nativeQuery = true, value = "SELECT DISTINCT ON (p.uuid, result.next_appointment)\n" +
+			"result.id,\n" +
+			"result.facility_id AS facilityId,\n" +
+			"oi.code AS datimId,\n" +
+			"org.name AS facilityName,\n" +
+			"p.uuid AS patientId,\n" +
+			"p.hospital_number AS hospitalNum,\n" +
+			"hrt.description AS regimenLine,\n" +
+			"result.mmd_type AS mmdType,\n" +
+			"result.next_appointment AS nextAppointment,\n" +
+			"dd.dsd_model AS dsdModel,\n" +
+			"result.visit_date AS dateVisit,\n" +
+			"result.duration AS refillPeriod,\n" +
+			"result.regimen_name AS regimens\n" +
+			"FROM (\n" +
+			"SELECT\n" +
+			"    h.*,\n" +
+			"    pharmacy_object ->> 'duration' AS duration,\n" +
+			"    CAST(pharmacy_object ->> 'regimenName' AS VARCHAR) AS regimen_name\n" +
+			"FROM hiv_art_pharmacy h,\n" +
+			"    jsonb_array_elements(h.extra->'regimens') WITH ORDINALITY p(pharmacy_object)\n" +
+			") AS result\n" +
+			"LEFT JOIN dsd_devolvement dd ON result.person_uuid = dd.person_uuid\n" +
+			"INNER JOIN patient_person p ON p.uuid = result.person_uuid\n" +
+			"INNER JOIN base_organisation_unit org ON org.id = result.facility_id\n" +
+			"INNER JOIN base_organisation_unit_identifier oi ON oi.organisation_unit_id = result.facility_id\n" +
+			"INNER JOIN hiv_regimen hr ON hr.description = result.regimen_name\n" +
+			"INNER JOIN hiv_regimen_type hrt ON hrt.id = hr.regimen_type_id\n" +
+			"WHERE result.facility_id = :facilityId\n" +
+			"ORDER BY p.uuid, result.next_appointment, result.visit_date DESC")
 	List<PharmacyReport> getArtPharmacyReport(Long facilityId);
 	
 	@Query(value = "SELECT * FROM hiv_art_pharmacy p " +
