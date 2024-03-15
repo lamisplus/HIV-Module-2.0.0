@@ -109,6 +109,7 @@ const Tracking = (props) => {
   const [vaCauseOfDeathTypeNeonate, setvaCauseOfDeathTypeNeonate] = useState(
       []
   );
+  const [vaCauseOfDeathTypeChild, setvaCauseOfDeathTypeChild] = useState([]);
   const [vaCauseOfDeathTypeChildInjuries, setvaCauseOfDeathTypeChildInjuries] =
       useState([]);
   const [vaCauseOfDeathTypeAdultInjuries, setvaCauseOfDeathTypeAdultInjuries] =
@@ -117,6 +118,11 @@ const Tracking = (props) => {
     vaCauseOfDeathTypeAdultNonCommunicableDiseases,
     setvaCauseOfDeathTypeAdultNonCommunicableDiseases,
   ] = useState([]);
+  const [
+    vaCauseOfDeathTypeChildNonCommunicableDiseases,
+    setvaCauseOfDeathTypeChildNonCommunicableDiseases,
+  ] = useState([]);
+  const [vaCauseOfDeathTypeAdult, setvaCauseOfDeathTypeAdult] = useState([]);
   const [objValues, setObjValues] = useState({
     durationOnART: "",
     dsdStatus: "",
