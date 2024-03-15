@@ -81,10 +81,12 @@
 			uuid VARCHAR(255) NOT NULL UNIQUE,
 			archived INT,
 			dsd_eligibility_assessment JSONB,
+            service_provided JSONB,
 			FOREIGN KEY (person_uuid) REFERENCES patient_person(uuid)
 		);
 	</sql>
 </changeSet>
+
     <changeSet  id="20240301-018"  author="Sunday">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="6">
@@ -125,27 +127,27 @@
         </sql>
     </changeSet>
 
-    <changeSet id="20240313-003" author="Taiwo Gboyegun">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="dsd_devolvement" columnName="service_provided" />
-            </not>
-        </preConditions>
-        <sql>
-            ALTER TABLE dsd_devolvement
-                RENAME COLUMN service_provider TO service_provided;
-        </sql>
-    </changeSet>
+<!--    <changeSet id="20240313-003" author="Taiwo Gboyegun">-->
+<!--        <preConditions onFail="MARK_RAN">-->
+<!--            <not>-->
+<!--                <columnExists tableName="dsd_devolvement" columnName="service_provided" />-->
+<!--            </not>-->
+<!--        </preConditions>-->
+<!--        <sql>-->
+<!--            ALTER TABLE dsd_devolvement-->
+<!--                RENAME COLUMN service_provider TO service_provided;-->
+<!--        </sql>-->
+<!--    </changeSet>-->
 
-    <changeSet id="20240313-004" author="Taiwo Gboyegun">
-        <sql>
-            ALTER TABLE dsd_devolvement
-                ALTER COLUMN service_provided DROP DEFAULT;
+<!--    <changeSet id="20240313-004" author="Taiwo Gboyegun">-->
+<!--        <sql>-->
+<!--            ALTER TABLE dsd_devolvement-->
+<!--                ALTER COLUMN service_provided DROP DEFAULT;-->
 
-            ALTER TABLE dsd_devolvement
-                ALTER COLUMN service_provided TYPE JSONB USING service_provided::JSONB;
-        </sql>
-    </changeSet>
+<!--            ALTER TABLE dsd_devolvement-->
+<!--                ALTER COLUMN service_provided TYPE JSONB USING service_provided::JSONB;-->
+<!--        </sql>-->
+<!--    </changeSet>-->
 
 
 </databaseChangeLog>
