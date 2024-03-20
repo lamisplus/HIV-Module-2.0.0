@@ -744,7 +744,7 @@ const ArtCommencement = (props) => {
                   >
                     <option value=""> Select</option>
 
-                    {patientAge && patientAge > 15 && (
+                    {patientAge && patientAge >= 15 && (
                       <>
                         {adultRegimenLine.map((value) => (
                           <option key={value.id} value={value.id}>

@@ -271,7 +271,7 @@ const Pharmacy = (props) => {
       })
       .then((response) => {
         setChildRegimenLine(
-          response.data.filter((x) => x.id === 3 || x.id === 4)
+          response.data.filter((x) => x.id === 3 || x.id === 4 || x.id === 11)
         );
         setChildrenOI(
           response.data.filter((x) => x.id === 15 || x.id === 9 || x.id === 8)
@@ -1476,7 +1476,7 @@ const Pharmacy = (props) => {
                     >
                       <option value="">Select </option>
 
-                      {patientAge > 15 && (
+                      {patientAge >= 15 && (
                         <>
                           {adultArtRegimenLine.map((value) => (
                             <option key={value.id} value={value.id}>
@@ -1485,7 +1485,7 @@ const Pharmacy = (props) => {
                           ))}
                         </>
                       )}
-                      {patientAge <= 17 && (
+                      {patientAge < 15 && (
                         <>
                           {childRegimenLine.map((value) => (
                             <option key={value.id} value={value.id}>
