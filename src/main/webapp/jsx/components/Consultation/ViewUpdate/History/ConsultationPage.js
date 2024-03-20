@@ -2044,7 +2044,7 @@ const ClinicVisit = (props) => {
                                 ))}
                               </>
                             )}
-                            {patientAge <= 17 && (
+                            {patientAge < 17 && (
                               <>
                                 {childRegimenLine.map((value) => (
                                   <option key={value.id} value={value.id}>

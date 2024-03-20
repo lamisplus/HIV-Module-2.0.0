@@ -228,7 +228,7 @@ const ArtCommencement = (props) => {
       })
       .then((response) => {
         const artRegimenChildren = response.data.filter(
-          (x) => x.id === 3 || x.id === 4
+          (x) => x.id === 3 || x.id === 4 || x.id === 11
         );
         setChildRegimenLine(artRegimenChildren);
       })
@@ -744,7 +744,7 @@ const ArtCommencement = (props) => {
                   >
                     <option value=""> Select</option>
 
-                    {patientAge && patientAge >= 15 && (
+                    {patientAge && patientAge > 15 && (
                       <>
                         {adultRegimenLine.map((value) => (
                           <option key={value.id} value={value.id}>

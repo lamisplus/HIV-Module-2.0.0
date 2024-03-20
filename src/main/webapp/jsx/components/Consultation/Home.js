@@ -442,7 +442,7 @@ const ClinicVisit = (props) => {
       })
       .then((response) => {
         setChildRegimenLine(
-          response.data.filter((x) => x.id === 3 || x.id === 4)
+          response.data.filter((x) => x.id === 3 || x.id === 4 || x.id === 11) 
         );
       })
       .catch((error) => {});
@@ -678,7 +678,7 @@ const ClinicVisit = (props) => {
   const addArvDrugOrder = (e) => {
     if (validateArvDrug()) {
       const actualRegimen =
-        patientAge <= 17 ? childRegimenLine : adultRegimenLine; //determine the regimen to filter by age
+        patientAge < 17 ? childRegimenLine : adultRegimenLine; //determine the regimen to filter by age
       const regimenName = actualRegimen.find(
         (x) => x.id === parseInt(arvDrugObj.regimenLine)
       );
@@ -2371,7 +2371,7 @@ const ClinicVisit = (props) => {
                         ))}
                       </>
                     )}
-                    {patientAge <= 17 && (
+                    {patientAge < 17 && (
                       <>
                         {childRegimenLine.map((value) => (
                           <option key={value.id} value={value.id}>
