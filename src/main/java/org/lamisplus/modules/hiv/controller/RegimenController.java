@@ -48,7 +48,9 @@ public class RegimenController {
 		return ResponseEntity.ok(repository.findAll().stream().filter(e -> e.getDescription().contains("TB Treatment Children")
 				|| e.getDescription().contains("OI")
 				||e.getDescription().contains("IPT")
-				|| e.getDescription().contains("CTX"))
+				|| e.getDescription().contains("CTX")
+				|| e.getDescription().contains("Paediatric 1st Line")
+				|| e.getDescription().contains("Paediatric 2nd Line"))
 				.collect(Collectors.toList()));
 	}
 	

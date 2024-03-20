@@ -228,7 +228,7 @@ const ArtCommencement = (props) => {
       })
       .then((response) => {
         const artRegimenChildren = response.data.filter(
-          (x) => x.id === 3 || x.id === 4 || x.id === 11
+          (x) => x.id === 3 || x.id === 4 
         );
         setChildRegimenLine(artRegimenChildren);
       })
