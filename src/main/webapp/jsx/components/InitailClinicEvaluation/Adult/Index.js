@@ -92,7 +92,7 @@ const UserRegistration = (props) => {
         <Card>
           <CardBody>
             <div className="row">
-              {patientAge <= 14 ? (
+              {patientAge < 14 ? (
                 <h2>Pediatric- Initial Clinical Evaluation </h2>
               ) : (
                 <h2>Adult- Initial Clinical Evaluation </h2>
@@ -316,7 +316,7 @@ const UserRegistration = (props) => {
                   )}
                   {activeItem === "regimen" && (
                     <>
-                      {patientAge <= 14 ? (
+                      {patientAge < 14 ? (
                         <ChildRegimenNextAppointment
                           handleItemClick={handleItemClick}
                           setCompleted={setCompleted}

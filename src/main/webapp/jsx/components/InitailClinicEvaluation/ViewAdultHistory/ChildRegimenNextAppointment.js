@@ -113,6 +113,7 @@ const ChildRegimenNextAppointment = (props) => {
       objValues.nextAppointment = props.observation.data.nextAppointment;
       objValues.clinicianName = props.observation.data.clinicianName;
     }
+    AdultRegimenLine();
   }, [props.observation.data]);
   const handleRegimen = (e) => {
     setRegimen({ ...regimenObj, [e.target.name]: e.target.value });
@@ -132,7 +133,7 @@ const ChildRegimenNextAppointment = (props) => {
       })
       .then((response) => {
         const artRegimenChildren = response.data.filter(
-          (x) => x.id === 3 || x.id === 4
+          (x) => x.id === 3 || x.id === 4 
         );
         setAdultRegimenLine(artRegimenChildren);
       })

@@ -106,7 +106,7 @@ const UserRegistration = (props) => {
       <Card>
         <CardBody>
           <div className="row">
-            {calculate_age_to_number(props.patientObj.dateOfBirth) <= 14 ? (
+            {calculate_age_to_number(props.patientObj.dateOfBirth) < 14 ? (
               <h2>Pediatric- Initial Clinical Evaluation ssd</h2>
             ) : (
               <h2>Adult- Initial Clinical Evaluation </h2>

@@ -1308,7 +1308,7 @@ const Pharmacy = (props) => {
                       disabled={objValues.refillPeriod !== null ? false : true}
                     >
                       <option value="">Select </option>
-                      {patientAge > 15 && (
+                      {patientAge >= 15 && (
                         <>
                           {adultArtRegimenLine.map((value) => (
                             <option key={value.id} value={value.id}>
@@ -1317,7 +1317,7 @@ const Pharmacy = (props) => {
                           ))}
                         </>
                       )}
-                      {patientAge <= 15 && (
+                      {patientAge < 15 && (
                         <>
                           {childRegimenLine.map((value) => (
                             <option key={value.id} value={value.id}>
