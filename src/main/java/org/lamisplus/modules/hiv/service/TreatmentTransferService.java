@@ -34,23 +34,32 @@ public class TreatmentTransferService {
     private final ApplicationCodesetRepository applicationCodesetRepository;
     private final HivEnrollmentService hivEnrollmentService;
     private final HivEnrollmentRepository hivEnrollmentr;
+    private final CurrentUserOrganizationService currentUserOrganizationService;
+
+//    public TransferPatientInfo getTransferPatientInfo(String patientUuid, Long facilityId) {
+//
+//        try {
+//            if (patientUuid != null) {
+//                TransferPatientInfo patient = observationRepository.getTransferPatientInfo(patientUuid, currentUserOrganizationService.getCurrentUserOrganization()).get();
+//                log.info("Transfer patient info: {}", patient);
+//                return observationRepository.getTransferPatientInfo(patientUuid, currentUserOrganizationService.getCurrentUserOrganization())
+//                        .orElseThrow(() -> new NoRecordFoundException("Patient record not found"));
+//            } else {
+//                throw new IllegalArgumentException("patientUuid and facilityId cannot be null");
+//            }
+//        } catch (Exception e) {
+//            log.info("Error while retrieving transfer patient info", e);
+//            throw new NoRecordFoundException("Error while retrieving transfer patient info: " + e.getMessage());
+//        }
+//    }
 
     public TransferPatientInfo getTransferPatientInfo(String patientUuid, Long facilityId) {
 
-        try {
-            if (patientUuid != null) {
-                TransferPatientInfo patient = observationRepository.getTransferPatientInfo(patientUuid, facilityId).get();
-                log.info("Transfer patient info: {}", patient);
-                return observationRepository.getTransferPatientInfo(patientUuid, facilityId)
-                        .orElseThrow(() -> new NoRecordFoundException("Patient record not found"));
-            } else {
-                throw new IllegalArgumentException("patientUuid and facilityId cannot be null");
-            }
-        } catch (Exception e) {
-            log.info("Error while retrieving transfer patient info", e);
-            throw new NoRecordFoundException("Error while retrieving transfer patient info: " + e.getMessage());
-        }
+        TransferPatientInfo patient = observationRepository.getTransferPatientInfo(patientUuid, currentUserOrganizationService.getCurrentUserOrganization()).get();
+        log.info("Transfer patient info: {}", patient);
+        return patient;
     }
+
 
     public List<LabReport> retrieveTransferPatientLabResult(Long facilityId, String uuid) {
         try {

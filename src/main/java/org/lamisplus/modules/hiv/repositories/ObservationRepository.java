@@ -218,7 +218,7 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
             "    transferForm\n" +
             "WHERE\n" +
             "    personUuid = :uuid\n")
-    Optional<TransferPatientInfo> getTransferPatientInfo(@Param("uuid") String uuid, @Param("facility_id") Long facility_id);
+    Optional<TransferPatientInfo> getTransferPatientInfo( String uuid, Long facility_id);
 
     @Query(nativeQuery = true, value =
             "SELECT " +
