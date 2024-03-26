@@ -152,6 +152,7 @@ const DsdServiceForm = (props) => {
         getViralLoadAndDate();
     }, []);
 
+    
     const getViralLoadAndDate = () => {
         axios.get(`${baseUrl}hiv/art/pharmacy/devolve/current-viral-load?personId=${patientObj.id}`, {
             headers: { Authorization: `Bearer ${token}` },
