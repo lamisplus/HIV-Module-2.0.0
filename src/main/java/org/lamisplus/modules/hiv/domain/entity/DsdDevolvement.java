@@ -59,7 +59,7 @@ public class DsdDevolvement extends HivAuditEntity implements Persistable<Long>,
     private LocalDate dateReturnToSite;
 
     @Type(type = "jsonb-node")
-    @Column(columnDefinition = "jsonb", name = "serviceProvider")
+    @Column(columnDefinition = "jsonb")
     private JsonNode serviceProvided;
 
     @Column(name = "dsd_model")
