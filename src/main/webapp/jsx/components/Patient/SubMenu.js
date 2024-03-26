@@ -105,10 +105,10 @@ function SubMenu(props) {
     });
   };
 
-  const loadMentalHealth = () => {
-    setActiveItem("health");
-    props.setActiveContent({ ...props.activeContent, route: "mhs" });
-  };
+  //const loadMentalHealth = () => {
+    //setActiveItem("health");
+    //props.setActiveContent({ ...props.activeContent, route: "mhs" });
+  //};
 
   const loadAdultEvaluation = (row) => {
     setActiveItem("initial");
@@ -234,7 +234,8 @@ function SubMenu(props) {
                   patientObj.clinicalEvaluation !== true ||
                   (patientObj.targetGroupId !== 473
                       ? patientObj.mentalHealth !== true
-                      : false)) ? (
+                      : false)
+                      ) ? (
                   <Menu size="tiny" color={"blue"} inverted pointing>
                     <Menu.Item
                         onClick={() => onClickHome()}
@@ -267,7 +268,7 @@ function SubMenu(props) {
                           Art Commencement
                         </Menu.Item>
                     )}
-                    {patientObj.targetGroupId !== null &&
+                    {/* patientObj.targetGroupId !== null &&
                         patientObj.targetGroupId !== "" &&
                         patientObj.targetGroupId !== 473 &&
                         patientObj.mentalHealth === false && (
@@ -279,7 +280,7 @@ function SubMenu(props) {
                             >
                               Mental Health Screening
                             </Menu.Item>
-                        )}
+                        )*/}
                     {/* <Menu.Item onClick={() => loadStatusUpdate(patientObj)} disabled>Client Status Update</Menu.Item>                     */}
                     <Menu.Item
                         onClick={() => loadPatientHistory(patientObj)}
@@ -444,7 +445,7 @@ function SubMenu(props) {
                             EAC
                           </Menu.Item>
 
-                          {!patientObj.mentalHealth &&
+                          {/*!patientObj.mentalHealth &&
                               patientObj.targetGroupId !== null &&
                               patientObj.targetGroupId !== 473 &&
                               patientObj.createBy === "Lamis data migration system" && (
@@ -456,7 +457,7 @@ function SubMenu(props) {
                                   >
                                     Mental Health Screening
                                   </Menu.Item>
-                              )}
+                              ) */}
 
                           {(props.patientObj.sex === "Female" ||
                               props.patientObj.sex === "FEMALE" ||
