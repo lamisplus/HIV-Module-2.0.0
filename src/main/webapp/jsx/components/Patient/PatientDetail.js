@@ -145,6 +145,19 @@ function PatientCard(props) {
     }
   );
 
+  const PatientCurrentObject = () => {
+    axios
+        .get(`${baseUrl}hiv/patient/${patientObj.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          setPatientObj1(response.data);
+        })
+        .catch((error) => {});
+  };
+
+
+
   return (
     <div className={classes.root}>
       <div
