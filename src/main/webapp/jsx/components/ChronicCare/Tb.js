@@ -560,7 +560,7 @@ const TbScreening = (props) => {
           props.tbObj.nightSweats === "No" &&
           props.tbObj.losingWeight === "No" &&
           props.tbObj.historyWithAdults === "No" &&
-        props.tbObj.poorWeightGain === "No"
+          props.tbObj.poorWeightGain === "No"
         ) {
           props.setTbObj({
             ...props.tbObj,
@@ -581,9 +581,9 @@ const TbScreening = (props) => {
           props.tbObj.coughing === "No" &&
           props.tbObj.fever === "No" &&
           props.tbObj.nightSweats === "No" &&
-          props.tbObj.losingWeight === "No" && 
+          props.tbObj.losingWeight === "No" &&
           props.tbObj.historyWithAdults === "No" &&
-        props.tbObj.poorWeightGain === "No"
+          props.tbObj.poorWeightGain === "No"
         ) {
           props.setTbObj({
             ...props.tbObj,
@@ -619,7 +619,7 @@ const TbScreening = (props) => {
           props.tbObj.nightSweats === "Yes" ||
           props.tbObj.losingWeight === "Yes" ||
           props.tbObj.historyWithAdults === "Yes" ||
-        props.tbObj.poorWeightGain === "Yes"
+          props.tbObj.poorWeightGain === "Yes"
         ) {
           props.setTbObj({
             ...props.tbObj,
@@ -680,7 +680,7 @@ const TbScreening = (props) => {
           props.tbObj.nightSweats === "Yes" ||
           props.tbObj.losingWeight === "Yes" ||
           props.tbObj.historyWithAdults === "Yes" ||
-        props.tbObj.poorWeightGain === "Yes"
+          props.tbObj.poorWeightGain === "Yes"
         ) {
           props.setTbObj({
             ...props.tbObj,
@@ -703,7 +703,7 @@ const TbScreening = (props) => {
           props.tbObj.nightSweats === "Yes" ||
           props.tbObj.losingWeight === "Yes" ||
           props.tbObj.historyWithAdults === "Yes" ||
-        props.tbObj.poorWeightGain === "Yes"
+          props.tbObj.poorWeightGain === "Yes"
         ) {
           props.setTbObj({
             ...props.tbObj,
@@ -756,10 +756,10 @@ const TbScreening = (props) => {
       ) {
         if (
           props.tbObj.coughing === "No" &&
-            props.tbObj.fever === "No" &&
-            props.tbObj.nightSweats === "No" &&
-            props.tbObj.losingWeight === "No" &&
-            props.tbObj.historyWithAdults === "No" &&
+          props.tbObj.fever === "No" &&
+          props.tbObj.nightSweats === "No" &&
+          props.tbObj.losingWeight === "No" &&
+          props.tbObj.historyWithAdults === "No" &&
           props.tbObj.poorWeightGain === "No"
         ) {
           props.setTbObj({
@@ -818,7 +818,7 @@ const TbScreening = (props) => {
           props.tbObj.nightSweats === "No" &&
           props.tbObj.losingWeight === "No" &&
           props.tbObj.historyWithAdults === "No" &&
-        props.tbObj.poorWeightGain === "NO"
+          props.tbObj.poorWeightGain === "No"
         ) {
           props.setTbObj({
             ...props.tbObj,
@@ -841,7 +841,7 @@ const TbScreening = (props) => {
           props.tbObj.nightSweats === "Yes" ||
           props.tbObj.losingWeight === "Yes" ||
           props.tbObj.historyWithAdults === "Yes" ||
-        props.tbObj.poorWeightGain === "Yes"
+          props.tbObj.poorWeightGain === "Yes"
         ) {
           props.setTbObj({
             ...props.tbObj,
@@ -927,7 +927,7 @@ const TbScreening = (props) => {
           props.tbObj.nightSweats === "Yes" ||
           props.tbObj.losingWeight === "Yes" ||
           props.tbObj.historyWithAdults === "Yes" ||
-        props.tbObj.poorWeightGain === "Yes"
+          props.tbObj.poorWeightGain === "Yes"
         ) {
           props.setTbObj({
             ...props.tbObj,
@@ -1305,58 +1305,60 @@ const TbScreening = (props) => {
                           </InputGroup>
                         </FormGroup>
                       </div>
-                      {patientAge <= 14 && (
-                        <>
-                          <div className="form-group mb-3 col-md-6">
-                            <FormGroup>
-                              <Label>
-                                History of contacts with TB adults (Paediatrics
-                                clients {"<"} 12 months){" "}
-                              </Label>
-                              <InputGroup>
-                                <Input
-                                  type="select"
-                                  name="historyWithAdults"
-                                  id="historyWithAdults"
-                                  onChange={handleInputChange}
-                                  value={props.tbObj.historyWithAdults}
-                                  disabled={
-                                    props.action === "view" ? true : false
-                                  }
-                                >
-                                  <option value="">Select</option>
-                                  <option value="Yes">Yes</option>
-                                  <option value="No">No</option>
-                                </Input>
-                              </InputGroup>
-                            </FormGroup>
-                          </div>
-                          <div className="form-group mb-3 col-md-6">
-                            <FormGroup>
-                              <Label>
-                                Poor weight gain (Paediatrics clients {"<"}12
-                                months){" "}
-                              </Label>
-                              <InputGroup>
-                                <Input
-                                  type="select"
-                                  name="poorWeightGain"
-                                  id="poorWeightGain"
-                                  onChange={handleInputChange}
-                                  value={props.tbObj.poorWeightGain}
-                                  disabled={
-                                    props.action === "view" ? true : false
-                                  }
-                                >
-                                  <option value="">Select</option>
-                                  <option value="Yes">Yes</option>
-                                  <option value="No">No</option>
-                                </Input>
-                              </InputGroup>
-                            </FormGroup>
-                          </div>
-                        </>
-                      )}
+                      {props.tbObj.tbScreeningType ===
+                        "Symptom screen (alone)" &&
+                        patientAge <= 14 && (
+                          <>
+                            <div className="form-group mb-3 col-md-6">
+                              <FormGroup>
+                                <Label>
+                                  History of contacts with TB adults
+                                  (Paediatrics clients {"<"} 12 months){" "}
+                                </Label>
+                                <InputGroup>
+                                  <Input
+                                    type="select"
+                                    name="historyWithAdults"
+                                    id="historyWithAdults"
+                                    onChange={handleInputChange}
+                                    value={props.tbObj.historyWithAdults}
+                                    disabled={
+                                      props.action === "view" ? true : false
+                                    }
+                                  >
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                  </Input>
+                                </InputGroup>
+                              </FormGroup>
+                            </div>
+                            <div className="form-group mb-3 col-md-6">
+                              <FormGroup>
+                                <Label>
+                                  Poor weight gain (Paediatrics clients {"<"}12
+                                  months){" "}
+                                </Label>
+                                <InputGroup>
+                                  <Input
+                                    type="select"
+                                    name="poorWeightGain"
+                                    id="poorWeightGain"
+                                    onChange={handleInputChange}
+                                    value={props.tbObj.poorWeightGain}
+                                    disabled={
+                                      props.action === "view" ? true : false
+                                    }
+                                  >
+                                    <option value="">Select</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                  </Input>
+                                </InputGroup>
+                              </FormGroup>
+                            </div>
+                          </>
+                        )}
 
                       <div className="form-group mb-3 col-md-6">
                         <FormGroup>
