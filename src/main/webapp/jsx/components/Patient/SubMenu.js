@@ -251,6 +251,7 @@ function SubMenu(props) {
     return false;
   };
 
+
   return (
       <div>
         {props.patientObj && props.patientObj !== null && (
@@ -262,7 +263,7 @@ function SubMenu(props) {
               (patientObj.commenced !== true ||
                   patientObj.clinicalEvaluation !== true ||
                   (patientObj.targetGroupId !== 473
-                      ? patientObj.mentalHealth !== true
+                      ? patientObj.mentalHealth !== false
                       : false)
                       ) ? (
                   <Menu size="tiny" color={"blue"} inverted pointing>
