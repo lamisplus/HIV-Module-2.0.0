@@ -1074,7 +1074,7 @@ const Tracking = (props) => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {currentMedication &&
+                                            {currentMedication && currentMedication.length > 0 &&
                                                 currentMedication.slice(0, 5).map((each, index) => {
                                                     return (
                                                         <tr key={index}>
@@ -1121,7 +1121,7 @@ const Tracking = (props) => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {labResult.slice(0, 5).map((each, index) => {
+                                        {labResult.length > 0 && labResult.slice(0, 5).map((each, index) => {
                                                 return (
                                                     <tr>
                                                         <td scope="row">{new Date(each.dateReported).toISOString().split('T')[0]}</td>

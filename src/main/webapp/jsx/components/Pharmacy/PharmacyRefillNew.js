@@ -219,8 +219,9 @@ const Pharmacy = (props) => {
       );
       setDsdDevolvement(firstDsdService.date); //Get first Occurence
     } catch (error) {
-      toast.error("Fill DSD Form", {
+      toast.error("Please complete the DSD form before accessing the pharmacy refill form", {
         position: toast.POSITION.TOP_RIGHT,
+        autoClose: 6000
       });
     }
   };
