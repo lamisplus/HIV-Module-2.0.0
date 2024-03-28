@@ -27,6 +27,9 @@ public class LinkageResponse {
     private String otherName;
     private String gender;
     private String birthDate;
+    private String facilityState;
+    private String facilityLga;
+    private String facilityUid;
     private String facilityName;
     private String datimCode;
     private String stateOfResidence;
