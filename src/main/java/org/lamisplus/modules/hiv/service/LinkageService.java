@@ -261,10 +261,12 @@ public class LinkageService {
         response.setLastName(ovcLinkage.getLastName());
         response.setOtherName(ovcLinkage.getOtherName());
         response.setGender(ovcLinkage.getGender());
-
         // Format birthDate
         response.setBirthDate(formatDate(ovcLinkage.getBirthDate()));
 
+        response.setFacilityState(ovcLinkage.getFacilityState());
+        response.setFacilityLga(ovcLinkage.getFacilityLga());
+        response.setFacilityUid(ovcLinkage.getFacilityUid());
         response.setFacilityName(ovcLinkage.getFacilityName());
         response.setDatimCode(ovcLinkage.getDatimCode());
         response.setStateOfResidence(ovcLinkage.getStateOfResidence());
