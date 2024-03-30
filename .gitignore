@@ -36,7 +36,8 @@ build/
 src/main/resources/views/static/hiv/
 !**/src/main/**/build/
 !**/src/test/**/build/
-
+.eslintcache
+eslintcache
 ### VS Code ###
 .vscode/
 
