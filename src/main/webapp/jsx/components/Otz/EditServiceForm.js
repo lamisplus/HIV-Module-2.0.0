@@ -120,21 +120,25 @@ const EditServiceForm = (props) => {
       })
       .then((response) => {
         setSavings(false);
-
         toast.success("Service OTZ enrollment update successful.");
-
         props.setActiveContent({
           ...props?.activeContent,
           route: "recent-history",
         });
+        queryClient.invalidateQueries()
+        queryClient.refetchQueries()
+        return
       })
       .catch((error) => {
         setSavings(false);
-        let errorMessage =
-          error.response.data && error.response.data.apierror.message !== ""
-            ? error.response.data.apierror.message
-            : "Something went wrong, please try again";
-        toast.error(errorMessage);
+        if (error.response && error.response.data) {
+          let errorMessage =
+            error.response.data.apierror &&
+            error.response.data.apierror.message !== ""
+              ? error.response.data.apierror.message
+              : "Something went wrong, please try again";
+          toast.error(errorMessage);
+        }
       });
   };
 
@@ -183,12 +187,16 @@ const EditServiceForm = (props) => {
         }
       )
       .then((response) => {
+       
+        console.log("helloooo",response.data)
         const patientDTO = response?.data;
         const otzData =
           patientDTO?.filter?.((item) => item?.type === "Service OTZ")?.[0] ||
           {};
         formik.setValues(otzData?.data);
         setCurrentRecord(otzData);
+         queryClient.invalidateQueries()
+        queryClient.refetchQueries()
       })
       .catch((error) => {});
   };

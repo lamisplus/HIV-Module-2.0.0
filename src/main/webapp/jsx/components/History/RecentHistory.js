@@ -14,6 +14,7 @@ import "react-widgets/dist/css/react-widgets.css";
 import { toast } from "react-toastify";
 import { Modal } from "react-bootstrap";
 import { Button } from "semantic-ui-react";
+import { queryClient } from "../../../utils/queryClient";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -601,6 +602,8 @@ const RecentHistory = (props) => {
             headers: { Authorization: `Bearer ${token}` },
           })
           .then((response) => {
+            queryClient.invalidateQueries();
+            queryClient.refetchQueries();
             toast.success("OTZ record Deleted Successfully");
             RecentActivities();
             toggle();
@@ -706,6 +709,8 @@ const RecentHistory = (props) => {
           })
           .then((response) => {
             toast.success("Paediatric OTZ record deleted successfully");
+            queryClient.invalidateQueries();
+            queryClient.refetchQueries();
             RecentActivities();
             toggle();
             setSaving(false);

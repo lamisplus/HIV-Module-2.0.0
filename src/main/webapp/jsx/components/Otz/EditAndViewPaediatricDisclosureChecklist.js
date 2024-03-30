@@ -201,9 +201,9 @@ const EditAndViewPeadiatricDisclosureChecklist = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
+        
         const patientDTO = response.data.data;
         formik.setValues(patientDTO);
-        //props.setActiveContent({...props.activeContent, route:'recent-history'})//Redirect to patient home page
       })
       .catch((error) => {});
   };

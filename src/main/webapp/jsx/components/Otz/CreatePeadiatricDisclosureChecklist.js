@@ -15,6 +15,7 @@ import { FaPlus, FaAngleDown } from "react-icons/fa";
 import moment from "moment";
 import { url as baseUrl, token as token } from "./../../../api";
 import { usePeadiatricFormValidationSchema } from "../../formValidationSchema/PeadiatricDisclosureChecklistValidationSchema";
+import { queryClient } from "../../../utils/queryClient";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -106,6 +107,8 @@ const CreatePeadiatricDisclosureChecklist = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
+        queryClient.invalidateQueries();
+        queryClient.refetchQueries();
         setSavings(false);
         // props.patientObj.mentalHealth = true;
         toast.success("Paediatric OTZ screening save successful.");

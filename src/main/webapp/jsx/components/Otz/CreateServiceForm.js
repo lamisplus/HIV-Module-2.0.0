@@ -16,6 +16,7 @@ import axios from "axios";
 import { url as baseUrl } from "./../../../api";
 import { token as token } from "./../../../api";
 import CustomFormGroup from "./CustomFormGroup";
+import { queryClient } from "../../../utils/queryClient";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -109,10 +110,10 @@ const CreateServiceForm = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
+        queryClient.invalidateQueries()
+        queryClient.refetchQueries()
         setSavings(false);
-
         toast.success("Service OTZ enrollment saved successful.");
-
         props.setActiveContent({
           ...props?.activeContent,
           route: "recent-history",

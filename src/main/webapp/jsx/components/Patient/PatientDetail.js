@@ -147,16 +147,14 @@ function PatientCard(props) {
 
   const PatientCurrentObject = () => {
     axios
-        .get(`${baseUrl}hiv/patient/${patientObj.id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((response) => {
-          setPatientObj1(response.data);
-        })
-        .catch((error) => {});
+      .get(`${baseUrl}hiv/patient/${patientObj.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        setPatientObj1(response.data);
+      })
+      .catch((error) => {});
   };
-
-
 
   return (
     <div className={classes.root}>
@@ -188,7 +186,6 @@ function PatientCard(props) {
               expandedPatientObj={patientObj1}
               art={art}
               activeContent={activeContent}
-              
             />
           </Sticky>
           <br />
@@ -285,7 +282,6 @@ function PatientCard(props) {
               patientObj={patientObj}
               setActiveContent={setActiveContent}
               activeContent={activeContent}
-              
             />
           )}
           {activeContent.route === "art-commencement" && (
@@ -499,6 +495,25 @@ function PatientCard(props) {
             />
           )}
 
+          {activeContent.route === "otz-peadiatric-disclosure-checklist" && (
+            <OtzPeadiatricDisclosureChecklist
+              patientObj={patientObj}
+              setActiveContent={setActiveContent}
+              activeContent={activeContent}
+            />
+          )}
+
+          {activeContent.route === "otz-enrollment-form" && (
+            <EnrollmentOtz
+              patientObj={patientObj}
+              setActiveContent={setActiveContent}
+              activeContent={{
+                ...activeContent,
+                patientId: patientObj?.id || patientObj1?.id,
+              }}
+            />
+          )}
+
           {activeContent.route === "otz-service-form" && (
             <OtzServiceForm
               patientObj={patientObj}
@@ -511,16 +526,7 @@ function PatientCard(props) {
               art={art}
             />
           )}
-          {activeContent.route === "otz-enrollment-form" && (
-            <EnrollmentOtz
-              patientObj={patientObj}
-              setActiveContent={setActiveContent}
-              activeContent={{
-                ...activeContent,
-                patientId: patientObj?.id || patientObj1?.id,
-              }}
-            />
-          )}
+
           {activeContent.route === "otz-register" && (
             <OtzRegister
               patientObj={patientObj}
@@ -530,13 +536,6 @@ function PatientCard(props) {
           )}
           {activeContent.route === "filled-transferForm" && (
             <DashboardFilledTransferForm
-              patientObj={patientObj}
-              setActiveContent={setActiveContent}
-              activeContent={activeContent}
-            />
-          )}
-          {activeContent.route === "otz-peadiatric-disclosure-checklist" && (
-            <OtzPeadiatricDisclosureChecklist
               patientObj={patientObj}
               setActiveContent={setActiveContent}
               activeContent={activeContent}
