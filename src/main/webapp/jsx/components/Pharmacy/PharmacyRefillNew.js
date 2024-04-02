@@ -219,9 +219,13 @@ const Pharmacy = (props) => {
       );
       setDsdDevolvement(firstDsdService.date); //Get first Occurence
     } catch (error) {
-      toast.error("Fill DSD Form", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
+      toast.error(
+        "Please Complete DSD form before submitting the pharmacy form",
+        {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 10000,
+        }
+      );
     }
   };
 
@@ -291,6 +295,8 @@ const Pharmacy = (props) => {
       })
       .catch((error) => {});
   };
+
+  console.log("RegimenType", regimenType);
   const patientAge = calculate_age_to_number(patientObj.dateOfBirth); //Age calculation
   //GET ChildRegimenLine
   const ChildRegimenLine = () => {
