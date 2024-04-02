@@ -393,7 +393,7 @@ const handleInputChangeCurrentHtnRegimen = (selectedValues) => {
                     <div className="row">
                       <div className="form-group mb-3 col-md-6">
                         <FormGroup>
-                          <Label>BP above 140/80mmHg??</Label>
+                          <Label>BP above 140/80mmHg?</Label>
                           <Input
                             type="select"
                             name="bp"
