@@ -519,9 +519,9 @@ const TbScreening = (props) => {
       if (props.tbObj.isTbTestConfirmed === "Yes") {
         props.setTbObj({
           ...props.tbObj,
-          outcome: "Presumptive Eligible for TPT",
+          outcome: "Presumptive",
           status: "Confirmed TB",
-          eligibleForTPT: "",
+          eligibleForTPT: "No",
         });
       }
     }
@@ -984,9 +984,9 @@ const TbScreening = (props) => {
         if (props.tbObj.isTbTestConfirmed === "Yes") {
           props.setTbObj({
             ...props.tbObj,
-            outcome: "Presumptive Eligible for TPT",
+            outcome: "Presumptive ",
             status: "Confirmed TB",
-            eligibleForTPT: "",
+            eligibleForTPT: "No",
           });
         }
       }

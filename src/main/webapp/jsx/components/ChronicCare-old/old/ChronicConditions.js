@@ -136,213 +136,210 @@ const ChronicConditions = (props) => {
     }
     
 return (
-        <>  
-        
-            <Card >
-                <CardBody>   
-                <h2 style={{color:'#000'}}>Screening for Chronic Conditions(Hypertension & Diabetics)</h2>
-                <br/>
-                    <form >
-                    {/* Medical History form inputs */}
-                    <div className="row">
-                    <div className="form-group mb-3 col-md-4">
-                            <FormGroup>
-                            <Label >Visit Date *</Label>
-                            <InputGroup> 
-                                <Input 
-                                    type="date"
-                                    
-                                    name="visitDate"
-                                    id="visitDate"
-                                    
-                                />
-                            </InputGroup>                                        
-                            </FormGroup>
-                            {errors.visitDate !=="" ? (
-                                <span className={classes.error}>{errors.visitDate}</span>
-                            ) : "" }
-                    </div>
-                    <div className="form-group mb-3 col-md-8"></div>   
-                    </div>
-                    <div className="row">
-                    <div className="form-group mb-3 col-md-6">                                    
-                            <FormGroup>
-                            <Label>Known Hypertensive ?</Label>
-                                    <Input 
-                                        type="select"
-                                        name="assessment"
-                                        id="assessment"
-                                        
-                                    >
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                    </Input>
+  <>
+    <Card>
+      <CardBody>
+        <h2 style={{ color: "#000" }}>
+          Screening for Chronic Conditions(Hypertension & Diabetics)
+        </h2>
+        <br />
+        <form>
+          {/* Medical History form inputs */}
+          <div className="row">
+            <div className="form-group mb-3 col-md-4">
+              <FormGroup>
+                <Label>Visit Date *</Label>
+                <InputGroup>
+                  <Input type="date" name="visitDate" id="visitDate" />
+                </InputGroup>
+              </FormGroup>
+              {errors.visitDate !== "" ? (
+                <span className={classes.error}>{errors.visitDate}</span>
+              ) : (
+                ""
+              )}
+            </div>
+            <div className="form-group mb-3 col-md-8"></div>
+          </div>
+          <div className="row">
+            <div className="form-group mb-3 col-md-6">
+              <FormGroup>
+                <Label>Known Hypertensive ?</Label>
+                <Input type="select" name="assessment" id="assessment">
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </Input>
+              </FormGroup>
+            </div>
+            <div className="form-group mb-3 col-md-6">
+              <FormGroup>
+                <Label>First time identified within the programme?</Label>
+                <Input type="select" name="assessment" id="assessment">
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </Input>
+              </FormGroup>
+            </div>
+            <div className="row">
+              <div className="form-group mb-3 col-md-12">
+                <FormGroup>
+                  <Label>Blood Pressure</Label>
+                  <InputGroup>
+                    <InputGroupText
+                      addonType="append"
+                      style={{
+                        backgroundColor: "#014D88",
+                        color: "#fff",
+                        border: "1px solid #014D88",
+                        borderRadius: "0rem",
+                      }}
+                    >
+                      systolic(mmHg)
+                    </InputGroupText>
+                    <Input
+                      type="number"
+                      name="systolic"
+                      id="systolic"
+                      min="90"
+                      max="2240"
+                      onChange={handleInputChangeVitalSignDto}
+                      value={vital.systolic}
+                      onKeyUp={handleInputValueCheckSystolic}
+                      style={{
+                        border: "1px solid #014D88",
+                        borderRadius: "0rem",
+                      }}
+                    />
+                    <InputGroupText
+                      addonType="append"
+                      style={{
+                        backgroundColor: "#014D88",
+                        color: "#fff",
+                        border: "1px solid #014D88",
+                        borderRadius: "0rem",
+                      }}
+                    >
+                      diastolic(mmHg)
+                    </InputGroupText>
+                    <Input
+                      type="number"
+                      name="diastolic"
+                      id="diastolic"
+                      min={0}
+                      max={140}
+                      onChange={handleInputChangeVitalSignDto}
+                      value={vital.diastolic}
+                      onKeyUp={handleInputValueCheckDiastolic}
+                      style={{
+                        border: "1px solid #014D88",
+                        borderRadius: "0rem",
+                      }}
+                    />
+                  </InputGroup>
+                  {vitalClinicalSupport.systolic !== "" ? (
+                    <span className={classes.error}>
+                      {vitalClinicalSupport.systolic}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                  {errors.systolic !== "" ? (
+                    <span className={classes.error}>{errors.systolic}</span>
+                  ) : (
+                    ""
+                  )}
+                  {vitalClinicalSupport.diastolic !== "" ? (
+                    <span className={classes.error}>
+                      {vitalClinicalSupport.diastolic}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                  {errors.diastolic !== "" ? (
+                    <span className={classes.error}>{errors.diastolic}</span>
+                  ) : (
+                    ""
+                  )}
+                </FormGroup>
+              </div>
+            </div>
+            <div className="form-group mb-3 col-md-6">
+              <FormGroup>
+                <Label>BP above 140/80mmHg?</Label>
+                <Input type="select" name="assessment" id="assessment">
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </Input>
+              </FormGroup>
+            </div>
 
-                            </FormGroup>
-                    </div>
-                    <div className="form-group mb-3 col-md-6">                                    
-                            <FormGroup>
-                            <Label>First time identified within the programme?</Label>
-                                    <Input 
-                                        type="select"
-                                        name="assessment"
-                                        id="assessment"
-                                        
-                                    >
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                    </Input>
-
-                            </FormGroup>
-                    </div>
-                    <div className="row">
-                    <div className="form-group mb-3 col-md-12">
-                        <FormGroup>
-                        <Label >Blood Pressure</Label>
-                        <InputGroup>
-                        <InputGroupText addonType="append" style={{ backgroundColor:"#014D88", color:"#fff", border: "1px solid #014D88", borderRadius:"0rem"}}>
-                                systolic(mmHg)
-                        </InputGroupText> 
-                            <Input 
-                                type="number"
-                                name="systolic"
-                                id="systolic"
-                                min="90"
-                                max="2240"
-                                onChange={handleInputChangeVitalSignDto}
-                                value={vital.systolic}
-                                onKeyUp={handleInputValueCheckSystolic}
-                                style={{border: "1px solid #014D88", borderRadius:"0rem"}} 
-                            />
-                            <InputGroupText addonType="append" style={{ backgroundColor:"#014D88", color:"#fff", border: "1px solid #014D88", borderRadius:"0rem"}}>
-                            diastolic(mmHg)
-                            </InputGroupText>
-                                <Input 
-                                type="number"
-                                name="diastolic"
-                                id="diastolic"
-                                min={0}
-                                max={140}
-                                onChange={handleInputChangeVitalSignDto}
-                                value={vital.diastolic}
-                                onKeyUp={handleInputValueCheckDiastolic} 
-                                style={{border: "1px solid #014D88", borderRadius:"0rem"}}
-                                />
-                            
-                            
-                        </InputGroup>
-                        {vitalClinicalSupport.systolic !=="" ? (
-                        <span className={classes.error}>{vitalClinicalSupport.systolic}</span>
-                        ) : ""}
-                        {errors.systolic !=="" ? (
-                            <span className={classes.error}>{errors.systolic}</span>
-                        ) : "" }  
-                        {vitalClinicalSupport.diastolic !=="" ? (
-                        <span className={classes.error}>{vitalClinicalSupport.diastolic}</span>
-                        ) : ""}
-                        {errors.diastolic !=="" ? (
-                            <span className={classes.error}>{errors.diastolic}</span>
-                        ) : "" }          
-                        </FormGroup>
-                    </div>
-                    </div>
-                    <div className="form-group mb-3 col-md-6">                                    
-                            <FormGroup>
-                            <Label>BP above 14080mmHg?</Label>
-                                    <Input 
-                                        type="select"
-                                        name="assessment"
-                                        id="assessment"
-                                        
-                                    >
-                                    <option value="">Select</option>
-                                    <option value="Yes">Yes</option>
-                                    <option value="No">No</option>
-                                    </Input>
-
-                            </FormGroup>
-                    </div>
-
-                    <div className="row">
-                        <div className="form-group mb-3 col-md-6">                                    
-                                <FormGroup>
-                                <Label>Know diabetic?</Label>
-                                        <Input 
-                                            type="select"
-                                            name="assessment"
-                                            id="assessment"
-                                            
-                                        >
-                                        <option value="">Select</option>
-                                        <option value="Yes">Yes</option>
-                                        <option value="No">No</option>
-                                        </Input>
-
-                                </FormGroup>
-                        </div>
-                        <div className="form-group mb-3 col-md-6">                                    
-                                <FormGroup>
-                                <Label>First time identified within the programme?</Label>
-                                        <Input 
-                                            type="select"
-                                            name="assessment"
-                                            id="assessment"
-                                            
-                                        >
-                                        <option value="">Select</option>
-                                        <option value="Yes">Yes</option>
-                                        <option value="No">No</option>
-                                        </Input>
-
-                                </FormGroup>
-                        </div>
-                        <div className="form-group mb-3 col-md-6">                                    
-                                <FormGroup>
-                                <Label>Increased frequency of urination</Label>
-                                        <Input 
-                                            type="select"
-                                            name="assessment"
-                                            id="assessment"
-                                            
-                                        >
-                                        <option value="">Select</option>
-                                        <option value="Yes">Yes</option>
-                                        <option value="No">No</option>
-                                        </Input>
-
-                                </FormGroup>
-                        </div>
-                        <div className="form-group mb-3 col-md-6">                                    
-                                <FormGroup>
-                                <Label>Increased water(fluid) intake?</Label>
-                                        <Input 
-                                            type="select"
-                                            name="assessment"
-                                            id="assessment"
-                                            
-                                        >
-                                        <option value="">Select</option>
-                                        <option value="Yes">Yes</option>
-                                        <option value="No">No</option>
-                                        </Input>
-
-                                </FormGroup>
-                        </div>
-                    </div>
-                    </div>
-                    <br/>
-                    <Button content='Back' icon='left arrow' labelPosition='left' style={{backgroundColor:"#992E62", color:'#fff'}} onClick={()=>handleItemClick('past-arv', 'past-arv')}/>
-                    <Button content='Next' type="submit" icon='right arrow' labelPosition='right' style={{backgroundColor:"#014d88", color:'#fff'}} onClick={handleSubmit}/>
-                    
-                    </form>
-                    
-                </CardBody>
-            </Card> 
-                                     
-        </>
-    );
+            <div className="row">
+              <div className="form-group mb-3 col-md-6">
+                <FormGroup>
+                  <Label>Know diabetic?</Label>
+                  <Input type="select" name="assessment" id="assessment">
+                    <option value="">Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </Input>
+                </FormGroup>
+              </div>
+              <div className="form-group mb-3 col-md-6">
+                <FormGroup>
+                  <Label>First time identified within the programme?</Label>
+                  <Input type="select" name="assessment" id="assessment">
+                    <option value="">Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </Input>
+                </FormGroup>
+              </div>
+              <div className="form-group mb-3 col-md-6">
+                <FormGroup>
+                  <Label>Increased frequency of urination</Label>
+                  <Input type="select" name="assessment" id="assessment">
+                    <option value="">Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </Input>
+                </FormGroup>
+              </div>
+              <div className="form-group mb-3 col-md-6">
+                <FormGroup>
+                  <Label>Increased water(fluid) intake?</Label>
+                  <Input type="select" name="assessment" id="assessment">
+                    <option value="">Select</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </Input>
+                </FormGroup>
+              </div>
+            </div>
+          </div>
+          <br />
+          <Button
+            content="Back"
+            icon="left arrow"
+            labelPosition="left"
+            style={{ backgroundColor: "#992E62", color: "#fff" }}
+            onClick={() => handleItemClick("past-arv", "past-arv")}
+          />
+          <Button
+            content="Next"
+            type="submit"
+            icon="right arrow"
+            labelPosition="right"
+            style={{ backgroundColor: "#014d88", color: "#fff" }}
+            onClick={handleSubmit}
+          />
+        </form>
+      </CardBody>
+    </Card>
+  </>
+);
 };
 
 export default ChronicConditions

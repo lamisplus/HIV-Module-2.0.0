@@ -292,6 +292,8 @@ const Pharmacy = (props) => {
       })
       .catch((error) => {});
   };
+
+  // console.log("RegimenType", regimenType);
   const patientAge = calculate_age_to_number(patientObj.dateOfBirth); //Age calculation
   //GET ChildRegimenLine
   const ChildRegimenLine = () => {
