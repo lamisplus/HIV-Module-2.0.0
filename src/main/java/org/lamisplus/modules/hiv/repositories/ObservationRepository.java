@@ -62,7 +62,7 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
             "     cc.height AS height,\n" +
             "            lastVisit.visit_date AS dateOfLastClinicalVisist,\n" +
             "     lastVisit.pregnancy_status AS pregnancyStatus,\n" +
-            "     lastVisit.adherence_level AS adherenceLevel,\n" +
+            "     bac_adl.display AS adherenceLevel,\n" +
             "     bac.display AS currentWhoClinical,\n" +
             "     cd4.currentCD4Count AS currentCD4Count,\n" +
             "     bcd4.baseLineCD4Count AS baselineCD4,\n" +
@@ -121,7 +121,7 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
             "            LEFT JOIN (\n" +
             " \n" +
             "            \t\t\t\tSELECT * FROM (\t\t\n" +
-            "SELECT person_uuid, visit_date, adherence_level,next_appointment, tb_status, pregnancy_status, facility_id,clinical_stage_id, \n" +
+            "SELECT person_uuid, visit_date, level_of_adherence, next_appointment, tb_status, pregnancy_status, facility_id,clinical_stage_id, \n" +
             "ROW_NUMBER() OVER (PARTITION BY person_uuid ORDER BY visit_date DESC) AS row\n" +
             "FROM hiv_art_clinical\n" +
             "\tWHERE archived = 0\n" +
@@ -131,6 +131,7 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
             " INNER JOIN base_organisation_unit facility_lga ON facility_lga.id = facility.parent_organisation_unit_id\n" +
             " INNER JOIN base_organisation_unit facility_state ON facility_state.id = facility_lga.parent_organisation_unit_id\n" +
             " LEFT JOIN base_application_codeset bac ON bac.id = lastVisit.clinical_stage_id\n" +
+            " LEFT JOIN base_application_codeset bac_adl on  cast(lastVisit.level_of_adherence as bigint)  = bac_adl.id\t\n" +
             " LEFT JOIN hiv_eac eac ON eac.person_uuid = p.uuid\n" +
             " LEFT JOIN (\n" +
             "     SELECT DISTINCT ON (sm.patient_uuid)\n" +

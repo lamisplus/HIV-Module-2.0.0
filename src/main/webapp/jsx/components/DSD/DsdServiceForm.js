@@ -153,22 +153,43 @@ const DsdServiceForm = (props) => {
     }, []);
 
     
+    // const getViralLoadAndDate = () => {
+    //     axios.get(`${baseUrl}hiv/art/pharmacy/devolve/current-viral-load?personId=${patientObj.id}`, {
+    //         headers: { Authorization: `Bearer ${token}` },
+    //     })
+    //         .then((response) => {
+    //             const { viralLoadTestResult, viralLoadResultDate } = response.data;
+    //             setPayLoad({
+    //                 ...payload,
+    //                 viralLoadTestResult,
+    //                 viralLoadTestResultDate: viralLoadResultDate
+    //             });
+    //         })
+    //         .catch((error) => {
+    //             // console.error(error);
+    //         });
+    // };
+
+    console.log("patientObj", patientObj);
+
     const getViralLoadAndDate = () => {
-        axios.get(`${baseUrl}hiv/art/pharmacy/devolve/current-viral-load?personId=${patientObj.id}`, {
+        axios.get(`${baseUrl}hiv/art/pharmacy/devolve/get-patient-current-viral-load/${patientObj.personUuid}`, {
             headers: { Authorization: `Bearer ${token}` },
         })
             .then((response) => {
-                const { viralLoadTestResult, viralLoadResultDate } = response.data;
+                // const { viralLoadTestResult, dateResultReported } = response.data;
+                const  {resultReported, dateResultReported} = response.data;
                 setPayLoad({
                     ...payload,
-                    viralLoadTestResult,
-                    viralLoadTestResultDate: viralLoadResultDate
+                    viralLoadTestResult: resultReported,
+                    viralLoadTestResultDate: dateResultReported
                 });
             })
             .catch((error) => {
                 // console.error(error);
             });
     };
+
 
     // Method to calculate DSD Eligibility assessment score
     const getEligibilityAssessmentScore = () => {
