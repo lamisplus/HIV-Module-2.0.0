@@ -3,6 +3,11 @@ import axios from "axios";
 import { Dropdown, Menu, Segment } from "semantic-ui-react";
 import { url as baseUrl, token } from "../../../api";
 import { YouTube } from "@material-ui/icons";
+import { queryClient } from "../../../utils/queryClient";
+import { GET_CURRENT_LAB_RECORD } from "../../../utils/queryKeys";
+import { getCurrentLabResult } from "../../services/getCurrentLabResult";
+import { useQuery} from "react-query";
+
 
 function SubMenu(props) {
   //const classes = useStyles();
@@ -21,7 +26,7 @@ function SubMenu(props) {
       Observation();
       getOldRecordIfExists();
     }
-    LabOrders();
+ 
   }, []);
 
   //Get list
@@ -34,20 +39,38 @@ function SubMenu(props) {
         .catch((error) => {});
   };
 
-  const LabOrders = () => {
-    axios
-        .get(`${baseUrl}laboratory/vl-results/patients/${props.patientObj.id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((response) => {
-          const dynamicArray = response?.data;
-          if (dynamicArray?.length > 0) {
-            let lastItem = dynamicArray[dynamicArray.length - 1];
-            setLabResult(lastItem);
-          }
-        })
-        .catch((error) => {});
-  };
+  
+
+  const {refetch} = useQuery(
+    [GET_CURRENT_LAB_RECORD, props?.patientObj?.id],
+    () => getCurrentLabResult(props?.patientObj?.id),
+    {
+      onSuccess: (data) => {
+        const dynamicArray = data;
+        if (dynamicArray?.length > 0) {
+          let lastItem = dynamicArray[dynamicArray.length - 1];
+          setLabResult(lastItem);
+        }
+        getOldRecordIfExists()
+
+      },
+      refetchOnMount: "always",
+      staleTime: 100,
+      cacheTime: 100,
+      onError: (error) => {
+        if (error.response && error.response.data) {
+          let errorMessage =
+            error.response.data.apierror &&
+            error.response.data.apierror.message !== ""
+              ? error.response.data.apierror.message
+              : "Something went wrong, please try again";
+          toast.error(errorMessage);
+        } else {
+          toast.error("Something went wrong. Please try again...");
+        }
+      },
+    }
+  );
 
   const loadEAC = (row) => {
     setActiveItem("eac");
@@ -105,10 +128,10 @@ function SubMenu(props) {
     });
   };
 
-  const loadMentalHealth = () => {
-    setActiveItem("health");
-    props.setActiveContent({ ...props.activeContent, route: "mhs" });
-  };
+  //const loadMentalHealth = () => {
+    //setActiveItem("health");
+    //props.setActiveContent({ ...props.activeContent, route: "mhs" });
+  //};
 
   const loadAdultEvaluation = (row) => {
     setActiveItem("initial");
@@ -164,6 +187,9 @@ function SubMenu(props) {
     props.setActiveContent({ ...props.activeContent, route: "chronic-care", activeTab:"home" });
   };
   const loadOtzServiceForm = () => {
+    //Please do not remove
+    queryClient.invalidateQueries()
+    refetch()
     setActiveItem("otz-service-form");
     props.setActiveContent({
       ...props.activeContent,
@@ -173,6 +199,9 @@ function SubMenu(props) {
     });
   };
   const loadOtzEnrollmentForm = () => {
+    //Please do not remove
+    queryClient.invalidateQueries()
+    refetch()
     setActiveItem("otz-enrollment-form");
     props.setActiveContent({
       ...props.activeContent,
@@ -222,6 +251,7 @@ function SubMenu(props) {
     return false;
   };
 
+
   return (
       <div>
         {props.patientObj && props.patientObj !== null && (
@@ -233,8 +263,9 @@ function SubMenu(props) {
               (patientObj.commenced !== true ||
                   patientObj.clinicalEvaluation !== true ||
                   (patientObj.targetGroupId !== 473
-                      ? patientObj.mentalHealth !== true
-                      : false)) ? (
+                      ? patientObj.mentalHealth !== false
+                      : false)
+                      ) ? (
                   <Menu size="tiny" color={"blue"} inverted pointing>
                     <Menu.Item
                         onClick={() => onClickHome()}
@@ -267,7 +298,7 @@ function SubMenu(props) {
                           Art Commencement
                         </Menu.Item>
                     )}
-                    {patientObj.targetGroupId !== null &&
+                    {/* patientObj.targetGroupId !== null &&
                         patientObj.targetGroupId !== "" &&
                         patientObj.targetGroupId !== 473 &&
                         patientObj.mentalHealth === false && (
@@ -279,7 +310,7 @@ function SubMenu(props) {
                             >
                               Mental Health Screening
                             </Menu.Item>
-                        )}
+                        )*/}
                     {/* <Menu.Item onClick={() => loadStatusUpdate(patientObj)} disabled>Client Status Update</Menu.Item>                     */}
                     <Menu.Item
                         onClick={() => loadPatientHistory(patientObj)}
@@ -444,7 +475,7 @@ function SubMenu(props) {
                             EAC
                           </Menu.Item>
 
-                          {!patientObj.mentalHealth &&
+                          {/*!patientObj.mentalHealth &&
                               patientObj.targetGroupId !== null &&
                               patientObj.targetGroupId !== 473 &&
                               patientObj.createBy === "Lamis data migration system" && (
@@ -456,7 +487,7 @@ function SubMenu(props) {
                                   >
                                     Mental Health Screening
                                   </Menu.Item>
-                              )}
+                              ) */}
 
                           {(props.patientObj.sex === "Female" ||
                               props.patientObj.sex === "FEMALE" ||

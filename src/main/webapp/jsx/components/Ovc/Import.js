@@ -20,7 +20,8 @@ const Import = (props) => {
   function handleChange(event) {
     setFile(event.target.files[0]);
   }
-  function handleSubmit(event) {
+  
+  async function handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData();
     formData.append("file", file);
@@ -32,18 +33,28 @@ const Import = (props) => {
         Authorization: `Bearer ${token}`,
       },
     };
-    axios
-      .post(`${url}linkages/import`, formData, config)
-      .then((response) => {
-        toast.success("Data imported  and record updated successfully!");
-        props.toggle();
-      })
-      .catch((error) => {
-        if (error) {
-          toast.error("File was not imported successfully!");
-        }
-      });
+
+    try {
+      const response = await axios.post(
+        `${url}linkages/import`,
+        formData,
+        config
+      );
+      console.log(response);
+
+      if (response.data === "file not imported successfully") {
+        toast.error("File not imported successfully!");
+      } else {
+        toast.success("File imported successfully!");
+      }
+
+      props.toggle();
+    } catch (error) {
+      console.log(error);
+      toast.error("An error occurred while importing the file!");
+    }
   }
+
   return (
     <>
       <Modal
