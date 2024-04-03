@@ -144,6 +144,7 @@ const Tracking = (props) => {
     reasonForLossToFollowUpOthers: "",
     attempts: "",
     patientId: props.patientObj.id,
+    dateOfDeath: "",
     statusTracker: {
       agreedDate: "",
       causeOfDeath: "",
@@ -443,6 +444,25 @@ const Tracking = (props) => {
   const handleInputChange = (e) => {
     setErrors({ ...temp, [e.target.name]: "" });
     setObjValues({ ...objValues, [e.target.name]: e.target.value });
+
+    setObjValues(prevObjValues => ({
+      ...prevObjValues,
+      statusTracker: {
+        ...prevObjValues.statusTracker,
+        [e.target.name]: e.target.value
+      }
+    }));
+    if (e.target.name === "causeOfDeath") {
+      setObjValues(prevObjValues => ({
+        ...prevObjValues,
+        statusTracker: {
+          ...prevObjValues.statusTracker,
+          vaCauseOfDeath: "",
+          vaCauseOfDeathType: ""
+        }
+      }));
+    }
+
     //The logics below is to make sure that no value is save if the options are not selected
     if (
       e.target.name === "dsdStatus" &&
@@ -460,6 +480,7 @@ const Tracking = (props) => {
       objValues.dateReturnToCare = "";
       objValues.referredFor = "";
       objValues.reasonForDiscountinuation = "";
+      objValues.
       setObjValues({ ...objValues, ["dateOfDiscontinuation"]: " " });
       setObjValues({ ...objValues, ["dateReturnToCare"]: " " });
       setObjValues({ ...objValues, ["referredFor"]: " " });
@@ -471,9 +492,19 @@ const Tracking = (props) => {
       e.target.value !== "Death"
     ) {
       objValues.causeOfDeath = "";
+      objValues.statusTracker.vaCauseOfDeath = "";
+      objValues.statusTracker.vaCauseOfDeathType = "";
       objValues.causeOfDeathOthers = "";
+      objValues.dateOfDeath = "";
       setObjValues({ ...objValues, ["causeOfDeath"]: " " });
       setObjValues({ ...objValues, ["causeOfDeathOthers"]: " " });
+      setObjValues({ ...objValues, [e.target.name]: e.target.value });
+    }
+    if( e.target.name === "reasonForDiscountinuation" &&
+        e.target.name === "death" ){
+      objValues.statusTracker.vaCauseOfDeath = "";
+      objValues.statusTracker.vaCauseOfDeathType = "";
+      objValues.dateOfDeath = "";
       setObjValues({ ...objValues, [e.target.name]: e.target.value });
     }
     if (
@@ -576,6 +607,12 @@ const Tracking = (props) => {
     {
       objValues.reasonForDiscountinuation === "Death" &&
         (temp.causeOfDeath = objValues.causeOfDeath
+          ? ""
+          : "This field is required");
+    }
+    {
+      objValues.reasonForDiscountinuation === "Death" &&
+      (temp.dateOfDeath = objValues.dateOfDeath
           ? ""
           : "This field is required");
     }
@@ -1487,6 +1524,7 @@ const Tracking = (props) => {
                               border: "1px solid #014D88",
                               borderRadius: "0.25rem",
                             }}
+                            disabled={disabledField}
                         >
                           <option value="">Select</option>
                           {causeDeath.map((value) => (
@@ -1504,6 +1542,32 @@ const Tracking = (props) => {
                         )}
                       </FormGroup>
                     </div>
+                    <div className="form-group mb-3 col-md-4">
+                      <FormGroup>
+                        <Label for=""> Date of Death</Label>
+                        <Input
+                            type="date"
+                            name="dateOfDeath"
+                            id="dateOfDeath"
+                            onChange={handleInputChange}
+                            value={objValues.dateOfDeath}
+                            min={enrollDate !== "" ? enrollDate : ""}
+                            max={moment(new Date()).format("YYYY-MM-DD")}
+                            style={{
+                              border: "1px solid #014D88",
+                              borderRadius: "0.25rem",
+                            }}
+                            disabled={disabledField}
+                        />
+                        {errors.dateOfDeath !== "" ? (
+                            <span className={classes.error}>
+                          {errors.dateOfDeath}
+                        </span>
+                        ) : (
+                            ""
+                        )}
+                      </FormGroup>
+                    </div>
                     <div className="form-group mb-3 col-md-6">
                       <FormGroup>
                         <Label for="">VA Cause of Death</Label>
@@ -1512,7 +1576,8 @@ const Tracking = (props) => {
                             name="vaCauseOfDeathType"
                             id="vaCauseOfDeathType"
                             onChange={handleInputChange}
-                            value={objValues.vaCauseOfDeathType}
+                            value={objValues.statusTracker.vaCauseOfDeathType}
+                            disabled={disabledField}
                             style={{
                               border: "1px solid #014D88",
                               borderRadius: "0.25rem",
@@ -1539,14 +1604,14 @@ const Tracking = (props) => {
                         <div className="form-group mb-3 col-md-6">
                           <FormGroup>
                             <Label for="">
-                              VA Cause of Death - ({objValues.vaCauseOfDeathType})
+                              VA Cause of Death - ({objValues.statusTracker.vaCauseOfDeathType})
                             </Label>
                             <Input
                                 type="select"
                                 name="vaCauseOfDeath"
                                 id="vaCauseOfDeath"
                                 onChange={handleInputChange}
-                                value={objValues.vaCauseOfDeath}
+                                value={objValues.statusTracker.vaCauseOfDeath}
                                 style={{
                                   border: "1px solid #014D88",
                                   borderRadius: "0.25rem",
@@ -1574,14 +1639,14 @@ const Tracking = (props) => {
                             <div className="form-group mb-3 col-md-6">
                               <FormGroup>
                                 <Label for="">
-                                  VA Cause of Death - ({objValues.vaCauseOfDeathType})
+                                  VA Cause of Death - ({objValues.statusTracker.vaCauseOfDeathType})
                                 </Label>
                                 <Input
                                     type="select"
                                     name="vaCauseOfDeath"
                                     id="vaCauseOfDeath"
                                     onChange={handleInputChange}
-                                    value={objValues.vaCauseOfDeath}
+                                    value={objValues.statusTracker.vaCauseOfDeath}
                                     style={{
                                       border: "1px solid #014D88",
                                       borderRadius: "0.25rem",
@@ -1611,14 +1676,14 @@ const Tracking = (props) => {
                             <div className="form-group mb-3 col-md-6">
                               <FormGroup>
                                 <Label for="">
-                                  VA Cause of Death - ({objValues.vaCauseOfDeathType})
+                                  VA Cause of Death - ({objValues.statusTracker.vaCauseOfDeathType})
                                 </Label>
                                 <Input
                                     type="select"
                                     name="vaCauseOfDeath"
                                     id="vaCauseOfDeath"
                                     onChange={handleInputChange}
-                                    value={objValues.vaCauseOfDeath}
+                                    value={objValues.statusTracker.vaCauseOfDeath}
                                     style={{
                                       border: "1px solid #014D88",
                                       borderRadius: "0.25rem",
@@ -1645,14 +1710,14 @@ const Tracking = (props) => {
                         <div className="form-group mb-3 col-md-6">
                           <FormGroup>
                             <Label for="">
-                              VA Cause of Death - ({objValues.vaCauseOfDeathType})
+                              VA Cause of Death - ({objValues.statusTracker.vaCauseOfDeathType})
                             </Label>
                             <Input
                                 type="select"
                                 name="vaCauseOfDeath"
                                 id="vaCauseOfDeath"
                                 onChange={handleInputChange}
-                                value={objValues.vaCauseOfDeath}
+                                value={objValues.statusTracker.vaCauseOfDeath}
                                 style={{
                                   border: "1px solid #014D88",
                                   borderRadius: "0.25rem",
@@ -1680,14 +1745,14 @@ const Tracking = (props) => {
                             <div className="form-group mb-3 col-md-6">
                               <FormGroup>
                                 <Label for="">
-                                  VA Cause of Death - ({objValues.vaCauseOfDeathType})
+                                  VA Cause of Death - ({objValues.statusTracker.vaCauseOfDeathType})
                                 </Label>
                                 <Input
                                     type="select"
                                     name="vaCauseOfDeath"
                                     id="vaCauseOfDeath"
                                     onChange={handleInputChange}
-                                    value={objValues.vaCauseOfDeath}
+                                    value={objValues.statusTracker.vaCauseOfDeath}
                                     style={{
                                       border: "1px solid #014D88",
                                       borderRadius: "0.25rem",
@@ -1716,14 +1781,14 @@ const Tracking = (props) => {
                         <div className="form-group mb-3 col-md-6">
                           <FormGroup>
                             <Label for="">
-                              VA Cause of Death - ({objValues.vaCauseOfDeathType})
+                              VA Cause of Death - ({objValues.statusTracker.vaCauseOfDeathType})
                             </Label>
                             <Input
                                 type="select"
                                 name="vaCauseOfDeath"
                                 id="vaCauseOfDeath"
                                 onChange={handleInputChange}
-                                value={objValues.vaCauseOfDeath}
+                                value={objValues.statusTracker.vaCauseOfDeath}
                                 style={{
                                   border: "1px solid #014D88",
                                   borderRadius: "0.25rem",
@@ -1751,14 +1816,14 @@ const Tracking = (props) => {
                             <div className="form-group mb-3 col-md-6">
                               <FormGroup>
                                 <Label for="">
-                                  VA Cause of Death - ({objValues.vaCauseOfDeathType})
+                                  VA Cause of Death - ({objValues.statusTracker.vaCauseOfDeathType})
                                 </Label>
                                 <Input
                                     type="select"
                                     name="vaCauseOfDeath"
                                     id="vaCauseOfDeath"
                                     onChange={handleInputChange}
-                                    value={objValues.vaCauseOfDeath}
+                                    value={objValues.statusTracker.vaCauseOfDeath}
                                     style={{
                                       border: "1px solid #014D88",
                                       borderRadius: "0.25rem",
@@ -1785,31 +1850,31 @@ const Tracking = (props) => {
                   </>
               )}
               {(objValues.causeOfDeath === "Natural Cause" ||
-                objValues.causeOfDeath === "Unknown cause") && (
-                <div className="form-group mb-3 col-md-6">
-                  <FormGroup>
-                    <Label for="">
-                      Cause of Death - {objValues.causeOfDeath} (specify)
-                    </Label>
-                    <Input
-                      type="text"
-                      name="causeOfDeathOthers"
-                      id="causeOfDeathOthers"
-                      onChange={handleInputChange}
-                      value={objValues.causeOfDeathOthers}
-                      style={{
-                        border: "1px solid #014D88",
-                        borderRadius: "0.25rem",
-                      }}
-                      disabled={disabledField}
-                    />
-                    {errors.causeOfDeathOthers !== "" ? (
-                      <span className={classes.error}>
+                  objValues.causeOfDeath === "Unknown cause") && (
+                  <div className="form-group mb-3 col-md-6">
+                    <FormGroup>
+                      <Label for="">
+                        Cause of Death (specify)
+                      </Label>
+                      <Input
+                          type="text"
+                          name="causeOfDeathOthers"
+                          id="causeOfDeathOthers"
+                          onChange={handleInputChange}
+                          value={objValues.causeOfDeathOthers}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
+                          disabled={disabledField}
+                      />
+                      {errors.causeOfDeathOthers !== "" ? (
+                          <span className={classes.error}>
                         {errors.causeOfDeathOthers}
                       </span>
-                    ) : (
-                      ""
-                    )}
+                      ) : (
+                          ""
+                      )}
                   </FormGroup>
                 </div>
               )}

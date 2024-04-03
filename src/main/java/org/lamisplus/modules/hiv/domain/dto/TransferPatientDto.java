@@ -27,7 +27,7 @@ public class TransferPatientDto {
     private String dateConfirmedHiv;
     private String dateEnrolledInCare;
     private String dateEnrolledInTreatment;
-    private Integer adherenceLevel;
+    private String adherenceLevel;
     private String currentWhoClinical;
     private Integer currentCD4Count;
     private Integer baselineCD4;

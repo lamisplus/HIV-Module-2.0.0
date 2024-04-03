@@ -25,6 +25,9 @@ public class LinkageRequest {
     private String otherName;
     private String gender;
     private LocalDate birthDate;
+    private String facilityState;
+    private String facilityLga;
+    private String facilityUid;
     private String facilityName;
     private String datimCode;
     private String stateOfResidence;

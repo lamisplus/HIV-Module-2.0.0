@@ -91,6 +91,7 @@
     "react-overlay-loading": "^1.0.3",
     "react-perfect-scrollbar": "^1.5.8",
     "react-phone-input-2": "^2.11.0",
+    "react-query": "^3.39.3",
     "react-redux": "^7.2.4",
     "react-resize-detector": "^5.2.0",
     "react-router-dom": "^5.2.0",
@@ -126,7 +127,7 @@
   "scripts": {
     "start": "react-scripts  start",
     "jsreport": "jsreport-start",
-    "build": "react-scripts build && mkdir -p src/main/resources/views/static/hiv/ && cp -R build/* src/main/resources/views/static/hiv/",
+    "build": "react-scripts build && xcopy /s /y build src\\main\\resources\\views\\static\\hiv",
     "serve": "serve -s build",
     "run-build": "react-scripts build && serve",
     "test": "react-scripts test --env=jsdom",
