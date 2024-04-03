@@ -49,6 +49,12 @@ public class OvcLinkage extends HivAuditEntity implements Persistable<UUID> {
     private String gender;
     @Column(name = "birth_date")
     private LocalDate birthDate;
+    @Column(name = "facility_state", nullable = true)
+    private String facilityState;
+    @Column(name = "facility_lga", nullable = true)
+    private String facilityLga;
+    @Column(name = "facility_uid", nullable = true)
+    private String facilityUid;
     @Column(name = "facility_name")
     private String facilityName;
     @Column(name = "datim_code")

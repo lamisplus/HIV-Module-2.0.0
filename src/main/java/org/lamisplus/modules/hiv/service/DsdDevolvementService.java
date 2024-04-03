@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
 import org.lamisplus.modules.hiv.domain.dto.CurrentViralLoadDTO;
 import org.lamisplus.modules.hiv.domain.dto.DsdDevolvementDTO;
+import org.lamisplus.modules.hiv.domain.dto.PatientCurrentViralLoad;
 import org.lamisplus.modules.hiv.domain.entity.CurrentViralLoad;
 import org.lamisplus.modules.hiv.domain.entity.DsdDevolvement;
 import org.lamisplus.modules.hiv.repositories.CurrentViralLoadRepository;
@@ -82,6 +83,17 @@ public class DsdDevolvementService {
             Optional<CurrentViralLoad> currentViralLoad = currentViralLoadRepository.findViralLoadByPersonId(personId);
             return  convertEntityTocurrentViralLoadDto(currentViralLoad);
     }
+
+    public Optional<PatientCurrentViralLoad> getPatientCurrentViralLoadByPersonUuid(String personUuid) {
+        try {
+            Optional<PatientCurrentViralLoad> patientCurrentViralLoad = dsdDevolvementRepository.findViralLoadByPersonUuid(personUuid);
+            return patientCurrentViralLoad;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
 
     public String deleteById(Long id) throws IOException{
         DsdDevolvement existDevolvement = getDevolvement(id);

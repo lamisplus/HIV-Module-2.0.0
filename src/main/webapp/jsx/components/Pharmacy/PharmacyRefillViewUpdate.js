@@ -108,6 +108,7 @@ const Pharmacy = (props) => {
   const [otherDrugs, setOtherDrugs] = useState([]);
   const [regimenTypeOther, setRegimenTypeOther] = useState([]);
   const [iptEligibilty, setIptEligibilty] = useState("");
+  const [dsdDevolvement, setDsdDevolvement] = useState(null);
   const [objValues, setObjValues] = useState({
     adherence: "",
     adrScreened: "",
@@ -187,29 +188,50 @@ const Pharmacy = (props) => {
 
   //GET Other Drugd
   //remove arv prohpylaxis for pregnant women form the list of regimen type and populate the drop down list
-   const OtherDrugs = async () => {
-     try {
-       const response = await axios.get(`${baseUrl}hiv/regimen/other/drugs`, {
-         headers: { Authorization: `Bearer ${token}` },
-       });
+  const OtherDrugs = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}hiv/regimen/other/drugs`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-       // Filter out items with id !== 5
-       const filteredData = Object.entries(response.data)
-         .map(([key, value]) => ({
-           label: value.description,
-           value: value.id,
-         }))
-         .filter((item) => item.value !== 5);
+      // Filter out items with id !== 5
+      const filteredData = Object.entries(response.data)
+        .map(([key, value]) => ({
+          label: value.description,
+          value: value.id,
+        }))
+        .filter((item) => item.value !== 5);
 
-       setOtherDrugs(filteredData);
-     } catch (error) {
-       // Handle errors here
-       console.error('Error fetching OtherDrugs:', error);
-       //.catch((error) => {});
-     }
-   };
+      setOtherDrugs(filteredData);
+    } catch (error) {
+      // Handle errors here
+      console.error("Error fetching OtherDrugs:", error);
+      //.catch((error) => {});
+    }
+  };
 
-
+  useEffect(() => {
+    getDsd();
+  }, []);
+  const getDsd = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}hiv/patients/${props.patientObj.id}/history/activities`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const dsdActivities = response.data;
+      const firstDsdService = dsdActivities.find(
+        (activity) => activity.name === "DSD Service"
+      );
+      setDsdDevolvement(firstDsdService.date); //Get first Occurence
+    } catch (error) {
+      toast.error("Fill DSD Form", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    }
+  };
 
   const patientAge = calculate_age_to_number(patientObj.dateOfBirth);
   //GET ChildRegimenLine
@@ -740,6 +762,14 @@ const Pharmacy = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setSaving(true);
+
+    if (dsdDevolvement === null) {
+      toast.error("No recent DSD, unable to proceed", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
+      setSaving(false);
+      return;
+    }
     objValues.adverseDrugReactions = selectedOptionAdr;
     objValues.personId = props.patientObj.id;
     objValues.extra["regimens"] = regimenDrugList;

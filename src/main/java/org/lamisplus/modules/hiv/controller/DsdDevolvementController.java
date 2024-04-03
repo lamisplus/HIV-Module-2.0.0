@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.hibernate.annotations.GeneratorType;
-import org.lamisplus.modules.hiv.domain.dto.ARTClinicalVisitDisplayDto;
-import org.lamisplus.modules.hiv.domain.dto.CurrentViralLoadDTO;
-import org.lamisplus.modules.hiv.domain.dto.DsdDevolvementDTO;
-import org.lamisplus.modules.hiv.domain.dto.RegisterArtPharmacyDTO;
+import org.lamisplus.modules.hiv.domain.dto.*;
 import org.lamisplus.modules.hiv.service.DsdDevolvementService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -89,5 +86,22 @@ public class DsdDevolvementController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    } 
+    }
+
+
+    @GetMapping(value = "/get-patient-current-viral-load/{personUuid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getPatientCurrentViralLoadByPersonUuid(@PathVariable("personUuid") String personUuid) {
+        try {
+            Optional<PatientCurrentViralLoad> patientCurrentViralLoad = devolvementService.getPatientCurrentViralLoadByPersonUuid(personUuid);
+            if (patientCurrentViralLoad.isPresent()) {
+                return new ResponseEntity<>(patientCurrentViralLoad, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Patient's current viral load not found", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("An error occurred while retrieving patient's current viral load", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

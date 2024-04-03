@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <property name="autoIncrement" value="true"/>
+    <changeSet failOnError="true" author="Taiwo Gboyegun" id="20240403-001">
+        <sql>DELETE FROM  base_application_codeset WHERE  code = 'DSD_MODEL_COMMUNITY_COMMUNITY_ART_REFILL_GROUP:_HEALTHCARE_WORKER_–_LED';</sql>
+        <sql>DELETE FROM  base_application_codeset WHERE  code = 'DSD_MODEL_COMMUNITY_COMMUNITY_ART_REFILL_GROUP:_PLHIV_–_LED_';</sql>
+    </changeSet>
+</databaseChangeLog>

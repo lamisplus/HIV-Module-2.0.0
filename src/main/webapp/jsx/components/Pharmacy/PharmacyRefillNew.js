@@ -112,6 +112,8 @@ const Pharmacy = (props) => {
   const [regimenTypeOther, setRegimenTypeOther] = useState([]);
   const [iptEligibilty, setIptEligibilty] = useState("");
   const [lastChronicCare, setLastChronicCare] = useState(null);
+  const [dsdDevolvement, setDsdDevolvement] = useState(null);
+
   //const [currentRegimenValue, setCurrentRegimenValue] = useState("");//this is to get the current regimen value/ID the patient is on
   //IPT_TYPE
   const [
@@ -197,6 +199,34 @@ const Pharmacy = (props) => {
       })
       .catch((error) => {});
   };
+
+
+  useEffect(() => {
+    getDsd();
+  }, []);
+
+  const getDsd = async () => {
+    try {
+      const response = await axios.get(
+        `${baseUrl}hiv/patients/${props.patientObj.id}/history/activities`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const dsdActivities = response.data;
+      const firstDsdService = dsdActivities.find(
+        (activity) => activity.name === "DSD Service"
+      );
+      setDsdDevolvement(firstDsdService.date); //Get first Occurence
+    } catch (error) {
+      toast.error("Please complete the DSD form before accessing the pharmacy refill form", {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 6000
+      });
+    }
+  };
+
+
   //
   const ChronicCare = () => {
     axios
@@ -262,6 +292,8 @@ const Pharmacy = (props) => {
       })
       .catch((error) => {});
   };
+
+  // console.log("RegimenType", regimenType);
   const patientAge = calculate_age_to_number(patientObj.dateOfBirth); //Age calculation
   //GET ChildRegimenLine
   const ChildRegimenLine = () => {
@@ -283,27 +315,27 @@ const Pharmacy = (props) => {
 
   //GET Other Drug
   //remove arv prohpylaxis for pregnant women form the list of regimen type and populate the drop down list
- const OtherDrugs = async () => {
-   try {
-     const response = await axios.get(`${baseUrl}hiv/regimen/other/drugs`, {
-       headers: { Authorization: `Bearer ${token}` },
-     });
+  const OtherDrugs = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}hiv/regimen/other/drugs`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-     // Filter out items with id !== 5
-     const filteredData = Object.entries(response.data)
-       .map(([key, value]) => ({
-         label: value.description,
-         value: value.id,
-       }))
-       .filter((item) => item.value !== 5 && item.value !== 30);
+      // Filter out items with id !== 5
+      const filteredData = Object.entries(response.data)
+        .map(([key, value]) => ({
+          label: value.description,
+          value: value.id,
+        }))
+        .filter((item) => item.value !== 5 && item.value !== 30);
 
-     setOtherDrugs(filteredData);
-   } catch (error) {
-     // Handle errors here
-     console.error('Error fetching OtherDrugs:', error);
-     //.catch((error) => {});
-   }
- };
+      setOtherDrugs(filteredData);
+    } catch (error) {
+      // Handle errors here
+      console.error("Error fetching OtherDrugs:", error);
+      //.catch((error) => {});
+    }
+  };
 
   const IPT_TYPE = () => {
     axios
@@ -914,6 +946,15 @@ const Pharmacy = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setSaving(true);
+
+    if (dsdDevolvement === null) {
+      toast.error("No recent DSD, unable to proceed", {
+        position: toast.POSITION.BOTTOM_CENTER,
+      });
+      setSaving(false);
+      return;
+    }
+
     const observeDate = lastChronicCare.find(
       (x) => x.dateOfObservation === objValues.visitDate
     );
@@ -926,6 +967,7 @@ const Pharmacy = (props) => {
       objValues.mmdType = mmdType;
       //delete regimenList['name']
       objValues.regimen = regimenDrugList;
+
       axios
         .post(`${baseUrl}hiv/art/pharmacy`, objValues, {
           headers: { Authorization: `Bearer ${token}` },
@@ -954,6 +996,7 @@ const Pharmacy = (props) => {
           toast.success("Pharmacy drug refill successful", {
             position: toast.POSITION.BOTTOM_CENTER,
           });
+
           setOIRegimenLine([]);
           props.setActiveContent({
             ...props.activeContent,
