@@ -1111,6 +1111,36 @@ const TbScreening = (props) => {
                   </InputGroup>
                 </FormGroup>
               </div>
+              {props.tbObj.tbTreatment === "Yes" && (
+                <div className="form-group mb-3 col-md-6">
+                  <FormGroup>
+                    <Label>
+                      TB treatment start date{" "}
+                      <span style={{ color: "red" }}> *</span>
+                    </Label>
+                    <InputGroup>
+                      <Input
+                        type="date"
+                        name="tbTreatmentStartDate"
+                        id="tbTreatmentStartDate"
+                        onChange={handleInputChange}
+                        value={props.tbObj.tbTreatmentStartDate}
+                        // min={props.encounterDate}
+                        max={moment(new Date()).format("YYYY-MM-DD")}
+                        disabled={props.action === "view" ? true : false}
+                        required
+                      ></Input>
+                    </InputGroup>
+                  </FormGroup>
+                  {props.errors.tbTreatmentStartDate !== "" ? (
+                    <span className={classes.error}>
+                      {props.errors.tbTreatmentStartDate}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              )}
 
               {props.tbObj.tbTreatment === "No" && (
                 <>
