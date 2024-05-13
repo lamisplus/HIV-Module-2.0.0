@@ -41,36 +41,70 @@ function SubMenu(props) {
 
   
 
-  const {refetch} = useQuery(
-    [GET_CURRENT_LAB_RECORD, props?.patientObj?.id],
-    () => getCurrentLabResult(props?.patientObj?.id),
-    {
-      onSuccess: (data) => {
-        const dynamicArray = data;
-        if (dynamicArray?.length > 0) {
-          let lastItem = dynamicArray[dynamicArray.length - 1];
-          setLabResult(lastItem);
-        }
-        getOldRecordIfExists()
+  // const {refetch} = useQuery(
+  //   [GET_CURRENT_LAB_RECORD, props?.patientObj?.id],
+  //   () => getCurrentLabResult(props?.patientObj?.id),
+  //   {
+  //     onSuccess: (data) => {
+  //       const dynamicArray = data;
+  //       if (dynamicArray?.length > 0) {
+  //         let lastItem = dynamicArray[dynamicArray.length - 1];
+  //         setLabResult(lastItem);
+  //       }
+  //       getOldRecordIfExists()
 
-      },
-      refetchOnMount: "always",
-      staleTime: 100,
-      cacheTime: 100,
-      onError: (error) => {
-        if (error.response && error.response.data) {
-          let errorMessage =
-            error.response.data.apierror &&
-            error.response.data.apierror.message !== ""
-              ? error.response.data.apierror.message
-              : "Something went wrong, please try again";
-          toast.error(errorMessage);
-        } else {
-          toast.error("Something went wrong. Please try again...");
+  //     },
+  //     refetchOnMount: "always",
+  //     staleTime: 100,
+  //     cacheTime: 100,
+  //     onError: (error) => {
+  //       if (error.response && error.response.data) {
+  //         let errorMessage =
+  //           error.response.data.apierror &&
+  //           error.response.data.apierror.message !== ""
+  //             ? error.response.data.apierror.message
+  //             : "Something went wrong, please try again";
+  //         toast.error(errorMessage);
+  //       } else {
+  //         toast.error("Something went wrong. Please try again...");
+  //       }
+  //     },
+  //   }
+  // );
+
+    useEffect(() => {
+      const getCurrentLabResult = async (id) => {
+        try {
+          const response = await axios.get(
+            `${baseUrl}laboratory/vl-results/patients/${id}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          const data = response.data;
+          if (data.length > 0) {
+            const lastItem = data[data.length - 1];
+            setLabResult(lastItem);
+          }
+          getOldRecordIfExists();
+        } catch (error) {
+          if (error.response && error.response.data) {
+            const errorMessage =
+              error.response.data.apierror &&
+              error.response.data.apierror.message !== ""
+                ? error.response.data.apierror.message
+                : "Something went wrong, please try again";
+            toast.error(errorMessage);
+          } else {
+            toast.error("Something went wrong. Please try again...");
+          }
         }
-      },
-    }
-  );
+      };
+
+      if (props?.patientObj?.id) {
+        getCurrentLabResult(props.patientObj.id);
+      }
+    }, [props?.patientObj?.id]);
 
   const loadEAC = (row) => {
     setActiveItem("eac");
@@ -335,76 +369,7 @@ function SubMenu(props) {
                       {" "}
                       Home
                     </Menu.Item>
-                    {props.patientObj.currentStatus.toLowerCase() ===
-                    "died (confirmed)" ||
-                    props.patientObj.currentStatus.toLowerCase() ===
-                    "art transfer out" ? (
-                        <Menu.Menu position="" name="lab" active={activeItem === "lab"}>
-                          <Dropdown item text="Other Forms">
-                            <Dropdown.Menu>
-                              <Dropdown.Item
-                                  onClick={() => loadTrackingForm(patientObj)}
-                                  name="tracking"
-                                  active={activeItem === "tracking"}
-                                  title="Tracking Form"
-                              >
-                                Tracking Form
-                              </Dropdown.Item>
-                            </Dropdown.Menu>
-                          </Dropdown>
-
-                          {(patientObj?.age >= 10 && patientObj?.age <= 23) ||
-                          patientObj.age <= 19 ? (
-                              <Dropdown item text="OTZ">
-                                <Dropdown.Menu>
-                                  {patientObj?.age >= 10 && patientObj?.age <= 23 && (
-                                      <>
-                                        {isOtzEnrollementDone === null ? (
-                                            <Dropdown.Item>
-                                              Checking patient enrollment...
-                                            </Dropdown.Item>
-                                        ) : isOtzEnrollementDone === false ? (
-                                            <Dropdown.Item
-                                                onClick={() => loadOtzEnrollmentForm()}
-                                                name="OTZ Enrollment Form"
-                                                active={activeItem === "otz-enrollment-form"}
-                                                title="Enrollment Form"
-                                            >
-                                              OTZ Enrollment Form
-                                            </Dropdown.Item>
-                                        ) : null}
-
-                                        {isOtzEnrollementDone ? (
-                                            <Dropdown.Item
-                                                onClick={() => loadOtzServiceForm()}
-                                                name="OTZ Service Form"
-                                                active={activeItem === "otz-service-form"}
-                                                title="Tracking Form"
-                                            >
-                                              OTZ Service Form
-                                            </Dropdown.Item>
-                                        ) : null}
-                                      </>
-                                  )}
-
-                                  {patientObj.age <= 19 && (
-                                      <Dropdown.Item
-                                          onClick={() => loadOtzCheckList()}
-                                          name="Peadiatric Disclosure Checklist"
-                                          active={
-                                              activeItem ===
-                                              "otz-peadiatric-disclosure-checklist"
-                                          }
-                                          title="Peadiatric Disclosure Checklist"
-                                      >
-                                        Peadiatric Disclosure Checklist
-                                      </Dropdown.Item>
-                                  )}
-                                </Dropdown.Menu>
-                              </Dropdown>
-                          ) : null}
-                        </Menu.Menu>
-                    ) : (
+               
                         <>
                           {!patientObj.clinicalEvaluation &&
                               patientObj.createBy.toUpperCase() ===
@@ -608,7 +573,7 @@ function SubMenu(props) {
                             Transfer
                           </Menu.Item>
                         </>
-                    )}
+                
                     <Menu.Item
                         onClick={() => loadPatientHistory(patientObj)}
                         name="history"
