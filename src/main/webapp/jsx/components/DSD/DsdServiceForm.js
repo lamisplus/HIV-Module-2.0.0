@@ -129,6 +129,7 @@ const DsdServiceForm = (props) => {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
+                console.log("response.data", response.data);
                 setDsdModelType(response.data);
             })
             .catch((error) => {});
