@@ -232,19 +232,23 @@ const DsdServiceForm = (props) => {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
-                setSaving(false);
-                toast.success("DSD Assesment Submitted Successfully");
-                props.setActiveContent({
-                    ...props.activeContent,
-                    route: "recent-history",
-                });
+                if (response.data.status === "BAD_REQUEST") {
+                    toast.error(response.data.message);
+                } else {
+                    setSaving(false);
+                    toast.success("DSD Assesment Submitted Successfully");
+                    props.setActiveContent({
+                        ...props.activeContent,
+                        route: "recent-history",
+                    });
+                }
             })
             .catch((error) => {
                 setSaving(false);
                 if (error.response && error.response.data) {
                     let errorMessage =
-                        error.response.data && error.response.data.apierror.message !== ""
-                            ? error.response.data.apierror.message
+                        error.response.data && error.response.data.message !== ""
+                            ? error.response.data.message
                             : "Something went wrong, please try again";
                     toast.error(errorMessage);
                 }
@@ -263,6 +267,7 @@ const DsdServiceForm = (props) => {
             }
         }));
     };
+
     //
     // console.log("payload", payload);
     //  console.log("selectedServiceProvided", selectedServiceProvided);

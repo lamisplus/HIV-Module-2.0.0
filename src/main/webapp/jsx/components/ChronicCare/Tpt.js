@@ -407,11 +407,18 @@ const TPT = (props) => {
                       </Input>
                     </InputGroup>
                   </FormGroup>
+                  {props.errors.tbTreatment !== "" ? (
+                    <span className={classes.error}>
+                      {props.errors.tbTreatment}
+                    </span>
+                  ) : (
+                    ""
+                  )}
                 </div>
 
                 {props.tpt.tbTreatment === "Yes" && (
                   <>
-                    <div className="form-group mb-3 col-md-6">
+                    {/* <div className="form-group mb-3 col-md-6">
                       <FormGroup>
                         <Label>
                           TB treatment start date{" "}
@@ -430,7 +437,7 @@ const TPT = (props) => {
                           ></Input>
                         </InputGroup>
                       </FormGroup>
-                    </div>
+                    </div> */}
 
                     <div className="form-group mb-3 col-md-6">
                       <FormGroup>
@@ -441,10 +448,10 @@ const TPT = (props) => {
                         <InputGroup>
                           <Input
                             type="select"
-                            name="treatementType"
-                            id="treatementType"
+                            name="treatmentType"
+                            id="treatmentType"
                             onChange={handleTpt}
-                            value={props.tpt.treatementType}
+                            value={props.tpt.treatmentType}
                             disabled={props.action === "view" ? true : false}
                           >
                             <option value="">Select</option>
@@ -456,6 +463,13 @@ const TPT = (props) => {
                           </Input>
                         </InputGroup>
                       </FormGroup>
+                      {props.errors.treatmentType !== "" ? (
+                        <span className={classes.error}>
+                          {props.errors.treatmentType}
+                        </span>
+                      ) : (
+                        ""
+                      )}
                     </div>
 
                     <div className="form-group mb-3 col-md-6">
@@ -482,6 +496,13 @@ const TPT = (props) => {
                           </Input>
                         </InputGroup>
                       </FormGroup>
+                      {props.errors.treatmentOutcome !== "" ? (
+                        <span className={classes.error}>
+                          {props.errors.treatmentOutcome}
+                        </span>
+                      ) : (
+                        ""
+                      )}
                     </div>
 
                     {props.tpt.tbTreatment === "Yes" &&
@@ -509,6 +530,13 @@ const TPT = (props) => {
                                 ></Input>
                               </InputGroup>
                             </FormGroup>
+                            {props.errors.completionDate !== "" ? (
+                              <span className={classes.error}>
+                                {props.errors.completionDate}
+                              </span>
+                            ) : (
+                              ""
+                            )}
                           </div>
 
                           <div className="form-group mb-3 col-md-6">
@@ -535,6 +563,13 @@ const TPT = (props) => {
                                 </Input>
                               </InputGroup>
                             </FormGroup>
+                            {props.errors.treatmentCompletionStatus !== "" ? (
+                              <span className={classes.error}>
+                                {props.errors.treatmentCompletionStatus}
+                              </span>
+                            ) : (
+                              ""
+                            )}
                           </div>
                         </>
                       )}

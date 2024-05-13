@@ -17,5 +17,4 @@ public class ApiError {
         this.message = message;
     }
 
-    // getters and setters
 }
