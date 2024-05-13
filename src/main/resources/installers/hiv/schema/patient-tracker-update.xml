@@ -6,7 +6,7 @@
 
     <property name="autoIncrement" value="true"/>
 
-    <changeSet failOnError="true" author="Taiwo Gboyegun" id="20240326-002">
+    <changeSet failOnError="true" author="Taiwo Gboyegun" id="add_date_of_date_of_death">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="hiv_patient_tracker" columnName="date_of_death" />

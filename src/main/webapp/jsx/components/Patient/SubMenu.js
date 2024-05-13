@@ -295,11 +295,13 @@ function SubMenu(props) {
                   patientObj.createBy.toUpperCase() !==
                   "LAMIS DATA MIGRATION SYSTEM") &&
               (patientObj.commenced !== true ||
-                  patientObj.clinicalEvaluation !== true ||
-                  (patientObj.targetGroupId !== 473
-                      ? patientObj.mentalHealth !== false
-                      : false)
-                      ) ? (
+                  patientObj.clinicalEvaluation !== true
+                  // ||
+                  // (patientObj.targetGroupId !== 473
+                  //     ? patientObj.mentalHealth !== false
+                  //     : false)
+                      )
+                  ? (
                   <Menu size="tiny" color={"blue"} inverted pointing>
                     <Menu.Item
                         onClick={() => onClickHome()}
@@ -370,7 +372,8 @@ function SubMenu(props) {
                
                         <>
                           {!patientObj.clinicalEvaluation &&
-                              patientObj.createBy === "Lamis data migration system" && (
+                              patientObj.createBy.toUpperCase() ===
+                              "LAMIS DATA MIGRATION SYSTEM" && (
                                   <Menu.Item
                                       onClick={() => loadAdultEvaluation()}
                                       name="initial"
