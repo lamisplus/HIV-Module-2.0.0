@@ -260,9 +260,19 @@ const Tracking = (props) => {
       .get(`${baseUrl}application-codesets/v2/VA_CAUSE_OF_DEATH`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then((response) => {
-        setvaCauseOfDeathType(response.data);
-      })
+
+        .then((response) => {
+          const filteredData = response.data.filter(item =>
+              item.display === "Neonates Causes" ||
+              item.display === "Child Causes" ||
+              item.display === "Adult Causes"
+          );
+          setvaCauseOfDeathType(filteredData);
+        })
+      // .then((response) => {
+      //   setvaCauseOfDeathType(response.data);
+
+      // })
       .catch((error) => {
 
       });
