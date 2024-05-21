@@ -84,7 +84,15 @@ const DsdServiceForm = (props) => {
     const [isClientReturnToSite, setIsClientReturnToSite] = useState(false);
     const [serviceProvided, setServiceProvided] = useState([]);
     const [patientDsdRecords, setPatientDsdRecords] = useState([]);
-    const [selectedServiceProvided,setSelectedServiceProvided] = useState([]);
+    const [selectedServiceProvided, setSelectedServiceProvided] = useState([]);
+
+    const [selectedState, setSelectedState] = useState(null);
+    const [lgas, setLgas] = useState([]);
+    const [allStates, setAllStates] = useState([]);
+    const [allLGAs, setAllLGAs] = useState([]);
+    const [outlets, setOutlets] = useState([]);
+
+    const [outletData, setOutletData] = useState([]);
 
     const [payload, setPayLoad] = useState({
         personId: patientObj && patientObj.id ? patientObj.id : "",
@@ -94,6 +102,9 @@ const DsdServiceForm = (props) => {
         dsdAccept: "",
         dsdModel: "",
         dsdType: "",
+        dsdOutletState: "",
+        dsdOutletLGA: "",
+        dsdOutlet: "",
         comment: "",
         completedBy: "",
         designation: "",
@@ -102,7 +113,7 @@ const DsdServiceForm = (props) => {
         facilityId: facId ? facId : "",
         clientReturnToSite: "",
         dateReturnToSite: "",
-        serviceProvided:null,
+        serviceProvided: null,
         dsdEligibilityAssessment: {
             onArtForAtLeast1Year: "",
             goodUnderstandingOfAdherence: "",
@@ -126,22 +137,23 @@ const DsdServiceForm = (props) => {
             dsdmodel === "Facility" ? "DSD_MODEL_FACILITY" : "DSD_MODEL_COMMUNITY";
         axios
             .get(`${baseUrl}application-codesets/v2/${dsd}`, {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {Authorization: `Bearer ${token}`},
             })
             .then((response) => {
                 console.log("response.data", response.data);
                 setDsdModelType(response.data);
             })
-            .catch((error) => {});
+            .catch((error) => {
+            });
     }
 
     useEffect(() => {
         if (payload.dsdModel) {
             // if isLastDsdModelInCommunity is true, and user change to Facility, then the clientReturnToSite should be true
-            if(isLastDsdModelInCommunity(patientDsdRecords)) {
+            if (isLastDsdModelInCommunity(patientDsdRecords)) {
                 setIsClientReturnToSite(true);
             }
-            if(payload.dsdModel === "Community") {
+            if (payload.dsdModel === "Community") {
                 setIsClientReturnToSite(false);
             }
             DsdModelType(payload.dsdModel);
@@ -153,7 +165,7 @@ const DsdServiceForm = (props) => {
         getViralLoadAndDate();
     }, []);
 
-    
+
     // const getViralLoadAndDate = () => {
     //     axios.get(`${baseUrl}hiv/art/pharmacy/devolve/current-viral-load?personId=${patientObj.id}`, {
     //         headers: { Authorization: `Bearer ${token}` },
@@ -171,15 +183,16 @@ const DsdServiceForm = (props) => {
     //         });
     // };
 
+
     console.log("patientObj", patientObj);
 
     const getViralLoadAndDate = () => {
         axios.get(`${baseUrl}hiv/art/pharmacy/devolve/get-patient-current-viral-load/${patientObj.personUuid}`, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {Authorization: `Bearer ${token}`},
         })
             .then((response) => {
                 // const { viralLoadTestResult, dateResultReported } = response.data;
-                const  {resultReported, dateResultReported} = response.data;
+                const {resultReported, dateResultReported} = response.data;
                 setPayLoad({
                     ...payload,
                     viralLoadTestResult: resultReported,
@@ -230,7 +243,7 @@ const DsdServiceForm = (props) => {
     const submitAssessmentForm = (load) => {
         axios
             .post(`${baseUrl}hiv/art/pharmacy/devolve`, load, {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {Authorization: `Bearer ${token}`},
             })
             .then((response) => {
                 if (response.data.status === "BAD_REQUEST") {
@@ -258,7 +271,7 @@ const DsdServiceForm = (props) => {
 
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         temp[name] = ""; // Reset the error for this field
         setPayLoad(prevPayload => ({
             ...prevPayload,
@@ -288,7 +301,7 @@ const DsdServiceForm = (props) => {
             setSelectedServiceProvided([]);
         }
         // if there is changes in the clientReturnToSite input fields, the value of dateReturnToSite and servicseProvided should be
-        if(name === "clientReturnToSite" && value !== "Yes") {
+        if (name === "clientReturnToSite" && value !== "Yes") {
             setPayLoad({
                 ...payload,
                 dateReturnToSite: "",
@@ -307,7 +320,7 @@ const DsdServiceForm = (props) => {
         e.preventDefault();
 
         if (validate()) {
-            payload.serviceProvided=Object.assign({}, selectedServiceProvided);
+            payload.serviceProvided = Object.assign({}, selectedServiceProvided);
             submitAssessmentForm(payload);
         } else {
             window.scroll(0, 0);
@@ -338,7 +351,7 @@ const DsdServiceForm = (props) => {
             return (new Date(current.dateDevolved) > new Date(prev.dateDevolved)) ? current : prev;
         });
         // Check if the dsdModel value of the most recent object is "Community"
-        if(mostRecentObject.dsdModel === "Community") {
+        if (mostRecentObject.dsdModel === "Community") {
             // setIsClientReturnToSite(true);
             return true;
         }
@@ -358,12 +371,12 @@ const DsdServiceForm = (props) => {
     const getServicesProvided = () => {
         axios
             .get(`${baseUrl}application-codesets/v2/EAC_INTERVENTIONS_SERVICE`, {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {Authorization: `Bearer ${token}`},
             })
             .then((response) => {
                 const transformedData = response.data.map(item => {
                     const displayValue = item.display.replace(/["']/g, '').trim();
-                    return { value: displayValue, label: displayValue };
+                    return {value: displayValue, label: displayValue};
                 });
                 setServiceProvided(transformedData);
             })
@@ -372,15 +385,104 @@ const DsdServiceForm = (props) => {
             });
     }
 
+
+    // Fetch all states when the component mounts
+    useEffect(() => {
+        axios.get(`${baseUrl}organisation-units/parent-organisation-units/1`, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+            .then((response) => {
+                setAllStates(response.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching states:', error);
+            });
+    }, []);
+
+    const getOutletData = () => {
+        axios.get(process.env.PUBLIC_URL + '/dsdOutlet.json')
+            .then(response => {
+                console.log('Outlet data:', response.data);
+                setOutletData(response.data);
+            })
+            .catch(error => {
+                console.error("Error fetching data: ", error);
+                console.log("Error details: ", error.response);
+            });
+    }
+
+// Fetch LGAs when a state is selected
+    useEffect(() => {
+        if (selectedState) {
+            console.log("Selected state:", selectedState)
+            axios.get(`${baseUrl}organisation-units/parent-organisation-units/${selectedState.id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+                .then(response => {
+                    console.log('LGAs:', response.data)
+                    setAllLGAs(response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching LGAs:', error);
+                });
+        }
+    }, [selectedState]);
+
+ console.log("payload", payload);
+ console.log("allLGAs", allLGAs);
+// Update the list of outlets when an LGA is selected
+    useEffect(() => {
+        if (payload.dsdOutletLGA) {
+            const selectedLGA = allLGAs.find(lga => lga.id === Number(payload.dsdOutletLGA));
+            console.log("Selected LGA:", selectedLGA)
+            if (selectedLGA) {
+                const lgaOutlets = outletData.filter(outlet => outlet.LGA === selectedLGA.name);
+                console.log("LGA outlets:", lgaOutlets)
+                setOutlets(lgaOutlets);
+            } else {
+                console.log("No LGA found with the provided ID:", payload.dsdOutletLGA);
+            }
+        }
+    }, [payload.dsdOutletLGA]);
+
+// Handle state selection
+    const handleStateChange = (e) => {
+        const selectedStateId = Number(e.target.value);
+        const selectedState = allStates.find(state => state.id === selectedStateId);
+        setSelectedState(selectedState);
+        setPayLoad(prevPayload => ({
+            ...prevPayload,
+            dsdOutletState: selectedStateId
+        }));
+    }
+
+// Handle LGA selection
+    const handleLGAChange = (e) => {
+        setPayLoad(prevPayload => ({
+            ...prevPayload,
+            dsdOutletLGA: e.target.value
+        }));
+    }
+
+// Handle outlet selection
+    const handleOutletChange = (e) => {
+        setPayLoad(prevPayload => ({
+            ...prevPayload,
+            dsdOutlet: e.target.value
+        }));
+    }
+
     useEffect(() => {
         getServicesProvided();
+        getOutletData();
         // console.log("patientObj", props.patientObj);
     }, []);
+
 
     /*****  Validation  */
     const validate = () => {
         // var temp = { ...errors}
-        temp ={};
+        temp = {};
         temp.onArtForAtLeast1Year = payload.dsdEligibilityAssessment.onArtForAtLeast1Year ? "" : "This field is required.";
         temp.goodUnderstandingOfAdherence = payload.dsdEligibilityAssessment.goodUnderstandingOfAdherence ? "" : "This field is required.";
         temp.clinicallyStableNoOpportunisticInfections = payload.dsdEligibilityAssessment.clinicallyStableNoOpportunisticInfections ? "" : "This field is required.";
@@ -397,20 +499,23 @@ const DsdServiceForm = (props) => {
         temp.hasNoComorbidities = payload.dsdEligibilityAssessment.hasNoComorbidities ? "" : "This field is required.";
 
 
-        if (props.patientObj && props.patientObj?.sex?.toLowerCase() == "female"){
+        if (props.patientObj && props.patientObj?.sex?.toLowerCase() == "female") {
             temp.notPregnant = payload.dsdEligibilityAssessment.notPregnant ? "" : "This field is required.";
             temp.notBreastfeeding = payload.dsdEligibilityAssessment.notBreastfeeding ? "" : "This field is required.";
         }
 
-            temp.dsdModel = payload.dsdModel ? "" : "This field is required.";
-            temp.dsdType = payload.dsdType ? "" : "This field is required.";
-            temp.dsdAccept = payload.dsdAccept ? "": "This field is required.";
+        temp.dsdModel = payload.dsdModel ? "" : "This field is required.";
+        temp.dsdType = payload.dsdType ? "" : "This field is required.";
+        temp.dsdOuteltState = payload.dsdOutletState ? "" : "This field is required.";
+        temp.dsdOutletLGA = payload.dsdOutletLGA ? "" : "This field is required.";
+        temp.dsdOutlet = payload.dsdOutlet ? "" : "This field is required.";
+        temp.dsdAccept = payload.dsdAccept ? "" : "This field is required.";
 
-        if(isClientReturnToSite){
+        if (isClientReturnToSite) {
             temp.clientReturnToSite = payload.clientReturnToSite ? "" : "This field is required.";
         }
 
-        if(payload.clientReturnToSite && payload.clientReturnToSite === "Yes"){
+        if (payload.clientReturnToSite && payload.clientReturnToSite === "Yes") {
             temp.dateReturnToSite = payload.dateReturnToSite ? "" : "This field is required.";
             // temp.serviceProvided = payload.serviceProvided ? "" : "This field is required.";
             temp.serviceProvided = selectedServiceProvided.length !== 0 ? "" : "This field is required.";
@@ -421,7 +526,7 @@ const DsdServiceForm = (props) => {
 
 
     return (<>
-        <ToastContainer position={toast.POSITION.BOTTOM_CENTER} />
+        <ToastContainer position={toast.POSITION.BOTTOM_CENTER}/>
         <Card className={classes.root}>
             <CardBody>
                 <h2 style={{color: "#000"}}> DSD ASSESSMENT AND ACCEPTANCE FORM </h2>
@@ -974,6 +1079,83 @@ const DsdServiceForm = (props) => {
                         </span>) : ("")}
                             </FormGroup>
                         </div>
+
+                        <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                                <Label>Outlet State<span style={{color: "red"}}> *</span></Label>
+                                <Input
+                                    type="select"
+                                    name="dsdOutletState"
+                                    id="dsdOutletState"
+                                    value={payload.dsdOutletState}
+                                    onChange={handleStateChange}
+                                    style={{
+                                        border: "1px solid #014D88",
+                                        borderRadius: "0.25rem",
+                                    }}
+                                >
+                                    <option value="">Select</option>
+                                    {allStates.map((state) => (
+                                        <option key={state.id} value={state.id}>
+                                            {state.name}
+                                        </option>
+                                    ))}
+                                </Input>
+                                {errors.dsdOutletState !== "" ? (<span className={classes.error}>
+            {errors.dsdOutletState}
+        </span>) : ("")}
+                            </FormGroup>
+                        </div>
+                        <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                                <Label>Outlet LGA<span style={{color: "red"}}> *</span></Label>
+                                <Input
+                                    type="select"
+                                    name="dsdOutletLGA"
+                                    id="dsdOutletLGA"
+                                    value={payload.dsdOutletLGA}
+                                    onChange={handleLGAChange}
+                                    style={{
+                                        border: "1px solid #014D88",
+                                        borderRadius: "0.25rem",
+                                    }}
+                                >
+                                    <option value="">Select</option>
+                                    {allLGAs.map((lga) => (
+                                        <option key={lga.id} value={lga.id}>
+                                            {lga.name}
+                                        </option>
+                                    ))}
+                                </Input>
+                            </FormGroup>
+                        </div>
+                        <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                                <Label>Outlet<span style={{color: "red"}}> *</span></Label>
+                                <Input
+                                    type="select"
+                                    name="dsdOutlet"
+                                    id="dsdOutlet"
+                                    value={payload.dsdOutlet}
+                                    onChange={handleOutletChange}
+                                    style={{
+                                        border: "1px solid #014D88",
+                                        borderRadius: "0.25rem",
+                                    }}
+                                >
+                                    <option value="">Select</option>
+                                    {outlets.map((outlet) => (
+                                        <option key={outlet["Name of Community outlet"]} value={outlet["Name of Community outlet"]}>
+                                            {outlet["Name of Community outlet"]}
+                                        </option>
+                                    ))}
+                                </Input>
+                                {/*        {errors.dsdOutletState !== "" ? (<span className={classes.error}>*/}
+                                {/*{errors.dsdOutletState}*/}
+                                {/*</span>) : ("")}*/}
+                            </FormGroup>
+                        </div>
+
                         {isClientReturnToSite &&
                             <div className="form-group mb-3 col-md-6">
                                 <FormGroup>
@@ -1068,21 +1250,21 @@ const DsdServiceForm = (props) => {
 
                         {isClientReturnToSite && payload.clientReturnToSite !== ""
                             && payload.clientReturnToSite === "Yes" && <div className="form-group mb-3 col-md-6">
-                            <FormGroup>
-                                <Label for="permissions" style={{color: '#014d88', fontWeight: 'bolder'}}>Service
-                                    Provided</Label>
-                                <DualListBox
-                                    //canFilter
-                                    options={serviceProvided}
-                                    onChange={onServiceProvidedSelected}
-                                    selected={selectedServiceProvided}
-                                />
-                                {errors.serviceProvided !== "" ? (<span className={classes.error}>
+                                <FormGroup>
+                                    <Label for="permissions" style={{color: '#014d88', fontWeight: 'bolder'}}>Service
+                                        Provided</Label>
+                                    <DualListBox
+                                        //canFilter
+                                        options={serviceProvided}
+                                        onChange={onServiceProvidedSelected}
+                                        selected={selectedServiceProvided}
+                                    />
+                                    {errors.serviceProvided !== "" ? (<span className={classes.error}>
                         {errors.serviceProvided}
                         </span>) : ("")}
-                            </FormGroup>
-                        </div>
-             }
+                                </FormGroup>
+                            </div>
+                        }
                     </div>
                     {/*comment, resignation, date section */}
 
