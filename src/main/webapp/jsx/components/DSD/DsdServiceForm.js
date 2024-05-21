@@ -3,7 +3,7 @@ import {Card, CardBody, FormGroup, Label, Input, Button, Spinner} from "reactstr
 
 import {makeStyles} from "@material-ui/core/styles";
 import axios from "axios";
-import {toast} from "react-toastify";
+import {ToastContainer, toast} from "react-toastify";
 import {url as baseUrl} from "../../../api";
 import {token as token} from "../../../api";
 import "react-widgets/dist/css/react-widgets.css";
@@ -421,6 +421,7 @@ const DsdServiceForm = (props) => {
 
 
     return (<>
+        <ToastContainer position={toast.POSITION.BOTTOM_CENTER} />
         <Card className={classes.root}>
             <CardBody>
                 <h2 style={{color: "#000"}}> DSD ASSESSMENT AND ACCEPTANCE FORM </h2>
