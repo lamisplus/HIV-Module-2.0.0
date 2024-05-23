@@ -119,14 +119,4 @@ public class DsdDevolvementController {
         }
     }
 
-    @GetMapping(value ="/dsd-outlet/{outLga}")
-    public ResponseEntity<List<DsdOutletDTO>> getDsdOutletByLga(@PathVariable("outLga") String outLga){
-        try {
-            return ResponseEntity.ok(devolvementService.getDsdOutletByLga(outLga));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
 }

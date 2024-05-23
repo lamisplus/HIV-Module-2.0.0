@@ -34,7 +34,7 @@ public class DatabaseInitializer  {
             List<Map<String,Object>> data = mapper.readValue(inputStream,typeReference);
             data.forEach(item -> {
                 jdbcTemplate.update(
-                        "INSERT INTO dsd_outlet (im, state, lga, name, dsd_type, archived) VALUES (?, ?, ?, ?, ?, 0)",
+                        "INSERT INTO dsd_outlet (im, state, lga, name, dsd_type, archived, created_date, created_by, last_modified_date, last_modified_by) VALUES (?, ?, ?, ?, ?, 0, CURRENT_TIMESTAMP, 'guest@lamisplus.org', CURRENT_TIMESTAMP, 'guest@lamisplus.org')",
                         item.get("IM"), item.get("State"), item.get("LGA"), item.get("Name of Community outlet"), item.get("DSD Type")
                 );
             });
