@@ -32,6 +32,7 @@ public class DSDOutletService {
         dto.setLga(dsdOutlet.getLga());
         dto.setName(dsdOutlet.getName());
         dto.setOutletDsdType(dsdOutlet.getOutletDsdType());
+        dto.setCode(dsdOutlet.getCode());
         return dto;
     }
 

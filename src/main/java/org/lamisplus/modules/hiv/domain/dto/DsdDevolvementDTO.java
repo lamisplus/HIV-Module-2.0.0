@@ -35,7 +35,7 @@ public class DsdDevolvementDTO implements Serializable {
     private String dsdType;
     private int dsdOutletState;
     private int dsdOutletLga;
-    private String dsdOutlet;
+    private Long dsdOutlet;
     private String comment;
     private String completedBy;
     private String designation;

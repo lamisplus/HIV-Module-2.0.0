@@ -19,11 +19,13 @@
                 lga VARCHAR(255),
                 name varchar(255),
                 dsd_type varchar(255),
+                code varchar(255),
                 archived integer,
                 created_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                 created_by VARCHAR(255) DEFAULT 'guest@lamisplus.org',
                 last_modified_date TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                 last_modified_by VARCHAR(255) DEFAULT 'guest@lamisplus.org',
+                facility_id BIGINT,
                 CONSTRAINT pk_dsd_outlet PRIMARY KEY (id)
             )
         </sql>
@@ -39,16 +41,7 @@
         </preConditions>
         <sql>ALTER TABLE dsd_devolvement ADD dsd_outlet_state INT;</sql>
         <sql>ALTER TABLE dsd_devolvement ADD dsd_outlet_lga INT;</sql>
-        <sql>ALTER TABLE dsd_devolvement ADD dsd_outlet VARCHAR(255);</sql>
-    </changeSet>
-
-    <changeSet id="20240516" author="Taiwo Gboyegun">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="dsd_outlet" columnName="facility_id" />
-            </not>
-        </preConditions>
-        <sql>ALTER TABLE dsd_outlet ADD facility_id BIGINT;</sql>
+        <sql>ALTER TABLE dsd_devolvement ADD dsd_outlet BIGINT;</sql>
     </changeSet>
 
 </databaseChangeLog>

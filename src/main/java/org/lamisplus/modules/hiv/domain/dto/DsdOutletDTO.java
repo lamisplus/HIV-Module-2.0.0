@@ -16,4 +16,5 @@ public class DsdOutletDTO {
     private String lga;
     private String name;
     private String outletDsdType;
+    private String code;
 }

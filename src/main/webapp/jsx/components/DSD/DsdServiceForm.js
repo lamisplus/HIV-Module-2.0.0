@@ -132,15 +132,26 @@ const DsdServiceForm = (props) => {
         }
     });
 
-    const  dsdModelTypeObject  = {
-        "CBM1 - Community pharmacy ART refill":"DSD_MODEL_COMMUNITY_COMMUNITY_PHARMACY_ART_REFILL",
-        "CBM2 - Community ART Refill Group: Healthcare Worker â€“ led":"DSD_MODEL_COMMUNITY_COMMUNITY_ART_REFILL_GROUP:_HEALTHCARE_WORKER_Ã¢â‚¬â€œ_LED",
-        "CBM3 - Community ART Refill Group: PLHIV â€“ led ":"DSD_MODEL_COMMUNITY_COMMUNITY_ART_REFILL_GROUP:_PLHIV_â€“_LED_",
-        "CBM4 - Adolescent Community ART/Peer-led groups":"DSD_MODEL_COMMUNITY_ADOLESCENT_COMMUNITY_ART_PEER-LED_GROUPS",
-        "CBM5 - Home delivery": "DSD_MODEL_COMMUNITY_HOME_DELIVERY",
-        "CBM6 - OSS Community platforms":"DSD_MODEL_COMMUNITY_OSS_COMMUNITY_PLATFORMS",
-        "CBM7 - Mother infant pair/Mentor mother led":"DSD_MODEL_COMMUNITY_MOTHER_INFANT_PAIR_MENTOR_MOTHER_LED",
-        "FBM4 - Decentralization (Hub and Spoke)":"DSD_MODEL_FACILITY_DECENTRALIZATION_(HUB_AND_SPOKE)"
+    // const  dsdModelTypeObject  = {
+    //     "CBM1 - Community pharmacy ART refill":"DSD_MODEL_COMMUNITY_COMMUNITY_PHARMACY_ART_REFILL",
+    //     "CBM2 - Community ART Refill Group: Healthcare Worker â€“ led":"DSD_MODEL_COMMUNITY_COMMUNITY_ART_REFILL_GROUP:_HEALTHCARE_WORKER_Ã¢â‚¬â€œ_LED",
+    //     "CBM3 - Community ART Refill Group: PLHIV â€“ led ":"DSD_MODEL_COMMUNITY_COMMUNITY_ART_REFILL_GROUP:_PLHIV_â€“_LED_",
+    //     "CBM4 - Adolescent Community ART/Peer-led groups":"DSD_MODEL_COMMUNITY_ADOLESCENT_COMMUNITY_ART_PEER-LED_GROUPS",
+    //     "CBM5 - Home delivery": "DSD_MODEL_COMMUNITY_HOME_DELIVERY",
+    //     "CBM6 - OSS Community platforms":"DSD_MODEL_COMMUNITY_OSS_COMMUNITY_PLATFORMS",
+    //     "CBM7 - Mother infant pair/Mentor mother led":"DSD_MODEL_COMMUNITY_MOTHER_INFANT_PAIR_MENTOR_MOTHER_LED",
+    //     "FBM4 - Decentralization (Hub and Spoke)":"DSD_MODEL_FACILITY_DECENTRALIZATION_(HUB_AND_SPOKE)"
+    // }
+
+    const dsdModelTypeObject = {
+        "DSD_MODEL_COMMUNITY_COMMUNITY_PHARMACY_ART_REFILL": "CBM1 - Community pharmacy ART refill",
+        "DSD_MODEL_COMMUNITY_COMMUNITY_ART_REFILL_GROUP:_HEALTHCARE_WORKER_–_LED": "CBM2 - Community ART Refill Group: Healthcare Worker – led",
+        "DSD_MODEL_COMMUNITY_COMMUNITY_ART_REFILL_GROUP:_PLHIV_–_LED_": "CBM3 - Community ART Refill Group: PLHIV – led",
+        "DSD_MODEL_COMMUNITY_ADOLESCENT_COMMUNITY_ART_PEER-LED_GROUPS": "CBM4 - Adolescent Community ART/Peer-led groups",
+        "DSD_MODEL_COMMUNITY_HOME_DELIVERY": "CBM5 - Home delivery",
+        "DSD_MODEL_COMMUNITY_OSS_COMMUNITY_PLATFORMS": "CBM6 - OSS Community platforms",
+        "DSD_MODEL_COMMUNITY_MOTHER_INFANT_PAIR_MENTOR_MOTHER_LED": "CBM7 - Mother infant pair/Mentor mother led",
+        "DSD_MODEL_FACILITY_DECENTRALIZATION_(HUB_AND_SPOKE)": "FBM4 - Decentralization (Hub and Spoke)"
     }
 
     // get dsd model type
@@ -318,6 +329,18 @@ const DsdServiceForm = (props) => {
             setPayLoad({
                 ...payload,
                 dsdType: "",
+                dsdOutletState: "",
+                dsdOutletLga: "",
+                dsdOutlet: "",
+                // serviceProvided: null,
+                dateReturnToSite: "",
+                clientReturnToSite: ""
+            });
+            setSelectedServiceProvided([]);
+        }
+        if (name === "dsdType") {
+            setPayLoad({
+                ...payload,
                 dsdOutletState: "",
                 dsdOutletLga: "",
                 dsdOutlet: "",
@@ -520,18 +543,22 @@ const DsdServiceForm = (props) => {
 
 // Handle LGA selection
     const handleLGAChange = (e) => {
+        const value = e.target.value;
+        const selectedLgaId = value ? Number(value) : null;
         setPayLoad(prevPayload => ({
             ...prevPayload,
-            dsdOutletLga: e.target.value,
+            dsdOutletLga: selectedLgaId,
             dsdOutlet: ''
         }));
     }
 
 // Handle outlet selection
     const handleOutletChange = (e) => {
+        const selectedOutletId = e.target.value ? Number(e.target.value) : null;
         setPayLoad(prevPayload => ({
             ...prevPayload,
-            dsdOutlet: e.target.value
+            dsdOutlet: selectedOutletId
+            // dsdOutlet: e.target.value
         }));
     }
 
@@ -576,28 +603,56 @@ const DsdServiceForm = (props) => {
     // }
 
 
+    // const compareDSDType = () => {
+    //     // Get the selected outlet object
+    //     const selectedOutlet = outlets.find(outlet => outlet["name"] === payload.dsdOutlet);
+    //     console.log("Selected outlet:", selectedOutlet);
+    //
+    //     if (selectedOutlet) {
+    //         // Get the DSD Type from the selected outlet
+    //         const outletDSDType = selectedOutlet["outletDsdType"];
+    //         console.log("Outlet DSD Type:", outletDSDType);
+    //
+    //         // Map the DSD Type to its corresponding value in the dsdModelTypeObject
+    //         const mappedDSDType = dsdModelTypeObject[outletDSDType];
+    //         console.log("Mapped DSD Type:", mappedDSDType);
+    //
+    //
+    //
+    //         // Update the dsdType field with the mapped value
+    //         if (mappedDSDType) {
+    //             setPayLoad(prevPayload => ({
+    //                 ...prevPayload,
+    //                 dsdType: mappedDSDType
+    //             }));
+    //         } else {
+    //             console.error("Mapped DSD Type is undefined. Check the dsdModelTypeObject and outletDSDType.");
+    //         }
+    //     }
+    // };
+
     const compareDSDType = () => {
         // Get the selected outlet object
         const selectedOutlet = outlets.find(outlet => outlet["name"] === payload.dsdOutlet);
         console.log("Selected outlet:", selectedOutlet);
 
         if (selectedOutlet) {
-            // Get the DSD Type from the selected outlet
-            const outletDSDType = selectedOutlet["outletDsdType"];
-            console.log("Outlet DSD Type:", outletDSDType);
+            // Get the code from the selected outlet
+            const dsdCode = selectedOutlet["code"];
+            console.log("Outlet code:", dsdCode);
 
-            // Map the DSD Type to its corresponding value in the dsdModelTypeObject
-            const mappedDSDType = dsdModelTypeObject[outletDSDType];
-            console.log("Mapped DSD Type:", mappedDSDType);
+            // Map the code to its corresponding value in the dsdModelTypeObject
+            const mappedDsdCode = dsdModelTypeObject[dsdCode.toString()];
+            console.log("Mapped DSD Type:", mappedDsdCode);
 
             // Update the dsdType field with the mapped value
-            if (mappedDSDType) {
+            if (mappedDsdCode) {
                 setPayLoad(prevPayload => ({
                     ...prevPayload,
-                    dsdType: mappedDSDType
+                    dsdType: mappedDsdCode
                 }));
             } else {
-                console.error("Mapped DSD Type is undefined. Check the dsdModelTypeObject and outletDSDType.");
+                console.error("Mapped DSD Type is undefined. Check the dsdModelTypeObject and outlet code.");
             }
         }
     };
@@ -1294,8 +1349,8 @@ const DsdServiceForm = (props) => {
                                 >
                                     <option value="">Select</option>
                                     {outlets.map((outlet) => (
-                                        <option key={outlet["name"]} value={outlet["name"]}>
-                                            {outlet["name"]}
+                                        <option key={outlet.id} value={outlet.id}>
+                                            {outlet.name}
                                         </option>
                                     ))}
                                 </Input>

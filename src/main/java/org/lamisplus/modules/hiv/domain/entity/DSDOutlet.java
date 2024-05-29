@@ -35,6 +35,11 @@ public class DSDOutlet extends HivAuditEntity implements Persistable<Long>, Seri
     @Basic
     @Column(name = "dsd_type")
     private String outletDsdType;
+
+    @Basic
+    @Column(name = "code")
+    private String code;
+
     @Basic
     @Column(name = "archived")
     private int archived ;
