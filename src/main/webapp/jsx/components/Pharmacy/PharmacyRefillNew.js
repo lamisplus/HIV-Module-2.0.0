@@ -985,7 +985,7 @@ const Pharmacy = (props) => {
           objValues.mmdType = "";
           objValues.prescriptionError = "";
           objValues.visitId = "";
-          objValues.refill = "";
+          // objValues.refill = "";
           objValues.refillType = "";
           objValues.switch = "";
           objValues.substitute = "";
@@ -1211,7 +1211,7 @@ const Pharmacy = (props) => {
                       </Input>
                     </FormGroup>
                   </div>
-                  <div className="form-group mb-3 col-md-3">
+                  {/* <div className="form-group mb-3 col-md-3">
                     <FormGroup>
                       <Label>Refill</Label>
                       <Input
@@ -1230,7 +1230,7 @@ const Pharmacy = (props) => {
                         <option value="No">No </option>
                       </Input>
                     </FormGroup>
-                  </div>
+                  </div> */}
                   <div className="form-group mb-3 col-md-4">
                     <FormGroup>
                       <Label for="artDate">

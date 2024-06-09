@@ -87,6 +87,19 @@ public class DsdDevolvement extends HivAuditEntity implements Persistable<Long>,
     @Column(name = "archived")
     private int archived;
 
+    @Basic
+    @Column(name="dsd_outlet_state")
+    private int dsdOutletState;
+
+    @Basic
+    @Column(name="dsd_outlet_lga")
+    private int dsdOutletLga;
+
+    @Basic
+    @Column(name="dsd_outlet")
+    private Long dsdOutlet;
+
+
     @Type(type = "jsonb-node")
     @Column(columnDefinition = "jsonb")
     private JsonNode dsdEligibilityAssessment;

@@ -47,11 +47,20 @@ public class DsdDevolvementService {
             DsdDevolvement dsdDevolvement = convertDsdDevolvementDtoToEntity(dto);
             dsdDevolvement.setUuid(UUID.randomUUID().toString());
             dsdDevolvement.setArchived(0);
+            // before saving check if the date of devolvement is existing for the person, if yes don't save
+            List<DsdDevolvementDTO> devolvements = this.getDsdDevolvementByPersonId(dto.getPersonId(), 0, 10);
+            if(devolvements.size() > 0){
+                for(DsdDevolvementDTO devolvement: devolvements){
+                    if(devolvement.getDateDevolved().equals(dto.getDateDevolved())){
+                        throw new RuntimeException("Devolvement already exists for this date");
+                    }
+                }
+            }
             return convertEntityToDsdDevolvementDto(dsdDevolvementRepository.save(dsdDevolvement));
         } catch (JsonProcessingException e) {
             // Handle JsonProcessingException
             e.printStackTrace();
-            return null; // Or throw a custom exception
+            return null;
         }
     }
 

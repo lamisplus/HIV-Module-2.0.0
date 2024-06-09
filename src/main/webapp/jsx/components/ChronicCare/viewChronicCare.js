@@ -311,11 +311,46 @@ const ViewChronicCare = (props) => {
   };
   //Validations of the forms
   const validate = () => {
+    tpt.outComeOfIpt !== "" &&
+      (temp.outcomeDate = tpt.date ? "" : "This field is required");
+
+    if (tbObj.tbTreatment === "Yes") {
+      temp.tbTreatmentStartDate = tbObj.tbTreatmentStartDate
+        ? ""
+        : "This field is required";
+    }
+
+    if (tpt.tbTreatment === "") {
+      temp.tbTreatment = tpt.tbTreatment ? "" : "This field is required";
+    }
+
+    if (tpt.tbTreatment === "Yes") {
+      temp.treatmentType = tpt.treatmentType ? "" : "This field is required";
+
+      temp.treatmentOutcome = tpt.treatmentOutcome
+        ? ""
+        : "This field is required";
+
+      if (tpt.treatmentOutcome === "Treatment completed") {
+        temp.completionDate = tpt.completionDate
+          ? ""
+          : "This field is required";
+
+        temp.treatmentCompletionStatus = tpt.treatmentCompletionStatus
+          ? ""
+          : "This field is required";
+      }
+    } else {
+      temp.treatmentType = "";
+      temp.treatmentOutcome = "";
+      temp.completionDate = "";
+      temp.treatmentCompletionStatus = "";
+    }
+
     temp.dateOfObservation = observation.dateOfObservation
       ? ""
       : "This field is required";
-    tpt.outComeOfIpt !== "" &&
-      (temp.outcomeDate = tpt.date ? "" : "This field is required");
+
     setErrors({
       ...temp,
     });
@@ -330,126 +365,82 @@ const ViewChronicCare = (props) => {
     toast.success(message, { position: toast.POSITION.BOTTOM_CENTER });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSaving(true);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setSaving(true);
 
-    if (tbObj.tbTreatment === "") {
-      showErrorMessage("TB & IPT Screening is not filled for patient");
-      setSaving(false);
+  if (tbObj.tbTreatment === "") {
+    showErrorMessage("TB & IPT Screening is not filled for patient");
+    setSaving(false);
+    return;
+  }
+
+  // Set up observation object
+  observation.personId = patientObj.id;
+  observationObj.eligibility = eligibility;
+  observationObj.nutrition = nutrition;
+  observationObj.genderBase = genderBase;
+  observationObj.chronicCondition = chronicConditions;
+  observationObj.positiveHealth = preventive;
+  observationObj.peproductive = reproductive;
+  observationObj.tbIptScreening = tbObj;
+  observationObj.tptMonitoring = tpt;
+  observation.data = observationObj;
+
+  // Validate form
+  if (!validate()) {
+    showErrorMessage("All fields are required");
+    setSaving(false);
+    return;
+  }
+
+  // Check for duplicate visit Date
+  if (
+    chronicDateExist !== null &&
+    chronicDateExist.find(
+      (x) => x.dateOfObservation === observation.dateOfObservation
+    )
+  ) {
+    showErrorMessage(
+      "Chronic Care visit date " +
+        observation.dateOfObservation +
+        " already exists."
+    );
+    setSaving(false);
+    return;
+  }
+
+  // Send request
+  try {
+    let response;
+    if (isUpdate) {
+      response = await axios.put(
+        `${baseUrl}observation/${props.activeContent.id}`,
+        observation,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
     } else {
-      observation.personId = patientObj.id;
-      observationObj.eligibility = eligibility;
-      observationObj.nutrition = nutrition;
-      observationObj.genderBase = genderBase;
-      observationObj.chronicCondition = chronicConditions;
-      observationObj.positiveHealth = preventive;
-      observationObj.peproductive = reproductive;
-      observationObj.tbIptScreening = tbObj;
-      observationObj.tptMonitoring = tpt;
-      observation.data = observationObj;
-      if (validate()) {
-        //Validate function check
-        if (isUpdate) {
-          const hasObservationDateChanged =
-            lastDateOfObservation !== observation.dateOfObservation;
-          if (
-            hasObservationDateChanged &&
-            chronicDateExist !== null &&
-            chronicDateExist.find(
-              (x) => x.dateOfObservation === observation.dateOfObservation
-            )
-          ) {
-            showErrorMessage(
-              "Chronic Care visit date " +
-                observation.dateOfObservation +
-                " already exist. "
-            );
-            setSaving(false);
-          } else {
-            axios
-              .put(
-                `${baseUrl}observation/${props.activeContent.id}`,
-                observation,
-                { headers: { Authorization: `Bearer ${token}` } }
-              )
-              .then((response) => {
-                setSaving(false);
-                showSuccessMessage("Chronic Care Save successful");
-                props.setActiveContent({
-                  ...props.activeContent,
-                  route: "recent-history",
-                });
-              })
-              .catch((error) => {
-                setSaving(false);
-                if (error.response && error.response.data) {
-                  if (
-                    error.response.data.apierror &&
-                    error.response.data.apierror.message !== ""
-                  ) {
-                    showErrorMessage(error.response.data.apierror.message);
-                  } else {
-                    showErrorMessage(
-                      "Something went wrong. Please try again..."
-                    );
-                  }
-                }
-              });
-          }
-        } else {
-          //SAVE FOR NEW Record
-          //check for duplicate visit Date
-          if (
-            chronicDateExist !== null &&
-            chronicDateExist.find(
-              (x) => x.dateOfObservation === observation.dateOfObservation
-            )
-          ) {
-            showErrorMessage(
-              "Chronic Care visit date " +
-                observation.dateOfObservation +
-                " already exist. "
-            );
-            setSaving(false);
-          } else {
-            axios
-              .post(`${baseUrl}observation`, observation, {
-                headers: { Authorization: `Bearer ${token}` },
-              })
-              .then((response) => {
-                setSaving(false);
-                showSuccessMessage("Chronic Care Save successful");
-                props.setActiveContent({
-                  ...props.activeContent,
-                  route: "recent-history",
-                });
-              })
-              .catch((error) => {
-                setSaving(false);
-                if (error.response && error.response.data) {
-                  if (
-                    error.response.data.apierror &&
-                    error.response.data.apierror.message !== ""
-                  ) {
-                    showErrorMessage(error.response.data.apierror.message);
-                  } else {
-                    showErrorMessage(
-                      "Something went wrong. Please try again..."
-                    );
-                  }
-                }
-              });
-          }
-        } //End of save
-
-        //End of the ecnounter date validation check
-      } else {
-        showErrorMessage("All fields are required");
-        setSaving(false);
-      }
+      response = await axios.post(`${baseUrl}observation`, observation, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
     }
-  };
+
+    setSaving(false);
+    showSuccessMessage("Chronic Care Save successful");
+    props.setActiveContent({ ...props.activeContent, route: "recent-history" });
+  } catch (error) {
+    setSaving(false);
+    if (error.response && error.response.data) {
+      const errorMessage =
+        error.response.data.apierror &&
+        error.response.data.apierror.message !== ""
+          ? error.response.data.apierror.message
+          : "Something went wrong. Please try again...";
+      showErrorMessage(errorMessage);
+    }
+  }
+};
+
 
   const onClickEligibility = () => {
     setShowEligibility(!showEligibility);

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.hibernate.annotations.GeneratorType;
+import org.lamisplus.modules.hiv.apiError.ApiError;
 import org.lamisplus.modules.hiv.domain.dto.*;
 import org.lamisplus.modules.hiv.service.DsdDevolvementService;
 import org.springframework.http.HttpStatus;
@@ -25,15 +26,29 @@ import org.springframework.web.bind.annotation.*;
 public class DsdDevolvementController {
     private final DsdDevolvementService devolvementService;
 
+//    @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+//    ResponseEntity<DsdDevolvementDTO> saveDsdDevolvement(@RequestBody  DsdDevolvementDTO  dto) throws IOException {
+//        try {
+//            return new ResponseEntity<>(devolvementService.saveDsdDevolvement(dto), HttpStatus.OK);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//
+//    }
+
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<DsdDevolvementDTO> saveDsdDevolvement(@RequestBody  DsdDevolvementDTO  dto) throws IOException {
+    public ResponseEntity<?> saveDsdDevolvement(@RequestBody DsdDevolvementDTO dto) {
         try {
             return new ResponseEntity<>(devolvementService.saveDsdDevolvement(dto), HttpStatus.OK);
+        } catch (RuntimeException e) {
+            ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, e.getMessage());
+            return new ResponseEntity<>(apiError, apiError.getStatus());
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            return new ResponseEntity<>(apiError, apiError.getStatus());
         }
-        
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
