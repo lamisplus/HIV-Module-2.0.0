@@ -21,11 +21,11 @@ public interface PatientLineDto {
 	
 	// String uniqueID;
 	
-	String getSurname();
-	
-	String getOtherName();
-	
-	String getFirstName();
+//	String getSurname();
+//
+//	String getOtherName();
+//
+//	String getFirstName();
 	
 	LocalDate getDateOfBirth();
 	
@@ -45,9 +45,8 @@ public interface PatientLineDto {
 	
 	String getResidentialLga();
 	
-	String getAddress();
-	
-	String getPhone();
+//	String getAddress();
+//	String getPhone();
 	
 	Boolean getArchived();
 	

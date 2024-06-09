@@ -3,7 +3,7 @@ import {Card, CardBody, FormGroup, Label, Input, Button, Spinner} from "reactstr
 
 import {makeStyles} from "@material-ui/core/styles";
 import axios from "axios";
-import {toast} from "react-toastify";
+import {ToastContainer, toast} from "react-toastify";
 import {url as baseUrl} from "../../../api";
 import {token as token} from "../../../api";
 import "react-widgets/dist/css/react-widgets.css";
@@ -84,7 +84,16 @@ const DsdServiceForm = (props) => {
     const [isClientReturnToSite, setIsClientReturnToSite] = useState(false);
     const [serviceProvided, setServiceProvided] = useState([]);
     const [patientDsdRecords, setPatientDsdRecords] = useState([]);
-    const [selectedServiceProvided,setSelectedServiceProvided] = useState([]);
+    const [selectedServiceProvided, setSelectedServiceProvided] = useState([]);
+
+    const [selectedState, setSelectedState] = useState(null);
+    const [lgas, setLgas] = useState([]);
+    const [allStates, setAllStates] = useState([]);
+    const [allLGAs, setAllLGAs] = useState([]);
+    const [outlets, setOutlets] = useState([]);
+
+    const [outletData, setOutletData] = useState([]);
+    const [hideDsdOutlet, setHideDsdOutlet] = useState(true);
 
     const [payload, setPayLoad] = useState({
         personId: patientObj && patientObj.id ? patientObj.id : "",
@@ -94,6 +103,9 @@ const DsdServiceForm = (props) => {
         dsdAccept: "",
         dsdModel: "",
         dsdType: "",
+        dsdOutletState: "",
+        dsdOutletLga: "",
+        dsdOutlet: "",
         comment: "",
         completedBy: "",
         designation: "",
@@ -102,7 +114,7 @@ const DsdServiceForm = (props) => {
         facilityId: facId ? facId : "",
         clientReturnToSite: "",
         dateReturnToSite: "",
-        serviceProvided:null,
+        serviceProvided: null,
         dsdEligibilityAssessment: {
             onArtForAtLeast1Year: "",
             goodUnderstandingOfAdherence: "",
@@ -120,27 +132,51 @@ const DsdServiceForm = (props) => {
         }
     });
 
+    // const  dsdModelTypeObject  = {
+    //     "CBM1 - Community pharmacy ART refill":"DSD_MODEL_COMMUNITY_COMMUNITY_PHARMACY_ART_REFILL",
+    //     "CBM2 - Community ART Refill Group: Healthcare Worker â€“ led":"DSD_MODEL_COMMUNITY_COMMUNITY_ART_REFILL_GROUP:_HEALTHCARE_WORKER_Ã¢â‚¬â€œ_LED",
+    //     "CBM3 - Community ART Refill Group: PLHIV â€“ led ":"DSD_MODEL_COMMUNITY_COMMUNITY_ART_REFILL_GROUP:_PLHIV_â€“_LED_",
+    //     "CBM4 - Adolescent Community ART/Peer-led groups":"DSD_MODEL_COMMUNITY_ADOLESCENT_COMMUNITY_ART_PEER-LED_GROUPS",
+    //     "CBM5 - Home delivery": "DSD_MODEL_COMMUNITY_HOME_DELIVERY",
+    //     "CBM6 - OSS Community platforms":"DSD_MODEL_COMMUNITY_OSS_COMMUNITY_PLATFORMS",
+    //     "CBM7 - Mother infant pair/Mentor mother led":"DSD_MODEL_COMMUNITY_MOTHER_INFANT_PAIR_MENTOR_MOTHER_LED",
+    //     "FBM4 - Decentralization (Hub and Spoke)":"DSD_MODEL_FACILITY_DECENTRALIZATION_(HUB_AND_SPOKE)"
+    // }
+
+    const dsdModelTypeObject = {
+        "DSD_MODEL_COMMUNITY_COMMUNITY_PHARMACY_ART_REFILL": "CBM1 - Community pharmacy ART refill",
+        "DSD_MODEL_COMMUNITY_COMMUNITY_ART_REFILL_GROUP:_HEALTHCARE_WORKER_–_LED": "CBM2 - Community ART Refill Group: Healthcare Worker – led",
+        "DSD_MODEL_COMMUNITY_COMMUNITY_ART_REFILL_GROUP:_PLHIV_–_LED_": "CBM3 - Community ART Refill Group: PLHIV – led",
+        "DSD_MODEL_COMMUNITY_ADOLESCENT_COMMUNITY_ART_PEER-LED_GROUPS": "CBM4 - Adolescent Community ART/Peer-led groups",
+        "DSD_MODEL_COMMUNITY_HOME_DELIVERY": "CBM5 - Home delivery",
+        "DSD_MODEL_COMMUNITY_OSS_COMMUNITY_PLATFORMS": "CBM6 - OSS Community platforms",
+        "DSD_MODEL_COMMUNITY_MOTHER_INFANT_PAIR_MENTOR_MOTHER_LED": "CBM7 - Mother infant pair/Mentor mother led",
+        "DSD_MODEL_FACILITY_DECENTRALIZATION_(HUB_AND_SPOKE)": "FBM4 - Decentralization (Hub and Spoke)"
+    }
+
     // get dsd model type
     function DsdModelType(dsdmodel) {
         const dsd =
             dsdmodel === "Facility" ? "DSD_MODEL_FACILITY" : "DSD_MODEL_COMMUNITY";
         axios
             .get(`${baseUrl}application-codesets/v2/${dsd}`, {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {Authorization: `Bearer ${token}`},
             })
             .then((response) => {
+                console.log("response.data", response.data);
                 setDsdModelType(response.data);
             })
-            .catch((error) => {});
+            .catch((error) => {
+            });
     }
 
     useEffect(() => {
         if (payload.dsdModel) {
             // if isLastDsdModelInCommunity is true, and user change to Facility, then the clientReturnToSite should be true
-            if(isLastDsdModelInCommunity(patientDsdRecords)) {
+            if (isLastDsdModelInCommunity(patientDsdRecords)) {
                 setIsClientReturnToSite(true);
             }
-            if(payload.dsdModel === "Community") {
+            if (payload.dsdModel === "Community") {
                 setIsClientReturnToSite(false);
             }
             DsdModelType(payload.dsdModel);
@@ -152,7 +188,7 @@ const DsdServiceForm = (props) => {
         getViralLoadAndDate();
     }, []);
 
-    
+
     // const getViralLoadAndDate = () => {
     //     axios.get(`${baseUrl}hiv/art/pharmacy/devolve/current-viral-load?personId=${patientObj.id}`, {
     //         headers: { Authorization: `Bearer ${token}` },
@@ -170,15 +206,16 @@ const DsdServiceForm = (props) => {
     //         });
     // };
 
+
     console.log("patientObj", patientObj);
 
     const getViralLoadAndDate = () => {
         axios.get(`${baseUrl}hiv/art/pharmacy/devolve/get-patient-current-viral-load/${patientObj.personUuid}`, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {Authorization: `Bearer ${token}`},
         })
             .then((response) => {
                 // const { viralLoadTestResult, dateResultReported } = response.data;
-                const  {resultReported, dateResultReported} = response.data;
+                const {resultReported, dateResultReported} = response.data;
                 setPayLoad({
                     ...payload,
                     viralLoadTestResult: resultReported,
@@ -226,25 +263,41 @@ const DsdServiceForm = (props) => {
     }, [payload.dsdEligibilityAssessment, props.patientObj.sex]);
 
 
+    // Update hideDsdOutlet state when dsdModel or dsdType changes
+    useEffect(() => {
+        if (payload.dsdModel === 'Facility' && payload.dsdType === 'DSD_MODEL_FACILITY_DECENTRALIZATION_(HUB_AND_SPOKE)') {
+            setHideDsdOutlet(false);
+        } else if (payload.dsdModel === 'Community' ) {
+            setHideDsdOutlet(false);
+        } else {
+            setHideDsdOutlet(true);
+        }
+    }, [payload.dsdModel, payload.dsdType]);
+
+
     const submitAssessmentForm = (load) => {
         axios
             .post(`${baseUrl}hiv/art/pharmacy/devolve`, load, {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {Authorization: `Bearer ${token}`},
             })
             .then((response) => {
-                setSaving(false);
-                toast.success("DSD Assesment Submitted Successfully");
-                props.setActiveContent({
-                    ...props.activeContent,
-                    route: "recent-history",
-                });
+                if (response.data.status === "BAD_REQUEST") {
+                    toast.error(response.data.message);
+                } else {
+                    setSaving(false);
+                    toast.success("DSD Assesment Submitted Successfully");
+                    props.setActiveContent({
+                        ...props.activeContent,
+                        route: "recent-history",
+                    });
+                }
             })
             .catch((error) => {
                 setSaving(false);
                 if (error.response && error.response.data) {
                     let errorMessage =
-                        error.response.data && error.response.data.apierror.message !== ""
-                            ? error.response.data.apierror.message
+                        error.response.data && error.response.data.message !== ""
+                            ? error.response.data.message
                             : "Something went wrong, please try again";
                     toast.error(errorMessage);
                 }
@@ -253,7 +306,7 @@ const DsdServiceForm = (props) => {
 
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         temp[name] = ""; // Reset the error for this field
         setPayLoad(prevPayload => ({
             ...prevPayload,
@@ -263,6 +316,7 @@ const DsdServiceForm = (props) => {
             }
         }));
     };
+
     //
     // console.log("payload", payload);
     //  console.log("selectedServiceProvided", selectedServiceProvided);
@@ -275,6 +329,21 @@ const DsdServiceForm = (props) => {
             setPayLoad({
                 ...payload,
                 dsdType: "",
+                dsdOutletState: "",
+                dsdOutletLga: "",
+                dsdOutlet: "",
+                // serviceProvided: null,
+                dateReturnToSite: "",
+                clientReturnToSite: ""
+            });
+            setSelectedServiceProvided([]);
+        }
+        if (name === "dsdType") {
+            setPayLoad({
+                ...payload,
+                dsdOutletState: "",
+                dsdOutletLga: "",
+                dsdOutlet: "",
                 // serviceProvided: null,
                 dateReturnToSite: "",
                 clientReturnToSite: ""
@@ -282,7 +351,7 @@ const DsdServiceForm = (props) => {
             setSelectedServiceProvided([]);
         }
         // if there is changes in the clientReturnToSite input fields, the value of dateReturnToSite and servicseProvided should be
-        if(name === "clientReturnToSite" && value !== "Yes") {
+        if (name === "clientReturnToSite" && value !== "Yes") {
             setPayLoad({
                 ...payload,
                 dateReturnToSite: "",
@@ -301,7 +370,7 @@ const DsdServiceForm = (props) => {
         e.preventDefault();
 
         if (validate()) {
-            payload.serviceProvided=Object.assign({}, selectedServiceProvided);
+            payload.serviceProvided = Object.assign({}, selectedServiceProvided);
             submitAssessmentForm(payload);
         } else {
             window.scroll(0, 0);
@@ -332,7 +401,7 @@ const DsdServiceForm = (props) => {
             return (new Date(current.dateDevolved) > new Date(prev.dateDevolved)) ? current : prev;
         });
         // Check if the dsdModel value of the most recent object is "Community"
-        if(mostRecentObject.dsdModel === "Community") {
+        if (mostRecentObject.dsdModel === "Community") {
             // setIsClientReturnToSite(true);
             return true;
         }
@@ -352,12 +421,12 @@ const DsdServiceForm = (props) => {
     const getServicesProvided = () => {
         axios
             .get(`${baseUrl}application-codesets/v2/EAC_INTERVENTIONS_SERVICE`, {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: {Authorization: `Bearer ${token}`},
             })
             .then((response) => {
                 const transformedData = response.data.map(item => {
                     const displayValue = item.display.replace(/["']/g, '').trim();
-                    return { value: displayValue, label: displayValue };
+                    return {value: displayValue, label: displayValue};
                 });
                 setServiceProvided(transformedData);
             })
@@ -366,15 +435,249 @@ const DsdServiceForm = (props) => {
             });
     }
 
+
+    // Fetch all states when the component mounts
+    useEffect(() => {
+        axios.get(`${baseUrl}organisation-units/parent-organisation-units/1`, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+            .then((response) => {
+                setAllStates(response.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching states:', error);
+            });
+    }, []);
+
+
+    const getOutletData = () => {
+        axios.get(`${baseUrl}hiv/dsd-outlet/all`, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+            .then(response => {
+                console.log('Outlet data:', response.data);
+                setOutletData(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching outlet data:', error);
+            });
+    }
+
+// Fetch LGAs when a state is selected
+    useEffect(() => {
+        if (selectedState) {
+            console.log("Selected state:", selectedState)
+            axios.get(`${baseUrl}organisation-units/parent-organisation-units/${selectedState.id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+                .then(response => {
+                    console.log('LGAs:', response.data)
+                    setAllLGAs(response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching LGAs:', error);
+                });
+        }
+    }, [selectedState]);
+
+ console.log("payload", payload);
+ console.log("allLGAs", allLGAs);
+
+// Update the list of outlets when an LGA is selected
+//     useEffect(() => {
+//         if (payload.dsdOutletLga) {
+//             const selectedLGA = allLGAs.find(lga => lga.id === Number(payload.dsdOutletLga));
+//             console.log("Selected LGA:", selectedLGA)
+//             if (selectedLGA) {
+//                 const lgaOutlets = outletData.filter(outlet => outlet.lga === selectedLGA.name);
+//                 console.log("LGA outlets:", lgaOutlets)
+//                 setOutlets(lgaOutlets);
+//             } else {
+//                 console.log("No LGA found with the provided ID:", payload.dsdOutletLga);
+//             }
+//         }
+//     }, [payload.dsdOutletLga]);
+
+    useEffect(() => {
+        if (payload.dsdOutletLga) {
+            const selectedLGA = allLGAs.find(lga => lga.id === Number(payload.dsdOutletLga));
+            console.log("Selected LGA:", selectedLGA)
+            if (selectedLGA) {
+                let lgaOutlets = outletData.filter(outlet => outlet.lga === selectedLGA.name);
+                // Add condition to filter outlets based on the selected DSD model
+                if (payload.dsdModel === 'Community') {
+                    lgaOutlets = lgaOutlets.filter(outlet => outlet.outletDsdType.includes('CBM'));
+                } else if (payload.dsdModel === 'Facility') {
+                    lgaOutlets = lgaOutlets.filter(outlet => outlet.outletDsdType.includes('FBM'));
+                }
+
+                console.log("LGA outlets:", lgaOutlets)
+                setOutlets(lgaOutlets);
+            } else {
+                console.log("No LGA found with the provided ID:", payload.dsdOutletLga);
+            }
+        }
+    }, [payload.dsdOutletLga, payload.dsdModel]);
+
+    // handle state selection
+    const handleStateChange = (e) => {
+        const selectedStateId = Number(e.target.value);
+        const selectedState = allStates.find(state => state.id === selectedStateId);
+        setSelectedState(selectedState);
+        if (selectedStateId) {
+            setPayLoad(prevPayload => ({
+                ...prevPayload,
+                dsdOutletState: selectedStateId,
+                dsdOutletLga: '',
+                dsdOutlet: ''
+            }));
+        } else {
+            setPayLoad(prevPayload => ({
+                ...prevPayload,
+                dsdOutletState: '',
+                dsdOutletLga: '',
+                dsdOutlet: ''
+            }));
+        }
+    }
+
+// Handle LGA selection
+    const handleLGAChange = (e) => {
+        const value = e.target.value;
+        const selectedLgaId = value ? Number(value) : null;
+        setPayLoad(prevPayload => ({
+            ...prevPayload,
+            dsdOutletLga: selectedLgaId,
+            dsdOutlet: ''
+        }));
+    }
+
+// Handle outlet selection
+    const handleOutletChange = (e) => {
+        const selectedOutletId = e.target.value ? Number(e.target.value) : null;
+        setPayLoad(prevPayload => ({
+            ...prevPayload,
+            dsdOutlet: selectedOutletId
+            // dsdOutlet: e.target.value
+        }));
+    }
+
     useEffect(() => {
         getServicesProvided();
+        getOutletData();
         // console.log("patientObj", props.patientObj);
     }, []);
+
+    // const compareDSDType = () => {
+    //     // Get the selected outlet object
+    //     const selectedOutlet = outlets.find(outlet => outlet["name"] === payload.dsdOutlet);
+    //
+    //     if (selectedOutlet) {
+    //         // Get the DSD Type from the selected outlet
+    //         const outletDSDType = selectedOutlet["outletDsdType"];
+    //
+    //         // Map the DSD Type to its corresponding value in the dsdModelTypeObject
+    //         const mappedDSDType = dsdModelTypeObject[outletDSDType];
+    //
+    //         // Compare the mapped value with the payload.dsdType
+    //         if (mappedDSDType !== payload.dsdType) {
+    //             // Set an error message
+    //             setErrors(prevErrors => ({
+    //                 ...prevErrors,
+    //                 dsdType: "The selected outlet doesn't provide this DSD type"
+    //             }));
+    //         } else {
+    //             // Clear the error message
+    //             setErrors(prevErrors => ({
+    //                 ...prevErrors,
+    //                 dsdType: ""
+    //             }));
+    //         }
+    //     } else {
+    //         // Handle the case where no outlet is selected
+    //         setErrors(prevErrors => ({
+    //             ...prevErrors,
+    //             dsdOutlet: "Please select an outlet"
+    //         }));
+    //     }
+    // }
+
+
+    // const compareDSDType = () => {
+    //     // Get the selected outlet object
+    //     const selectedOutlet = outlets.find(outlet => outlet["name"] === payload.dsdOutlet);
+    //     console.log("Selected outlet:", selectedOutlet);
+    //
+    //     if (selectedOutlet) {
+    //         // Get the DSD Type from the selected outlet
+    //         const outletDSDType = selectedOutlet["outletDsdType"];
+    //         console.log("Outlet DSD Type:", outletDSDType);
+    //
+    //         // Map the DSD Type to its corresponding value in the dsdModelTypeObject
+    //         const mappedDSDType = dsdModelTypeObject[outletDSDType];
+    //         console.log("Mapped DSD Type:", mappedDSDType);
+    //
+    //
+    //
+    //         // Update the dsdType field with the mapped value
+    //         if (mappedDSDType) {
+    //             setPayLoad(prevPayload => ({
+    //                 ...prevPayload,
+    //                 dsdType: mappedDSDType
+    //             }));
+    //         } else {
+    //             console.error("Mapped DSD Type is undefined. Check the dsdModelTypeObject and outletDSDType.");
+    //         }
+    //     }
+    // };
+
+    const compareDSDType = () => {
+        // Get the selected outlet object
+        const selectedOutlet = outlets.find(outlet => outlet["name"] === payload.dsdOutlet);
+        console.log("Selected outlet:", selectedOutlet);
+
+        if (selectedOutlet) {
+            // Get the code from the selected outlet
+            const dsdCode = selectedOutlet["code"];
+            console.log("Outlet code:", dsdCode);
+
+            // Map the code to its corresponding value in the dsdModelTypeObject
+            const mappedDsdCode = dsdModelTypeObject[dsdCode.toString()];
+            console.log("Mapped DSD Type:", mappedDsdCode);
+
+            // Update the dsdType field with the mapped value
+            if (mappedDsdCode) {
+                setPayLoad(prevPayload => ({
+                    ...prevPayload,
+                    dsdType: mappedDsdCode
+                }));
+            } else {
+                console.error("Mapped DSD Type is undefined. Check the dsdModelTypeObject and outlet code.");
+            }
+        }
+    };
+
+// Call compareDSDType function whenever the payload.dsdType or payload.dsdOutlet values change
+    useEffect(() => {
+        compareDSDType();
+    }, [payload.dsdOutlet]);
+
+
+// Reset the dsdType, outletState, outletLga, and outlet when hideOutlet changes
+//     useEffect(() => {
+//         setPayLoad(prevPayload => ({
+//             ...prevPayload,
+//             dsdType: "",
+//             outletState: '',
+//             outletLga: '',
+//             outlet: ''
+//         }));
+//     }, [payload.dsdModel]);
 
     /*****  Validation  */
     const validate = () => {
         // var temp = { ...errors}
-        temp ={};
+        temp = {};
         temp.onArtForAtLeast1Year = payload.dsdEligibilityAssessment.onArtForAtLeast1Year ? "" : "This field is required.";
         temp.goodUnderstandingOfAdherence = payload.dsdEligibilityAssessment.goodUnderstandingOfAdherence ? "" : "This field is required.";
         temp.clinicallyStableNoOpportunisticInfections = payload.dsdEligibilityAssessment.clinicallyStableNoOpportunisticInfections ? "" : "This field is required.";
@@ -391,23 +694,28 @@ const DsdServiceForm = (props) => {
         temp.hasNoComorbidities = payload.dsdEligibilityAssessment.hasNoComorbidities ? "" : "This field is required.";
 
 
-        if (props.patientObj && props.patientObj?.sex?.toLowerCase() == "female"){
+        if (props.patientObj && props.patientObj?.sex?.toLowerCase() == "female") {
             temp.notPregnant = payload.dsdEligibilityAssessment.notPregnant ? "" : "This field is required.";
             temp.notBreastfeeding = payload.dsdEligibilityAssessment.notBreastfeeding ? "" : "This field is required.";
         }
 
-            temp.dsdModel = payload.dsdModel ? "" : "This field is required.";
-            temp.dsdType = payload.dsdType ? "" : "This field is required.";
-            temp.dsdAccept = payload.dsdAccept ? "": "This field is required.";
+        temp.dsdModel = payload.dsdModel ? "" : "This field is required.";
+        temp.dsdType = payload.dsdType ? "" : "This field is required.";
+        temp.dsdAccept = payload.dsdAccept ? "" : "This field is required.";
 
-        if(isClientReturnToSite){
+        if (isClientReturnToSite) {
             temp.clientReturnToSite = payload.clientReturnToSite ? "" : "This field is required.";
         }
 
-        if(payload.clientReturnToSite && payload.clientReturnToSite === "Yes"){
+        if (payload.clientReturnToSite && payload.clientReturnToSite === "Yes") {
             temp.dateReturnToSite = payload.dateReturnToSite ? "" : "This field is required.";
             // temp.serviceProvided = payload.serviceProvided ? "" : "This field is required.";
             temp.serviceProvided = selectedServiceProvided.length !== 0 ? "" : "This field is required.";
+        }
+        if(!hideDsdOutlet){
+            temp.dsdOuteltState = payload.dsdOutletState ? "" : "This field is required.";
+            temp.dsdOutletLga = payload.dsdOutletLga ? "" : "This field is required.";
+            temp.dsdOutlet = payload.dsdOutlet ? "" : "This field is required.";
         }
         setErrors({...temp});
         return Object.values(temp).every((x) => x === "");
@@ -415,6 +723,7 @@ const DsdServiceForm = (props) => {
 
 
     return (<>
+        <ToastContainer position={toast.POSITION.BOTTOM_CENTER}/>
         <Card className={classes.root}>
             <CardBody>
                 <h2 style={{color: "#000"}}> DSD ASSESSMENT AND ACCEPTANCE FORM </h2>
@@ -962,11 +1271,97 @@ const DsdServiceForm = (props) => {
                                         </option>
                                     ))}
                                 </Input>
-                                {errors.dsdType !== "" ? (<span className={classes.error}>
+                                {errors.dsdType ? (<span className={classes.error}>
                         {errors.dsdType}
                         </span>) : ("")}
                             </FormGroup>
                         </div>
+
+     { !hideDsdOutlet &&          <>
+                        <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                                <Label>Outlet State<span style={{color: "red"}}> *</span></Label>
+                                <Input
+                                    type="select"
+                                    name="dsdOutletState"
+                                    id="dsdOutletState"
+                                    value={payload.dsdOutletState}
+                                    // value={hideDsdOutlet ? '' : payload.dsdOutletState}
+                                    onChange={handleStateChange}
+                                    style={{
+                                        border: "1px solid #014D88",
+                                        borderRadius: "0.25rem",
+                                    }}
+                                >
+                                    <option value="">Select</option>
+                                    {allStates.map((state) => (
+                                        <option key={state.id} value={state.id}>
+                                            {state.name}
+                                        </option>
+                                    ))}
+                                </Input>
+                                {errors.dsdOutletState !== "" ? (<span className={classes.error}>
+            {errors.dsdOutletState}
+        </span>) : ("")}
+                            </FormGroup>
+                         </div>
+                        <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                                <Label>Outlet LGA<span style={{color: "red"}}> *</span></Label>
+                                <Input
+                                    type="select"
+                                    name="dsdOutletLga"
+                                    id="dsdOutletLga"
+                                    value={payload.dsdOutletLga}
+                                    // value={hideDsdOutlet ? '' : payload.dsdOutletLga}
+                                    onChange={handleLGAChange}
+                                    style={{
+                                        border: "1px solid #014D88",
+                                        borderRadius: "0.25rem",
+                                    }}
+                                >
+                                    <option value="">Select</option>
+                                    {allLGAs.map((lga) => (
+                                        <option key={lga.id} value={lga.id}>
+                                            {lga.name}
+                                        </option>
+                                    ))}
+                                </Input>
+                                {errors.dsdOutletLga !== "" ? (<span className={classes.error}>
+            {errors.dsdOutletLga}
+        </span>) : ("")}
+                            </FormGroup>
+                        </div>
+                        <div className="form-group mb-3 col-md-6">
+                            <FormGroup>
+                                <Label>Outlet<span style={{color: "red"}}> *</span></Label>
+                                <Input
+                                    type="select"
+                                    name="dsdOutlet"
+                                    id="dsdOutlet"
+                                    value={payload.dsdOutlet}
+                                    // value={hideDsdOutlet ? '' : payload.dsdOutlet}
+                                    onChange={handleOutletChange}
+                                    style={{
+                                        border: "1px solid #014D88",
+                                        borderRadius: "0.25rem",
+                                    }}
+                                >
+                                    <option value="">Select</option>
+                                    {outlets.map((outlet) => (
+                                        <option key={outlet.id} value={outlet.id}>
+                                            {outlet.name}
+                                        </option>
+                                    ))}
+                                </Input>
+                                {errors.dsdOutlet !== "" ? (<span className={classes.error}>
+            {errors.dsdOutlet}
+        </span>) : ("")}
+                            </FormGroup>
+                        </div>
+
+</>
+     }
                         {isClientReturnToSite &&
                             <div className="form-group mb-3 col-md-6">
                                 <FormGroup>
@@ -1024,58 +1419,23 @@ const DsdServiceForm = (props) => {
                         </span>) : ("")}
                                 </FormGroup>
                             </div>}
-                        {/*      { isClientReturnToSite && payload.clientReturnToSite !=="" &&*/}
-                        {/*          payload.clientReturnToSite === "Yes" &&*/}
-                        {/*          // props.activeContent.actionType === 'update' &&*/}
-                        {/*          <div className="form-group mb-3 col-md-6">*/}
-                        {/*              <FormGroup>*/}
-                        {/*                  <Label>*/}
-                        {/*                      {" "}*/}
-                        {/*                      Services Provided*/}
-                        {/*                      <span style={{color: "red"}}> *</span>*/}
-                        {/*                  </Label>*/}
-                        {/*                  <Input*/}
-                        {/*                      type="select"*/}
-                        {/*                      name="servicesProvided"*/}
-                        {/*                      id="servicesProvided"*/}
-                        {/*                      value={payload.servicesProvided}*/}
-                        {/*                      onChange={handleOtherInputChange}*/}
-                        {/*                      style={{*/}
-                        {/*                          border: "1px solid #014D88", borderRadius: "0.25rem",*/}
-                        {/*                      }}*/}
-                        {/*                      // isDisabled={isDisabled}*/}
-                        {/*                  >*/}
-                        {/*                      <option value="">Select</option>*/}
-                        {/*                      {servicesProvided.map((value) => (*/}
-                        {/*                          <option key={value.code} value={value.code}>*/}
-                        {/*                              {value.display}*/}
-                        {/*                          </option>*/}
-                        {/*                      ))}*/}
-                        {/*                  </Input>*/}
-                        {/*                  {errors.servicesProvided !== "" ? (<span className={classes.error}>*/}
-                        {/*  {errors.servicesProvided}*/}
-                        {/*</span>) : ("")}*/}
-                        {/*              </FormGroup>*/}
-                        {/*          </div>*/}
-                        {/*      }*/}
-
                         {isClientReturnToSite && payload.clientReturnToSite !== ""
                             && payload.clientReturnToSite === "Yes" && <div className="form-group mb-3 col-md-6">
-                            <FormGroup>
-                                <Label for="permissions" style={{color: '#014d88', fontWeight: 'bolder'}}>Service
-                                    Provided</Label>
-                                <DualListBox
-                                    //canFilter
-                                    options={serviceProvided}
-                                    onChange={onServiceProvidedSelected}
-                                    selected={selectedServiceProvided}
-                                />
-                                {errors.serviceProvided !== "" ? (<span className={classes.error}>
+                                <FormGroup>
+                                    <Label for="permissions" style={{color: '#014d88', fontWeight: 'bolder'}}>Service
+                                        Provided</Label>
+                                    <DualListBox
+                                        //canFilter
+                                        options={serviceProvided}
+                                        onChange={onServiceProvidedSelected}
+                                        selected={selectedServiceProvided}
+                                    />
+                                    {errors.serviceProvided !== "" ? (<span className={classes.error}>
                         {errors.serviceProvided}
                         </span>) : ("")}
-                            </FormGroup>
-                        </div>
-             }
+                                </FormGroup>
+                            </div>
+                        }
                     </div>
                     {/*comment, resignation, date section */}
 
