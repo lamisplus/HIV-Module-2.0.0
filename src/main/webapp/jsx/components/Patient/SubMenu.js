@@ -3,7 +3,10 @@ import axios from "axios";
 import { Dropdown, Menu, Segment } from "semantic-ui-react";
 import { url as baseUrl, token } from "../../../api";
 import { queryClient } from "../../../utils/queryClient";
+import ButtonMui from "@material-ui/core/Button";
+import { TiArrowBack } from "react-icons/ti";
 import { makeStyles } from "@material-ui/core";
+import { toast } from "react-toastify";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -268,14 +271,20 @@ function SubMenu(props) {
   const patientIsConfirmedDeadOrIsTransfered = (patient) => {
     return false;
   };
+
+  const [isPatientActive, setIsPatientActive] = useState(
+    !props.patientObj.currentStatus.toLocaleLowerCase().includes("stop")
+  );
   const updateCurrentEnrollmentStatus = () => {
     axios
-      .get(`${baseUrl}observation/5`, {
+      .get(`${baseUrl}opatient/${props.patientObj.personUuid}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then(({ data }) => {
-        console.log("Observation: ", data);
-        toast.success("Transfer Form Submitted Successfully");
+      .then((response) => {
+        if (response.status === 200) {
+          setIsPatientActive(true);
+          toast.success("Patient reactivated succesfully");
+        }
         props.setActiveContent({
           ...props.activeContent,
           route: "recent-history",
@@ -291,21 +300,13 @@ function SubMenu(props) {
         }
       });
   };
-  useEffect(() => {
-    updateCurrentEnrollmentStatus();
-  });
+  // useEffect(() => {
+  //   setIsPatientActive(false);
+  // }, []);
 
   return (
-    <div
-      className={
-        patientObj.currentStatus === "ART Transfer Out" ? disabled : ""
-      }
-    >
-      <div
-        className={
-          patientObj.currentStatus === "ART Transfer Out" ? transferOut : ""
-        }
-      >
+    <div>
+      <div>
         {props.patientObj && props.patientObj !== null && (
           <Segment inverted>
             {(patientObj.commenced === false ||
@@ -321,7 +322,7 @@ function SubMenu(props) {
                   title="Home"
                 >
                   {" "}
-                  Home jkjggjfj
+                  Home
                 </Menu.Item>
 
                 {!patientObj.clinicalEvaluation && false && (
@@ -367,7 +368,7 @@ function SubMenu(props) {
                   {" "}
                   Home
                 </Menu.Item>
-                {!patientObj.currentStatus.toLowercase().includes("stop") && (
+                {isPatientActive && (
                   <>
                     {!patientObj.clinicalEvaluation &&
                       patientObj.createBy.toUpperCase() ===
@@ -562,7 +563,6 @@ function SubMenu(props) {
                     </Menu.Item>
                   </>
                 )}
-
                 <Menu.Item
                   onClick={() => loadPatientHistory(patientObj)}
                   name="history"
@@ -571,6 +571,26 @@ function SubMenu(props) {
                 >
                   History
                 </Menu.Item>
+                {!isPatientActive && (
+                  <ButtonMui
+                    onClick={() => {
+                      updateCurrentEnrollmentStatus();
+                    }}
+                    variant="contained"
+                    color="primary"
+                    className=" float-end ms-2 mr-2 mt-2"
+                    startIcon={<TiArrowBack />}
+                    style={{
+                      backgroundColor: "green",
+                      color: "#fff",
+                      height: "35px",
+                    }}
+                  >
+                    <span style={{ textTransform: "capitalize" }}>
+                      Reactivate
+                    </span>
+                  </ButtonMui>
+                )}
                 {/* } */}
               </Menu>
             )}
