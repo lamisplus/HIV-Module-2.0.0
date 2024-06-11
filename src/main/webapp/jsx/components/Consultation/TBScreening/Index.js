@@ -144,7 +144,7 @@ const TBScreeningForm = (props) => {
       <div className="row">
         <div className="form-group mb-3 col-md-6">
           <FormGroup>
-            <Label>Patient TB Status</Label>
+            <Label>Patient TB Status #######</Label>
             <Input
               type="select"
               name="tbStatusId"

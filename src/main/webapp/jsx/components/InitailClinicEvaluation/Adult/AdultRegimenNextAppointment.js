@@ -96,6 +96,7 @@ const BasicInfo = (props) => {
   const [objValues, setobjValues] = useState({
     nextAppointment: "",
     clinicianName: "",
+    clinicalNotes:"",
   });
   const [regimenObj, setRegimen] = useState({ regimenLine: "", regimen: "" });
   const [adultRegimenLine, setAdultRegimenLine] = useState([]);
@@ -317,6 +318,25 @@ const BasicInfo = (props) => {
                     />
                   </InputGroup>
                 </FormGroup>
+              </div>
+            </div>
+            <div className="row">
+
+              <div className="form-group mb-3 col-md-8">
+                <FormGroup>
+                  <Label for="clinicalNotes">Clinical Notes</Label>
+                  <InputGroup>
+                    <textarea
+                        name="clinicalNotes"
+                        id="clinicalNotes"
+                        onChange={handleInputChangeobjValues}
+                        value={objValues.clinicalNotes}
+                        className="form-control" // Ensure it looks good with form styling
+                        rows="5" // You can specify the number of rows as needed
+                    ></textarea>
+                  </InputGroup>
+                </FormGroup>
+
               </div>
             </div>
             <br />
