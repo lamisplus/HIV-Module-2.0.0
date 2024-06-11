@@ -277,11 +277,11 @@ function SubMenu(props) {
   );
   const updateCurrentEnrollmentStatus = () => {
     axios
-      .get(`${baseUrl}opatient/${props.patientObj.personUuid}`, {
+      .post(`${baseUrl}hiv/status/activate-stop_status/${props.patientObj.personUuid}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        if (response.status === 200) {
+        if (response.status === 204) {
           setIsPatientActive(true);
           toast.success("Patient reactivated succesfully");
         }

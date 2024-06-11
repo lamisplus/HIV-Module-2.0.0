@@ -56,7 +56,7 @@ public interface DsdDevolvementRepository extends JpaRepository<DsdDevolvement, 
             nativeQuery = true)
     Long countByPersonId(String personId);
 
-    @Query(value = "SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END FROM dsd_devolvement d WHERE d.person_uuid = ?1  AND d.dateDevolved = ?2  AND d.archived = 0",
+    @Query(value = "SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END FROM dsd_devolvement d WHERE d.person_uuid = ?1  AND d.date_devolved = ?2  AND d.archived = 0",
             nativeQuery = true)
     boolean existsByPersonIdAndDateDevolved(String personId, LocalDate dateDevolved);
 

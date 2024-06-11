@@ -49,7 +49,10 @@ public class DsdDevolvementService {
         LocalDate dateDevolved = dto.getDateDevolved();
         Long personId = dto.getPersonId();
         String dsdType = dto.getDsdType();
-        Person person = personRepository.findById(personId).orElseThrow(() -> getPersonEntityNotFoundException(personId));
+        log.info("person 1 id {}", personId);
+        log.info("person uuid 2{}", dsdDevolvement.getPerson().getUuid());
+        Person person = personRepository.findById(personId)
+                .orElseThrow(() -> new  EntityNotFoundException(Person.class, "id", personId+ "person is not found with "));
         //  write a query to check if the person has been devolved before on the same day
         // write another to check if the person has been devolved before on the same dsd type
         // if any of the two queries return a result, don't save
