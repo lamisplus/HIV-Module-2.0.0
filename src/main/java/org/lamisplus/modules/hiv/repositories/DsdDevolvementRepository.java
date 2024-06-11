@@ -49,4 +49,8 @@ public interface DsdDevolvementRepository extends JpaRepository<DsdDevolvement, 
             "    vl_result.rank2 = 1\n" +
             "    AND (vl_result.vlArchived = 0 OR vl_result.vlArchived IS NULL)")
     Optional<PatientCurrentViralLoad> findViralLoadByPersonUuid(String personUuid);
+
+   @Query(value =  "SELECT COUNT(*) FROM dsd_devolvement WHERE person_uuid = :personId AND archived = 0",
+           nativeQuery = true)
+   Long  countByPersonId(String personId);
 }

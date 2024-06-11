@@ -64,6 +64,14 @@ public class DsdDevolvementService {
         }
     }
 
+    // check if a patient has been devolved
+    public boolean checkIfPatientHasBeenDevolved(String personId){
+        Long count = dsdDevolvementRepository.countByPersonId(personId);
+        return count > 0;
+    }
+
+
+
     public DsdDevolvementDTO updateDsdDevolvement(Long id, DsdDevolvementDTO dto) throws IOException{
         DsdDevolvement existDevolvement = getDevolvement(id);
         DsdDevolvement dsdDevolvement = convertDsdDevolvementDtoToEntity(dto);

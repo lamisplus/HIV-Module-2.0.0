@@ -37,6 +37,12 @@ public class DsdDevolvementController {
 //
 //    }
 
+    @GetMapping(value = "/patient/{personId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Boolean> checkIfPatientHasBeenDevolved(@PathVariable("personId") String personId) {
+        boolean result = devolvementService.checkIfPatientHasBeenDevolved(personId);
+        return ResponseEntity.ok(result);
+    }
+
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> saveDsdDevolvement(@RequestBody DsdDevolvementDTO dto) {
         try {
