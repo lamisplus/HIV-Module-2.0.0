@@ -8,14 +8,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.lamisplus.modules.hiv.domain.entity.DsdDevolvement;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 public interface DsdDevolvementRepository extends JpaRepository<DsdDevolvement, Long> {
     Page<DsdDevolvement> findAllByPersonAndArchived(Person person, Integer archived, Pageable pageable);
 
 
-    @Query(nativeQuery = true, value ="WITH vl_result AS (\n" +
+    @Query(nativeQuery = true, value = "WITH vl_result AS (\n" +
             "    SELECT \n" +
             "        CAST(ls.date_sample_collected AS DATE) AS dateOfCurrentViralLoadSample, \n" +
             "        sm.patient_uuid AS personUuid, \n" +
@@ -50,7 +52,15 @@ public interface DsdDevolvementRepository extends JpaRepository<DsdDevolvement, 
             "    AND (vl_result.vlArchived = 0 OR vl_result.vlArchived IS NULL)")
     Optional<PatientCurrentViralLoad> findViralLoadByPersonUuid(String personUuid);
 
-   @Query(value =  "SELECT COUNT(*) FROM dsd_devolvement WHERE person_uuid = :personId AND archived = 0",
-           nativeQuery = true)
-   Long  countByPersonId(String personId);
+    @Query(value = "SELECT COUNT(*) FROM dsd_devolvement WHERE person_uuid = ?1 AND archived = 0",
+            nativeQuery = true)
+    Long countByPersonId(String personId);
+
+    @Query(value = "SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END FROM dsd_devolvement d WHERE d.person_uuid = ?1  AND d.dateDevolved = ?2  AND d.archived = 0",
+            nativeQuery = true)
+    boolean existsByPersonIdAndDateDevolved(String personId, LocalDate dateDevolved);
+
+    @Query(value = "SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END FROM dsd_devolvement d WHERE d.person.uuid = ?1 AND d.dsdType = ?2  AND d.archived = 0",
+            nativeQuery = true)
+    boolean existsByPersonIdAndDsdType(String personId, String dsdType);
 }
