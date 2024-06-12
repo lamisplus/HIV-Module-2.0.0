@@ -41,4 +41,20 @@ public interface HIVStatusTrackerRepository extends JpaRepository<HIVStatusTrack
     @Query(value = "SELECT * FROM hiv_status_tracker WHERE person_id = ?1  AND hiv_status ILIKE '%stop%' AND archived = 0 ORDER BY status_date DESC LIMIT 1",
             nativeQuery = true)
     Optional<HIVStatusTracker> getStopStatus(String personId);
+
+
+    @Query(value = "SELECT * FROM hiv_status_tracker WHERE person_id = ?1  AND hiv_status ILIKE '%out%' AND archived = 0 ORDER BY status_date DESC LIMIT 1",
+            nativeQuery = true)
+    Optional<HIVStatusTracker> getTransferOutStatus(String personId);
+
+    @Query(value = "SELECT EXISTS (" +
+            "SELECT 1 " +
+            "FROM  hiv_status_tracker " +
+            "WHERE person_id = :personId" +
+            " AND hiv_status ILIKE '%died%' " +
+            "ORDER BY status_date DESC " +
+            "LIMIT 1" +
+            ") AS record_exists", nativeQuery = true)
+    Boolean existsRecordWithDiedStatus(String personId);
+
 }
