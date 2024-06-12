@@ -1045,7 +1045,7 @@ const ChronicCare = (props) => {
                     }}
                 >
                   <h5 className="card-title" style={{color: "#fff"}}>
-                    Clinical Notes{" "}
+                    Comment{" "}
                   </h5>
                   {showClinicalNote === false ? (
                       <>
@@ -1083,14 +1083,14 @@ const ChronicCare = (props) => {
 
                         <Card>
                           <CardBody>
-                            <h2 style={{ color: "#000" }}>Clinical Notes</h2>
+                            <h2 style={{ color: "#000" }}>Comment</h2>
                             <br />
                             <form>
 
                               <div className="row">
                                 <div className="form-group mb-3 col-md-12">
                                   <FormGroup>
-                                    <Label for="clinicalNotes">Clinical Notes</Label>
+                                    <Label for="clinicalNotes">Comment</Label>
                                     <InputGroup>
                                       <textarea
                                           name="clinicalNotes"

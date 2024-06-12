@@ -309,7 +309,7 @@ return (
 
                             <div className="form-group mb-3 col-md-8">
                                 <FormGroup>
-                                    <Label for="clinicalNotes">Clinical Notes</Label>
+                                    <Label for="clinicalNotes">Comment</Label>
                                     <InputGroup>
                     <textarea
                         name="clinicalNotes"

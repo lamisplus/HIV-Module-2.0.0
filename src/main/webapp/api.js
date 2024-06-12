@@ -3,7 +3,7 @@ export const url =
   process.env.NODE_ENV === "development"
     ? "http://localhost:8383/api/v1/"
     : "/api/v1/";
-export const token ="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJndWVzdEBsYW1pc3BsdXMub3JnIiwiYXV0aCI6IlN1cGVyIEFkbWluIiwibmFtZSI6Ikd1ZXN0IEd1ZXN0IiwiZXhwIjoxNzE4MTI1NDU1fQ.m59eY1MVMGfH-o3hTk6fHGf3Drdf0G5MuC5PBD0ZWb9wKLQhILOxxTkqqf-CJWApGQqOsD_CmngRnbeZISvgUA"
+export const token ="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJndWVzdEBsYW1pc3BsdXMub3JnIiwiYXV0aCI6IlN1cGVyIEFkbWluIiwibmFtZSI6Ikd1ZXN0IEd1ZXN0IiwiZXhwIjoxNzE4MjQwNTY0fQ.-BzoOvvdKTkgTy10j5klGMCFfk2Xp9ctzLr7UjfQ6xB_B19MPjJkXJ9qPiS1XWDlyru1hOnhuVDEVHsfMhBl_w"
   /*
 export const token =
   process.env.NODE_ENV === "development"

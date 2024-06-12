@@ -132,7 +132,7 @@ const BasicInfo = (props) => {
         setAdultRegimenLine(artRegimen);
       })
       .catch((error) => {
-        
+
       });
   };
   //Get list of RegimenLine
@@ -142,11 +142,11 @@ const BasicInfo = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        
+
         setRegimenType(response.data);
       })
       .catch((error) => {
-        
+
       });
   };
   const handleRegimen = (e) => {
@@ -173,6 +173,7 @@ const BasicInfo = (props) => {
     props.observation.personId = props.patientObj.id;
     props.observation.data.nextAppointment = objValues.nextAppointment;
     props.observation.data.clinicianName = objValues.clinicianName;
+    props.observation.data.clinicalNotes = objValues.clinicalNotes;
     if (validate()) {
       setSaving(true);
       axios
@@ -193,7 +194,7 @@ const BasicInfo = (props) => {
         })
         .catch((error) => {
           setSaving(false);
-          
+
           if (error.response && error.response.data) {
             let errorMessage =
               error.response.data && error.response.data.apierror.message !== ""
@@ -324,7 +325,7 @@ const BasicInfo = (props) => {
 
               <div className="form-group mb-3 col-md-8">
                 <FormGroup>
-                  <Label for="clinicalNotes">Clinical Notes</Label>
+                  <Label for="clinicalNotes">Comment</Label>
                   <InputGroup>
                     <textarea
                         name="clinicalNotes"
