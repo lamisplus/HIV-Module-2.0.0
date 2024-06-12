@@ -49,16 +49,9 @@ public class DsdDevolvementService {
         LocalDate dateDevolved = dto.getDateDevolved();
         Long personId = dto.getPersonId();
         String dsdType = dto.getDsdType();
-        log.info("person 1 id {}", personId);
-        log.info("person uuid 2{}", dsdDevolvement.getPerson().getUuid());
-        Person person = personRepository.findById(personId)
-                .orElseThrow(() -> new  EntityNotFoundException(Person.class, "id", personId+ "person is not found with "));
-        //  write a query to check if the person has been devolved before on the same day
-        // write another to check if the person has been devolved before on the same dsd type
-        // if any of the two queries return a result, don't save
-        // else save
-        boolean isDevolvedSameDay = dsdDevolvementRepository.existsByPersonIdAndDateDevolved(person.getUuid(), dateDevolved);
-        boolean isDevolvedSameDsdType = dsdDevolvementRepository.existsByPersonIdAndDsdType(person.getUuid(), dsdType);
+        String personUuid = dsdDevolvement.getPerson().getUuid();
+        boolean isDevolvedSameDay = dsdDevolvementRepository.existsByPersonIdAndDateDevolved(personUuid, dateDevolved);
+        boolean isDevolvedSameDsdType = dsdDevolvementRepository.existsByPersonIdAndDsdType(personUuid, dsdType);
         if (isDevolvedSameDay || isDevolvedSameDsdType) {
             throw new IllegalArgumentException("Patient has been devolved on the same day or on the same dsd type");
         }
