@@ -7,6 +7,7 @@ import ButtonMui from "@material-ui/core/Button";
 import { TiArrowBack } from "react-icons/ti";
 import { makeStyles } from "@material-ui/core";
 import { toast } from "react-toastify";
+import { Button } from 'semantic-ui-react';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -363,14 +364,19 @@ function SubMenu(props) {
                <>
                  {
                    patientObj && patientObj.currentStatus === "ART TRANSFER OUT" ? (
-                       <Menu size="tiny" color={"green"} inverted>
+                       <Menu size="tiny"  style={{
+                         backgroundColor: "rgb(153, 46, 98)",
+                         color: "#fff"
+                       }} inverted>
                          <Menu.Item
                              onClick={() => loadTransferForm(patientObj)}
                              name="transfer"
                              active={activeItem === "transfer"}
                              title="Transfer"
                          >
-                           Transfer
+                           <Button  size='mini' style={{ backgroundColor: "green", color: '#fff', marginRight: '10px' }}>
+                             Activate
+                           </Button>
                          </Menu.Item>
                          <Menu.Item
                              onClick={() => loadPatientHistory(patientObj)}
