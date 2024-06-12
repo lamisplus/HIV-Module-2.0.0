@@ -95,32 +95,49 @@ public class TreatmentTransferService {
      * change the patient hiv_status_tracker to transfer out
      */
     public ObservationDto registerTransferPatientInfo(TransferPatientDto dto) throws Exception {
+
         if (dto == null) {
             throw new IllegalArgumentException("TransferPatientInfo is null");
         }
         Optional<HivEnrollmentDTO> enrollment = hivEnrollmentService.getHivEnrollmentByPersonIdAndArchived(dto.getPatientId());
-//        Optional<HivEnrollmentDTO> enrollment = hivEnrollmentRepository.findByUUID(dto.getPatientUuid());
-        ApplicationCodeSet codeSet = applicationCodesetRepository.findByDisplay(Constants.TRANSFER_OUT_DISPLAY);
+
+        String status = dto.getCurrentStatus();
+
+        if (status.equalsIgnoreCase("ART TRANSFER OUT")) {
+            status = "ART Transfer In";
+        } else {
+            status = "ART Transfer Out";
+        }
+
+        //ApplicationCodeSet codeSet = applicationCodesetRepository.findByDisplay(Constants.TRANSFER_OUT_DISPLAY);
+
+        Optional<ApplicationCodeSet> codeSet = applicationCodesetRepository.findByDisplayAndCodesetGroup(status, Constants.CODE_SET_GROUP);
+        ApplicationCodeSet codeSet1 = codeSet.get();
         if (codeSet == null) {
-            throw new EntityNotFoundException(ApplicationCodeSet.class, "display", Constants.TRANSFER_OUT_DISPLAY);
+            throw new EntityNotFoundException(ApplicationCodeSet.class, "display", status);
         }
         String currentStatus = statusManagementService.getCurrentStatus(dto.getPatientId());
         if (currentStatus.equalsIgnoreCase(Constants.DEAD_CONFIRMED_DISPLAY)) {
             throw new Exception("Patient is confirmed dead");
         }
+
         // get the current person
         HIVStatusTrackerDto hivStatusTracker = hivStatusTrackerService.getHIVStatusTrackerById(dto.getHivStatusId());
         if (hivStatusTracker == null) {
             throw new Exception("Patient tracker not found");
         }
+
         // Create observation
-        ObservationDto createdObservation = createObservation(dto, codeSet);
+        ObservationDto createdObservation = createObservation(dto, codeSet1);
         // update the statusAtRegistrationId of enrollment
-        enrollment.get().setStatusAtRegistrationId(codeSet.getId());
-        // Update HIVStatusTracker and set status transfer date to current date
-        hivStatusTracker.setHivStatus(codeSet.getDisplay());
+        enrollment.get().setStatusAtRegistrationId(codeSet1.getId());
+
+        // Create HIVStatusTracker and set status transfer date to current date
+        hivStatusTracker.setHivStatus(codeSet1.getDisplay());
         hivStatusTracker.setStatusDate(LocalDate.now());
-        hivStatusTrackerService.updateHIVStatusTracker(hivStatusTracker.getId(), hivStatusTracker);
+        //hivStatusTrackerService.updateHIVStatusTracker(hivStatusTracker.getId(), hivStatusTracker);
+        hivStatusTrackerService.registerHIVStatusTracker(hivStatusTracker);
+        log.info("Creating ART Status Ends Here");
         hivEnrollmentService.updateHivEnrollment(enrollment.get().getId(), enrollment.get());
         return createdObservation;
     }
@@ -157,12 +174,13 @@ public class TreatmentTransferService {
         return objectMapper.valueToTree(transferPatientDto);
     }
 
-    private ObservationDto createObservation(TransferPatientDto transferPatientDto, ApplicationCodeSet codeSet) {
+    private ObservationDto createObservation(TransferPatientDto transferPatientDto, ApplicationCodeSet codeSet1) {
+
         log.info("Inside createObservation");
         ObservationDto observationDto = new ObservationDto();
         observationDto.setPersonId(transferPatientDto.getPatientId());
         observationDto.setVisitId(null);
-        observationDto.setType(codeSet.getDisplay());
+        observationDto.setType(codeSet1.getDisplay());
         observationDto.setDateOfObservation(LocalDate.now());
         observationDto.setFacilityId(transferPatientDto.getFacilityId());
         observationDto.setData(mapTransferPatientInfoToDto(transferPatientDto));

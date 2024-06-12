@@ -66,7 +66,11 @@ public class HIVStatusTrackerService {
         hivStatusTracker.setUuid(UUID.randomUUID().toString());
         hivStatusTracker.setAuto(false);
         hivStatusTracker.setPerson(existPerson);
-        return convertEntityToDto(hivStatusTrackerRepository.save(hivStatusTracker));
+        log.info("Creating ART Status Starts here");
+        //return convertEntityToDto(hivStatusTrackerRepository.save(hivStatusTracker));
+        HIVStatusTracker statusTracker = hivStatusTrackerRepository.save(hivStatusTracker);
+        log.info("This is Status Tracker " + statusTracker);
+        return  null;
     }
 
 
