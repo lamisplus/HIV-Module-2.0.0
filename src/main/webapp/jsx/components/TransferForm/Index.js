@@ -110,6 +110,7 @@ const Tracking = (props) => {
         "PMTCT",
     ]);
     const [isPatientTransferredOut, setIsPatientTransferredOut] = useState(false);
+    const [patientCurrentStatus, setPatientCurrentStatus] = useState(patientObj.currentStatus);
 
     const [currentMedication, setCurrentMedication] = useState([]);
     const [payload, setPayload] = useState({
@@ -156,9 +157,10 @@ const Tracking = (props) => {
         patientCameWithTransferForm: "",
         patientAttendedHerFirstVisit: "",
         acknowlegdeReceiveDate: "",
-
+        currentStatus: ""
     });
 
+    console.log("current status", patientCurrentStatus)
 
     const [states1, setStates1] = useState([])
     const [lgas1, setLGAs1] = useState([])
@@ -408,10 +410,12 @@ const Tracking = (props) => {
             ? ""
             : "This field is required";
         temp.modeOfHIVTest = payload.modeOfHIVTest ? "" : "This field is required";
-        temp.stateTransferTo = payload.stateTransferTo ? "" : "This field is required";
-        temp.lgaTransferTo = payload.lgaTransferTo ? "" : "This field is required";
-        temp.facilityTransferTo = payload.facilityTransferTo ? "" : "This field is required";
-
+        // if a patient is going out of facilty, fill the state to, lga to and faciltiy to
+        if(!patientCurrentStatus === "ART TRANSFER OUT"){
+            temp.stateTransferTo = payload.stateTransferTo ? "" : "This field is required";
+            temp.lgaTransferTo = payload.lgaTransferTo ? "" : "This field is required";
+            temp.facilityTransferTo = payload.facilityTransferTo ? "" : "This field is required";
+        }
         setErrors({
             ...temp,
         });
@@ -484,11 +488,12 @@ const Tracking = (props) => {
                 <CardBody>
                     <form>
                         <div className="row">
-                            <h2>Transfer Form</h2>
+                            <h2>Transfer {patientCurrentStatus === "ART TRANSFER OUT" ?"In " : "Out " } Form</h2>
                             <br />
                             <br />
-                            <div className="row">
-
+                             {
+                                 patientCurrentStatus === "ART TRANSFER OUT"  ? (
+                                 <div className="row">
                                 <div className="form-group mb-3 col-md-4">
                                     <FormGroup>
                                         <Label for=""> State Transfer From</Label>
@@ -498,7 +503,7 @@ const Tracking = (props) => {
                                             id="state"
                                             disabled={true}
                                             onChange={handleInputChange}
-                                            value={payload?.state}
+                                            valu e={payload?.state}
                                         ></Input>
                                     </FormGroup>
                                 </div>
@@ -529,184 +534,157 @@ const Tracking = (props) => {
                                     </FormGroup>
                                 </div>
                             </div>
-                            <div className="row">
-                                <div className="form-group mb-3 col-md-4">
-                                    <FormGroup>
-                                        <Label for="" style={{ color: '#014d88', fontWeight: 'bolder' }}>State Transfer To <span style={{ color: "red" }}> *</span> </Label>
-                                        <Input
-                                            type="select"
-                                            name="stateTransferTo"
-                                            style={{ height: "40px", border: 'solid 1px #014d88', borderRadius: '5px', fontWeight: 'bolder', appearance: 'auto' }}
-                                            required
-                                            // onChange={loadLGA1}
-                                            onChange={(e) => {
-                                                if (e.target.value !== "") {
-                                                    const filterState = states1.filter(st => {
-                                                        return Number(st.id) === Number(e.target.value)
-                                                    }
-                                                    )
-                                                    setSelectedState(filterState)
+                             ) : (
+                                 <div className="row">
+                                 <div className="form-group mb-3 col-md-4">
+                                 <FormGroup>
+                                 <Label for="" style={{color: '#014d88', fontWeight: 'bolder'}}>State Transfer
+                            To <span style={{color: "red"}}> *</span> </Label>
+                        <Input
+                            type="select"
+                            name="stateTransferTo"
+                            style={{
+                                height: "40px",
+                                border: 'solid 1px #014d88',
+                                borderRadius: '5px',
+                                fontWeight: 'bolder',
+                                appearance: 'auto'
+                            }}
+                            required
+                            // onChange={loadLGA1}
+                            onChange={(e) => {
+                                if (e.target.value !== "") {
+                                    const filterState = states1.filter(st => {
+                                            return Number(st.id) === Number(e.target.value)
+                                        }
+                                    )
+                                    setSelectedState(filterState)
 
-                                                    setPayload(prevPayload => ({ ...prevPayload, stateTransferTo: filterState[0].name }));
-                                                }
-                                                loadLGA1(e.target.value);
-                                            }}
+                                    setPayload(prevPayload => ({
+                                        ...prevPayload,
+                                        stateTransferTo: filterState[0].name
+                                    }));
+                                }
+                                loadLGA1(e.target.value);
+                            }}
 
-                                        >
-                                            <option>Select State</option>
-                                            {states1.map((state) => (
-                                                <option key={state.id} value={state.id}>
-                                                    {state.name}
-                                                </option>
-                                            ))}
-                                        </Input>
-                                        {errors.stateTransferTo !== "" ? (
-                                            <span className={classes.error}>
+                        >
+                            <option>Select State</option>
+                            {states1.map((state) => (
+                                <option key={state.id} value={state.id}>
+                                    {state.name}
+                                </option>
+                            ))}
+                        </Input>
+                        {errors.stateTransferTo !== "" ? (
+                            <span className={classes.error}>
                                                 {errors.stateTransferTo}
                                             </span>
-                                        ) : (
-                                            ""
-                                        )}
-                                    </FormGroup>
-                                </div>
-                                <div className="form-group mb-3 col-md-4">
-                                    <FormGroup>
-                                        <Label for="" style={{ color: '#014d88', fontWeight: 'bolder' }}>LGA Transfer To <span style={{ color: "red" }}> *</span></Label>
-                                        <Input
-                                            type="select"
-                                            name="lgaTransferTo"
-                                            style={{ height: "40px", border: 'solid 1px #014d88', borderRadius: '5px', fontWeight: 'bolder', appearance: 'auto' }}
-                                            required
-                                            // onChange={loadFacilities1}
-                                            onChange={(e) => {
-                                                if (e.target.value !== "") {
-                                                    const filterlga = lgas1.filter(lg => {
-                                                        return Number(lg.id) === Number(e.target.value)
-                                                    }
-                                                    )
-                                                    setSelectedLga(filterlga)
+                        ) : (
+                            ""
+                        )}
+                    </FormGroup>
+        </div>
+    <div className="form-group mb-3 col-md-4">
+        <FormGroup>
+            <Label for="" style={{color: '#014d88', fontWeight: 'bolder'}}>LGA Transfer
+                To <span style={{color: "red"}}> *</span></Label>
+            <Input
+                type="select"
+                name="lgaTransferTo"
+                style={{
+                    height: "40px",
+                    border: 'solid 1px #014d88',
+                    borderRadius: '5px',
+                    fontWeight: 'bolder',
+                    appearance: 'auto'
+                }}
+                required
+                // onChange={loadFacilities1}
+                onChange={(e) => {
+                    if (e.target.value !== "") {
+                        const filterlga = lgas1.filter(lg => {
+                                return Number(lg.id) === Number(e.target.value)
+                            }
+                        )
+                        setSelectedLga(filterlga)
 
-                                                    setPayload(prevPayload => ({ ...prevPayload, lgaTransferTo: filterlga[0].name }));
-                                                }
-                                                loadFacilities1(e.target.value);
+                        setPayload(prevPayload => ({
+                            ...prevPayload,
+                            lgaTransferTo: filterlga[0].name
+                        }));
+                    }
+                    loadFacilities1(e.target.value);
 
-                                            }}
+                }}
 
-                                        >
-                                            <option>Select LGA</option>
-                                            {lgas1.map((lga) => (
-                                                <option key={lga.id} value={lga.id}>
-                                                    {lga.name}
-                                                </option>
-                                            ))}
-                                        </Input>
-                                        {errors.lgaTransferTo !== "" ? (
-                                            <span className={classes.error}>
+            >
+                <option>Select LGA</option>
+                {lgas1.map((lga) => (
+                    <option key={lga.id} value={lga.id}>
+                        {lga.name}
+                    </option>
+                ))}
+            </Input>
+            {errors.lgaTransferTo !== "" ? (
+                <span className={classes.error}>
                                                 {errors.lgaTransferTo}
                                             </span>
-                                        ) : (
-                                            ""
-                                        )}
-                                    </FormGroup>
-                                </div>
-                                <div className="form-group mb-3 col-md-4">
-                                    <FormGroup>
-                                        <Label for="" style={{ color: '#014d88', fontWeight: 'bolder' }}>Facility Transfer To <span style={{ color: "red" }}> *</span> </Label>
-                                        <Input
-                                            type="select"
-                                            name="facilityTransferTo"
-                                            style={{ height: "40px", border: 'solid 1px #014d88', borderRadius: '5px', fontWeight: 'bolder', appearance: 'auto' }}
-                                            required
-                                            onChange={(e) => {
-                                                // setPayload(prevPayload => ({ ...prevPayload, facilityTransferTo: e.target.value }));
-                                                if (e.target.value !== "") {
-                                                    const filterFacility = facilities1.filter(fa => {
-                                                        return Number(fa.id) === Number(e.target.value)
-                                                    }
-                                                    )
-                                                    setSelectedFacility(filterFacility)
-                                                    setPayload(prevPayload => ({ ...prevPayload, facilityTransferTo: filterFacility[0].name }));
-                                                }
-                                            }}
-                                        >
-                                            <option>Select Facility</option>
-                                            {facilities1.map((facility) => (
-                                                <option key={facility.id} value={facility.id}>
-                                                    {facility.name}
-                                                </option>
-                                            ))}
-                                        </Input>
-                                        {errors.facilityTransferTo !== "" ? (
-                                            <span className={classes.error}>
+            ) : (
+                ""
+            )}
+        </FormGroup>
+    </div>
+    <div className="form-group mb-3 col-md-4">
+        <FormGroup>
+            <Label for="" style={{color: '#014d88', fontWeight: 'bolder'}}>Facility Transfer
+                To <span style={{color: "red"}}> *</span> </Label>
+            <Input
+                type="select"
+                name="facilityTransferTo"
+                style={{
+                    height: "40px",
+                    border: 'solid 1px #014d88',
+                    borderRadius: '5px',
+                    fontWeight: 'bolder',
+                    appearance: 'auto'
+                }}
+                required
+                onChange={(e) => {
+                    // setPayload(prevPayload => ({ ...prevPayload, facilityTransferTo: e.target.value }));
+                    if (e.target.value !== "") {
+                        const filterFacility = facilities1.filter(fa => {
+                                return Number(fa.id) === Number(e.target.value)
+                            }
+                        )
+                        setSelectedFacility(filterFacility)
+                        setPayload(prevPayload => ({
+                            ...prevPayload,
+                            facilityTransferTo: filterFacility[0].name
+                        }));
+                    }
+                }}
+            >
+                <option>Select Facility</option>
+                {facilities1.map((facility) => (
+                    <option key={facility.id} value={facility.id}>
+                        {facility.name}
+                    </option>
+                ))}
+            </Input>
+            {errors.facilityTransferTo !== "" ? (
+                <span className={classes.error}>
                                                 {errors.facilityTransferTo}
                                             </span>
-                                        ) : (
-                                            ""
-                                        )}
-                                    </FormGroup>
-                                </div>
-                            </div>
-                            {/* <div className="row"> */}
-                            {/* <div className="form-group mb-3 col-md-4">
-                                    <FormGroup>
-                                        <Label for="testGroup">
-                                            Facility Name To <span style={{ color: "red" }}> *</span>
-                                        </Label>
+            ) : (
+                ""
+            )}
+        </FormGroup>
+    </div>
+</div>
+                             )
+                             }
 
-                                        <Select
-                                            //value={selectedOption}
-                                            onChange={handleInputChangeObject}
-                                            name="facilityTransferTo"
-                                            options={allFacilities}
-                                            theme={(theme) => ({
-                                                ...theme,
-                                                borderRadius: "0.25rem",
-                                                border: "1px solid #014D88",
-                                                colors: {
-                                                    ...theme.colors,
-                                                    primary25: "#014D88",
-                                                    primary: "#014D88",
-                                                },
-                                            })}
-                                        />
-                                        {errors.facilityTransferTo !== "" ? (
-                                            <span className={classes.error}>
-                                                {errors.facilityTransferTo}
-                                            </span>
-                                        ) : (
-                                            ""
-                                        )}
-                                    </FormGroup>
-                                </div> */}
-
-                            {/* <div className="form-group mb-3 col-md-4">
-                                    <FormGroup>
-                                        <Label for=""> State Transfer To</Label>
-                                        <Input
-                                            type="text"
-                                            name="stateTransferTo"
-                                            id="stateTransferTo"
-                                            disabled={true}
-                                            // onChange={handleInputChange}
-                                            value={selectedState}
-                                        ></Input>
-                                    </FormGroup>
-                                </div> */}
-                            {/* <div className="form-group mb-3 col-md-4">
-                                    <FormGroup>
-                                        <Label for="">LGA Transfer To</Label>
-
-                                        <Input
-                                            type="text"
-                                            name="lgaTransferTo"
-                                            id="lgaTransferTo"
-                                            disabled={true}
-                                            // onChange={handleInputChange}
-                                            value={selectedLga}
-                                        ></Input>
-                                    </FormGroup>
-                                </div> */}
-                            {/* </div>  */}
                             <div className="row">
                                 <div className="form-group mb-3 col-md-12">
                                     <FormGroup>
