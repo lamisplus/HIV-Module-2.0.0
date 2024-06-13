@@ -435,7 +435,6 @@ const DsdServiceForm = (props) => {
             });
     }
 
-
     // Fetch all states when the component mounts
     useEffect(() => {
         axios.get(`${baseUrl}organisation-units/parent-organisation-units/1`, {

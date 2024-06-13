@@ -2,6 +2,7 @@ package org.lamisplus.modules.hiv.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.lamisplus.modules.hiv.domain.dto.DsdOutletDTO;
+import org.lamisplus.modules.hiv.domain.dto.DsdOutletProjection;
 import org.lamisplus.modules.hiv.service.DSDOutletService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,11 @@ public class DSDOutletController {
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<DsdOutletDTO>> getAllDsdOutlet() {
         return ResponseEntity.ok(dsdOutletService.getAll());
+    }
+
+    @GetMapping(value = "/organisation-unit-id/{organisationUnitId}/code/{code}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<DsdOutletProjection>> getDsdOutlets(@PathVariable("organisationUnitId") Long organisationUnitId, @PathVariable("code") String code) {
+        return ResponseEntity.ok(dsdOutletService.getDsdOutlets(organisationUnitId, code));
     }
 
 }
