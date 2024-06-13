@@ -20,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -81,15 +82,15 @@ public class TreatmentTransferService {
             throw new IllegalArgumentException("TransferPatientInfo is null");
         }
         String status = dto.getCurrentStatus().equalsIgnoreCase("ART TRANSFER OUT") ? "ART Transfer In" : "ART Transfer Out";
-        ApplicationCodeSet codeSet = applicationCodesetRepository.findByDisplayAndCodesetGroup(status, Constants.CODE_SET_GROUP).orElseThrow(() -> new EntityNotFoundException(ApplicationCodeSet.class, "display", status));
+        ApplicationCodeSet codeSet = applicationCodesetRepository.findByDisplayAndCodesetGroup(status, Constants.CODE_SET_GROUP)
+                .orElseThrow(() -> new EntityNotFoundException(ApplicationCodeSet.class, "display", status));
         log.info("patientUuid: {}", dto.getPersonUuid());
         Boolean existsRecordWithDiedStatus = hivStatusTrackerRepository.existsRecordWithDiedStatus(dto.getPersonUuid());
         if (existsRecordWithDiedStatus) {
             throw new Exception("Patient is confirmed dead");
         }
         // Create observation
-        ObservationDto createdObservation =
-                createObservation(dto, codeSet);
+        ObservationDto createdObservation = createObservation(dto, codeSet);
         //update hiv_enrollment status
         updateHivEnrollStatus(dto, codeSet);
         //create hiv_status_tracker record
@@ -98,7 +99,8 @@ public class TreatmentTransferService {
     }
 
     private void updateHivEnrollStatus(TransferPatientDto dto, ApplicationCodeSet codeSet) {
-        HivEnrollmentDTO enrollment = hivEnrollmentService.getHivEnrollmentByPersonIdAndArchived(dto.getPatientId()).orElseThrow(() -> new EntityNotFoundException(HivEnrollment.class, "personId", "" + dto.getPatientId()));
+        HivEnrollmentDTO enrollment = hivEnrollmentService.getHivEnrollmentByPersonIdAndArchived(dto.getPatientId())
+                .orElseThrow(() -> new EntityNotFoundException(HivEnrollment.class, "personId", "" + dto.getPatientId()));
         enrollment.setStatusAtRegistrationId(codeSet.getId());
         hivEnrollmentService.updateHivEnrollment(enrollment.getId(), enrollment);
     }
@@ -110,6 +112,8 @@ public class TreatmentTransferService {
         hivStatusTracker.setId(null);
         hivStatusTracker.setHivStatus(finalStatus);
         hivStatusTracker.setUuid(UUID.randomUUID().toString());
+        hivStatusTracker.setCreatedDate(LocalDateTime.now());
+        hivStatusTracker.setStatusDate(LocalDate.now());
         hivStatusTrackerRepository.save(hivStatusTracker);
     }
 
