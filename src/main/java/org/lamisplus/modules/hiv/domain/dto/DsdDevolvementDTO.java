@@ -33,9 +33,7 @@ public class DsdDevolvementDTO implements Serializable {
     private LocalDate dateReturnToSite;
     private JsonNode serviceProvided;
     private String dsdType;
-    private Integer dsdOutletState;
-    private Integer dsdOutletLga;
-    private Long dsdOutlet;
+    private String outletName;
     private String comment;
     private String completedBy;
     private String designation;

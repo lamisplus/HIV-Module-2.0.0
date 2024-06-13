@@ -32,17 +32,13 @@
         </sql>
     </changeSet>
 
-    <changeSet failOnError="true" author="Taiwo Gboyegun" id="added_dsd_outlet">
+    <changeSet failOnError="true" author="Taiwo Gboyegun" id="update_devolvement">
         <preConditions onFail="MARK_RAN">
             <not>
-                <columnExists tableName="dsd_devolvement" columnName="dsd_outlet_state" />
-                <columnExists tableName="dsd_devolvement" columnName="dsd_outlet_lga" />
-                <columnExists tableName="dsd_devolvement" columnName="dsd_outlet" />
+                <columnExists tableName="dsd_devolvement" columnName="outlet_name" />
             </not>
         </preConditions>
-        <sql>ALTER TABLE dsd_devolvement ADD dsd_outlet_state INT;</sql>
-        <sql>ALTER TABLE dsd_devolvement ADD dsd_outlet_lga INT;</sql>
-        <sql>ALTER TABLE dsd_devolvement ADD dsd_outlet BIGINT;</sql>
+        <sql>ALTER TABLE dsd_devolvement ADD outlet_name VARCHAR(255);</sql>
     </changeSet>
 
 

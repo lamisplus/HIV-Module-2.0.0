@@ -45,7 +45,8 @@ public class DSDOutletService {
     }
 
     public List<DsdOutletProjection> getDsdOutlets(Long organisationUnitId, String code) {
-        return dsdOutletRepository.findDsdOutlets(organisationUnitId, code);
+        List<DsdOutletProjection> result = dsdOutletRepository.findDsdOutlets(organisationUnitId, code);
+        return result != null ? result : new ArrayList<>();
     }
 
 }
