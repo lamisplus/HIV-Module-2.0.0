@@ -58,7 +58,6 @@ public class HIVStatusTrackerService {
     public HIVStatusTrackerDto registerHIVStatusTracker(HIVStatusTrackerDto hivStatusTrackerDto) {
         Long personId = hivStatusTrackerDto.getPersonId();
         Person existPerson = getPerson(personId);
-        //log.info("person   from status status {}", existPerson.getSurname());
         HIVStatusTracker hivStatusTracker = convertDtoToEntity(hivStatusTrackerDto);
         Visit visit = hivVisitEncounter.processAndCreateVisit(personId, hivStatusTrackerDto.getStatusDate());
         hivStatusTracker.setVisit(visit);
@@ -66,7 +65,10 @@ public class HIVStatusTrackerService {
         hivStatusTracker.setUuid(UUID.randomUUID().toString());
         hivStatusTracker.setAuto(false);
         hivStatusTracker.setPerson(existPerson);
-        return convertEntityToDto(hivStatusTrackerRepository.save(hivStatusTracker));
+        log.info("Creating ART Status Starts here");
+        HIVStatusTracker statusTracker = hivStatusTrackerRepository.save(hivStatusTracker);
+        log.info("This is Status Tracker " + statusTracker);
+        return  null;
     }
 
 

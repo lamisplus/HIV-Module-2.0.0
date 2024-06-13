@@ -15,6 +15,7 @@ public class TransferPatientDto {
     private Long patientId;
     private String personUuid;
     private Long facilityId;
+    private String currentStatus;
     private String facilityName;
     private String lga;
     private String state;
