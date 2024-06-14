@@ -27,6 +27,7 @@ import { Button } from "semantic-ui-react";
 import { calculate_age_to_number } from "../../../utils";
 import { fi } from "date-fns/locale";
 import TbTreatmentScreening from './TbTreatmentScreening';
+import TbMonitoring from './TbMonitoring'
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -149,20 +150,7 @@ const TbScreening = (props) => {
       }
     }
 
-    // if (
-    //   props.tbObj.tbTreatment === "No" &&
-    //   props.tbObj.tbScreeningType === "Chest X-ray" &&
-    //   props.tbObj.chestXray === "X-ray not suggestive" &&
-    //   //props.tbObj.currentlyOnTuberculosis === "No" &&
-    //   props.tbObj.previouslyCompletedTPT === "No"
-    // ) {
-    //   props.setTbObj({
-    //     ...props.tbObj,
-    //     outcome: "Not Presumptive",
-    //     status: "No signs or symptoms of TB",
-    //     eligibleForTPT: "Yes",
-    //   });
-    // }
+   
 
     if (
       props.tbObj.tbTreatment === "No" &&
@@ -183,19 +171,7 @@ const TbScreening = (props) => {
       }
     }
 
-    //First Logic 2
-    // if (
-    //   props.tbObj.tbTreatment === "No" &&
-    //   props.tbObj.tbScreeningType === "Chest X-ray" &&
-    //   props.tbObj.chestXray === "X-ray suggestive"
-    // ) {
-    //   props.setTbObj({
-    //     ...props.tbObj,
-    //     outcome: "",
-    //     status: "Presumptive TB",
-    //     eligibleForTPT: "",
-    //   });
-    // }
+   
  ///Login for the Chest-Xray 
     if (
       props.tbObj.tbTreatment === "No" &&
@@ -253,19 +229,7 @@ const TbScreening = (props) => {
   }
 
     //END
-    // if (
-    //   props.tbObj.tbTreatment === "No" &&
-    //   props.tbObj.tbScreeningType === "Chest X-ray" &&
-    //   props.tbObj.chestXray === "X-ray not suggestive"
-    // ) {
-    //   props.setTbObj({
-    //     ...props.tbObj,
-    //     outcome: "",
-    //     status: "No signs or symptoms of TB",
-    //     eligibleForTPT: "",
-    //   });
-    // }
-
+   
     //Second Logic
     if (props.tbObj.tbTreatment === "Yes") {
       props.setTbObj({
@@ -536,19 +500,7 @@ const TbScreening = (props) => {
     }
 
     //Seventh Logic
-    // if (
-    //   props.tbObj.tbTreatment === "No" &&
-    //   //props.tbObj.currentlyOnTuberculosis === "Yes" &&
-    //   props.tbObj.tbScreeningType === "Chest X-ray" &&
-    //   props.tbObj.chestXray === "X-ray suggestive"
-    // ) {
-    //   props.setTbObj({
-    //     ...props.tbObj,
-    //     outcome: "Presumptive",
-    //     status: "Currently on TPT",
-    //     eligibleForTPT: "No",
-    //   });
-    // }
+   
 
     //Eighth Logic
     if (
@@ -585,10 +537,7 @@ const TbScreening = (props) => {
     }
     //This is TB EValuation Outcome
    
-    if (
-      props.tbObj.diagnosticTestType === "Cobas"
-      
-    ) {
+    if (props.tbObj.diagnosticTestType === "Cobas") {
       if ((props.tbObj.tbTestResult === "MTB detected RIF/INH not detected" ||
       props.tbObj.tbTestResult === "MTB detected RIF detected" ||
       props.tbObj.tbTestResult === "MTB detected INH detected" ||
@@ -601,29 +550,6 @@ const TbScreening = (props) => {
       }
     }
 
-    // if(
-    //   !((props.tbObj.diagnosticTestType === "Cobas") &&
-    //   (props.tbObj.tbTestResult === "MTB detected RIF/INH not detected" ||
-    //   props.tbObj.tbTestResult === "MTB detected RIF detected" ||
-    //   props.tbObj.tbTestResult === "MTB detected INH detected" ||
-    //   props.tbObj.tbTestResult === "MTB detected RIF&INH detected"))
-    // ) {
-    //   if (props.tbObj.tbTreatment === "No") {
-    //     props.setTbObj({
-    //       ...props.tbObj,
-    //       tbEvaulationOutcome: "TB not diagnosed",
-    //     });
-    //   }
-    // }
-
-    // if (props.tbObj.diagnosticTestType === "Yes") {
-    //   if (props.tbObj.specimentCollectedStatus === "") {
-    //     props.setTbObj({
-    //       ...props.tbObj,
-    //       tbEvaulationOutcome: "",
-    //     });
-    //   }
-    // }
   }, [
     patientAge,
     props.tbObj.tbTreatment,
@@ -1198,7 +1124,7 @@ const TbScreening = (props) => {
     }
   };
 
-  console.log(props.tbObj.outcome)
+
 
   return (
     <>
@@ -1206,13 +1132,6 @@ const TbScreening = (props) => {
       <Card className={classes.root}>
         <CardBody>
           <h2 style={{ color: "#000" }}>TB Screening Section</h2>
-         {props.tbObj.tbTreatment}
-          <br />
-        {props.tbObj.tbScreeningType}
-          <br />
-        {props.tbObj.chestXrayResult}
-
-        {props.tbObj.outcome}
           <br />
 
           <form>
@@ -1631,13 +1550,18 @@ const TbScreening = (props) => {
           
           {props.tbObj.outcome === "Presumptive TB" && (<>
             <hr/>
-            
             <br />
             <TbTreatmentScreening tbObj={props.tbObj} handleInputChange={handleInputChange}/>
-          </>)}
-          
-          <br/>
-
+            </>)}
+           
+            <br/>
+            {props.tbObj.tbTreatment === "Yes" && (<>
+            <hr/>
+            <br />
+            <TbMonitoring tbObj={props.tbObj} handleInputChange={handleInputChange}/>
+            </>)}
+           
+            <br/>
         </CardBody>
       </Card>
     </>

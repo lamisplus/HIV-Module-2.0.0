@@ -194,12 +194,8 @@ const ChronicCare = (props) => {
     tbSymptoms: "",
     resonForStoppingIpt: "",
     outComeOfIpt: "",
-    tbTreatment: "",
     // tbTreatmentStartDate: "",
-    treatmentType: "",
-    treatmentOutcome: "",
-    completionDate: "",
-    treatmentCompletionStatus: "",
+ 
     //TPT prevention
     everCompletedTpt:"",
     eligibilityTpt:"",
@@ -253,9 +249,12 @@ const ChronicCare = (props) => {
     tbTreatmentStarted: "",
     tbTreatmentStartDate: "",
     dateOfDiagnosticTest:"",
-    chestXrayResultTest:""
-    // treatementType: "",
-    // completionDate: "",
+    chestXrayResultTest:"",
+    treatmentType: "",
+    treatmentOutcome: "",
+    completionDate: "",
+    treatmentCompletionStatus: "",
+    completedTbTreatment: "",
   });
   const [observationObj, setObservationObj] = useState({
     //Predefine object for chronic care DTO
@@ -389,41 +388,8 @@ const ChronicCare = (props) => {
   //Validations of the forms
   const validate = () => {
   
-    tpt.outComeOfIpt !== "" &&
-      (temp.outcomeDate = tpt.date ? "" : "This field is required");
-
-    if (tbObj.tbTreatment === "Yes") {
-      temp.tbTreatmentStartDate = tbObj.tbTreatmentStartDate
-        ? ""
-        : "This field is required";
-    }
-
-    if (tpt.tbTreatment === "") {
-      temp.tbTreatment = tpt.tbTreatment ? "" : "This field is required";
-    }
-    
-
-    if (tpt.tbTreatment === "Yes") {
-      temp.treatmentType = tpt.treatmentType ? "" : "This field is required";
-   
-
-      temp.treatmentOutcome = tpt.treatmentOutcome
-        ? ""
-        : "This field is required";
-    
-      if (tpt.treatmentOutcome === "Treatment completed") {
-        temp.completionDate = tpt.completionDate ? "" : "This field is required";
-   
-        temp.treatmentCompletionStatus = tpt.treatmentCompletionStatus
-          ? ""
-          : "This field is required";
-      }
-    } else {
-      temp.treatmentType = "";
-      temp.treatmentOutcome = "";
-      temp.completionDate = "";
-      temp.treatmentCompletionStatus = "";
-    }
+    // tpt.outComeOfIpt !== "" &&
+    //   (temp.outcomeDate = tpt.date ? "" : "This field is required");
 
       temp.dateOfObservation = observation.dateOfObservation
         ? ""
@@ -443,7 +409,7 @@ const ChronicCare = (props) => {
     toast.success(message, { position: toast.POSITION.BOTTOM_CENTER });
   };
 
-
+console.log(errors)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -660,7 +626,7 @@ const ChronicCare = (props) => {
                   }}
                 >
                   <h5 className="card-title" style={{ color: "#fff" }}>
-                    TB & TPT Screening{" "}
+                  TB Screening/Monitoring{" "}
                   </h5>
                   {showTb === false ? (
                     <>
@@ -709,7 +675,7 @@ const ChronicCare = (props) => {
                   }}
                 >
                   <h5 className="card-title" style={{ color: "#fff" }}>
-                    TB/TPT Monitoring
+                  TB Prevention/Monitoring 
                   </h5>
                   {showTpt === false ? (
                     <>
