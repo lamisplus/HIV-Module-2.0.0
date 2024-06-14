@@ -200,6 +200,20 @@ const ChronicCare = (props) => {
     treatmentOutcome: "",
     completionDate: "",
     treatmentCompletionStatus: "",
+    //TPT prevention
+    everCompletedTpt:"",
+    eligibilityTpt:"",
+    tptPreventionOutcome:"",
+    currentlyOnTpt:"",
+    contractionForTpt:"",
+    liverSymptoms:"",
+    chronicAlcohol:"",
+    neurologicSymptoms:"",
+    dateTptStarted:"",
+    tptRegimen:"",
+    endedTpt:"",
+    dateOfTptCompleted:"",
+    dateTptEnded:""
   });
   const [tbObj, setTbObj] = useState({
     //TB and IPT Screening Object
@@ -222,7 +236,24 @@ const ChronicCare = (props) => {
     activeTb: false,
     contraindications: "",
     eligibleForTPT: "",
+    chestXrayResult:"",
     // treatementOutcome: "",
+    //This is section for TB Treament Variable
+    specimentCollectedStatus: "",
+    specimenType: "",
+    dateSpecimenSent: "",
+    diagnosticTestDone: "",
+    diagnosticTestType: "",
+    tbTestResult: "",
+    specimentSent: "",
+    clinicallyEvaulated: "",
+    chestXrayDone: "",
+    tbEvaulationOutcome: "",
+    tbType: "",
+    tbTreatmentStarted: "",
+    tbTreatmentStartDate: "",
+    dateOfDiagnosticTest:"",
+    chestXrayResultTest:""
     // treatementType: "",
     // completionDate: "",
   });
@@ -260,7 +291,7 @@ const ChronicCare = (props) => {
     setIsUpdate(
       props.activeContent && props.activeContent.actionType === "update"
     );
-  }, [props.activeContent.id]);
+  }, [props.activeContent.id,props.tbObj]);
   //GET  Patients
   async function PatientCurrentObject() {
     axios
@@ -320,14 +351,14 @@ const ChronicCare = (props) => {
       );
 
       if (response.data) {
-        console.log("Got here" + response.data["isHypertensive"]);
+        //console.log("Got here" + response.data["isHypertensive"]);
 
         //To get the latest Chronic Hypertensive response
         setHypertensive(response.data["isHypertensive"]);
       }
     } catch (error) {
       // Handle error here
-      console.error(error);
+      //console.error(error);
     }
   };
 
@@ -629,7 +660,7 @@ const ChronicCare = (props) => {
                   }}
                 >
                   <h5 className="card-title" style={{ color: "#fff" }}>
-                    TB & IPT Screening{" "}
+                    TB & TPT Screening{" "}
                   </h5>
                   {showTb === false ? (
                     <>
@@ -666,7 +697,8 @@ const ChronicCare = (props) => {
               </div>
               {/* End TB & IPT  Screening  */}
               {/* TPT MONITORING */}
-              <div className="card">
+              {tbObj.outcome!=='' && (<>
+                <div className="card">
                 <div
                   className="card-header"
                   style={{
@@ -712,6 +744,8 @@ const ChronicCare = (props) => {
                   />
                 )}
               </div>
+              </>)}
+              
               {/* End TPT MONITORING */}
               {/* End Nutritional Status Assessment */}
               <div className="card">
