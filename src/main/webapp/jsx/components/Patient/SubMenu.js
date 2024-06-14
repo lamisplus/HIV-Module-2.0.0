@@ -276,31 +276,64 @@ function SubMenu(props) {
   const [isPatientActive, setIsPatientActive] = useState(
     !props.patientObj.currentStatus.toLocaleLowerCase().includes("stop")
   );
+
+
+  // const updateCurrentEnrollmentStatus = () => {
+  //   axios
+  //     .post(`${baseUrl}hiv/status/activate-stop_status/${props.patientObj.personUuid}`, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     })
+  //     .then((response) => {
+  //       if (response.status === 204) {
+  //         setIsPatientActive(true);
+  //         toast.success("Patient reactivated succesfully");
+  //       }
+  //       props.setActiveContent({
+  //         ...props.activeContent,
+  //         route: "recent-history",
+  //       });
+  //     })
+  //     .catch((error) => {
+  //       if (error.response && error.response.data) {
+  //         let errorMessage =
+  //           error.response.data && error.response.data.apierror.message !== ""
+  //             ? error.response.data.apierror.message
+  //             : "Something went wrong, please try again";
+  //         toast.error(errorMessage);
+  //       }
+  //     });
+  // };
+
+
   const updateCurrentEnrollmentStatus = () => {
-    axios
-      .post(`${baseUrl}hiv/status/activate-stop_status/${props.patientObj.personUuid}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        if (response.status === 204) {
-          setIsPatientActive(true);
-          toast.success("Patient reactivated succesfully");
+    axios.post(
+        `${baseUrl}hiv/status/activate-stop_status/${props.patientObj.personUuid}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
         }
-        props.setActiveContent({
-          ...props.activeContent,
-          route: "recent-history",
+    )
+        .then((response) => {
+          if (response.status === 204) {
+            setIsPatientActive(true);
+            toast.success("Patient reactivated succesfully");
+          }
+          props.setActiveContent({
+            ...props.activeContent,
+            route: "recent-history",
+          });
+        })
+        .catch((error) => {
+          if (error.response && error.response.data) {
+            let errorMessage =
+                error.response.data && error.response.data.apierror.message !== ""
+                    ? error.response.data.apierror.message
+                    : "Something went wrong, please try again";
+            toast.error(errorMessage);
+          }
         });
-      })
-      .catch((error) => {
-        if (error.response && error.response.data) {
-          let errorMessage =
-            error.response.data && error.response.data.apierror.message !== ""
-              ? error.response.data.apierror.message
-              : "Something went wrong, please try again";
-          toast.error(errorMessage);
-        }
-      });
   };
+
   // useEffect(() => {
   //   setIsPatientActive(false);
   // }, []);
