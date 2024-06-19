@@ -380,71 +380,7 @@ const TbTreatmentScreening = (props) => {
                 </FormGroup>
               </div>
               </>)}
-              {(
-                props.tbObj.tbTestResult==='MTB detected RIF detected' ||
-                props.tbObj.tbTestResult==='MTB detected RIF&INH detected' ||
-                props.tbObj.tbTestResult=== 'MTB detected RR detected'
-                )  && (<> 
-              <div className="form-group mb-3 col-md-6">
-                <FormGroup>
-                  <Label>TB Type </Label>
-                  <InputGroup>
-                    <Input
-                      type="select"
-                      name="tbType"
-                      id="tbType"
-                      onChange={props.handleInputChange}
-                      value={props.tbObj.tbType}
-                      disabled={props.action === "view" ? true : false}
-                    >
-                      <option value="">Select</option>
-                      {treatmentType.map((value) => (
-                        <option key={value.id} value={value.display}>
-                          {value.display}
-                        </option>
-                      ))}
-                    </Input>
-                  </InputGroup>
-                </FormGroup>
-              </div>
-              <div className="form-group mb-3 col-md-6">
-                <FormGroup>
-                  <Label>TB Treatment Started</Label>
-                  <InputGroup>
-                    <Input
-                      type="select"
-                      name="tbTreatmentStarted"
-                      id="tbTreatmentStarted"
-                      onChange={props.handleInputChange}
-                      value={props.tbObj.tbTreatmentStarted}
-                      disabled={props.action === "view" ? true : false}
-                    >
-                      <option value="">Select</option>
-                      <option value="Yes">Yes</option>
-                      <option value="No">No</option>
-                    </Input>
-                  </InputGroup>
-                </FormGroup>
-              </div>
-             
-              <div className="form-group mb-3 col-md-6">
-                <FormGroup>
-                  <Label>TB Treatment Start Date </Label>
-                  <InputGroup>
-                    <Input
-                      type="date"
-                      name="tbTreatmentStartDate"
-                      id="tbTreatmentStartDate"
-                      onChange={props.handleInputChange}
-                      value={props.tbObj.tbTreatmentStartDate}
-                      disabled={props.action === "view" ? true : false}
-                    >
-                      
-                    </Input>
-                  </InputGroup>
-                </FormGroup>
-              </div>
-              </>)}
+
               {((props.tbObj.diagnosticTestType==='GeneXpert' || 
               props.tbObj.diagnosticTestType==='Truenat' || props.tbObj.diagnosticTestType==='Cobas' || props.tbObj.diagnosticTestType==='TB-LAMP' || props.tbObj.diagnosticTestType==='Smear Microscopy') && 
               (props.tbObj.tbTestResult==='MTB not detected' ||
@@ -522,12 +458,96 @@ const TbTreatmentScreening = (props) => {
                   </InputGroup>
                 </FormGroup>
               </div>
+              <div className="form-group mb-3 col-md-6">
+                <FormGroup>
+                  <Label>Date of Chest X-ray </Label>
+                  <InputGroup>
+                    <Input
+                      type="date"
+                      name="dateOfChestXrayResultTestDone"
+                      id="dateOfChestXrayResultTestDone"
+                      onChange={props.handleInputChange}
+                      value={props.tbObj.dateOfChestXrayResultTestDone}
+                      disabled={props.action === "view" ? true : false}
+                    >
+                     
+                    </Input>
+                  </InputGroup>
+                </FormGroup>
+              </div>
               </>)}
-              
+              {(
+                props.tbObj.tbTestResult==='MTB detected RIF detected' ||
+                props.tbObj.tbTestResult==='MTB detected RIF&INH detected' ||
+                props.tbObj.tbTestResult=== 'MTB detected RR detected' ||
+                props.tbObj.tbTestResult ==='MTB detected RR not detected' ||
+                props.tbObj.tbTestResult ==='MTB trace RR indeterminate' ||
+                props.tbObj.chestXrayResultTest ==='Suggestive of TB'
+                )  && (<> 
+              <div className="form-group mb-3 col-md-6">
+                <FormGroup>
+                  <Label>TB Type </Label>
+                  <InputGroup>
+                    <Input
+                      type="select"
+                      name="tbType"
+                      id="tbType"
+                      onChange={props.handleInputChange}
+                      value={props.tbObj.tbType}
+                      disabled={props.action === "view" ? true : false}
+                    >
+                      <option value="">Select</option>
+                      {treatmentType.map((value) => (
+                        <option key={value.id} value={value.display}>
+                          {value.display}
+                        </option>
+                      ))}
+                    </Input>
+                  </InputGroup>
+                </FormGroup>
+              </div>
+              <div className="form-group mb-3 col-md-6">
+                <FormGroup>
+                  <Label>TB Treatment Started</Label>
+                  <InputGroup>
+                    <Input
+                      type="select"
+                      name="tbTreatmentStarted"
+                      id="tbTreatmentStarted"
+                      onChange={props.handleInputChange}
+                      value={props.tbObj.tbTreatmentStarted}
+                      disabled={props.action === "view" ? true : false}
+                    >
+                      <option value="">Select</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                    </Input>
+                  </InputGroup>
+                </FormGroup>
+              </div>
+             
+              <div className="form-group mb-3 col-md-6">
+                <FormGroup>
+                  <Label>TB Treatment Start Date </Label>
+                  <InputGroup>
+                    <Input
+                      type="date"
+                      name="tbTreatmentStartDate"
+                      id="tbTreatmentStartDate"
+                      onChange={props.handleInputChange}
+                      value={props.tbObj.tbTreatmentStartDate}
+                      disabled={props.action === "view" ? true : false}
+                    >
+                      
+                    </Input>
+                  </InputGroup>
+                </FormGroup>
+              </div>
+              </>)}
              
             </div>
             <br />
-            {props.tbObj.tbTreatment!=='Yes' && (<>
+            {(props.tbObj.tbTreatment!=='Yes' ) && (<>
                 <p style={{ color: "black" }}>
                 TB Evaluation Outcome:<b>{" " + props.tbObj.tbEvaulationOutcome}</b>
                 </p>

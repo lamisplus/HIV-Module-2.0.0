@@ -255,6 +255,7 @@ const ChronicCare = (props) => {
     completionDate: "",
     treatmentCompletionStatus: "",
     completedTbTreatment: "",
+    dateOfChestXrayResultTestDone:""
   });
   const [observationObj, setObservationObj] = useState({
     //Predefine object for chronic care DTO
