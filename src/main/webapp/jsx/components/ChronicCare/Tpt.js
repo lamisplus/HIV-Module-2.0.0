@@ -138,7 +138,7 @@ const TPT = (props) => {
       tptPreventionOutcome: "Currently on TPT",
       });
     }
-    if((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='No' && 
+    if((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='No' && props.tpt.contractionForTpt==='No' &&
              ( props.tpt.liverSymptoms==="Yes" || props.tpt.neurologicSymptoms==='Yes' || props.tpt.chronicAlcohol==='Yes' || props.tpt.rash==='Yes'))){
                 props.setTpt({
                   ...props.tpt,
@@ -146,7 +146,7 @@ const TPT = (props) => {
                   tptPreventionOutcome: "",
                 });
     }
-    if((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='No' && 
+    if((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='No' && props.tpt.contractionForTpt==='Yes' &&
              ( props.tpt.liverSymptoms==="No" || props.tpt.neurologicSymptoms==='No' || props.tpt.chronicAlcohol==='No' || props.tpt.rash==='No'))){
                 props.setTpt({
                   ...props.tpt,
