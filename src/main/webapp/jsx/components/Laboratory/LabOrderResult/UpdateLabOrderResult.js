@@ -1422,6 +1422,23 @@ const Laboratory = (props) => {
                       )}
                     </FormGroup>
                   </Col>
+                  <Col md={6} className="form-group mb-3">
+                    <FormGroup>
+                      <Label for="priority">Comment</Label>
+                      <Input
+                          type="textarea"
+                          name="comments"
+                          id="comments"
+                          value={tests.comments}
+                          onChange={handleInputChange}
+                          disabled={fieldHidden}
+                          style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
+                      >
+
+                      </Input>
+
+                    </FormGroup>
+                  </Col>
                 </Row>
               </div>
 
