@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import MatButton from "@material-ui/core/Button";
 //import Button from "@material-ui/core/Button";
-import {Spinner, Form, FormGroup, Label, InputGroup, Input, CardBody} from "reactstrap";
+import { Spinner, Form, FormGroup, Label, InputGroup, Input } from "reactstrap";
 import { makeStyles } from "@material-ui/core/styles";
 import { Card, CardContent } from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
@@ -108,7 +108,6 @@ const ChronicCare = (props) => {
   const [showChronicConditionTwo, setShowChronicConditionTwo] = useState(false);
   const [showPositiveHealth, setShowPositiveHealth] = useState(false);
   const [showReproductive, setShowReproductive] = useState(false);
-  const [showClinicalNote, setShowClinicalNote] = useState(true);
   const [showTb, setShowTb] = useState(false); //Tpt
   const [showTpt, setShowTpt] = useState(false);
   const [enrollDate, setEnrollDate] = useState("");
@@ -183,7 +182,6 @@ const ChronicCare = (props) => {
     pregnantWithinNextYear: "",
     contraceptive: "",
   });
-  const [clinicalNote, setClinicalNote] = useState('');
   //TPT object
   const [tpt, setTpt] = useState({
     date: null,
@@ -196,12 +194,22 @@ const ChronicCare = (props) => {
     tbSymptoms: "",
     resonForStoppingIpt: "",
     outComeOfIpt: "",
-    tbTreatment: "",
     // tbTreatmentStartDate: "",
-    treatmentType: "",
-    treatmentOutcome: "",
-    completionDate: "",
-    treatmentCompletionStatus: "",
+ 
+    //TPT prevention
+    everCompletedTpt:"",
+    eligibilityTpt:"",
+    tptPreventionOutcome:"",
+    currentlyOnTpt:"",
+    contractionForTpt:"",
+    liverSymptoms:"",
+    chronicAlcohol:"",
+    neurologicSymptoms:"",
+    dateTptStarted:"",
+    tptRegimen:"",
+    endedTpt:"",
+    dateOfTptCompleted:"",
+    dateTptEnded:""
   });
   const [tbObj, setTbObj] = useState({
     //TB and IPT Screening Object
@@ -224,9 +232,30 @@ const ChronicCare = (props) => {
     activeTb: false,
     contraindications: "",
     eligibleForTPT: "",
+    chestXrayResult:"",
     // treatementOutcome: "",
-    // treatementType: "",
-    // completionDate: "",
+    //This is section for TB Treament Variable
+    specimentCollectedStatus: "",
+    specimenType: "",
+    dateSpecimenSent: "",
+    diagnosticTestDone: "",
+    diagnosticTestType: "",
+    tbTestResult: "",
+    specimentSent: "",
+    clinicallyEvaulated: "",
+    chestXrayDone: "",
+    tbEvaulationOutcome: "",
+    tbType: "",
+    tbTreatmentStarted: "",
+    tbTreatmentStartDate: "",
+    dateOfDiagnosticTest:"",
+    chestXrayResultTest:"",
+    treatmentType: "",
+    treatmentOutcome: "",
+    completionDate: "",
+    treatmentCompletionStatus: "",
+    completedTbTreatment: "",
+    dateOfChestXrayResultTestDone:""
   });
   const [observationObj, setObservationObj] = useState({
     //Predefine object for chronic care DTO
@@ -238,7 +267,6 @@ const ChronicCare = (props) => {
     peproductive: "",
     tbIptScreening: "",
     tptMonitoring: "",
-    clinicalNote:"",
   });
   const [observation, setObservation] = useState({
     data: {},
@@ -263,7 +291,7 @@ const ChronicCare = (props) => {
     setIsUpdate(
       props.activeContent && props.activeContent.actionType === "update"
     );
-  }, [props.activeContent.id]);
+  }, [props.activeContent.id,props.tbObj]);
   //GET  Patients
   async function PatientCurrentObject() {
     axios
@@ -323,14 +351,14 @@ const ChronicCare = (props) => {
       );
 
       if (response.data) {
-        console.log("Got here" + response.data["isHypertensive"]);
+        //console.log("Got here" + response.data["isHypertensive"]);
 
         //To get the latest Chronic Hypertensive response
         setHypertensive(response.data["isHypertensive"]);
       }
     } catch (error) {
       // Handle error here
-      console.error(error);
+      //console.error(error);
     }
   };
 
@@ -354,10 +382,6 @@ const ChronicCare = (props) => {
       .catch((error) => {});
   };
 
-  const handleClinicalNote = (event) => {
-    setClinicalNote(event.target.value);
-  };
-
   const handleInputChange = (e) => {
     setErrors({ ...temp, [e.target.name]: "" });
     setObservation({ ...observation, [e.target.name]: e.target.value });
@@ -365,41 +389,8 @@ const ChronicCare = (props) => {
   //Validations of the forms
   const validate = () => {
   
-    tpt.outComeOfIpt !== "" &&
-      (temp.outcomeDate = tpt.date ? "" : "This field is required");
-
-    if (tbObj.tbTreatment === "Yes") {
-      temp.tbTreatmentStartDate = tbObj.tbTreatmentStartDate
-        ? ""
-        : "This field is required";
-    }
-
-    if (tpt.tbTreatment === "") {
-      temp.tbTreatment = tpt.tbTreatment ? "" : "This field is required";
-    }
-    
-
-    if (tpt.tbTreatment === "Yes") {
-      temp.treatmentType = tpt.treatmentType ? "" : "This field is required";
-   
-
-      temp.treatmentOutcome = tpt.treatmentOutcome
-        ? ""
-        : "This field is required";
-    
-      if (tpt.treatmentOutcome === "Treatment completed") {
-        temp.completionDate = tpt.completionDate ? "" : "This field is required";
-   
-        temp.treatmentCompletionStatus = tpt.treatmentCompletionStatus
-          ? ""
-          : "This field is required";
-      }
-    } else {
-      temp.treatmentType = "";
-      temp.treatmentOutcome = "";
-      temp.completionDate = "";
-      temp.treatmentCompletionStatus = "";
-    }
+    // tpt.outComeOfIpt !== "" &&
+    //   (temp.outcomeDate = tpt.date ? "" : "This field is required");
 
       temp.dateOfObservation = observation.dateOfObservation
         ? ""
@@ -419,7 +410,7 @@ const ChronicCare = (props) => {
     toast.success(message, { position: toast.POSITION.BOTTOM_CENTER });
   };
 
-
+console.log(errors)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -441,7 +432,6 @@ const ChronicCare = (props) => {
     observationObj.peproductive = reproductive;
     observationObj.tbIptScreening = tbObj;
     observationObj.tptMonitoring = tpt;
-    observationObj.clinicalNote=clinicalNote;
     observation.data = observationObj;
 
     // Validate form
@@ -523,10 +513,6 @@ const ChronicCare = (props) => {
   const onClickReproductive = () => {
     setShowReproductive(!showReproductive);
   };
-  const onClickClinincalNote = () => {
-
-    setShowClinicalNote(!showClinicalNote);
-  };
   const onClickTpt = () => {
     setShowTpt(!showTpt);
   };
@@ -559,578 +545,502 @@ const ChronicCare = (props) => {
                     <Label>Visit Date *</Label>
 
                     <Input
-                        type="date"
-                        name="dateOfObservation"
-                        id="dateOfObservation"
-                        value={observation.dateOfObservation}
-                        onChange={handleInputChange}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                        min={enrollDate}
-                        max={moment(new Date()).format("YYYY-MM-DD")}
+                      type="date"
+                      name="dateOfObservation"
+                      id="dateOfObservation"
+                      value={observation.dateOfObservation}
+                      onChange={handleInputChange}
+                      style={{
+                        border: "1px solid #014D88",
+                        borderRadius: "0.25rem",
+                      }}
+                      min={enrollDate}
+                      max={moment(new Date()).format("YYYY-MM-DD")}
                     ></Input>
                   </FormGroup>
                   {errors.dateOfObservation !== "" ? (
-                      <span className={classes.error}>
+                    <span className={classes.error}>
                       {errors.dateOfObservation}
                     </span>
                   ) : (
-                      ""
+                    ""
                   )}
                 </div>
               </div>
               {/* Eligibility Assessment */}
               <div className="card">
                 <div
-                    className="card-header"
-                    style={{
-                      backgroundColor: "#014d88",
-                      color: "#fff",
-                      fontWeight: "bolder",
-                      borderRadius: "0.2rem",
-                    }}
+                  className="card-header"
+                  style={{
+                    backgroundColor: "#014d88",
+                    color: "#fff",
+                    fontWeight: "bolder",
+                    borderRadius: "0.2rem",
+                  }}
                 >
-                  <h5 className="card-title" style={{color: "#fff"}}>
+                  <h5 className="card-title" style={{ color: "#fff" }}>
                     Eligibility Assessment
                   </h5>
                   {showEligibility === false ? (
-                      <>
+                    <>
                       <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickEligibility}
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickEligibility}
                       >
-                        <FaPlus/>
+                        <FaPlus />
                       </span>
-                      </>
+                    </>
                   ) : (
-                      <>
+                    <>
                       <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickEligibility}
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickEligibility}
                       >
-                        <FaAngleDown/>
+                        <FaAngleDown />
                       </span>{" "}
-                      </>
+                    </>
                   )}
                 </div>
                 {showEligibility && (
-                    <Eligibilty
-                        setEligibility={setEligibility}
-                        eligibility={eligibility}
-                        setErrors={setErrors}
-                        errors={errors}
-                        encounterDate={observation.dateOfObservation}
-                        patientObj={patientObj}
-                    />
+                  <Eligibilty
+                    setEligibility={setEligibility}
+                    eligibility={eligibility}
+                    setErrors={setErrors}
+                    errors={errors}
+                    encounterDate={observation.dateOfObservation}
+                    patientObj={patientObj}
+                  />
                 )}
               </div>
               {/* End Eligibility Assessment */}
               {/* TB & IPT  Screening  */}
               <div className="card">
                 <div
-                    className="card-header"
-                    style={{
-                      backgroundColor: "#014d88",
-                      color: "#fff",
-                      fontWeight: "bolder",
-                      borderRadius: "0.2rem",
-                    }}
+                  className="card-header"
+                  style={{
+                    backgroundColor: "#014d88",
+                    color: "#fff",
+                    fontWeight: "bolder",
+                    borderRadius: "0.2rem",
+                  }}
                 >
-                  <h5 className="card-title" style={{color: "#fff"}}>
-                    TB & IPT Screening{" "}
+                  <h5 className="card-title" style={{ color: "#fff" }}>
+                  TB Screening/Monitoring{" "}
                   </h5>
                   {showTb === false ? (
-                      <>
+                    <>
                       <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickTb}
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickTb}
                       >
-                        <FaPlus/>
+                        <FaPlus />
                       </span>
-                      </>
+                    </>
                   ) : (
-                      <>
+                    <>
                       <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickTb}
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickTb}
                       >
-                        <FaAngleDown/>
+                        <FaAngleDown />
                       </span>{" "}
-                      </>
+                    </>
                   )}
                 </div>
                 {showTb && (
-                    <Tb
-                        setTbObj={setTbObj}
-                        tbObj={tbObj}
-                        setErrors={setErrors}
-                        errors={errors}
-                        encounterDate={observation.dateOfObservation}
-                        patientObj={patientObj}
-                    />
+                  <Tb
+                    setTbObj={setTbObj}
+                    tbObj={tbObj}
+                    setErrors={setErrors}
+                    errors={errors}
+                    encounterDate={observation.dateOfObservation}
+                    patientObj={patientObj}
+                  />
                 )}
               </div>
               {/* End TB & IPT  Screening  */}
               {/* TPT MONITORING */}
-              <div className="card">
+              {tbObj.outcome!=='' && (<>
+                <div className="card">
                 <div
-                    className="card-header"
-                    style={{
-                      backgroundColor: "#014d88",
-                      color: "#fff",
-                      fontWeight: "bolder",
-                      borderRadius: "0.2rem",
-                    }}
+                  className="card-header"
+                  style={{
+                    backgroundColor: "#014d88",
+                    color: "#fff",
+                    fontWeight: "bolder",
+                    borderRadius: "0.2rem",
+                  }}
                 >
-                  <h5 className="card-title" style={{color: "#fff"}}>
-                    TB/TPT Monitoring
+                  <h5 className="card-title" style={{ color: "#fff" }}>
+                  TB Prevention/Monitoring 
                   </h5>
                   {showTpt === false ? (
-                      <>
+                    <>
                       <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickTpt}
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickTpt}
                       >
-                        <FaPlus/>
+                        <FaPlus />
                       </span>
-                      </>
+                    </>
                   ) : (
-                      <>
+                    <>
                       <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickTpt}
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickTpt}
                       >
-                        <FaAngleDown/>
+                        <FaAngleDown />
                       </span>{" "}
-                      </>
+                    </>
                   )}
                 </div>
                 {showTpt && (
-                    <Tpt
-                        setTpt={setTpt}
-                        tpt={tpt}
-                        setErrors={setErrors}
-                        errors={errors}
-                        encounterDate={observation.dateOfObservation}
-                        patientObj={patientObj}
-                    />
+                  <Tpt
+                    setTpt={setTpt}
+                    tpt={tpt}
+                    setErrors={setErrors}
+                    errors={errors}
+                    encounterDate={observation.dateOfObservation}
+                    patientObj={patientObj}
+                  />
                 )}
               </div>
+              </>)}
+              
               {/* End TPT MONITORING */}
               {/* End Nutritional Status Assessment */}
               <div className="card">
                 <div
-                    className="card-header"
-                    style={{
-                      backgroundColor: "#014d88",
-                      color: "#fff",
-                      fontWeight: "bolder",
-                      borderRadius: "0.2rem",
-                    }}
+                  className="card-header"
+                  style={{
+                    backgroundColor: "#014d88",
+                    color: "#fff",
+                    fontWeight: "bolder",
+                    borderRadius: "0.2rem",
+                  }}
                 >
-                  <h5 className="card-title" style={{color: "#fff"}}>
+                  <h5 className="card-title" style={{ color: "#fff" }}>
                     Nutritional Status Assessment
                   </h5>
                   {showNutrition === false ? (
-                      <>
+                    <>
                       <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickNutrition}
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickNutrition}
                       >
-                        <FaPlus/>
+                        <FaPlus />
                       </span>
-                      </>
+                    </>
                   ) : (
-                      <>
+                    <>
                       <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickNutrition}
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickNutrition}
                       >
-                        <FaAngleDown/>
+                        <FaAngleDown />
                       </span>{" "}
-                      </>
+                    </>
                   )}
                 </div>
                 {showNutrition && (
-                    <NutritionalStatus
-                        nutrition={nutrition}
-                        setNutrition={setNutrition}
-                        setErrors={setErrors}
-                        errors={errors}
-                        encounterDate={observation.dateOfObservation}
-                        patientObj={patientObj}
-                        action={props.activeContent.actionType}
-                    />
+                  <NutritionalStatus
+                    nutrition={nutrition}
+                    setNutrition={setNutrition}
+                    setErrors={setErrors}
+                    errors={errors}
+                    encounterDate={observation.dateOfObservation}
+                    patientObj={patientObj}
+                    action={props.activeContent.actionType}
+                  />
                 )}
               </div>
               {/* End Nutritional Status Assessment */}
               {/* Gender Based Violence Screening */}
               <div className="card">
                 <div
-                    className="card-header"
-                    style={{
-                      backgroundColor: "#014d88",
-                      color: "#fff",
-                      fontWeight: "bolder",
-                      borderRadius: "0.2rem",
-                    }}
+                  className="card-header"
+                  style={{
+                    backgroundColor: "#014d88",
+                    color: "#fff",
+                    fontWeight: "bolder",
+                    borderRadius: "0.2rem",
+                  }}
                 >
-                  <h5 className="card-title" style={{color: "#fff"}}>
+                  <h5 className="card-title" style={{ color: "#fff" }}>
                     Gender Based Violence Screening{" "}
                   </h5>
                   {showGenderBase === false ? (
-                      <>
+                    <>
                       <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickGenderBase}
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickGenderBase}
                       >
-                        <FaPlus/>
+                        <FaPlus />
                       </span>
-                      </>
+                    </>
                   ) : (
-                      <>
+                    <>
                       <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickGenderBase}
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickGenderBase}
                       >
-                        <FaAngleDown/>
+                        <FaAngleDown />
                       </span>{" "}
-                      </>
+                    </>
                   )}
                 </div>
                 {showGenderBase && (
-                    <div className="card-body">
-                      <div className="row">
-                        <GenderBase
-                            setGenderBase={setGenderBase}
-                            genderBase={genderBase}
-                            setErrors={setErrors}
-                            errors={errors}
-                            encounterDate={observation.dateOfObservation}
-                            patientObj={patientObj}
-                        />
-                      </div>
+                  <div className="card-body">
+                    <div className="row">
+                      <GenderBase
+                        setGenderBase={setGenderBase}
+                        genderBase={genderBase}
+                        setErrors={setErrors}
+                        errors={errors}
+                        encounterDate={observation.dateOfObservation}
+                        patientObj={patientObj}
+                      />
                     </div>
+                  </div>
                 )}
               </div>
               {/* End Gender Based Violence Screening */}
               {/* End Screening for Chronic Conditions */}
               <div className="card">
                 <div
-                    className="card-header"
-                    style={{
-                      backgroundColor: "#014d88",
-                      color: "#fff",
-                      fontWeight: "bolder",
-                      borderRadius: "0.2rem",
-                    }}
+                  className="card-header"
+                  style={{
+                    backgroundColor: "#014d88",
+                    color: "#fff",
+                    fontWeight: "bolder",
+                    borderRadius: "0.2rem",
+                  }}
                 >
-                  <h5 className="card-title" style={{color: "#fff"}}>
+                  <h5 className="card-title" style={{ color: "#fff" }}>
                     Screening for Chronic Conditions Hypertension
                   </h5>
                   {showChronicCondition === false ? (
-                      <>
+                    <>
                       <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickChronicCondition}
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickChronicCondition}
                       >
-                        <FaPlus/>
+                        <FaPlus />
                       </span>
-                      </>
+                    </>
                   ) : (
-                      <>
+                    <>
                       <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickChronicCondition}
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickChronicCondition}
                       >
-                        <FaAngleDown/>
+                        <FaAngleDown />
                       </span>{" "}
-                      </>
+                    </>
                   )}
                 </div>
                 {showChronicCondition && (
-                    <div className="card-body">
-                      <div className="row">
-                        <ChronicConditions
-                            chronicConditions={chronicConditions}
-                            setChronicConditions={setChronicConditions}
-                            setErrors={setErrors}
-                            errors={errors}
-                            encounterDate={observation.dateOfObservation}
-                            patientObj={patientObj}
-                            isHypertensive={isHypertensive}
-                        />
-                      </div>
+                  <div className="card-body">
+                    <div className="row">
+                      <ChronicConditions
+                        chronicConditions={chronicConditions}
+                        setChronicConditions={setChronicConditions}
+                        setErrors={setErrors}
+                        errors={errors}
+                        encounterDate={observation.dateOfObservation}
+                        patientObj={patientObj}
+                        isHypertensive={isHypertensive}
+                      />
                     </div>
+                  </div>
                 )}
               </div>
 
               <div className="card">
                 <div
-                    className="card-header"
-                    style={{
-                      backgroundColor: "#014d88",
-                      color: "#fff",
-                      fontWeight: "bolder",
-                      borderRadius: "0.2rem",
-                    }}
+                  className="card-header"
+                  style={{
+                    backgroundColor: "#014d88",
+                    color: "#fff",
+                    fontWeight: "bolder",
+                    borderRadius: "0.2rem",
+                  }}
                 >
-                  <h5 className="card-title" style={{color: "#fff"}}>
+                  <h5 className="card-title" style={{ color: "#fff" }}>
                     Screening for Chronic Conditions Diabetics
                   </h5>
                   {showChronicConditionTwo === false ? (
-                      <>
+                    <>
                       <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickChronicConditionTwo}
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickChronicConditionTwo}
                       >
-                        <FaPlus/>
+                        <FaPlus />
                       </span>
-                      </>
+                    </>
                   ) : (
-                      <>
+                    <>
                       <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickChronicConditionTwo}
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickChronicConditionTwo}
                       >
-                        <FaAngleDown/>
+                        <FaAngleDown />
                       </span>{" "}
-                      </>
+                    </>
                   )}
                 </div>
                 {showChronicConditionTwo && (
-                    <div className="card-body">
-                      <div className="row">
-                        <ChronicConditionsTwo
-                            chronicConditions={chronicConditions}
-                            setChronicConditions={setChronicConditions}
-                            setErrors={setErrors}
-                            errors={errors}
-                            encounterDate={observation.dateOfObservation}
-                            patientObj={patientObj}
-                            isHypertensive={isHypertensive}
-                        />
-                      </div>
+                  <div className="card-body">
+                    <div className="row">
+                      <ChronicConditionsTwo
+                        chronicConditions={chronicConditions}
+                        setChronicConditions={setChronicConditions}
+                        setErrors={setErrors}
+                        errors={errors}
+                        encounterDate={observation.dateOfObservation}
+                        patientObj={patientObj}
+                        isHypertensive={isHypertensive}
+                      />
                     </div>
+                  </div>
                 )}
               </div>
               {/* End Screening for Chronic Conditions */}
               {/* Positive Health Dignity and Prevention */}
               <div className="card">
                 <div
-                    className="card-header"
-                    style={{
-                      backgroundColor: "#014d88",
-                      color: "#fff",
-                      fontWeight: "bolder",
-                      borderRadius: "0.2rem",
-                    }}
+                  className="card-header"
+                  style={{
+                    backgroundColor: "#014d88",
+                    color: "#fff",
+                    fontWeight: "bolder",
+                    borderRadius: "0.2rem",
+                  }}
                 >
-                  <h5 className="card-title" style={{color: "#fff"}}>
+                  <h5 className="card-title" style={{ color: "#fff" }}>
                     Positive Health Dignity and Prevention(PHDP){" "}
                   </h5>
                   {showPositiveHealth === false ? (
-                      <>
+                    <>
                       <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickPositiveHealth}
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickPositiveHealth}
                       >
-                        <FaPlus/>
+                        <FaPlus />
                       </span>
-                      </>
+                    </>
                   ) : (
-                      <>
+                    <>
                       <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickPositiveHealth}
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickPositiveHealth}
                       >
-                        <FaAngleDown/>
+                        <FaAngleDown />
                       </span>{" "}
-                      </>
+                    </>
                   )}
                 </div>
                 {showPositiveHealth && (
-                    <div className="card-body">
-                      <div className="row">
-                        <PositiveHealthDignity
-                            preventive={preventive}
-                            setPreventive={setPreventive}
-                            setErrors={setErrors}
-                            errors={errors}
-                            encounterDate={observation.dateOfObservation}
-                            patientObj={patientObj}
-                        />
-                      </div>
+                  <div className="card-body">
+                    <div className="row">
+                      <PositiveHealthDignity
+                        preventive={preventive}
+                        setPreventive={setPreventive}
+                        setErrors={setErrors}
+                        errors={errors}
+                        encounterDate={observation.dateOfObservation}
+                        patientObj={patientObj}
+                      />
                     </div>
+                  </div>
                 )}
               </div>
               {/* End Positive Health Dignity and Prevention */}
               {/* Reproductive Intentions */}
               <div className="card">
                 <div
-                    className="card-header"
-                    style={{
-                      backgroundColor: "#014d88",
-                      color: "#fff",
-                      fontWeight: "bolder",
-                      borderRadius: "0.2rem",
-                    }}
+                  className="card-header"
+                  style={{
+                    backgroundColor: "#014d88",
+                    color: "#fff",
+                    fontWeight: "bolder",
+                    borderRadius: "0.2rem",
+                  }}
                 >
-                  <h5 className="card-title" style={{color: "#fff"}}>
+                  <h5 className="card-title" style={{ color: "#fff" }}>
                     Reproductive Intentions{" "}
                   </h5>
                   {showReproductive === false ? (
-                      <>
+                    <>
                       <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickReproductive}
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickReproductive}
                       >
-                        <FaPlus/>
+                        <FaPlus />
                       </span>
-                      </>
+                    </>
                   ) : (
-                      <>
+                    <>
                       <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickReproductive}
+                        className="float-end"
+                        style={{ cursor: "pointer" }}
+                        onClick={onClickReproductive}
                       >
-                        <FaAngleDown/>
+                        <FaAngleDown />
                       </span>{" "}
-                      </>
+                    </>
                   )}
                 </div>
                 {showReproductive && (
-                    <div className="card-body">
-                      <div className="row">
-                        <ReproductiveIntentions
-                            setReproductive={setReproductive}
-                            reproductive={reproductive}
-                            setErrors={setErrors}
-                            errors={errors}
-                            encounterDate={observation.dateOfObservation}
-                            patientObj={patientObj}
-                        />
-                      </div>
+                  <div className="card-body">
+                    <div className="row">
+                      <ReproductiveIntentions
+                        setReproductive={setReproductive}
+                        reproductive={reproductive}
+                        setErrors={setErrors}
+                        errors={errors}
+                        encounterDate={observation.dateOfObservation}
+                        patientObj={patientObj}
+                      />
                     </div>
-                )}
-              </div>
-              <div className="card">
-                <div
-                    className="card-header"
-                    style={{
-                      backgroundColor: "#014d88",
-                      color: "#fff",
-                      fontWeight: "bolder",
-                      borderRadius: "0.2rem",
-                    }}
-                >
-                  <h5 className="card-title" style={{color: "#fff"}}>
-                    Comment{" "}
-                  </h5>
-                  {showClinicalNote === false ? (
-                      <>
-                      <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickClinincalNote}
-                      >
-                        <FaPlus/>
-                      </span>
-                      </>
-                  ) : (
-                      <>
-                      <span
-                          className="float-end"
-                          style={{cursor: "pointer"}}
-                          onClick={onClickClinincalNote}
-                      >
-                        <FaAngleDown/>
-                      </span>{" "}
-                      </>
-                  )}
-                </div>
-                {showClinicalNote && (
-                    <div className="card-body">
-                      <div className="row">
-                        {/*<ReproductiveIntentions
-                            setReproductive={setReproductive}
-                            reproductive={reproductive}
-                            setErrors={setErrors}
-                            errors={errors}
-                            encounterDate={observation.dateOfObservation}
-                            patientObj={patientObj}
-                        />*/}
-
-                        <Card>
-                          <CardBody>
-                            <h2 style={{ color: "#000" }}>Comment</h2>
-                            <br />
-                            <form>
-
-                              <div className="row">
-                                <div className="form-group mb-3 col-md-12">
-                                  <FormGroup>
-                                    <Label for="clinicalNotes">Comment</Label>
-                                    <InputGroup>
-                                      <textarea
-                                          name="clinicalNotes"
-                                          id="clinicalNotes"
-                                          onChange={handleClinicalNote}
-                                          value={clinicalNote}
-                                          className="form-control"
-                                          rows="5"
-                                      />
-
-                                    </InputGroup>
-                                  </FormGroup>
-                                </div>
-
-                              </div>
-                            </form>
-                          </CardBody>
-                        </Card>
-                      </div>
-                    </div>
+                  </div>
                 )}
               </div>
               {/* End Reproductive Intentions */}
-              {saving ? <Spinner/> : ""}
+              {saving ? <Spinner /> : ""}
 
-              <br/>
+              <br />
               <MatButton
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  className={classes.button}
-                  startIcon={<SaveIcon/>}
-                  style={{backgroundColor: "#014d88"}}
-                  onClick={handleSubmit}
-                  disabled={saving}
+                type="submit"
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                startIcon={<SaveIcon />}
+                style={{ backgroundColor: "#014d88" }}
+                onClick={handleSubmit}
+                disabled={saving}
               >
                 {!saving ? (
-                    <span style={{textTransform: "capitalize"}}>Save</span>
+                  <span style={{ textTransform: "capitalize" }}>Save</span>
                 ) : (
-                    <span style={{textTransform: "capitalize"}}>Saving...</span>
+                  <span style={{ textTransform: "capitalize" }}>Saving...</span>
                 )}
               </MatButton>
             </Form>
