@@ -1481,7 +1481,7 @@ const ArtCommencement = (props) => {
               )}
               <div className="form-group mb-3 col-md-12">
                 <FormGroup>
-                  <Label>Clinical Notes</Label>
+                  <Label>Comment</Label>
                   <Input
                     type="textarea"
                     name="clinicalNote"
