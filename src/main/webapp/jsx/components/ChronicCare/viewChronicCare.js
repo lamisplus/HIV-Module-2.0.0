@@ -266,6 +266,8 @@ const ViewChronicCare = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
+        //console.log("Danmanu44",response.data.data.clinicalNote);
+        setClinicalNote(response.data.data.clinicalNote);
         observationObj.eligibility = response.data.eligibility;
         observationObj.nutrition = response.data;
         observationObj.genderBase = response.data.genderBase;
@@ -1002,6 +1004,7 @@ const handleSubmit = async (e) => {
                                           value={clinicalNote}
                                           className="form-control"
                                           rows="5"
+                                          disabled={true}
                                       />
 
                                     </InputGroup>
