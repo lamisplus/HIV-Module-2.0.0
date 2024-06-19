@@ -53,14 +53,11 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
             "     p.id AS patientId,\n" +
             "     p.uuid AS personUuid,\n" +
             "     p.facility_id AS facilityId,\n" +
-            "     facility.name AS facilityName,\n" +
-            "     facility_lga.name AS lga,\n" +
-            "     facility_state.name AS state,\n" +
-            "                e.date_confirmed_hiv AS dateConfirmedHiv,\n" +
+            "e.date_confirmed_hiv AS dateConfirmedHiv,\n" +
             "     e.date_of_registration AS dateEnrolledInCare,\n" +
             "     cc.body_weight AS weight,\n" +
             "     cc.height AS height,\n" +
-            "            lastVisit.visit_date AS dateOfLastClinicalVisist,\n" +
+            "     lastVisit.visit_date AS dateOfLastClinicalVisist,\n" +
             "     lastVisit.pregnancy_status AS pregnancyStatus,\n" +
             "     bac_adl.display AS adherenceLevel,\n" +
             "     bac.display AS currentWhoClinical,\n" +
@@ -195,10 +192,7 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
             " personUuid,\n" +
             " facilityId,\n" +
             " dateEnrolledInTreatment,\n" +
-            "            dateOfLastClinicalVisist,\n" +
-            " facilityName,\n" +
-            " lga,\n" +
-            " state,\n" +
+            "dateOfLastClinicalVisist,\n" +
             " weight,\n" +
             " height,\n" +
             " pregnancyStatus,\n" +

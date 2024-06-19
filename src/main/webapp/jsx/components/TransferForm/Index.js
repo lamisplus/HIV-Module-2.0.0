@@ -169,10 +169,30 @@ const Tracking = (props) => {
     const [selectedFacility, setSelectedFacility] = useState({});
     const [selectedLga, setSelectedLga] = useState({});
 
-    useEffect(() => {
-        getPatientActivities()
-    }, []);
+    // useEffect(() => {
+    //     getPatientActivities()
+    // }, []);
 
+    // const getPatientActivities = async () => {
+    //     try {
+    //         const response = await axios.get(
+    //             `${baseUrl}hiv/patients/${patientObj.id}/history/activities`,
+    //             {
+    //                 headers: { Authorization: `Bearer ${token}` },
+    //             }
+    //         );
+    //         const activities = response.data;
+    //         // check each activities in th response data if there is an activity.name that is equal to "ART Transfer Out", if yes set isPatientTransferredOut to true
+    //         const isPatientTransferredOut = activities.some(
+    //             (activity) => activity.name === "ART Transfer Out"
+    //         );
+    //         setIsPatientTransferredOut(isPatientTransferredOut);
+    //     } catch (error) {
+    //         toast.error("Fill DSD Form", {
+    //             position: toast.POSITION.TOP_RIGHT,
+    //         });
+    //     }
+    // };
     const getPatientActivities = async () => {
         try {
             const response = await axios.get(
@@ -182,11 +202,12 @@ const Tracking = (props) => {
                 }
             );
             const activities = response.data;
-            // check each activities in th response data if there is an activity.name that is equal to "ART Transfer Out", if yes set isPatientTransferredOut to true
-            const isPatientTransferredOut = activities.some(
-                (activity) => activity.name === "ART Transfer Out"
-            );
-            setIsPatientTransferredOut(isPatientTransferredOut);
+            const lastActivity = activities
+                .map((dateObj) => dateObj.activities)
+                .flat()
+                .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+            const isLastActivityArtTransferIn = lastActivity?.name === "ART Transfer In";
+            console.log("is last activity transfer in::::", isLastActivityArtTransferIn);
         } catch (error) {
             toast.error("Fill DSD Form", {
                 position: toast.POSITION.TOP_RIGHT,
@@ -366,7 +387,8 @@ const Tracking = (props) => {
 
 
     useEffect(() => {
-        setPayload({ ...payload, ...transferInfo });
+        const { state, lga, facilityName, ...rest } = transferInfo;
+        setPayload({ ...payload, ...rest });
         calculateBMI();
     }, [transferInfo]);
 
@@ -410,14 +432,14 @@ const Tracking = (props) => {
             : "This field is required";
         temp.modeOfHIVTest = payload.modeOfHIVTest ? "" : "This field is required";
         // if a patient is going out of facilty, fill the state to, lga to and faciltiy to
-        if(patientCurrentStatus !== "ART TRANSFER OUT"){
-            temp.stateTransferTo = payload.stateTransferTo ? "" : "This field is required";
-            temp.lgaTransferTo = payload.lgaTransferTo ? "" : "This field is required";
-            temp.facilityTransferTo = payload.facilityTransferTo ? "" : "This field is required";
-        }
-            temp.lga = payload.lga ? "" : "This field is required";
-            temp.state = payload.state ? "" : "This field is required";
-            temp.facilityName = payload.facilityName ? "" :"This field is required";
+        // if(patientCurrentStatus !== "ART TRANSFER OUT"){
+        //     temp.stateTransferTo = payload.stateTransferTo ? "" : "This field is required";
+        //     temp.lgaTransferTo = payload.lgaTransferTo ? "" : "This field is required";
+        //     temp.facilityTransferTo = payload.facilityTransferTo ? "" : "This field is required";
+        // }
+        //     temp.lga = payload.lga ? "" : "This field is required";
+        //     temp.state = payload.state ? "" : "This field is required";
+        //     temp.facilityName = payload.facilityName ? "" :"This field is required";
 
         setErrors({
             ...temp,
@@ -436,16 +458,16 @@ const Tracking = (props) => {
             payload.currentMedication = currentMedication;
             payload.labResult = labResult;
             payload.currentStatus = patientCurrentStatus;
-            if (isPatientTransferredOut) {
-                toast.error("A transfer-out form has already been filled for this patient", {
-                    position: toast.POSITION.BOTTOM_CENTER,
-                });
-                setSaving(false);
-                return;
-            }
+            // if (isPatientTransferredOut) {
+            //     toast.error("A transfer-out form has already been filled for this patient", {
+            //         position: toast.POSITION.BOTTOM_CENTER,
+            //     });
+            //     setSaving(false);
+            //     return;
+            // }
             console.log("saving payload", payload)
             toast.success("transfer successfull")
-            // postTransferForm(payload);
+            postTransferForm(payload);
         } else {
             window.scroll(0, 0);
         }

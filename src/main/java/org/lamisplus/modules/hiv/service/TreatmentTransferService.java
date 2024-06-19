@@ -127,6 +127,9 @@ public class TreatmentTransferService {
         transferPatientDto.setLgaTransferTo(transferPatientDto.getLgaTransferTo());
         transferPatientDto.setStateTransferTo(transferPatientDto.getStateTransferTo());
         transferPatientDto.setFacilityTransferTo(transferPatientDto.getFacilityTransferTo());
+        transferPatientDto.setFacilityName(transferPatientDto.getFacilityName());
+        transferPatientDto.setLga(transferPatientDto.getLga());
+        transferPatientDto.setState(transferPatientDto.getState());
         transferPatientDto.setBmi(transferPatientDto.getBmi());
         transferPatientDto.setGaInWeeks(transferPatientDto.getGaInWeeks());
         transferPatientDto.setClinicalNote(transferPatientDto.getClinicalNote());

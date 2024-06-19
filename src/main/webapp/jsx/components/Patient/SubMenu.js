@@ -361,7 +361,7 @@ function SubMenu(props) {
                   Home
                 </Menu.Item>
 
-                {!patientObj.clinicalEvaluation && false && (
+                {!patientObj.clinicalEvaluation &&  (
                   <Menu.Item
                     onClick={() => loadAdultEvaluation()}
                     name="initial"

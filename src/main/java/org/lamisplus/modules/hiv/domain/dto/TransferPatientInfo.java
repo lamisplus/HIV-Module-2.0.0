@@ -5,9 +5,9 @@ public interface TransferPatientInfo {
     Long getPatientId();
     String getPersonUuid();
     Long getFacilityId();
-    String getFacilityName();
-    String getLga();
-    String getState();
+//    String getFacilityName();
+//    String getLga();
+//    String getState();
     Double getWeight();
     Double getHeight();
     String getPregnancyStatus();
