@@ -189,7 +189,7 @@ const ChronicCare = (props) => {
     referredForServices: "",
     adherence: "",
     rash: "",
-    neurologicSymptoms: "",
+    // neurologicSymptoms: "",g
     hepatitisSymptoms: "",
     tbSymptoms: "",
     resonForStoppingIpt: "",
@@ -215,7 +215,7 @@ const ChronicCare = (props) => {
     //TB and IPT Screening Object
     currentlyOnTuberculosis: "",
     tbTreatment: "",
-    tbTreatmentStartDate: "",
+    // tbTreatmentStartDate: "",
     coughing: "",
     fever: "",
     losingWeight: "",
