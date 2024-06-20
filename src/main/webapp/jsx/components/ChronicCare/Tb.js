@@ -591,15 +591,136 @@ const TbScreening = (props) => {
       })
       .then((response) => {
         setTbScreeningType(response.data);
-        console.log(response.data)
+        // console.log(response.data)
       })
       .catch((error) => {});
   };
 
 
+  // const handleInputChange = (e) => {
+  //   props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.value });
+  //
+  // };
+
   const handleInputChange = (e) => {
-    props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    if (name === 'tbTreatment') {
+      props.setTbObj({
+        ...props.tbObj,
+        [name]: value,
+        tbTreatmentStartDate: '',
+        tbScreeningType: '',
+        completedTbTreatment:'',
+        specimentCollectedStatus: '',
+      });
+    } else if (name === 'tbScreeningType' || value === '' ) {
+      props.setTbObj({
+        ...props.tbObj,
+        [name]: value,
+        chestXray:'',
+        chestXrayResult:'',
+        isTbTestConfirmed:"",
+        fever:'',
+        nightSweats:'',
+        coughing:'',
+        losingWeight:'',
+      });
+    }
+    else if(name === 'specimentCollectedStatus' || value === ''){
+      props.setTbObj({
+        ...props.tbObj,
+        [name]: value,
+        specimentSent:'',
+        tbTestResult:'',
+        diagnosticTestDone:'',
+        dateSpecimenSent:'',
+        diagnosticTestType:''
+      });
+    }
+    else if(name === 'diagnosticTestDone' || value === ''){
+      props.setTbObj({
+        ...props.tbObj,
+        [name]: value,
+        dateOfDiagnosticTest:'',
+        diagnosticTestType:''
+      });
+    }
+    else if(name === 'diagnosticTestDone' || value === ''){
+      props.setTbObj({
+        ...props.tbObj,
+        [name]: value,
+        dateOfDiagnosticTest:'',
+        chestXrayResultTest:''
+      });
+    }
+    else if(name === 'diagnosticTestType' || value === ''){
+      props.setTbObj({
+        ...props.tbObj,
+        [name]: value,
+        chestXrayDone:'',
+        chestXrayResultTest:''
+      });
+    }
+
+    else if(name === 'chestXrayResultTest' || value === ''){
+      props.setTbObj({
+        ...props.tbObj,
+        [name]: value,
+        tbType:'',
+        tbTreatmentStarted:''
+      });
+    }
+    // TB MONITORING COMPONENT FIELDS UPDATE ON STATE CHNAGES
+    else if(name === 'completedTbTreatment' || value === ''){
+      props.setTbObj({
+        ...props.tbObj,
+        [name]: value,
+        completionDate:'',
+        treatmentOutcome:'',
+        treatmentCompletionStatus:'',
+      });
+    }
+    else {
+      props.setTbObj({ ...props.tbObj, [name]: value });
+    }
   };
+
+  // RESET:TB Diagnosis and Treatment Enrolment on outcome changes
+  useEffect(() => {
+     props.setTbObj({
+       ...props.tbObj,
+       specimentCollectedStatus: '',
+       specimentSent:'',
+       tbTestResult:'',
+       dateSpecimenSent:'',
+       specimenType:'',
+       diagnosticTestDone:'',
+       dateOfDiagnosticTest:'',
+       // diagnosticTestType:"",
+       // clinicallyEvaulated:"",
+       // chestXrayDone:'',
+       // chestXrayResultTest:'',
+       // tbType:'',
+       // tbTreatmentStarted:'',
+       // tbTreatmentStartDate:''
+     })
+  },[props.tbObj.outcome])
+
+
+  // RESET: Clinically evalauted on changes in  specimen sent and tbEvaulationOutcome
+  // useEffect(() => {
+  //   props.setTbObj({
+  //     ...props.tbObj,
+  //     // dateOfDiagnosticTest:'',
+  //     // diagnosticTestType:"",
+  //     // clinicallyEvaulated:"",
+  //     // chestXrayDone:'',
+  //     // chestXrayResultTest:'',
+  //     // tbType:'',
+  //     // tbTreatmentStarted:'',
+  //     // tbTreatmentStartDate:''
+  //   })
+  // },[props.tbObj.specimentSent, props.tbObj.tbEvaulationOutcome])
 
   const handleInputChangeContrain = (e) => {
     if (e.target.checked) {
@@ -609,6 +730,9 @@ const TbScreening = (props) => {
     }
   };
 
+
+
+  console.log("TB OBJECT IN TB", props.tbObj)
 
 
   return (
