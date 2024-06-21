@@ -36,6 +36,7 @@ import { Label as LabelSui } from "semantic-ui-react";
 import Select from "react-select";
 import { calculate_age_to_number } from "../../../utils";
 import TBScreeningForm from "./TBScreening/Index";
+import DualListBox from "react-dual-listbox";
 // import { resetForm } from "../../../utils/formUtils";
 
 const useStyles = makeStyles((theme) => ({
@@ -258,6 +259,154 @@ const ClinicVisit = (props) => {
   });
   const [careSupportObj, setCareSupportObj] = useState(null);
   const [careSupportTb, setCareSupportTb] = useState(null);
+  const [who, setWho] = useState({
+    stage: "",
+    stage1Value: "",
+    stage2Value: "",
+    stage3Value: "",
+    stage4Value: "",
+    stage1ValueOption: "",
+    stage2ValueOption: "",
+    stage3ValueOption: "",
+    stage4ValueOption: "",
+  });
+
+  const handleWho = (e) => {
+    setWho({ ...who, [e.target.name]: e.target.value });
+  };
+
+  const [selectedOptions1, setSelectedOptions1] = useState([]);
+  const [selectedOptions2, setSelectedOptions2] = useState([]);
+  const [selectedOptions3, setSelectedOptions3] = useState([]);
+  const [selectedOptions4, setSelectedOptions4] = useState([]);
+  const onSelectedOption1 = (selectedValues) => {
+    setWho({ ...who, stage1ValueOption: selectedValues });
+    setSelectedOptions1(selectedValues);
+  };
+  const onSelectedOption2 = (selectedValues) => {
+    setWho({ ...who, stage2ValueOption: selectedValues });
+    setSelectedOptions2(selectedValues);
+  };
+  const onSelectedOption3 = (selectedValues) => {
+    setSelectedOptions3(selectedValues);
+    setWho({ ...who, stage3ValueOption: selectedValues });
+  };
+  const onSelectedOption4 = (selectedValues) => {
+    setWho({ ...who, stage4ValueOption: selectedValues });
+    setSelectedOptions4(selectedValues);
+  };
+  const options1 = [
+    { value: "Asymptomatic", label: "Asymptomatic" },
+    {
+      value: "Persistent generalized lymphadenopathy",
+      label: "Persistent generalized lymphadenopathy",
+    },
+    {
+      value: "Herpes Zoster (within last 5 years)",
+      label: "Performance scale: 1 asymptomatic, normal activity",
+    },
+  ];
+  const options2 = [
+    {
+      value: "Weight loss less than 10% of body weight",
+      label: "Weight loss less than 10% of body weight",
+    },
+    {
+      value: "Minor Mucocutaneous Manifestations",
+      label: "Minor Mucocutaneous Manifestations",
+    },
+    {
+      value: "Herpes Zoster (within last 5 years)",
+      label: "Herpes Zoster (within last 5 years)",
+    },
+    {
+      value: "Recurrent Upper Respiratory Tract Infections",
+      label: "Recurrent Upper Respiratory Tract Infections",
+    },
+    {
+      value: "Performance scale: 2 symptomatic, normal activity",
+      label: "Performance scale: 2 symptomatic, normal activity",
+    },
+  ];
+  const options3 = [
+    {
+      value: "Weight loss greater than 10% of body weight",
+      label: "Weight loss greater than 10% of body weight",
+    },
+    {
+      value: "Unexplained Chronic Diarrhea less than 1 month",
+      label: "Unexplained Chronic Diarrhea less than 1 month",
+    },
+    {
+      value: "Unexplained Prolonged Fever",
+      label: "Unexplained Prolonged Fever",
+    },
+    { value: "Oral Candidiasis", label: "Oral Candidiasis" },
+    { value: "Oral Hairy Leukoplakia", label: "Oral Hairy Leukoplakia" },
+
+    {
+      value: "TB, Pulmonary (within previous year)",
+      label: "TB, Pulmonary (within previous year)",
+    },
+    {
+      value: "Severe Bacterial Infections",
+      label: "Severe Bacterial Infections",
+    },
+    {
+      value:
+        "Performance scale: 3 bedridden  less than 50% of day in last month",
+      label:
+        "Performance scale: 3 bedridden  less than 50% of day in last month",
+    },
+  ];
+  const options4 = [
+    { value: "HIV Wasting syndrome", label: "HIV Wasting syndrome" },
+    { value: "PCP", label: "PCP" },
+    { value: "Toxoplasmosis, CNS", label: "Toxoplasmosis, CNS" },
+
+    {
+      value: "Cryptosporidiosis with Diarrhea greater than 1 month",
+      label: "Cryptosporidiosis with Diarrhea greater than 1 month",
+    },
+    {
+      value: "Cryptococcosis, Extrapulmonary",
+      label: "Cryptococcosis, Extrapulmonary",
+    },
+    { value: "Cytomegalovirus disease", label: "Cytomegalovirus disease" },
+    {
+      value: "Herpes Simplex (mucotaneous greater than 1 month)",
+      label: "Herpes Simplex (mucotaneous greater than 1 month)",
+    },
+    {
+      value: "Progressive Multifocal Leukoencephalopathy",
+      label: "Progressive Multifocal Leukoencephalopathy",
+    },
+    { value: "Mycosis, disseminated", label: "Mycosis, disseminated" },
+    { value: "Oesophageal Candidiasis", label: "Oesophageal Candidiasis" },
+    {
+      value: "Atypical Mycobacteriosis, disseminated",
+      label: "Atypical Mycobacteriosis, disseminated",
+    },
+    {
+      value: "Salmonella Septicemia, Non-typhoid",
+      label: "Salmonella Septicemia, Non-typhoid",
+    },
+
+    { value: "TB, Extrapulmonary", label: "TB, Extrapulmonary" },
+    { value: "Lymphoma", label: "Lymphoma" },
+    { value: "Kaposi's Sarcoma", label: "Kaposi's Sarcoma" },
+    { value: "HIV encephalopathy", label: "HIV encephalopathy" },
+    {
+      value:
+        "Performance scale: 4 bedridden greater than 50% of the day in last month",
+      label:
+        "Performance scale: 4 bedridden greater than 50% of the day in last month",
+    },
+  ];
+
+  {
+    /**major duallist imported end here */
+  }
   useEffect(() => {
     FunctionalStatus();
     WhoStaging();
@@ -394,22 +543,22 @@ const ClinicVisit = (props) => {
   //     })
   //     .catch((error) => {});
   // };
-   const PREGNANCY_STATUS = () => {
-     axios
-       .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS`, {
-         headers: { Authorization: `Bearer ${token}` },
-       })
-       .then((response) => {
-         // Filter out "Post Partum" from the response.data array
-         const filteredData = response.data.filter(
-           (status) => status.display !== "Post Partum"
-         );
-         setPregnancyStatus(filteredData);
-       })
-       .catch((error) => {
-         console.log(error);
-       });
-   };
+  const PREGNANCY_STATUS = () => {
+    axios
+      .get(`${baseUrl}application-codesets/v2/PREGNANCY_STATUS`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        // Filter out "Post Partum" from the response.data array
+        const filteredData = response.data.filter(
+          (status) => status.display !== "Post Partum"
+        );
+        setPregnancyStatus(filteredData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   //GET VIRAL LOAD INDICATION
   const ViraLoadIndication = () => {
     axios
@@ -442,7 +591,7 @@ const ClinicVisit = (props) => {
       })
       .then((response) => {
         setChildRegimenLine(
-          response.data.filter((x) => x.id === 3 || x.id === 4 ) 
+          response.data.filter((x) => x.id === 3 || x.id === 4)
         );
       })
       .catch((error) => {});
@@ -602,6 +751,7 @@ const ClinicVisit = (props) => {
     }
     getCharacters();
   }
+
   const handleInputChangeVitalSignDto = (e) => {
     setErrors({ ...errors, [e.target.name]: "" });
     setVitalSignDto({ ...vital, [e.target.name]: e.target.value });
@@ -830,45 +980,23 @@ const ClinicVisit = (props) => {
     temp.nextAppointment = objValues.nextAppointment
       ? ""
       : "This field is required";
-    temp.whoStagingId = objValues.whoStagingId ? "" : "This field is required";
+    temp.pregnancyStatus =
+      objValues.pregnancyStatus === "select" || !objValues.pregnancyStatus
+        ? "This field is required"
+        : "";
+
+    if (patientObj.sex.toLocaleLowerCase() === "male")
+      temp.pregnancyStatus = "";
+
+    temp.stage = who?.stage ? "" : "This field is required";
     temp.functionalStatusId = objValues.functionalStatusId
       ? ""
       : "This field is required";
-    {
-      patientAge >= 10 &&
-        patientObj.sex === "Female" &&
-        (temp.pregnancyStatus = objValues.pregnancyStatus
-          ? ""
-          : "This field is required");
-    }
-    //temp.adherenceLevel = objValues.adherenceLevel ? "" : "This field is required"
-    //temp.diastolic = vital.diastolic ? "" : "This field is required"
-    //temp.systolic = vital.systolic ? "" : "This field is required"
     temp.height = vital.height ? "" : "This field is required";
     temp.bodyWeight = vital.bodyWeight ? "" : "This field is required";
     //TB VALIDATION
     temp.tbStatusId = tbObj.tbStatusId ? "" : "This field is required";
-    //temp.antiTBDrug = tbObj.antiTBDrug ? "" : "This field is required";
-    // tbObj.antiTBDrug &&
-    //   tbObj.antiTBDrug === "NO" &&
-    //   (temp.currentOnIpt = tbObj.currentOnIpt ? "" : "This field is required");
-    // tbObj.currentOnIpt &&
-    //   tbObj.currentOnIpt === "NO" &&
-    //   (temp.fever = tbObj.fever ? "" : "This field is required");
-    // tbObj.currentOnIpt &&
-    //   tbObj.currentOnIpt === "NO" &&
-    //   (temp.nightSweat = tbObj.nightSweat ? "" : "This field is required");
-    // tbObj.currentOnIpt &&
-    //   tbObj.currentOnIpt === "NO" &&
-    //   (temp.lethergy = tbObj.lethergy ? "" : "This field is required");
-    // tbObj.currentOnIpt &&
-    //   tbObj.currentOnIpt === "NO" &&
-    //   (temp.coughing = tbObj.coughing ? "" : "This field is required");
-    // tbObj.currentOnIpt &&
-    //   tbObj.currentOnIpt === "NO" &&
-    //   (temp.contactWithTBCase = tbObj.contactWithTBCase
-    //     ? ""
-    //     : "This field is required");
+
     setErrors({
       ...temp,
     });
@@ -896,6 +1024,8 @@ const ClinicVisit = (props) => {
     e.preventDefault();
     if (validate()) {
       setSaving(true);
+      objValues.whoStagingId = who?.stage;
+      objValues.who = who;
       objValues.visitDate = vital.encounterDate;
       vital["captureDate"] = vital.encounterDate;
       objValues.adverseDrugReactions = adrList;
@@ -960,6 +1090,7 @@ const ClinicVisit = (props) => {
           }
         });
     } else {
+      // alert("is not validated");
       toast.error("All field are required", {
         position: toast.POSITION.BOTTOM_CENTER,
       });
@@ -970,8 +1101,18 @@ const ClinicVisit = (props) => {
     setTbStatus(null);
   };
 
-
   const resetForm = () => {
+    setWho({
+      stage: "",
+      stage1Value: "",
+      stage2Value: "",
+      stage3Value: "",
+      stage4Value: "",
+      stage1ValueOption: "",
+      stage2ValueOption: "",
+      stage3ValueOption: "",
+      stage4ValueOption: "",
+    });
     setObjValues({
       adherenceLevel: "",
       adheres: {},
@@ -1426,7 +1567,8 @@ const ClinicVisit = (props) => {
               <div className="form-group mb-3 col-md-6">
                 <FormGroup>
                   <FormLabelName>
-                    Date of Visit <span style={{ color: "red" }}> *</span>
+                    Date of Visit
+                    <span style={{ color: "red" }}> *</span>
                   </FormLabelName>
                   <Input
                     type="date"
@@ -1961,38 +2103,91 @@ const ClinicVisit = (props) => {
               )}
             </div>
             <div className="row">
-              <div className=" mb-3 col-md-6">
+              {/**jsx added begin here */}
+              <div className="form-group mb-3 col-md-6">
                 <FormGroup>
-                  <FormLabelName>
-                    WHO Staging <span style={{ color: "red" }}> *</span>
-                  </FormLabelName>
-                  <Input
-                    type="select"
-                    name="whoStagingId"
-                    id="whoStagingId"
-                    value={objValues.whoStagingId}
-                    onChange={handleInputChange}
-                    style={{
-                      border: "1px solid #014D88",
-                      borderRadius: "0.25rem",
-                    }}
-                    required
-                  >
-                    <option value="select">Select </option>
-
-                    {clinicalStage.map((value) => (
-                      <option key={value.id} value={value.id}>
-                        {value.display}
-                      </option>
-                    ))}
-                  </Input>
-                  {errors.whoStagingId !== "" ? (
-                    <span className={classes.error}>{errors.whoStagingId}</span>
+                  <Label>
+                    WHO STAGE <span style={{ color: "red" }}> *</span>
+                  </Label>
+                  <InputGroup>
+                    <Input
+                      type="select"
+                      name="stage"
+                      id="stage"
+                      value={who?.stage}
+                      onChange={handleWho}
+                    >
+                      <option value=""> Select</option>
+                      {clinicalStage.map((value) => (
+                        <option key={value.id} value={value.id}>
+                          {value.display}
+                        </option>
+                      ))}
+                    </Input>
+                  </InputGroup>
+                  {errors.stage !== "" ? (
+                    <span className={classes.error}>{errors.stage}</span>
                   ) : (
                     ""
                   )}
                 </FormGroup>
               </div>
+              {who?.stage === "119" && (
+                <div className="form-group mb-3 col-md-12">
+                  <FormGroup>
+                    <Label>Stage 1 options</Label>
+                    <DualListBox
+                      //canFilter
+                      options={options1}
+                      onChange={onSelectedOption1}
+                      selected={selectedOptions1}
+                    />
+                  </FormGroup>
+                </div>
+              )}
+              {who?.stage === "120" && (
+                <div className="form-group mb-3 col-md-12">
+                  <FormGroup>
+                    <Label>Stage 2 options</Label>
+                    <DualListBox
+                      //canFilter
+                      options={options2}
+                      onChange={onSelectedOption2}
+                      selected={selectedOptions2}
+                    />
+                  </FormGroup>
+                </div>
+              )}
+              {who?.stage === "121" && (
+                <>
+                  <div className="form-group mb-3 col-md-12">
+                    <FormGroup>
+                      <Label>Stage 3 options</Label>
+                      <DualListBox
+                        //canFilter
+                        options={options3}
+                        onChange={onSelectedOption3}
+                        selected={selectedOptions3}
+                      />
+                    </FormGroup>
+                  </div>
+                </>
+              )}
+              {who?.stage === "122" && (
+                <div className="form-group mb-3 col-md-12">
+                  <FormGroup>
+                    <Label>Stage 4 options</Label>
+                    <DualListBox
+                      //canFilter
+                      options={options4}
+                      onChange={onSelectedOption4}
+                      selected={selectedOptions4}
+                    />
+                  </FormGroup>
+                </div>
+              )}
+
+              {/**jsx added end here */}
               <div className=" mb-3 col-md-6">
                 <FormGroup>
                   <FormLabelName>
