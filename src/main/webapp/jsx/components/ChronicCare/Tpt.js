@@ -122,78 +122,106 @@ const TPT = (props) => {
     CLINIC_VISIT_LEVEL_OF_ADHERENCE();
   }, []);
   // TPT Logic
-  useEffect(() => {
+  // useEffect(() => {
+  //
+  //   if (props.tpt.everCompletedTpt === "Yes") {
+  //     props.setTpt({
+  //       ...props.tpt,
+  //       eligibilityTpt: "No",
+  //       tptPreventionOutcome: "TPT Completed",
+  //     });
+  //   }
+  //   else if (props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='Yes') {
+  //     props.setTpt({
+  //       ...props.tpt,
+  //       eligibilityTpt: "No",
+  //       tptPreventionOutcome: "Currently on TPT",
+  //     });
+  //   }
+  //   else if((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='No' && props.tpt.contractionForTpt==='Yes' &&
+  //       ( props.tpt.liverSymptoms==="Yes" || props.tpt.neurologicSymptoms==='Yes' || props.tpt.chronicAlcohol==='Yes' || props.tpt.rash==='Yes'))){
+  //     props.setTpt({
+  //       ...props.tpt,
+  //       eligibilityTpt: "No",
+  //       tptPreventionOutcome: "",
+  //     });
+  //   }
+  //
+  //   else if((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='No' && props.tpt.contractionForTpt==='Yes' &&
+  //       ( props.tpt.liverSymptoms==="No" || props.tpt.neurologicSymptoms==='No' || props.tpt.chronicAlcohol==='No' || props.tpt.rash==='No'))){
+  //     props.setTpt({
+  //       ...props.tpt,
+  //       eligibilityTpt: "No",
+  //       tptPreventionOutcome: "",
+  //     });
+  //   }
+  //
+  // }, [props.tpt.eligibilityTpt, props.tpt.tptPreventionOutcome, props.tpt.tbTreatment, props.tpt.currentlyOnTpt,
+  //   props.tpt.liverSymptoms, props.tpt.neurologicSymptoms, props.tpt.chronicAlcohol,
+  //   props.tpt.neurologicSymptoms,  props.tpt.rash, props.tpt.endedTpt,
+  //   props.tpt.treatmentOutcome, props.tpt.treatmentCompletionStatus,
+  //   props.tpt.everCompletedTpt, props.tpt.contractionForTpt  ]);
 
+  useEffect(() => {
     if (props.tpt.everCompletedTpt === "Yes") {
       props.setTpt({
         ...props.tpt,
         eligibilityTpt: "No",
         tptPreventionOutcome: "TPT Completed",
       });
-    }
-    else if (props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='Yes') {
+    } else if (props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt === 'Yes') {
       props.setTpt({
         ...props.tpt,
         eligibilityTpt: "No",
         tptPreventionOutcome: "Currently on TPT",
       });
-    }
-    else if((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='No' && props.tpt.contractionForTpt==='Yes' &&
-        ( props.tpt.liverSymptoms==="Yes" || props.tpt.neurologicSymptoms==='Yes' || props.tpt.chronicAlcohol==='Yes' || props.tpt.rash==='Yes'))){
+    } else if ((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt === 'No' &&
+        (props.tpt.liverSymptoms === "Yes" || props.tpt.neurologicSymptoms === 'Yes' || props.tpt.chronicAlcohol === 'Yes' || props.tpt.rash === 'Yes'))) {
       props.setTpt({
         ...props.tpt,
         eligibilityTpt: "No",
         tptPreventionOutcome: "",
       });
+    } else if ((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt === 'No' &&
+        (props.tpt.liverSymptoms === "No" && props.tpt.neurologicSymptoms === 'No' && props.tpt.chronicAlcohol === 'No' && props.tpt.rash === 'No'))) {
+      if (props.tpt.contractionForTpt === 'Yes') {
+        props.setTpt({
+          ...props.tpt,
+          eligibilityTpt: "No",
+          tptPreventionOutcome: "",
+        });
+      } else if (props.tpt.contractionForTpt === 'No') {
+        props.setTpt({
+          ...props.tpt,
+          eligibilityTpt: "Yes",
+          tptPreventionOutcome: "",
+        });
+      }
+    } else {
+      if (props.tpt.contractionForTpt === 'Yes') {
+        props.setTpt({
+          ...props.tpt,
+          eligibilityTpt: "No",
+          tptPreventionOutcome: "",
+        });
+      } else if (props.tpt.contractionForTpt === 'No') {
+        props.setTpt({
+          ...props.tpt,
+          eligibilityTpt: "Yes",
+          tptPreventionOutcome: "",
+        });
+      }
     }
-        // if((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='No' &&
-        //     ( props.tpt.liverSymptoms==="Yes" || props.tpt.neurologicSymptoms==='Yes' || props.tpt.chronicAlcohol==='Yes' || props.tpt.rash==='Yes'))){
-        //   if(props.tpt.contractionForTpt==='Yes'){
-        //     props.setTpt({
-        //       ...props.tpt,
-        //       eligibilityTpt: "Yes",
-        //       tptPreventionOutcome: "",
-        //     });
-        //   } else {
-        //     props.setTpt({
-        //       ...props.tpt,
-        //       eligibilityTpt: "No",
-        //       tptPreventionOutcome: "",
-        //     });
-        //   }
-    // }
-    else if((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='No' && props.tpt.contractionForTpt==='Yes' &&
-        ( props.tpt.liverSymptoms==="No" || props.tpt.neurologicSymptoms==='No' || props.tpt.chronicAlcohol==='No' || props.tpt.rash==='No'))){
-      props.setTpt({
-        ...props.tpt,
-        eligibilityTpt: "No",
-        tptPreventionOutcome: "",
-      });
-    }
-
-    // if(props.tpt.everCompletedTpt === "Yes") {
-    //   props.setTpt({
-    //     ...props.tpt,
-    //     eligibilityTpt: "No",
-    //     tptPreventionOutcome: "",
-    //   });
-    // }
-    // if(props.tpt.everCompletedTpt === "No") {
-    //   props.setTpt({
-    //     ...props.tpt,
-    //     eligibilityTpt: "Yes",
-    //     tptPreventionOutcome: "",
-    //   });
-    // }
-
-  }, [props.tpt.eligibilityTpt, props.tpt.tptPreventionOutcome, props.tpt.tbTreatment, props.tpt.currentlyOnTpt,
-    props.tpt.liverSymptoms, props.tpt.neurologicSymptoms, props.tpt.chronicAlcohol,
-    props.tpt.neurologicSymptoms,  props.tpt.rash, props.tpt.endedTpt,
+  }, [
+    props.tpt.eligibilityTpt, props.tpt.tptPreventionOutcome, props.tpt.tbTreatment,
+    props.tpt.currentlyOnTpt, props.tpt.liverSymptoms, props.tpt.neurologicSymptoms,
+    props.tpt.chronicAlcohol, props.tpt.rash, props.tpt.endedTpt,
     props.tpt.treatmentOutcome, props.tpt.treatmentCompletionStatus,
-    props.tpt.everCompletedTpt, props.tpt.contractionForTpt  ]);
+    props.tpt.everCompletedTpt, props.tpt.contractionForTpt
+  ]);
 
 
- 
+
   //Get list of CLINIC_VISIT_LEVEL_OF_ADHERENCE
   const CLINIC_VISIT_LEVEL_OF_ADHERENCE = () => {
     axios
@@ -257,7 +285,7 @@ const TPT = (props) => {
         chronicAlcohol:''
       });
     }
-    else if(name === 'ontractionForTpt' || value === ''){
+    else if(name === 'contractionForTpt' || value === ''){
       props.setTpt({
         ...props.tpt,
         [name]: value,
