@@ -123,7 +123,7 @@ const TPT = (props) => {
   }, []);
   // TPT Logic
   useEffect(() => {
-    
+
     if (props.tpt.everCompletedTpt === "Yes") {
       props.setTpt({
         ...props.tpt,
@@ -131,30 +131,46 @@ const TPT = (props) => {
         tptPreventionOutcome: "TPT Completed",
       });
     }
-    if(props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='Yes') {
+    else if (props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='Yes') {
       props.setTpt({
-      ...props.tpt,
-      eligibilityTpt: "No",
-      tptPreventionOutcome: "Currently on TPT",
+        ...props.tpt,
+        eligibilityTpt: "No",
+        tptPreventionOutcome: "Currently on TPT",
       });
     }
-    if((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='No' && 
-             ( props.tpt.liverSymptoms==="Yes" || props.tpt.neurologicSymptoms==='Yes' || props.tpt.chronicAlcohol==='Yes' || props.tpt.rash==='Yes'))){
-                props.setTpt({
-                  ...props.tpt,
-                  eligibilityTpt: "Yes",
-                  tptPreventionOutcome: "",
-                });
+    else if((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='No' && props.tpt.contractionForTpt==='Yes' &&
+        ( props.tpt.liverSymptoms==="Yes" || props.tpt.neurologicSymptoms==='Yes' || props.tpt.chronicAlcohol==='Yes' || props.tpt.rash==='Yes'))){
+      props.setTpt({
+        ...props.tpt,
+        eligibilityTpt: "No",
+        tptPreventionOutcome: "",
+      });
     }
-    if((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='No' && 
-             ( props.tpt.liverSymptoms==="No" || props.tpt.neurologicSymptoms==='No' || props.tpt.chronicAlcohol==='No' || props.tpt.rash==='No'))){
-                props.setTpt({
-                  ...props.tpt,
-                  eligibilityTpt: "No",
-                  tptPreventionOutcome: "",
-                });
+        // if((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='No' &&
+        //     ( props.tpt.liverSymptoms==="Yes" || props.tpt.neurologicSymptoms==='Yes' || props.tpt.chronicAlcohol==='Yes' || props.tpt.rash==='Yes'))){
+        //   if(props.tpt.contractionForTpt==='Yes'){
+        //     props.setTpt({
+        //       ...props.tpt,
+        //       eligibilityTpt: "Yes",
+        //       tptPreventionOutcome: "",
+        //     });
+        //   } else {
+        //     props.setTpt({
+        //       ...props.tpt,
+        //       eligibilityTpt: "No",
+        //       tptPreventionOutcome: "",
+        //     });
+        //   }
+    // }
+    else if((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='No' && props.tpt.contractionForTpt==='Yes' &&
+        ( props.tpt.liverSymptoms==="No" || props.tpt.neurologicSymptoms==='No' || props.tpt.chronicAlcohol==='No' || props.tpt.rash==='No'))){
+      props.setTpt({
+        ...props.tpt,
+        eligibilityTpt: "No",
+        tptPreventionOutcome: "",
+      });
     }
-      
+
     // if(props.tpt.everCompletedTpt === "Yes") {
     //   props.setTpt({
     //     ...props.tpt,
@@ -169,12 +185,14 @@ const TPT = (props) => {
     //     tptPreventionOutcome: "",
     //   });
     // }
-        
+
   }, [props.tpt.eligibilityTpt, props.tpt.tptPreventionOutcome, props.tpt.tbTreatment, props.tpt.currentlyOnTpt,
-     props.tpt.liverSymptoms, props.tpt.neurologicSymptoms, props.tpt.chronicAlcohol, 
-     props.tpt.neurologicSymptoms,  props.tpt.rash, props.tpt.endedTpt, 
-     props.tpt.treatmentOutcome, props.tpt.treatmentCompletionStatus, 
-     props.tpt.everCompletedTpt, props.tpt.contractionForTpt  ]);
+    props.tpt.liverSymptoms, props.tpt.neurologicSymptoms, props.tpt.chronicAlcohol,
+    props.tpt.neurologicSymptoms,  props.tpt.rash, props.tpt.endedTpt,
+    props.tpt.treatmentOutcome, props.tpt.treatmentCompletionStatus,
+    props.tpt.everCompletedTpt, props.tpt.contractionForTpt  ]);
+
+
  
   //Get list of CLINIC_VISIT_LEVEL_OF_ADHERENCE
   const CLINIC_VISIT_LEVEL_OF_ADHERENCE = () => {
@@ -191,14 +209,75 @@ const TPT = (props) => {
   //let temp = { ...errors }
 
   //Handle CheckBox
-  const handleTpt = (e) => {
-    props.setErrors({ ...props.errors, [e.target.name]: "" });
-    props.setTpt({ ...props.tpt, [e.target.name]: e.target.value });
-    //making the field to be empty once the selection logic is apply(skip logic)
-    
+  // const handleTpt = (e) => {
+  //   props.setErrors({ ...props.errors, [e.target.name]: "" });
+  //   props.setTpt({ ...props.tpt, [e.target.name]: e.target.value });
+  //   //making the field to be empty once the selection logic is apply(skip logic)
+  // };
 
-  };
 
+  console.log("TPT OBJECT IN TPT COMPONENT", props.tpt)
+
+  const handleTpt  = (e) => {
+    const {name, value} = e.target;
+    if(name === 'tbTreatment' || value === ''  ){
+      props.setTpt({
+        ...props.tpt,
+        [name]: value,
+        completionDate: '',
+        completedTbTreatment:'',
+        treatmentOutcome: '',
+      });
+    }
+    else if(name === 'everCompletedTpt'){
+      if(value === "Yes"){
+        props.setTpt({
+          ...props.tpt,
+          [name]: value,
+          currentlyOnTpt:'',
+        });
+      }
+      else {
+        props.setTpt({
+          ...props.tpt,
+          [name]: value,
+          dateOfTptCompleted:'',
+        });
+      }
+    }
+    else if(name === 'currentlyOnTpt' || value === ''){
+      props.setTpt({
+        ...props.tpt,
+        [name]: value,
+        hepatitisSymptoms: "",
+        liverSymptoms: "",
+        neurologicSymptoms: "",
+        rash:'',
+        contractionForTpt:'',
+        chronicAlcohol:''
+      });
+    }
+    else if(name === 'ontractionForTpt' || value === ''){
+      props.setTpt({
+        ...props.tpt,
+        [name]: value,
+        weight: "",
+        dateTptStarted: "",
+        tptRegimen: ""
+      });
+    }
+    else if(name === 'endedTpt' || value === ''){
+      props.setTpt({
+        ...props.tpt,
+        [name]: value,
+        outComeOfIpt: "",
+        dateTptEnded: ""
+      });
+    }
+    else{
+      props.setTpt({ ...props.tpt, [e.target.name]: e.target.value });
+    }
+  }
   return (
     <>
       <Card className={classes.root}>
