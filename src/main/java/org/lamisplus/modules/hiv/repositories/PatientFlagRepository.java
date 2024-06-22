@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface PatientFlagRepository extends JpaRepository<PatientFlag, Long> {
 
-    @Query(nativeQuery = true, value = "SELECT surpression_value FROM base_application_flag_config WHERE facility_id = ?1")
+    @Query(nativeQuery = true, value = "SELECT surpression_value FROM base_application_flag_config WHERE facility_id = ?1 AND archived = 0")
 //    String getPatientFlagsParameter (Long facilityId);
     Optional<Integer> getPatientFlagsParameter (Long facilityId);
 
