@@ -64,9 +64,9 @@ public class PatientFlagService {
     private PatientFlagDto convertPatientFlagToDto(PatientFlag patientFlag) {
         return PatientFlagDto.builder()
                 .id(patientFlag.getId())
-                .gracePeriod(patientFlag.getGracePeriod())
+//                .gracePeriod(patientFlag.getGracePeriod())
                 .surpressionValue(patientFlag.getSurpressionValue())
-                .message(patientFlag.getMessage())
+//                .message(patientFlag.getMessage())
                 .uuid(patientFlag.getUuid())
 //                .api(patientFlag.getApi())
                 .build();
