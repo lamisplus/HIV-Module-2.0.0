@@ -132,4 +132,9 @@ public class HivEnrollmentController {
                 ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping(value = "patient-flag/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<FlagPatientDto> getHivPatientFlagById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok (patientService.getPatientMeta (id));
+    }
+
 }
