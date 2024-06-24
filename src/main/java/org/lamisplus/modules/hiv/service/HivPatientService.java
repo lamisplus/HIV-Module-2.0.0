@@ -15,6 +15,7 @@ import org.lamisplus.modules.hiv.domain.entity.Observation;
 import org.lamisplus.modules.hiv.repositories.ARTClinicalRepository;
 import org.lamisplus.modules.hiv.repositories.HivEnrollmentRepository;
 import org.lamisplus.modules.hiv.repositories.ObservationRepository;
+import org.lamisplus.modules.hiv.repositories.PatientFlagRepository;
 import org.lamisplus.modules.patient.domain.dto.PersonResponseDto;
 import org.lamisplus.modules.patient.domain.entity.Person;
 import org.lamisplus.modules.patient.repository.PersonRepository;
@@ -58,6 +59,8 @@ public class HivPatientService {
     private final  StatusManagementService statusManagementService;
     
     private  final HivEnrollmentRepository enrollmentRepository;
+
+    private final PatientFlagRepository patientFlagRepository;
 
     public HivEnrollmentDTO registerAndEnrollHivPatient(HivPatientEnrollmentDto hivPatientEnrollmentDto) {
         HivEnrollmentDTO hivEnrollmentDto = hivPatientEnrollmentDto.getHivEnrollment ();
@@ -367,7 +370,15 @@ public class HivPatientService {
 
     public List<PatientActivity> getHivPatientActivitiesById(Long id) {
         return   patientActivityService.getActivities(id);
-
-
     }
+
+    public FlagPatientDto getPatientMeta(Long personId) {
+        Long personIdd = personRepository.findById(personId).orElseThrow(() -> new RuntimeException("Person not found")).getId();
+        Long facilityId = currentUserOrganizationService.getCurrentUserOrganization();
+        Optional<Integer> patientFlagsParams = patientFlagRepository.getPatientFlagsParameter(facilityId);
+        Integer suppressionValue = patientFlagsParams.orElse(null);
+        FlagPatientDto getPa = artClinicalRepository.getPatientMetaData(personIdd, facilityId, suppressionValue);
+        return getPa;
+    }
+
 }
