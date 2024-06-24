@@ -233,6 +233,8 @@ const ChronicCare = (props) => {
     contraindications: "",
     eligibleForTPT: "",
     chestXrayResult:"",
+    isTbTestConfirmed:"",
+
     // treatementOutcome: "",
     //This is section for TB Treament Variable
     specimentCollectedStatus: "",
@@ -386,16 +388,50 @@ const ChronicCare = (props) => {
     setErrors({ ...temp, [e.target.name]: "" });
     setObservation({ ...observation, [e.target.name]: e.target.value });
   };
+
   //Validations of the forms
   const validate = () => {
-  
     // tpt.outComeOfIpt !== "" &&
     //   (temp.outcomeDate = tpt.date ? "" : "This field is required");
-
-      temp.dateOfObservation = observation.dateOfObservation
-        ? ""
-        : "This field is required";
-
+      temp.tbTreatment = tbObj.tbTreatment ? '' : "This field is required.";
+      if(tbObj.tbTreatment === "Yes"){
+        temp.tbTreatmentStartDate = tbObj.tbTreatmentStartDate ? '' : "This field is required.";
+        temp.completedTbTreatment = tbObj. completedTbTreatment ? '' : "This field is required.";
+      }
+    if(tbObj.completedTbTreatment === "Yes"){
+      temp.completionDate = tbObj.completionDate ? '' : "This field is required.";
+      temp.treatmentOutcome = tbObj.treatmentOutcome? '' : "This field is required.";
+    }
+    if(tbObj.tbTreatment === "No"){
+      temp.tbScreeningType = tbObj.tbScreeningType ? '' : "This field is required.";
+    }
+    if(tbObj.tbScreeningType !== '' && tbObj.tbScreeningType === 'Chest X-ray'){
+      temp.chestXray = tbObj.chestXray ? '' : "This field is required.";
+      temp.isTbTestConfirmed = tbObj.isTbTestConfirmed ? '' : "This field is required.";
+    }
+    if(tbObj.tbScreeningType !== '' && tbObj.tbScreeningType === 'Chest X-ray with CAD'){
+      temp.chestXrayResult = tbObj.chestXrayResult ? '' : "This field is required.";
+    }
+    if (tbObj.tbScreeningType === 'Chest X-ray with CAD' || tbObj.tbScreeningType === 'Chest X-ray without CAD') {
+      temp.chestXrayResult = tbObj.chestXrayResult ? '' : "This field is required.";
+    }
+    if (tbObj.tbScreeningType === 'Chest X-ray with CAD' || tbObj.tbScreeningType === 'Chest X-ray without CAD') {
+      temp.chestXrayResult = tbObj.chestXrayResult ? '' : "This field is required.";
+    }
+    if(tbObj.tbTreatment ==="No" && tbObj.outcome === "Presumptive TB" ){
+      temp.specimentCollectedStatus = tbObj.specimentCollectedStatus ? '' : "This field is required.";
+    }
+    if(tbObj.specimentCollectedStatus === "Yes"){
+      temp.specimentSent = tbObj.specimentSent ? '' : "This field is required.";
+      temp.dateSpecimenSent = tbObj.dateSpecimenSent ? '' : "This field is required.";
+    }
+    if (tbObj.tbScreeningType === 'Symptom screen (alone)') {
+      temp.coughing = tbObj.coughing ? '' : "This field is required.";
+      temp.fever = tbObj.fever ? '': "This field is required. ";
+      temp.nightSweats= tbObj.nightSweats ? '' : "This field is required.";
+      temp.losingWeight = tbObj.losingWeight ? '': "This field is required. ";
+    }
+    temp.dateOfObservation = observation.dateOfObservation ? "" : "This field is required";
     setErrors({
       ...temp,
     });
@@ -416,11 +452,11 @@ console.log(errors)
     e.preventDefault();
     setSaving(true);
 
-    if (tbObj.tbTreatment === "") {
-      showErrorMessage("TB & IPT Screening is not filled for patient");
-      setSaving(false);
-      return;
-    }
+    // if (tbObj.tbTreatment === "") {
+    //   showErrorMessage("TB & IPT Screening is not filled for patient");
+    //   setSaving(false);
+    //   return;
+    // }
 
     // Set up observation object
     observation.personId = patientObj.id;

@@ -91,6 +91,7 @@ const useStyles = makeStyles((theme) => ({
 
 const TBMonitoring = (props) => {
   const classes = useStyles();
+  let errors = props.errors
   //const [errors, setErrors] = useState({});
   const [adherence, setAdherence] = useState([]);
   const [tbTreatmentType, setTbTreatmentType] = useState([]);
@@ -172,6 +173,11 @@ const TBMonitoring = (props) => {
                         <option value="No">No</option>
                       </Input>
                     </InputGroup>
+                    {errors.completedTbTreatment !== "" ? (
+                        <span className={classes.error}>{errors.completedTbTreatment}</span>
+                    ) : (
+                        ""
+                    )}
                   </FormGroup>
                   
               </div>
@@ -197,6 +203,11 @@ const TBMonitoring = (props) => {
                           max={moment(new Date()).format("YYYY-MM-DD")}
                         ></Input>
                       </InputGroup>
+                      {errors.completionDate !== "" ? (
+                          <span className={classes.error}>{errors.completionDate}</span>
+                      ) : (
+                          ""
+                      )}
                     </FormGroup>
                    
                   </div>
@@ -223,6 +234,11 @@ const TBMonitoring = (props) => {
                             ))}
                           </Input>
                         </InputGroup>
+                        {errors.treatmentOutcome !== "" ? (
+                            <span className={classes.error}>{errors.treatmentOutcome}</span>
+                        ) : (
+                            ""
+                        )}
                       </FormGroup>
                      
                     </div>

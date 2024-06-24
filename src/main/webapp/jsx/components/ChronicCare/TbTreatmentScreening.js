@@ -93,6 +93,7 @@ const useStyles = makeStyles((theme) => ({
 
 const TbTreatmentScreening = (props) => {
   const classes = useStyles();
+  let errors = props.errors
   console.log("TB OB", props.tbObj)
   const [tbSpecimenType, setTbSpecimenType] = useState([]);
   const [tbDiagnosticTestType, setTbDiagnosticTestType] = useState([]);
@@ -180,6 +181,11 @@ const TbTreatmentScreening = (props) => {
                       <option value="No">No</option>
                     </Input>
                   </InputGroup>
+                  {errors.specimentCollectedStatus !== "" ? (
+                      <span className={classes.error}>{errors.specimentCollectedStatus}</span>
+                  ) : (
+                      ""
+                  )}
                 </FormGroup>
               </div>
               {props.tbObj.specimentCollectedStatus==='Yes' && (<>
@@ -201,6 +207,11 @@ const TbTreatmentScreening = (props) => {
                       <option value="No">No</option>
                     </Input>
                   </InputGroup>
+                  {errors.specimentSent !== "" ? (
+                      <span className={classes.error}>{errors.specimentSent}</span>
+                  ) : (
+                      ""
+                  )}
                 </FormGroup>
               </div>
                 
@@ -245,6 +256,11 @@ const TbTreatmentScreening = (props) => {
                      
                     />
                   </InputGroup>
+                  {errors.dateSpecimenSent !== "" ? (
+                      <span className={classes.error}>{errors.dateSpecimenSent}</span>
+                  ) : (
+                      ""
+                  )}
                 </FormGroup>
                 {/* )} */}
               </div>
@@ -307,7 +323,6 @@ const TbTreatmentScreening = (props) => {
                           {value.display}
                         </option>
                       ))}
-                      
                     </Input>
                   </InputGroup>
                 </FormGroup>

@@ -95,6 +95,7 @@ const useStyles = makeStyles((theme) => ({
 
 const TbScreening = (props) => {
   let age = props.patientObj.age;
+  let errors = props.errors
   const classes = useStyles();
   const [contraindicationDisplay, setcontraindicationDisplay] = useState(false);
   const [tbTreatmentType, setTbTreatmentType] = useState([]);
@@ -602,90 +603,177 @@ const TbScreening = (props) => {
   //
   // };
 
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   if (name === 'tbTreatment') {
+  //     props.setTbObj({
+  //       ...props.tbObj,
+  //       [name]: value,
+  //       tbTreatmentStartDate: '',
+  //       tbScreeningType: '',
+  //       completedTbTreatment:'',
+  //       specimentCollectedStatus: '',
+  //     });
+  //   } else if (name === 'tbScreeningType' || value === '' ) {
+  //     props.setTbObj({
+  //       ...props.tbObj,
+  //       [name]: value,
+  //       chestXray:'',
+  //       chestXrayResult:'',
+  //       isTbTestConfirmed:"",
+  //       fever:'',
+  //       nightSweats:'',
+  //       coughing:'',
+  //       losingWeight:'',
+  //     });
+  //   }
+  //   else if(name === 'specimentCollectedStatus' || value === ''){
+  //     props.setTbObj({
+  //       ...props.tbObj,
+  //       [name]: value,
+  //       specimentSent:'',
+  //       tbTestResult:'',
+  //       diagnosticTestDone:'',
+  //       dateSpecimenSent:'',
+  //       diagnosticTestType:''
+  //     });
+  //   }
+  //   else if(name === 'diagnosticTestDone' || value === ''){
+  //     props.setTbObj({
+  //       ...props.tbObj,
+  //       [name]: value,
+  //       dateOfDiagnosticTest:'',
+  //       diagnosticTestType:''
+  //     });
+  //   }
+  //   else if(name === 'diagnosticTestDone' || value === ''){
+  //     props.setTbObj({
+  //       ...props.tbObj,
+  //       [name]: value,
+  //       dateOfDiagnosticTest:'',
+  //       chestXrayResultTest:''
+  //     });
+  //   }
+  //   else if(name === 'diagnosticTestType' || value === ''){
+  //     props.setTbObj({
+  //       ...props.tbObj,
+  //       [name]: value,
+  //       chestXrayDone:'',
+  //       tbTestResult:'',
+  //       chestXrayResultTest:'',
+  //       tbEvaulationOutcome:''
+  //     });
+  //   }
+  //
+  //   else if(name === 'chestXrayResultTest' || value === ''){
+  //     props.setTbObj({
+  //       ...props.tbObj,
+  //       [name]: value,
+  //       tbType:'',
+  //       tbTreatmentStarted:''
+  //     });
+  //   }
+  //   // TB MONITORING COMPONENT FIELDS UPDATE ON STATE CHNAGES
+  //   else if(name === 'completedTbTreatment' || value === ''){
+  //     props.setTbObj({
+  //       ...props.tbObj,
+  //       [name]: value,
+  //       completionDate:'',
+  //       treatmentOutcome:'',
+  //       treatmentCompletionStatus:'',
+  //     });
+  //   }
+  //   // Validate the field and remove the error message if the field is filled
+  //   if(value){
+  //     let tempErrors = {...errors};
+  //     tempErrors[name] = "";
+  //     props.setErrors(tempErrors)
+  //   }
+  //   else {
+  //     props.setTbObj({ ...props.tbObj, [name]: value });
+  //   }
+  // };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    // Define the common update object
+    let updateObj = {
+      ...props.tbObj,
+      [name]: value,
+    };
+
+    // Handle specific fields and their related state resets
     if (name === 'tbTreatment') {
-      props.setTbObj({
-        ...props.tbObj,
-        [name]: value,
+      updateObj = {
+        ...updateObj,
         tbTreatmentStartDate: '',
         tbScreeningType: '',
-        completedTbTreatment:'',
+        completedTbTreatment: '',
         specimentCollectedStatus: '',
-      });
-    } else if (name === 'tbScreeningType' || value === '' ) {
-      props.setTbObj({
-        ...props.tbObj,
-        [name]: value,
-        chestXray:'',
-        chestXrayResult:'',
-        isTbTestConfirmed:"",
-        fever:'',
-        nightSweats:'',
-        coughing:'',
-        losingWeight:'',
-      });
-    }
-    else if(name === 'specimentCollectedStatus' || value === ''){
-      props.setTbObj({
-        ...props.tbObj,
-        [name]: value,
-        specimentSent:'',
-        tbTestResult:'',
-        diagnosticTestDone:'',
-        dateSpecimenSent:'',
-        diagnosticTestType:''
-      });
-    }
-    else if(name === 'diagnosticTestDone' || value === ''){
-      props.setTbObj({
-        ...props.tbObj,
-        [name]: value,
-        dateOfDiagnosticTest:'',
-        diagnosticTestType:''
-      });
-    }
-    else if(name === 'diagnosticTestDone' || value === ''){
-      props.setTbObj({
-        ...props.tbObj,
-        [name]: value,
-        dateOfDiagnosticTest:'',
-        chestXrayResultTest:''
-      });
-    }
-    else if(name === 'diagnosticTestType' || value === ''){
-      props.setTbObj({
-        ...props.tbObj,
-        [name]: value,
-        chestXrayDone:'',
-        tbTestResult:'',
-        chestXrayResultTest:'',
-        tbEvaulationOutcome:''
-      });
+      };
+    } else if (name === 'tbScreeningType' || value === '') {
+      updateObj = {
+        ...updateObj,
+        chestXray: '',
+        chestXrayResult: '',
+        isTbTestConfirmed: '',
+        fever: '',
+        nightSweats: '',
+        coughing: '',
+        losingWeight: '',
+      };
+    } else if (name === 'specimentCollectedStatus' || value === '') {
+      updateObj = {
+        ...updateObj,
+        specimentSent: '',
+        tbTestResult: '',
+        diagnosticTestDone: '',
+        dateSpecimenSent: '',
+        diagnosticTestType: '',
+      };
+    } else if (name === 'diagnosticTestDone' || value === '') {
+      updateObj = {
+        ...updateObj,
+        dateOfDiagnosticTest: '',
+        diagnosticTestType: '',
+      };
+    } else if (name === 'diagnosticTestType' || value === '') {
+      updateObj = {
+        ...updateObj,
+        chestXrayDone: '',
+        tbTestResult: '',
+        chestXrayResultTest: '',
+        tbEvaulationOutcome: '',
+      };
+    } else if (name === 'chestXrayResultTest' || value === '') {
+      updateObj = {
+        ...updateObj,
+        tbType: '',
+        tbTreatmentStarted: '',
+      };
+    } else if (name === 'completedTbTreatment' || value === '') {
+      updateObj = {
+        ...updateObj,
+        completionDate: '',
+        treatmentOutcome: '',
+        treatmentCompletionStatus: '',
+      };
     }
 
-    else if(name === 'chestXrayResultTest' || value === ''){
-      props.setTbObj({
-        ...props.tbObj,
-        [name]: value,
-        tbType:'',
-        tbTreatmentStarted:''
-      });
-    }
-    // TB MONITORING COMPONENT FIELDS UPDATE ON STATE CHNAGES
-    else if(name === 'completedTbTreatment' || value === ''){
-      props.setTbObj({
-        ...props.tbObj,
-        [name]: value,
-        completionDate:'',
-        treatmentOutcome:'',
-        treatmentCompletionStatus:'',
-      });
-    }
-    else {
-      props.setTbObj({ ...props.tbObj, [name]: value });
+    // Set the updated state
+    props.setTbObj(updateObj);
+
+    // Validate the field and remove the error message if the field is filled
+    if (value) {
+      let tempErrors = { ...props.errors };
+      tempErrors[name] = '';
+      props.setErrors(tempErrors);
+    } else {
+      props.setTbObj(updateObj);
     }
   };
+
 
   // RESET:TB Diagnosis and Treatment Enrolment on outcome changes
   useEffect(() => {
@@ -707,6 +795,7 @@ const TbScreening = (props) => {
        // tbTreatmentStartDate:''
      })
   },[props.tbObj.outcome])
+
 
 
   // RESET: Clinically evalauted on changes in  specimen sent and tbEvaulationOutcome
@@ -767,6 +856,11 @@ const TbScreening = (props) => {
                       <option value="No">No</option>
                     </Input>
                   </InputGroup>
+                  {errors.tbTreatment !== "" ? (
+                      <span className={classes.error}>{errors.tbTreatment}</span>
+                  ) : (
+                      ""
+                  )}
                 </FormGroup>
               </div>
               {props.tbObj.tbTreatment === "Yes" && (
@@ -846,6 +940,11 @@ const TbScreening = (props) => {
                           ))}
                         </Input>
                       </InputGroup>
+                      {errors.tbScreeningType !== "" ? (
+                          <span className={classes.error}>{errors.tbScreeningType}</span>
+                      ) : (
+                          ""
+                      )}
                     </FormGroup>
                   </div>
 
@@ -872,6 +971,9 @@ const TbScreening = (props) => {
                           ))}
                           </Input>
                         </InputGroup>
+                        {errors.chestXrayResult && (
+                            <span style={{ color: "red" }}>{errors.chestXrayResult}</span>
+                        )}
                       </FormGroup>
                     )} 
                   
@@ -947,6 +1049,9 @@ const TbScreening = (props) => {
                               <option value="No">No</option>
                             </Input>
                           </InputGroup>
+                          {errors.coughing && (
+                              <span style={{ color: "red" }}>{errors.coughing}</span>
+                          )}
                         </FormGroup>
                       </div>
 
@@ -970,6 +1075,9 @@ const TbScreening = (props) => {
                               <option value="No">No</option>
                             </Input>
                           </InputGroup>
+                          {errors.fever && (
+                            <span style={{ color: "red" }}>{errors.fever}</span>
+                        )}
                         </FormGroup>
                       </div>
 
@@ -994,6 +1102,9 @@ const TbScreening = (props) => {
                               <option value="No">No</option>
                             </Input>
                           </InputGroup>
+                          {errors.nightSweats && (
+                              <span style={{ color: "red" }}>{errors.nightSweats}</span>
+                          )}
                         </FormGroup>
                       </div>
 
@@ -1017,6 +1128,9 @@ const TbScreening = (props) => {
                               <option value="No">No</option>
                             </Input>
                           </InputGroup>
+                          {errors.losingWeight && (
+                              <span style={{ color: "red" }}>{errors.losingWeight}</span>
+                          )}
                         </FormGroup>
                       </div>
                       {props.tbObj.tbScreeningType ===
@@ -1102,6 +1216,11 @@ const TbScreening = (props) => {
                               </option>
                             </Input>
                           </InputGroup>
+                          {errors.chestXray !== "" ? (
+                              <span className={classes.error}>{errors.chestXray}</span>
+                          ) : (
+                              ""
+                          )}
                         </FormGroup>
                       </div>
 
@@ -1125,6 +1244,11 @@ const TbScreening = (props) => {
                               <option value="No">No</option>
                             </Input>
                           </InputGroup>
+                          {errors.isTbTestConfirmed !== "" ? (
+                              <span className={classes.error}>{errors.isTbTestConfirmed}</span>
+                          ) : (
+                              ""
+                          )}
                         </FormGroup>
                       </div>
                     </>
@@ -1162,14 +1286,14 @@ const TbScreening = (props) => {
           {props.tbObj.outcome === "Presumptive TB" && (<>
             <hr/>
             <br />
-            <TbTreatmentScreening tbObj={props.tbObj} handleInputChange={handleInputChange}/>
+            <TbTreatmentScreening  errors={errors}  tbObj={props.tbObj} handleInputChange={handleInputChange}/>
             </>)}
            
             <br/>
             {props.tbObj.tbTreatment === "Yes" && (<>
             <hr/>
             <br />
-            <TbMonitoring tbObj={props.tbObj} handleInputChange={handleInputChange}/>
+            <TbMonitoring errors={errors} tbObj={props.tbObj} handleInputChange={handleInputChange}/>
             </>)}
            
             <br/>
