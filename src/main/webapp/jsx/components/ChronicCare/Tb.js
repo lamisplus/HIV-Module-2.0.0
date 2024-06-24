@@ -658,7 +658,9 @@ const TbScreening = (props) => {
         ...props.tbObj,
         [name]: value,
         chestXrayDone:'',
-        chestXrayResultTest:''
+        tbTestResult:'',
+        chestXrayResultTest:'',
+        tbEvaulationOutcome:''
       });
     }
 
