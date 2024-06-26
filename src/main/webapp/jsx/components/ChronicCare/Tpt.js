@@ -95,6 +95,7 @@ const TPT = (props) => {
   const [adherence, setAdherence] = useState([]);
   const [tbTreatmentType, setTbTreatmentType] = useState([]);
     const [tbTreatmentOutCome, setTbTreatmentOutCome] = useState([]);
+  const [contraindicationsState, setContraindicationsState] = useState("No");
   
     const TB_TREATMENT_TYPE = () => {
       axios
@@ -162,6 +163,65 @@ const TPT = (props) => {
   //   props.tpt.treatmentOutcome, props.tpt.treatmentCompletionStatus,
   //   props.tpt.everCompletedTpt, props.tpt.contractionForTpt  ]);
 
+  // useEffect(() => {
+  //   if (props.tpt.everCompletedTpt === "Yes") {
+  //     props.setTpt({
+  //       ...props.tpt,
+  //       eligibilityTpt: "No",
+  //       tptPreventionOutcome: "TPT Completed",
+  //     });
+  //   } else if (props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt === 'Yes') {
+  //     props.setTpt({
+  //       ...props.tpt,
+  //       eligibilityTpt: "No",
+  //       tptPreventionOutcome: "Currently on TPT",
+  //     });
+  //   } else if ((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt === 'No' &&
+  //       (props.tpt.liverSymptoms === "Yes" || props.tpt.neurologicSymptoms === 'Yes' || props.tpt.chronicAlcohol === 'Yes' || props.tpt.rash === 'Yes'))) {
+  //     props.setTpt({
+  //       ...props.tpt,
+  //       eligibilityTpt: "No",
+  //       tptPreventionOutcome: "",
+  //     });
+  //   } else if ((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt === 'No' &&
+  //       (props.tpt.liverSymptoms === "No" && props.tpt.neurologicSymptoms === 'No' && props.tpt.chronicAlcohol === 'No' && props.tpt.rash === 'No'))) {
+  //     if (props.tpt.contractionForTpt === 'Yes') {
+  //       props.setTpt({
+  //         ...props.tpt,
+  //         eligibilityTpt: "No",
+  //         tptPreventionOutcome: "",
+  //       });
+  //     } else if (props.tpt.contractionForTpt === 'No') {
+  //       props.setTpt({
+  //         ...props.tpt,
+  //         eligibilityTpt: "Yes",
+  //         tptPreventionOutcome: "",
+  //       });
+  //     }
+  //   } else {
+  //     if (props.tpt.contractionForTpt === 'Yes') {
+  //       props.setTpt({
+  //         ...props.tpt,
+  //         eligibilityTpt: "No",
+  //         tptPreventionOutcome: "",
+  //       });
+  //     } else if (props.tpt.contractionForTpt === 'No') {
+  //       props.setTpt({
+  //         ...props.tpt,
+  //         eligibilityTpt: "Yes",
+  //         tptPreventionOutcome: "",
+  //       });
+  //     }
+  //   }
+  // }, [
+  //   props.tpt.eligibilityTpt, props.tpt.tptPreventionOutcome, props.tpt.tbTreatment,
+  //   props.tpt.currentlyOnTpt, props.tpt.liverSymptoms, props.tpt.neurologicSymptoms,
+  //   props.tpt.chronicAlcohol, props.tpt.rash, props.tpt.endedTpt,
+  //   props.tpt.treatmentOutcome, props.tpt.treatmentCompletionStatus,
+  //   props.tpt.everCompletedTpt, props.tpt.contractionForTpt
+  // ]);
+
+
   useEffect(() => {
     if (props.tpt.everCompletedTpt === "Yes") {
       props.setTpt({
@@ -175,51 +235,26 @@ const TPT = (props) => {
         eligibilityTpt: "No",
         tptPreventionOutcome: "Currently on TPT",
       });
-    } else if ((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt === 'No' &&
-        (props.tpt.liverSymptoms === "Yes" || props.tpt.neurologicSymptoms === 'Yes' || props.tpt.chronicAlcohol === 'Yes' || props.tpt.rash === 'Yes'))) {
+    } else {
+      const contraindications = [
+        props.tpt.liverSymptoms === "Yes",
+        props.tpt.neurologicSymptoms === 'Yes',
+        props.tpt.chronicAlcohol === 'Yes',
+        props.tpt.rash === 'Yes',
+      ];
+      const hasContraindication = contraindications.some((contraindication) => contraindication);
+      setContraindicationsState(hasContraindication ? "Yes" : "No");
       props.setTpt({
         ...props.tpt,
-        eligibilityTpt: "No",
+        eligibilityTpt: hasContraindication ? "No" : "Yes",
         tptPreventionOutcome: "",
       });
-    } else if ((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt === 'No' &&
-        (props.tpt.liverSymptoms === "No" && props.tpt.neurologicSymptoms === 'No' && props.tpt.chronicAlcohol === 'No' && props.tpt.rash === 'No'))) {
-      if (props.tpt.contractionForTpt === 'Yes') {
-        props.setTpt({
-          ...props.tpt,
-          eligibilityTpt: "No",
-          tptPreventionOutcome: "",
-        });
-      } else if (props.tpt.contractionForTpt === 'No') {
-        props.setTpt({
-          ...props.tpt,
-          eligibilityTpt: "Yes",
-          tptPreventionOutcome: "",
-        });
-      }
-    } else {
-      if (props.tpt.contractionForTpt === 'Yes') {
-        props.setTpt({
-          ...props.tpt,
-          eligibilityTpt: "No",
-          tptPreventionOutcome: "",
-        });
-      } else if (props.tpt.contractionForTpt === 'No') {
-        props.setTpt({
-          ...props.tpt,
-          eligibilityTpt: "Yes",
-          tptPreventionOutcome: "",
-        });
-      }
     }
-  }, [
-    props.tpt.eligibilityTpt, props.tpt.tptPreventionOutcome, props.tpt.tbTreatment,
+  }, [props.tpt.eligibilityTpt, props.tpt.tptPreventionOutcome, props.tpt.tbTreatment,
     props.tpt.currentlyOnTpt, props.tpt.liverSymptoms, props.tpt.neurologicSymptoms,
     props.tpt.chronicAlcohol, props.tpt.rash, props.tpt.endedTpt,
     props.tpt.treatmentOutcome, props.tpt.treatmentCompletionStatus,
-    props.tpt.everCompletedTpt, props.tpt.contractionForTpt
-  ]);
-
+    props.tpt.everCompletedTpt, props.tpt.contractionForTpt]);
 
 
   //Get list of CLINIC_VISIT_LEVEL_OF_ADHERENCE
@@ -255,14 +290,18 @@ const TPT = (props) => {
         completionDate: '',
         completedTbTreatment:'',
         treatmentOutcome: '',
+        everCompletedTpt :""
       });
     }
-    else if(name === 'everCompletedTpt'){
+    else if(name === 'everCompletedTpt' || value === ''){
       if(value === "Yes"){
         props.setTpt({
           ...props.tpt,
           [name]: value,
           currentlyOnTpt:'',
+          eligibilityTpt:"",
+          tptPreventionOutcome:"",
+
         });
       }
       else {
@@ -299,7 +338,46 @@ const TPT = (props) => {
         ...props.tpt,
         [name]: value,
         outComeOfIpt: "",
-        dateTptEnded: ""
+        dateTptEnded: "",
+        tbSideEffect:"",
+      });
+    }
+    else if(name === 'tbSideEffect' || value === '' ){
+      props.setTpt({
+        ...props.tpt,
+        [name]: value,
+        giUpsetEffect:"",
+        hepatotoxicityEffect:"",
+        neurologicSymptomsEffect:"",
+        giUpsetEffectSeverity:""
+      });
+    }
+    else if(name === 'giUpsetEffect' || value === '' ){
+      props.setTpt({
+        ...props.tpt,
+        [name]: value,
+        giUpsetEffectSeverity:""
+      });
+    }
+    else if(name === 'neurologicSymptomsEffect' || value === '' ){
+      props.setTpt({
+        ...props.tpt,
+        [name]: value,
+        neurologicSymptomsEffectSeverity:''
+      });
+    }
+    else if(name === 'hepatotoxicityEffect' || value === '' ){
+      props.setTpt({
+        ...props.tpt,
+        [name]: value,
+        hepatotoxicityEffectSeverity:''
+      });
+    }
+    else if(name === 'hypersensitivityReactionEffect' || value === '' ){
+      props.setTpt({
+        ...props.tpt,
+        [name]: value,
+        hypersensitivityReactionEffectSeverity:''
       });
     }
     else{
@@ -315,125 +393,127 @@ const TPT = (props) => {
           <form>
             <div className="row">
               
-              <div className="form-group mb-3 col-md-6">
-                  <FormGroup>
-                    <Label>
-                      Have you completed TB Treatment?{" "}
-                      <span style={{ color: "red" }}> *</span>
-                    </Label>
-                    <InputGroup>
-                      <Input
-                        type="select"
-                        name="tbTreatment"
-                        id="tbTreatment"
-                        onChange={handleTpt}
-                        value={props.tpt.tbTreatment}
-                        disabled={props.action === "view" ? true : false}
-                      >
-                        <option value="">Select</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
-                      </Input>
-                    </InputGroup>
-                  </FormGroup>
-                  {props.errors.tbTreatment !== "" ? (
-                    <span className={classes.error}>
-                      {props.errors.tbTreatment}
-                    </span>
-                  ) : (
-                    ""
-                  )}
-              </div>
-              {props.tpt.tbTreatment === "Yes"  && (
-                <>
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>
-                        TB Treatment Completion Date{" "}
-                        <span style={{ color: "red" }}> *</span>
-                      </Label>
-                      <InputGroup>
-                        <Input
-                          type="date"
-                          name="completionDate"
-                          id="completionDate"
-                          onChange={handleTpt}
-                          value={props.tpt.completionDate}
-                          // min={props.encounterDate}
-                          disabled={
-                            props.action === "view" ? true : false
-                          }
-                          max={moment(new Date()).format("YYYY-MM-DD")}
-                        ></Input>
-                      </InputGroup>
-                    </FormGroup>
-                    {props.errors.completionDate !== "" ? (
-                      <span className={classes.error}>
-                        {props.errors.completionDate}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                  <div className="form-group mb-3 col-md-6">
-                      <FormGroup>
-                        <Label>
-                          Treatment Outcome{" "}
-                          <span style={{ color: "red" }}> *</span>
-                        </Label>
-                        <InputGroup>
-                          <Input
-                            type="select"
-                            name="treatmentOutcome"
-                            id="treatmentOutcome"
-                            onChange={handleTpt}
-                            value={props.tpt.treatmentOutcome}
-                            disabled={props.action === "view" ? true : false}
-                          >
-                            <option value="">Select</option>
-                            {tbTreatmentOutCome.map((value) => (
-                              <option key={value.id} value={value.display}>
-                                {value.display}
-                              </option>
-                            ))}
-                          </Input>
-                        </InputGroup>
-                      </FormGroup>
-                      {props.errors.treatmentOutcome !== "" ? (
-                        <span className={classes.error}>
-                          {props.errors.treatmentOutcome}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  <div className="form-group mb-3 col-md-6">
-                    <FormGroup>
-                      <Label>TB Treatment Completion Status</Label>
-                      <InputGroup>
-                        <Input
-                          type="text"
-                          name="treatmentCompletionStatus"
-                          id="treatmentCompletionStatus"
-                          onChange={handleTpt}
-                          disabled
-                          value={(props.tpt.treatmentOutcome==='Cured' || props.tpt.treatmentOutcome==='Treatment completed')?"Treatment success" : ""}
-                        >
-                          
-                          
-                        </Input>
-                      </InputGroup>
-                    </FormGroup>
-                    {props.errors.treatmentCompletionStatus !== "" ? (
-                      <span className={classes.error}>
-                        {props.errors.treatmentCompletionStatus}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                </>
-              )}
+              {/*<div className="form-group mb-3 col-md-6">*/}
+              {/*    <FormGroup>*/}
+              {/*      <Label>*/}
+              {/*        Have you completed TB Treatment?{" "}*/}
+              {/*        <span style={{ color: "red" }}> *</span>*/}
+              {/*      </Label>*/}
+              {/*      <InputGroup>*/}
+              {/*        <Input*/}
+              {/*          type="select"*/}
+              {/*          name="tbTreatment"*/}
+              {/*          id="tbTreatment"*/}
+              {/*          onChange={handleTpt}*/}
+              {/*          value={props.tpt.tbTreatment}*/}
+              {/*          disabled={props.action === "view" ? true : false}*/}
+              {/*        >*/}
+              {/*          <option value="">Select</option>*/}
+              {/*          <option value="Yes">Yes</option>*/}
+              {/*          <option value="No">No</option>*/}
+              {/*        </Input>*/}
+              {/*      </InputGroup>*/}
+              {/*    </FormGroup>*/}
+              {/*    {props.errors.tbTreatment !== "" ? (*/}
+              {/*      <span className={classes.error}>*/}
+              {/*        {props.errors.tbTreatment}*/}
+              {/*      </span>*/}
+              {/*    ) : (*/}
+              {/*      ""*/}
+              {/*    )}*/}
+              {/*</div>*/}
+              {/*{props.tpt.tbTreatment === "Yes"  && (*/}
+              {/*  <>*/}
+              {/*    <div className="form-group mb-3 col-md-6">*/}
+              {/*      <FormGroup>*/}
+              {/*        <Label>*/}
+              {/*          TB Treatment Completion Date{" "}*/}
+              {/*          <span style={{ color: "red" }}> *</span>*/}
+              {/*        </Label>*/}
+              {/*        <InputGroup>*/}
+              {/*          <Input*/}
+              {/*            type="date"*/}
+              {/*            name="completionDate"*/}
+              {/*            id="completionDate"*/}
+              {/*            onChange={handleTpt}*/}
+              {/*            value={props.tpt.completionDate}*/}
+              {/*            // min={props.encounterDate}*/}
+              {/*            disabled={*/}
+              {/*              props.action === "view" ? true : false*/}
+              {/*            }*/}
+              {/*            max={moment(new Date()).format("YYYY-MM-DD")}*/}
+              {/*          ></Input>*/}
+              {/*        </InputGroup>*/}
+              {/*      </FormGroup>*/}
+              {/*      {props.errors.completionDate !== "" ? (*/}
+              {/*        <span className={classes.error}>*/}
+              {/*          {props.errors.completionDate}*/}
+              {/*        </span>*/}
+              {/*      ) : (*/}
+              {/*        ""*/}
+              {/*      )}*/}
+              {/*    </div>*/}
+              {/*    <div className="form-group mb-3 col-md-6">*/}
+              {/*        <FormGroup>*/}
+              {/*          <Label>*/}
+              {/*            Treatment Outcome{" "}*/}
+              {/*            <span style={{ color: "red" }}> *</span>*/}
+              {/*          </Label>*/}
+              {/*          <InputGroup>*/}
+              {/*            <Input*/}
+              {/*              type="select"*/}
+              {/*              name="treatmentOutcome"*/}
+              {/*              id="treatmentOutcome"*/}
+              {/*              onChange={handleTpt}*/}
+              {/*              value={props.tpt.treatmentOutcome}*/}
+              {/*              disabled={props.action === "view" ? true : false}*/}
+              {/*            >*/}
+              {/*              <option value="">Select</option>*/}
+              {/*              {tbTreatmentOutCome.map((value) => (*/}
+              {/*                <option key={value.id} value={value.display}>*/}
+              {/*                  {value.display}*/}
+              {/*                </option>*/}
+              {/*              ))}*/}
+              {/*            </Input>*/}
+              {/*          </InputGroup>*/}
+              {/*        </FormGroup>*/}
+              {/*        {props.errors.treatmentOutcome !== "" ? (*/}
+              {/*          <span className={classes.error}>*/}
+              {/*            {props.errors.treatmentOutcome}*/}
+              {/*          </span>*/}
+              {/*        ) : (*/}
+              {/*          ""*/}
+              {/*        )}*/}
+              {/*      </div>*/}
+              {/*    {( props.tpt.treatmentOutcome==='Cured' || props.tpt.treatmentOutcome==='Treatment completed')*/}
+              {/*        && <div className="form-group mb-3 col-md-6">*/}
+              {/*      <FormGroup>*/}
+              {/*        <Label>TB Treatment Completion Status</Label>*/}
+              {/*        <InputGroup>*/}
+              {/*          <Input*/}
+              {/*            type="text"*/}
+              {/*            name="treatmentCompletionStatus"*/}
+              {/*            id="treatmentCompletionStatus"*/}
+              {/*            onChange={handleTpt}*/}
+              {/*            disabled*/}
+              {/*            value={(props.tpt.treatmentOutcome==='Cured' || props.tpt.treatmentOutcome==='Treatment completed')?"Treatment success" : ""}*/}
+              {/*          >*/}
+              {/*            */}
+              {/*            */}
+              {/*          </Input>*/}
+              {/*        </InputGroup>*/}
+              {/*      </FormGroup>*/}
+              {/*      {props.errors.treatmentCompletionStatus !== "" ? (*/}
+              {/*        <span className={classes.error}>*/}
+              {/*          {props.errors.treatmentCompletionStatus}*/}
+              {/*        </span>*/}
+              {/*      ) : (*/}
+              {/*        ""*/}
+              {/*      )}*/}
+              {/*    </div>*/}
+              {/*    }*/}
+              {/*  </>*/}
+              {/*)}*/}
               {props.tpt.tbTreatment === "Yes" && (
                   <>
                     {/* <div className="form-group mb-3 col-md-6">
@@ -664,7 +744,7 @@ const TPT = (props) => {
                       id="contractionForTpt"
                       onChange={handleTpt}
                       value={props.tpt.contractionForTpt}
-                      
+                      disabled
                     >
                       <option value="">Select</option>
                       <option value="Yes">Yes</option>
@@ -921,49 +1001,255 @@ const TPT = (props) => {
                 </FormGroup>
               </div>
               {props.tpt.endedTpt ==='Yes' && (<>
-              <div className="form-group mb-3 col-md-6">
-                <FormGroup>
-                  <Label>Outcome of IPT</Label>
-                  <InputGroup>
-                    <Input
-                      type="select"
-                      name="outComeOfIpt"
-                      id="outComeOfIpt"
-                      onChange={handleTpt}
-                      value={props.tpt.outComeOfIpt}
-                      disabled={props.action === "view" ? true : false}
-                    >
-                      <option value="">Select</option>
-                      <option value="IPT Completed">TPT Completed</option>
-                      <option value="Developed active TB">
-                        Developed active TB
-                      </option>
-                      <option value="Died">Died </option>
-                      <option value="Transferred out">Transferred out </option>
-                      <option value="Stopped IPT">Stopped IPT</option>
-                      <option value="Lost to follow up">
-                        Lost to follow up(IIT)
-                      </option>
-                    </Input>
-                  </InputGroup>
-                </FormGroup>
-              </div>
-              <div className="form-group mb-3 col-md-6">
-                <FormGroup>
-                  <Label>Date TPT Ended </Label>
-                  <InputGroup>
-                    <Input
-                      type="date"
-                      name="dateTptEnded"
-                      id="dateTptEnded"
-                      onChange={handleTpt}
-                      value={props.tpt.dateTptEnded}
-                      disabled={props.action === "view" ? true : false}
-                    ></Input>
-                  </InputGroup>
-                </FormGroup>
-              </div>
+                {/*<div className="form-group mb-3 col-md-6">*/}
+                {/*  <FormGroup>*/}
+                {/*    <Label>Outcome of IPT</Label>*/}
+                {/*    <InputGroup>*/}
+                {/*      <Input*/}
+                {/*          type="select"*/}
+                {/*          name="outComeOfIpt"*/}
+                {/*          id="outComeOfIpt"*/}
+                {/*          onChange={handleTpt}*/}
+                {/*          value={props.tpt.outComeOfIpt}*/}
+                {/*          disabled={props.action === "view" ? true : false}*/}
+                {/*      >*/}
+                {/*        <option value="">Select</option>*/}
+                {/*        <option value="Yes">Yes</option>*/}
+                {/*        <option value="No">No</option>*/}
+                {/*      </Input>*/}
+                {/*    </InputGroup>*/}
+                {/*  </FormGroup>*/}
+                {/*</div>*/}
+
+                <div className="form-group mb-3 col-md-6">
+                  <FormGroup>
+                    <Label>Outcome of IPT</Label>
+                    <InputGroup>
+                      <Input
+                          type="select"
+                          name="outComeOfIpt"
+                          id="outComeOfIpt"
+                          onChange={handleTpt}
+                          value={props.tpt.outComeOfIpt}
+                          disabled={props.action === "view" ? true : false}
+                      >
+                        <option value="">Select</option>
+                        <option value="Treatment completed">Treatment completed</option>
+                        <option value="IIT">IIT</option>
+                        <option value="Stopped TPT">Stopped TPT</option>
+                        <option value="Developed TB">Developed TB</option>
+                        <option value="Died">Died</option>
+                      </Input>
+                    </InputGroup>
+                  </FormGroup>
+                </div>
+                <div className="form-group mb-3 col-md-6">
+                  <FormGroup>
+                    <Label>Date TPT Ended </Label>
+                    <InputGroup>
+                      <Input
+                          type="date"
+                          name="dateTptEnded"
+                          id="dateTptEnded"
+                          onChange={handleTpt}
+                          value={props.tpt.dateTptEnded}
+                          disabled={props.action === "view" ? true : false}
+                      ></Input>
+                    </InputGroup>
+                  </FormGroup>
+                </div>
               </>)}
+
+              {props.tpt.endedTpt === 'No' && (
+                  <div className="form-group mb-3 col-md-6">
+                    <FormGroup>
+                      <Label>Any side effects ?</Label>
+                      <InputGroup>
+                        <Input
+                            type="select"
+                            name="tbSideEffect"
+                            id="tbSideEffect"
+                            value={props.tpt.tbSideEffect}
+                            onChange={handleTpt}
+                            disabled={props.action === "view" ? true : false}
+                        >
+                          <option value="">Select</option>
+                          <option value="Yes">Yes</option>
+                          <option value="No">No</option>
+                        </Input>
+                      </InputGroup>
+                    </FormGroup>
+                  </div>
+              )}
+
+              {props.tpt.tbSideEffect === 'Yes' && (
+                  <>
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label>GI Upset (Nausea, Vomiting, Abdominal pain)</Label>
+                        <InputGroup>
+                          <Input
+                              type="select"
+                              name="giUpsetEffect"
+                              id="giUpsetEffect"
+                              onChange={handleTpt}
+                              value={props.tpt.giUpsetEffect}
+                              disabled={props.action === "view" ? true : false}
+                          >
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                          </Input>
+                        </InputGroup>
+                      </FormGroup>
+                    </div>
+                      {props.tpt.giUpsetEffect === 'Yes' && (
+                          <div className="form-group mb-3 col-md-6">
+                          <FormGroup>
+                            <Label>Severity of side effect(GI Upset)</Label>
+                            <InputGroup>
+                              <Input
+                                  type="select"
+                                  name="giUpsetEffectSeverity"
+                                  id="giUpsetEffectSeverity"
+                                  value={props.tpt.giUpsetEffectSeverity}
+                                  onChange={handleTpt}
+                                  disabled={props.action === "view" ? true : false}
+                              >
+                                <option value="">Select</option>
+                                <option value="Mild">Mild</option>
+                                <option value="Moderate">Moderate</option>
+                                <option value="Severe">Severe</option>
+                              </Input>
+                            </InputGroup>
+                          </FormGroup>
+                          </div>
+                      )}
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                      <Label>Hepatotoxicity (Irritability, yellowish urine and eyes)</Label>
+                        <InputGroup>
+                          <Input
+                              type="select"
+                              name="hepatotoxicityEffect"
+                              id="hepatotoxicityEffect"
+                              onChange={handleTpt}
+                              value={props.tpt.hepatotoxicityEffect}
+                              disabled={props.action === "view" ? true : false}
+                          >
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                          </Input>
+                        </InputGroup>
+                      </FormGroup>
+                    </div>
+                    {props.tpt.hepatotoxicityEffect === 'Yes' && (
+                        <div className="form-group mb-3 col-md-6">
+                          <FormGroup>
+                            <Label>Severity of side effect (Hepatotoxicity)</Label>
+                            <InputGroup>
+                              <Input
+                                  type="select"
+                                  name="hepatotoxicityEffectSeverity"
+                                  id="hepatotoxicityEffectSeverity"
+                                  value={props.tpt.hepatotoxicityEffectSeverity}
+                                  onChange={handleTpt}
+                                  disabled={props.action === "view" ? true : false}
+                              >
+                                <option value="">Select</option>
+                                <option value="Mild">Mild</option>
+                                <option value="Moderate">Moderate</option>
+                                <option value="Severe">Severe</option>
+                              </Input>
+                            </InputGroup>
+                          </FormGroup>
+                        </div>
+                    )}
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label> Neurologic Symptoms (Numbness, tingling, paresthesias) </Label>
+                        <InputGroup>
+                          <Input
+                              type="select"
+                              name="neurologicSymptomsEffect"
+                              id="neurologicSymptomsEffect"
+                              onChange={handleTpt}
+                              value={props.tpt.neurologicSymptomsEffect}
+                              disabled={props.action === "view" ? true : false}
+                          >
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                          </Input>
+                        </InputGroup>
+                      </FormGroup>
+                    </div>
+                    {props.tpt.neurologicSymptomsEffect === 'Yes' && (
+                        <div className="form-group mb-3 col-md-6">
+                          <FormGroup>
+                            <Label>Severity of side effect(Neurologic Symptoms)</Label>
+                            <InputGroup>
+                              <Input
+                                  type="select"
+                                  name="neurologicSymptomsEffectSeverity"
+                                  id="neurologicSymptomsEffectSeverity"
+                                  value={props.tpt.neurologicSymptomsEffectSeverity}
+                                  onChange={handleTpt}
+                                  disabled={props.action === "view" ? true : false}
+                              >
+                                <option value="">Select</option>
+                                <option value="Mild">Mild</option>
+                                <option value="Moderate">Moderate</option>
+                                <option value="Severe">Severe</option>
+                              </Input>
+                            </InputGroup>
+                          </FormGroup>
+                        </div>
+                    )}
+                    <div className="form-group mb-3 col-md-6">
+                      <FormGroup>
+                        <Label> Hypersensitivity reaction (Skin Rash) </Label>
+                        <InputGroup>
+                          <Input
+                              type="select"
+                              name="hypersensitivityReactionEffect"
+                              id="hypersensitivityReactionEffect"
+                              onChange={handleTpt}
+                              value={props.tpt.hypersensitivityReactionEffect}
+                              disabled={props.action === "view" ? true : false}
+                          >
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                          </Input>
+                        </InputGroup>
+                      </FormGroup>
+                    </div>
+                    {props.tpt.hypersensitivityReactionEffect === 'Yes' && (
+                        <div className="form-group mb-3 col-md-6">
+                          <FormGroup>
+                            <Label>Severity of side effect(Hypersensitivity)</Label>
+                            <InputGroup>
+                              <Input
+                                  type="select"
+                                  name="hypersensitivityReactionEffectSeverity"
+                                  id="hypersensitivityReactionEffectSeverity"
+                                  value={props.tpt.hypersensitivityReactionEffectSeverity}
+                                  onChange={handleTpt}
+                                  disabled={props.action === "view" ? true : false}
+                              >
+                                <option value="">Select</option>
+                                <option value="Mild">Mild</option>
+                                <option value="Moderate">Moderate</option>
+                                <option value="Severe">Severe</option>
+                              </Input>
+                            </InputGroup>
+                          </FormGroup>
+                        </div>
+                    )}
+                  </>
+              )}
             </div>
           </form>
         </CardBody>

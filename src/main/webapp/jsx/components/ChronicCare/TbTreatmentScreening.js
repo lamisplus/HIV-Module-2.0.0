@@ -237,11 +237,16 @@ const TbTreatmentScreening = (props) => {
                       ))}
                     </Input>
                   </InputGroup>
+                  {errors.specimenType !== "" ? (
+                      <span className={classes.error}>{errors.specimenType}</span>
+                  ) : (
+                      ""
+                  )}
                 </FormGroup>
                 </div>
                 </>)}
               {/* To Be Reviewed */}
-              {props.tbObj.specimentCollectedStatus==='Yes' && (<>
+              {props.tbObj.specimentSent==='Yes' && (<>
               <div className="form-group mb-3 col-md-6">
                 <FormGroup>
                   <Label>Date Specimen Was Sent</Label>
@@ -252,6 +257,8 @@ const TbTreatmentScreening = (props) => {
                       id="dateSpecimenSent"
                       value={props.tbObj.dateSpecimenSent}
                       onChange={props.handleInputChange}
+                      min={props.dateOfObservation}
+                      max={moment(new Date()).format("YYYY-MM-DD")}
                       // disabled={props.action === "view" ? true : false}
                      
                     />
@@ -283,6 +290,11 @@ const TbTreatmentScreening = (props) => {
                       <option value="No">No</option>
                     </Input>
                   </InputGroup>
+                  {errors.diagnosticTestDone !== "" ? (
+                      <span className={classes.error}>{errors.diagnosticTestDone}</span>
+                  ) : (
+                      ""
+                  )}
                 </FormGroup>
               </div>
               </>)}
@@ -297,11 +309,18 @@ const TbTreatmentScreening = (props) => {
                       id="dateOfDiagnosticTest"
                       onChange={props.handleInputChange}
                       value={props.tbObj.dateOfDiagnosticTest}
+                      min={props.tbObj.dateSpecimenSent}
+                      max={moment(new Date()).format("YYYY-MM-DD")}
                       disabled={props.action === "view" ? true : false}
                     >
                      
                     </Input>
                   </InputGroup>
+                  {errors.dateOfDiagnosticTest !== "" ? (
+                      <span className={classes.error}>{errors.dateOfDiagnosticTest}</span>
+                  ) : (
+                      ""
+                  )}
                 </FormGroup>
               </div>
               
@@ -325,6 +344,11 @@ const TbTreatmentScreening = (props) => {
                       ))}
                     </Input>
                   </InputGroup>
+                  {errors.diagnosticTestType !== "" ? (
+                      <span className={classes.error}>{errors.diagnosticTestType}</span>
+                  ) : (
+                      ""
+                  )}
                 </FormGroup>
               </div>
               </>)}
@@ -348,6 +372,11 @@ const TbTreatmentScreening = (props) => {
                       <option value="MTB trace RR indeterminate">MTB trace RR indeterminate</option>
                     </Input>
                   </InputGroup>
+                  {errors.tbTestResult !== "" ? (
+                      <span className={classes.error}>{errors.tbTestResult}</span>
+                  ) : (
+                      ""
+                  )}
                 </FormGroup>
               </div> 
               </>)}
@@ -372,6 +401,11 @@ const TbTreatmentScreening = (props) => {
                       <option value="MTB detected RIF&INH detected">MTB detected RIF&INH detected </option>
                     </Input>
                   </InputGroup>
+                  {errors.tbTestResult !== "" ? (
+                      <span className={classes.error}>{errors.tbTestResult}</span>
+                  ) : (
+                      ""
+                  )}
                 </FormGroup>
               </div>
               </>)}
@@ -393,6 +427,11 @@ const TbTreatmentScreening = (props) => {
                       <option value="Negative">Negative</option>
                     </Input>
                   </InputGroup>
+                  {errors.tbTestResult !== "" ? (
+                      <span className={classes.error}>{errors.tbTestResult}</span>
+                  ) : (
+                      ""
+                  )}
                 </FormGroup>
               </div>
               </>)}
@@ -420,6 +459,11 @@ const TbTreatmentScreening = (props) => {
                       <option value="No">No</option>
                     </Input>
                   </InputGroup>
+                  {errors.clinicallyEvaulated !== "" ? (
+                      <span className={classes.error}>{errors.clinicallyEvaulated}</span>
+                  ) : (
+                      ""
+                  )}
                 </FormGroup>
               </div>
                </>)}
@@ -429,8 +473,10 @@ const TbTreatmentScreening = (props) => {
               (props.tbObj.tbTestResult==='MTB not detected' ||
               props.tbObj.tbTestResult==='Negative')
 
-              ) && (<>
-              <div className="form-group mb-3 col-md-6">
+              ) && (
+                  <>
+                    { props.tbObj.clinicallyEvaulated === "Yes" &&
+                        <div className="form-group mb-3 col-md-6">
                 <FormGroup>
                   <Label>Chest X-Ray Done </Label>
                   <InputGroup>
@@ -447,13 +493,18 @@ const TbTreatmentScreening = (props) => {
                       <option value="No">No</option>
                     </Input>
                   </InputGroup>
+                  {errors.chestXrayDone !== "" ? (
+                      <span className={classes.error}>{errors.chestXrayDone}</span>
+                  ) : (
+                      ""
+                  )}
                 </FormGroup>
-              </div>
+              </div>}
               </>)}
               {props.tbObj.chestXrayDone==='Yes' && (<>
-              <div className="form-group mb-3 col-md-6">
-                <FormGroup>
-                  <Label>Chest X-ray Result Test </Label>
+                  <div className="form-group mb-3 col-md-6">
+                   <FormGroup>
+                  <Label>Chest X-ray Result </Label>
                   <InputGroup>
                     <Input
                       type="select"
@@ -472,10 +523,15 @@ const TbTreatmentScreening = (props) => {
                       
                     </Input>
                   </InputGroup>
+                  {errors.chestXrayResultTest !== "" ? (
+                      <span className={classes.error}>{errors.chestXrayResultTest}</span>
+                  ) : (
+                      ""
+                  )}
                 </FormGroup>
-              </div>
-              <div className="form-group mb-3 col-md-6">
-                <FormGroup>
+                </div>
+                 <div className="form-group mb-3 col-md-6">
+                  <FormGroup>
                   <Label>Date of Chest X-ray </Label>
                   <InputGroup>
                     <Input
@@ -484,13 +540,20 @@ const TbTreatmentScreening = (props) => {
                       id="dateOfChestXrayResultTestDone"
                       onChange={props.handleInputChange}
                       value={props.tbObj.dateOfChestXrayResultTestDone}
+                      min={props.tbObj.dateOfDiagnosticTest}
+                      max={moment(new Date()).format("YYYY-MM-DD")}
                       disabled={props.action === "view" ? true : false}
                     >
                      
                     </Input>
                   </InputGroup>
+                  {errors.dateOfDiagnosticTest !== "" ? (
+                      <span className={classes.error}>{errors.dateOfDiagnosticTest}</span>
+                  ) : (
+                      ""
+                  )}
                 </FormGroup>
-              </div>
+                </div>
               </>)}
               {(
                 props.tbObj.tbTestResult==='MTB detected RIF detected' ||
@@ -520,6 +583,11 @@ const TbTreatmentScreening = (props) => {
                       ))}
                     </Input>
                   </InputGroup>
+                  {errors.tbType !== "" ? (
+                      <span className={classes.error}>{errors.tbType}</span>
+                  ) : (
+                      ""
+                  )}
                 </FormGroup>
               </div>
               <div className="form-group mb-3 col-md-6">
@@ -539,6 +607,11 @@ const TbTreatmentScreening = (props) => {
                       <option value="No">No</option>
                     </Input>
                   </InputGroup>
+                  {errors.tbTreatmentStarted !== "" ? (
+                      <span className={classes.error}>{errors.tbTreatmentStarted}</span>
+                  ) : (
+                      ""
+                  )}
                 </FormGroup>
               </div>
              
@@ -557,6 +630,11 @@ const TbTreatmentScreening = (props) => {
                       
                     </Input>
                   </InputGroup>
+                  {errors.tbTreatmentStartDate !== "" ? (
+                      <span className={classes.error}>{errors.tbTreatmentStartDate}</span>
+                  ) : (
+                      ""
+                  )}
                 </FormGroup>
               </div>
               </>)}

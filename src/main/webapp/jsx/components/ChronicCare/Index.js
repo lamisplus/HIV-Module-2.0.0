@@ -209,7 +209,17 @@ const ChronicCare = (props) => {
     tptRegimen:"",
     endedTpt:"",
     dateOfTptCompleted:"",
-    dateTptEnded:""
+    dateTptEnded:"",
+    tbSideEffect:"",
+    giUpsetEffect:"",
+    hepatotoxicityEffect:"",
+    neurologicSymptomsEffect:"",
+    giUpsetEffectSeverity:"",
+    hypersensitivityReactionEffect:"",
+    hypersensitivityReactionEffectSeverity:"",
+    neurologicSymptomsEffectSeverity:"",
+    hepatotoxicityEffectSeverity:''
+
   });
   const [tbObj, setTbObj] = useState({
     //TB and IPT Screening Object
@@ -421,15 +431,57 @@ const ChronicCare = (props) => {
     if(tbObj.tbTreatment ==="No" && tbObj.outcome === "Presumptive TB" ){
       temp.specimentCollectedStatus = tbObj.specimentCollectedStatus ? '' : "This field is required.";
     }
-    if(tbObj.specimentCollectedStatus === "Yes"){
-      temp.specimentSent = tbObj.specimentSent ? '' : "This field is required.";
-      temp.dateSpecimenSent = tbObj.dateSpecimenSent ? '' : "This field is required.";
-    }
     if (tbObj.tbScreeningType === 'Symptom screen (alone)') {
       temp.coughing = tbObj.coughing ? '' : "This field is required.";
       temp.fever = tbObj.fever ? '': "This field is required. ";
       temp.nightSweats= tbObj.nightSweats ? '' : "This field is required.";
       temp.losingWeight = tbObj.losingWeight ? '': "This field is required. ";
+    }
+    if(tbObj.specimentCollectedStatus === "Yes"){
+      temp.specimentSent = tbObj.specimentSent ? '' : "This field is required.";
+    }
+    if(tbObj.specimentSent === "Yes"){
+      temp.dateSpecimenSent = tbObj.dateSpecimenSent ? '' : "This field is required.";
+      temp.specimenType = tbObj.specimenType ? '' : "This field is required.";
+      temp.diagnosticTestDone = tbObj.diagnosticTestDone ? '' : "This field is required.";
+    }
+    if(tbObj.diagnosticTestType !== ''){
+      temp.tbTestResult = tbObj.tbTestResult ? '' : "This field is required.";
+    }
+    if(tbObj.tbTestResult !== ''){
+      temp.tbTestResult = tbObj.tbTestResult ? '' : "This field is required.";
+    }
+    if(tbObj.diagnosticTestDone==='Yes'){
+      temp.dateOfDiagnosticTest = tbObj.dateOfDiagnosticTest ? '' : "This field is required.";
+      temp.diagnosticTestType = tbObj.diagnosticTestType ? '' : "This field is required.";
+    }
+    if((tbObj.diagnosticTestType==='GeneXpert'
+            || tbObj.diagnosticTestType==='Truenat'
+            || tbObj.diagnosticTestType==='Cobas'
+            || tbObj.diagnosticTestType==='TB-LAMP'
+            || tbObj.diagnosticTestType==='Smear Microscopy') &&
+        (tbObj.tbTestResult==='MTB not detected' ||
+            tbObj.tbTestResult==='Negative')
+
+    ){
+      temp.chestXrayDone = tbObj.chestXrayDone ? '' : "This field is required.";
+      temp.clinicallyEvaulated = tbObj.clinicallyEvaulated ? '' : "This field is required.";
+    }
+    if(tbObj.chestXrayDone==='Yes'){
+      temp.chestXrayResultTest = tbObj.chestXrayResultTest ? '' : "This field is required.";
+      temp.dateOfChestXrayResultTestDone = tbObj.dateOfChestXrayResultTestDone ? '' : "This field is required.";
+    }
+    if(
+        tbObj.tbTestResult==='MTB detected RIF detected' ||
+        tbObj.tbTestResult==='MTB detected RIF&INH detected' ||
+       tbObj.tbTestResult=== 'MTB detected RR detected' ||
+       tbObj.tbTestResult ==='MTB detected RR not detected' ||
+        tbObj.tbTestResult ==='MTB trace RR indeterminate' ||
+        tbObj.chestXrayResultTest ==='Suggestive of TB'
+    ){
+      temp.tbType = tbObj.tbType ? '' : "This field is required.";
+      temp.tbTreatmentStarted = tbObj.tbTreatmentStarted ? '' : "This field is required.";
+      temp.tbTreatmentStartDate = tbObj.tbTreatmentStartDate ? '' : "This field is required.";
     }
     temp.dateOfObservation = observation.dateOfObservation ? "" : "This field is required";
     setErrors({
@@ -712,7 +764,7 @@ console.log(errors)
                   }}
                 >
                   <h5 className="card-title" style={{ color: "#fff" }}>
-                  TB Prevention/Monitoring 
+                  TPT Prevention/Monitoring
                   </h5>
                   {showTpt === false ? (
                     <>
