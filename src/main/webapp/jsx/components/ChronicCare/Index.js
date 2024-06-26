@@ -218,7 +218,8 @@ const ChronicCare = (props) => {
     hypersensitivityReactionEffect:"",
     hypersensitivityReactionEffectSeverity:"",
     neurologicSymptomsEffectSeverity:"",
-    hepatotoxicityEffectSeverity:''
+    hepatotoxicityEffectSeverity:'',
+    enrolledOnTpt:""
 
   });
   const [tbObj, setTbObj] = useState({
@@ -267,7 +268,9 @@ const ChronicCare = (props) => {
     completionDate: "",
     treatmentCompletionStatus: "",
     completedTbTreatment: "",
-    dateOfChestXrayResultTestDone:""
+    dateOfChestXrayResultTestDone:"",
+    DateDiagnosticTestResultReceived:"",
+
   });
   const [observationObj, setObservationObj] = useState({
     //Predefine object for chronic care DTO
@@ -747,59 +750,114 @@ console.log(errors)
                     errors={errors}
                     encounterDate={observation.dateOfObservation}
                     patientObj={patientObj}
+                    setTpt={setTpt}
+                    tpt={tpt}
                   />
                 )}
               </div>
               {/* End TB & IPT  Screening  */}
               {/* TPT MONITORING */}
-              {tbObj.outcome!=='' && (<>
-                <div className="card">
-                <div
-                  className="card-header"
-                  style={{
-                    backgroundColor: "#014d88",
-                    color: "#fff",
-                    fontWeight: "bolder",
-                    borderRadius: "0.2rem",
-                  }}
-                >
-                  <h5 className="card-title" style={{ color: "#fff" }}>
-                  TPT Prevention/Monitoring
-                  </h5>
-                  {showTpt === false ? (
-                    <>
-                      <span
-                        className="float-end"
-                        style={{ cursor: "pointer" }}
-                        onClick={onClickTpt}
-                      >
-                        <FaPlus />
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <span
-                        className="float-end"
-                        style={{ cursor: "pointer" }}
-                        onClick={onClickTpt}
-                      >
-                        <FaAngleDown />
-                      </span>{" "}
-                    </>
-                  )}
-                </div>
-                {showTpt && (
-                  <Tpt
-                    setTpt={setTpt}
-                    tpt={tpt}
-                    setErrors={setErrors}
-                    errors={errors}
-                    encounterDate={observation.dateOfObservation}
-                    patientObj={patientObj}
-                  />
-                )}
-              </div>
-              </>)}
+              {/*{tbObj.outcome!=='' && (<>*/}
+              {/*  <div className="card">*/}
+              {/*  <div*/}
+              {/*    className="card-header"*/}
+              {/*    style={{*/}
+              {/*      backgroundColor: "#014d88",*/}
+              {/*      color: "#fff",*/}
+              {/*      fontWeight: "bolder",*/}
+              {/*      borderRadius: "0.2rem",*/}
+              {/*    }}*/}
+              {/*  >*/}
+              {/*    <h5 className="card-title" style={{ color: "#fff" }}>*/}
+              {/*    TPT Prevention/Monitoring*/}
+              {/*    </h5>*/}
+              {/*    {showTpt === false ? (*/}
+              {/*      <>*/}
+              {/*        <span*/}
+              {/*          className="float-end"*/}
+              {/*          style={{ cursor: "pointer" }}*/}
+              {/*          onClick={onClickTpt}*/}
+              {/*        >*/}
+              {/*          <FaPlus />*/}
+              {/*        </span>*/}
+              {/*      </>*/}
+              {/*    ) : (*/}
+              {/*      <>*/}
+              {/*        <span*/}
+              {/*          className="float-end"*/}
+              {/*          style={{ cursor: "pointer" }}*/}
+              {/*          onClick={onClickTpt}*/}
+              {/*        >*/}
+              {/*          <FaAngleDown />*/}
+              {/*        </span>{" "}*/}
+              {/*      </>*/}
+              {/*    )}*/}
+              {/*  </div>*/}
+              {/*  {showTpt && (*/}
+              {/*    <Tpt*/}
+              {/*      setTpt={setTpt}*/}
+              {/*      tpt={tpt}*/}
+              {/*      tbObj={tbObj}*/}
+              {/*      setTbObj={setTbObj}*/}
+              {/*      setErrors={setErrors}*/}
+              {/*      errors={errors}*/}
+              {/*      encounterDate={observation.dateOfObservation}*/}
+              {/*      patientObj={patientObj}*/}
+              {/*    />*/}
+              {/*  )}*/}
+              {/*</div>*/}
+              {/*</>)}*/}
+
+              {
+                  (tbObj.tbEvaulationOutcome === 'TB Not Diagnosed' ||
+                      tbObj.outcome === "Not Presumptive" ||
+                      (tbObj.status !== "" && tbObj.status === 'No signs or symptoms of TB')) && (
+                      <div className="card">
+                        <div
+                            className="card-header"
+                            style={{
+                              backgroundColor: "#014d88",
+                              color: "#fff",
+                              fontWeight: "bolder",
+                              borderRadius: "0.2rem",
+                            }}
+                        >
+                          <h5 className="card-title" style={{ color: "#fff" }}>
+                            TPT Prevention/Monitoring
+                          </h5>
+                          {showTpt === false ? (
+                              <span
+                                  className="float-end"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={onClickTpt}
+                              >
+            <FaPlus />
+          </span>
+                          ) : (
+                              <span
+                                  className="float-end"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={onClickTpt}
+                              >
+            <FaAngleDown />
+          </span>
+                          )}
+                        </div>
+                        {showTpt && (
+                            <Tpt
+                                setTpt={setTpt}
+                                tpt={tpt}
+                                tbObj={tbObj}
+                                setTbObj={setTbObj}
+                                setErrors={setErrors}
+                                errors={errors}
+                                encounterDate={observation.dateOfObservation}
+                                patientObj={patientObj}
+                            />
+                        )}
+                      </div>
+                  )
+              }
               
               {/* End TPT MONITORING */}
               {/* End Nutritional Status Assessment */}

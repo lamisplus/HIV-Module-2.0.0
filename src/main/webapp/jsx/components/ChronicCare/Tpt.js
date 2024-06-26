@@ -256,6 +256,13 @@ const TPT = (props) => {
     props.tpt.treatmentOutcome, props.tpt.treatmentCompletionStatus,
     props.tpt.everCompletedTpt, props.tpt.contractionForTpt]);
 
+  // set contraIndication
+  useEffect(() => {
+    props.setTpt({
+      ...props.tpt,
+       contractionForTpt: contraindicationsState
+    });
+  }, [contraindicationsState]);
 
   //Get list of CLINIC_VISIT_LEVEL_OF_ADHERENCE
   const CLINIC_VISIT_LEVEL_OF_ADHERENCE = () => {
@@ -290,7 +297,28 @@ const TPT = (props) => {
         completionDate: '',
         completedTbTreatment:'',
         treatmentOutcome: '',
-        everCompletedTpt :""
+        everCompletedTpt :"",
+        currentlyOnTpt:'',
+        eligibilityTpt:"",
+        tptPreventionOutcome:"",
+        dateOfTptCompleted:'',
+        hepatitisSymptoms: "",
+        liverSymptoms: "",
+        neurologicSymptoms: "",
+        rash:'',
+        contractionForTpt:'',
+        chronicAlcohol:'',
+        weight: "",
+        enrolledOnTpt: "",
+        outComeOfIpt: "",
+        dateTptEnded: "",
+        tbSideEffect:"",
+        giUpsetEffect:"",
+        hepatotoxicityEffect:"",
+        neurologicSymptomsEffect:"",
+        giUpsetEffectSeverity:"",
+        dateTptStarted: "",
+        tptRegimen: "",
       });
     }
     else if(name === 'everCompletedTpt' || value === ''){
@@ -301,7 +329,6 @@ const TPT = (props) => {
           currentlyOnTpt:'',
           eligibilityTpt:"",
           tptPreventionOutcome:"",
-
         });
       }
       else {
@@ -321,7 +348,7 @@ const TPT = (props) => {
         neurologicSymptoms: "",
         rash:'',
         contractionForTpt:'',
-        chronicAlcohol:''
+        chronicAlcohol:'',
       });
     }
     else if(name === 'contractionForTpt' || value === ''){
@@ -329,8 +356,8 @@ const TPT = (props) => {
         ...props.tpt,
         [name]: value,
         weight: "",
-        dateTptStarted: "",
-        tptRegimen: ""
+        enrolledOnTpt: ""
+
       });
     }
     else if(name === 'endedTpt' || value === ''){
@@ -378,6 +405,14 @@ const TPT = (props) => {
         ...props.tpt,
         [name]: value,
         hypersensitivityReactionEffectSeverity:''
+      });
+    }
+    else if(name === 'enrolledOnTpt' || value === ''){
+      props.setTpt({
+        ...props.tpt,
+        [name]: value,
+        dateTptStarted: "",
+        tptRegimen: ""
       });
     }
     else{
@@ -758,56 +793,75 @@ const TPT = (props) => {
                 
               </>)}
               {(props.tpt.contractionForTpt === "No" && props.tpt.everCompletedTpt==='No') && (<>
-              <div className="form-group mb-3 col-md-6">
-                <FormGroup>
-                  <Label>Weight</Label>
-                  <InputGroup>
-                    <Input
-                      type="text"
-                      name="weight"
-                      id="weight"
-                      onChange={handleTpt}
-                      value={props.tpt.weight}
-                      disabled={props.action === "view" ? true : false}
-                    ></Input>
-                  </InputGroup>
-                </FormGroup>
-              </div>
-              <div className="form-group mb-3 col-md-6">
-                <FormGroup>
-                  <Label>Date TPT started </Label>
-                  <InputGroup>
-                    <Input
-                      type="date"
-                      name="dateTptStarted"
-                      id="dateTptStarted"
-                      onChange={handleTpt}
-                      value={props.tpt.dateTptStarted}
-                      disabled={props.action === "view" ? true : false}
-                    ></Input>
-                  </InputGroup>
-                </FormGroup>
-              </div>
-              <div className="form-group mb-3 col-md-6">
-                <FormGroup>
-                  <Label>Type of TPT Regimen  </Label>
-                  <InputGroup>
-                  <Input
-                      type="select"
-                      name="tptRegimen"
-                      id="tptRegimen"
-                      onChange={handleTpt}
-                      value={props.tpt.tptRegimen}
-                      disabled={props.action === "view" ? true : false}
-                    >
-                      <option value="">Select</option>
-                      <option value="6H">6H</option>
-                      <option value="3HP">3HP </option>
-                      <option value="1HP">1HP </option>
-                    </Input>
-                  </InputGroup>
-                </FormGroup>
-              </div>
+                <div className="form-group mb-3 col-md-6">
+                  <FormGroup>
+                    <Label>Weight</Label>
+                    <InputGroup>
+                      <Input
+                          type="text"
+                          name="weight"
+                          id="weight"
+                          onChange={handleTpt}
+                          value={props.tpt.weight}
+                          disabled={props.action === "view" ? true : false}
+                      ></Input>
+                    </InputGroup>
+                  </FormGroup>
+                </div>
+                <div className="form-group mb-3 col-md-6">
+                  <FormGroup>
+                    <Label>Enrolled on TPT</Label>
+                    <InputGroup>
+                      <Input
+                          type="select"
+                          name="enrolledOnTpt"
+                          id="enrolledOnTpt"
+                          onChange={handleTpt}
+                          value={props.tpt.enrolledOnTpt}
+                          disabled={props.action === "view" ? true : false}
+                      >
+                        <option value="">Select</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                      </Input>
+                    </InputGroup>
+                  </FormGroup>
+                </div>
+                {props.tpt.enrolledOnTpt === "Yes" && <div className="form-group mb-3 col-md-6">
+                  <FormGroup>
+                    <Label>Date TPT started </Label>
+                    <InputGroup>
+                      <Input
+                          type="date"
+                          name="dateTptStarted"
+                          id="dateTptStarted"
+                          onChange={handleTpt}
+                          value={props.tpt.dateTptStarted}
+                          disabled={props.action === "view" ? true : false}
+                      ></Input>
+                    </InputGroup>
+                  </FormGroup>
+                </div>}
+                {props.tpt.enrolledOnTpt === "Yes" && <div className="form-group mb-3 col-md-6">
+                  <FormGroup>
+                    <Label>Type of TPT Regimen </Label>
+                    <InputGroup>
+                      <Input
+                          type="select"
+                          name="tptRegimen"
+                          id="tptRegimen"
+                          onChange={handleTpt}
+                          value={props.tpt.tptRegimen}
+                          disabled={props.action === "view" ? true : false}
+                      >
+                        <option value="">Select</option>
+                        <option value="6H">6H</option>
+                        <option value="3HP">3HP</option>
+                        <option value="1HP">1HP</option>
+                      </Input>
+                    </InputGroup>
+                  </FormGroup>
+                </div>}
               </>)}
               {/* <div className="form-group mb-3 col-md-6">
                 <FormGroup>

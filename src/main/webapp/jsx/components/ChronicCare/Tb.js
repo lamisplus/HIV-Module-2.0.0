@@ -109,6 +109,19 @@ const TbScreening = (props) => {
   //   props.tbObj.poorWeightGain === "No";
   //Above 14 years Old
   useEffect(() => {
+    if (
+        props.tbObj.tbTreatment === "Yes" &&
+        props.tbObj.tbScreeningType === "" &&
+        props.tbObj.chestXrayResult === ''
+
+    ) {
+      props.setTbObj({
+        ...props.tbObj,
+        outcome: "",
+        status: "Currently on TB treatment",
+        //eligibleForTPT: "",
+      });
+    }
     //First Logic 1 Solved
 
     if (
@@ -621,6 +634,7 @@ const TbScreening = (props) => {
       ...props.tbObj,
       [name]: value,
     };
+    let updatedTpt = { ...props.tpt, [name]: value }
 
     // Handle specific fields and their related state resets
     if (name === 'tbTreatment') {
@@ -633,6 +647,44 @@ const TbScreening = (props) => {
         outcome:'',
         status:'',
       };
+
+      updatedTpt = {
+        ...updatedTpt,
+        weight: "",
+        referredForServices: "",
+        adherence: "",
+        rash: "",
+
+        hepatitisSymptoms: "",
+        tbSymptoms: "",
+        resonForStoppingIpt: "",
+        outComeOfIpt: "",
+        everCompletedTpt:"",
+        eligibilityTpt:"",
+        tptPreventionOutcome:"",
+        currentlyOnTpt:"",
+        contractionForTpt:"",
+        liverSymptoms:"",
+        chronicAlcohol:"",
+        neurologicSymptoms:"",
+        dateTptStarted:"",
+        tptRegimen:"",
+        endedTpt:"",
+        dateOfTptCompleted:"",
+        dateTptEnded:"",
+        tbSideEffect:"",
+        giUpsetEffect:"",
+        hepatotoxicityEffect:"",
+        neurologicSymptomsEffect:"",
+        giUpsetEffectSeverity:"",
+        hypersensitivityReactionEffect:"",
+        hypersensitivityReactionEffectSeverity:"",
+        neurologicSymptomsEffectSeverity:"",
+        hepatotoxicityEffectSeverity:'',
+        enrolledOnTpt:"",
+      }
+
+
     } else if (name === 'tbScreeningType' || value === '') {
       updateObj = {
         ...updateObj,
@@ -646,18 +698,78 @@ const TbScreening = (props) => {
         outcome: '',
         status: '',
       };
-    } else if (name === 'specimentCollectedStatus' || value === '') {
+    }
+    else if( name === 'chestXrayResult' || value === ''){
+       updatedTpt = {
+         ...updatedTpt,
+         weight: "",
+         referredForServices: "",
+         adherence: "",
+         rash: "",
+         // neurologicSymptoms: "",g
+         hepatitisSymptoms: "",
+         tbSymptoms: "",
+         resonForStoppingIpt: "",
+         outComeOfIpt: "",
+         // tbTreatmentStartDate: "",
+
+         //TPT prevention
+         everCompletedTpt:"",
+         eligibilityTpt:"",
+         tptPreventionOutcome:"",
+         currentlyOnTpt:"",
+         contractionForTpt:"",
+         liverSymptoms:"",
+         chronicAlcohol:"",
+         neurologicSymptoms:"",
+         dateTptStarted:"",
+         tptRegimen:"",
+         endedTpt:"",
+         dateOfTptCompleted:"",
+         dateTptEnded:"",
+         tbSideEffect:"",
+         giUpsetEffect:"",
+         hepatotoxicityEffect:"",
+         neurologicSymptomsEffect:"",
+         giUpsetEffectSeverity:"",
+         hypersensitivityReactionEffect:"",
+         hypersensitivityReactionEffectSeverity:"",
+         neurologicSymptomsEffectSeverity:"",
+         hepatotoxicityEffectSeverity:'',
+         enrolledOnTpt:"",
+       }
+    }
+    else if (name === 'specimentCollectedStatus' || value === '') {
       updateObj = {
         ...updateObj,
-        specimentSent: '',
-        tbTestResult: '',
-        diagnosticTestType:"",
-        diagnosticTestDone: "",
-        // tbEvaulationOutcome:""
-        specimenType: ""
-        // diagnosticTestDone: '',
-        // dateSpecimenSent: '',
-        // diagnosticTestType: '',
+        // specimentSent: '',
+        // tbTestResult: '',
+        // diagnosticTestType:"",
+        // diagnosticTestDone: "",
+        // specimenType: "",
+        // DateDiagnosticTestResultReceived:"",
+        // dateOfChestXrayResultTestDone: '',
+        // dateSpecimenSent:"",
+        // chestXrayResultTest:"",
+        // tbType: '',
+        // tbTreatmentStarted: '',
+          specimentSent: '',
+          tbTestResult: '',
+          diagnosticTestType:"",
+          diagnosticTestDone: "",
+          specimenType: "",
+          DateDiagnosticTestResultReceived:"",
+          dateOfChestXrayResultTestDone: '',
+          chestXrayResultTest:"",
+          tbType: '',
+          tbTreatmentStarted: '',
+          dateOfDiagnosticTest: '',
+          chestXrayDone: '',
+          tbEvaulationOutcome: '',
+          clinicallyEvaulated:"",
+          completionDate: '',
+          treatmentOutcome: '',
+          treatmentCompletionStatus: ''
       };
     }
     else if (name === 'specimentSent' || value === '') {
@@ -670,12 +782,23 @@ const TbScreening = (props) => {
         chestXrayResultTest:"",
         tbType: '',
         tbTreatmentStarted: '',
+        dateOfChestXrayResultTestDone: '',
+        dateOfDiagnosticTest: '',
+        DateDiagnosticTestResultReceived:"",
+        chestXrayDone: '',
+        tbTestResult: '',
+        tbEvaulationOutcome: '',
+        clinicallyEvaulated:"",
+        completionDate: '',
+        treatmentOutcome: '',
+        treatmentCompletionStatus: '',
       };
     }else if (name === 'diagnosticTestDone' || value === '') {
       updateObj = {
         ...updateObj,
         dateOfDiagnosticTest: '',
         diagnosticTestType: '',
+        DateDiagnosticTestResultReceived:""
       };
     } else if (name === 'diagnosticTestType' || value === '') {
       updateObj = {
@@ -685,6 +808,12 @@ const TbScreening = (props) => {
         chestXrayResultTest: '',
         tbEvaulationOutcome: '',
       };
+    } else if (name === ' tbTestResult' || value === '') {
+        updateObj = {
+          ...updateObj,
+          chestXrayDone: '',
+          clinicallyEvaulated:""
+        };
     } else if (name === 'chestXrayResultTest' || value === '') {
       updateObj = {
         ...updateObj,
@@ -722,6 +851,7 @@ const TbScreening = (props) => {
 
     // Set the updated state
     props.setTbObj(updateObj);
+    props.setTpt(updatedTpt);
 
     // Validate the field and remove the error message if the field is filled
     if (value) {
