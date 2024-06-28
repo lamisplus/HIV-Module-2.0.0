@@ -854,23 +854,49 @@ const Pharmacy = (props) => {
       setObjValues({ ...objValues, [e.target.name]: true });
     }
   };
+  // const handleFormChange = (index, event) => {
+  //   let data = [...regimenDrug];
+  //   data[index][event.target.name] = event.target.value;
+  //   data[index]["prescribed"] =
+  //     data[index]["frequency"] * data[index]["duration"];
+  //   setRegimenDrug(data);
+  // };
+  //Validations of the forms
+  // const validateDrugDispense = () => {
+  //   temp.dispense = regimenDrug[0].dispense ? "" : "This field is required";
+  //   temp.frequency = regimenDrug[0].frequency ? "" : "This field is required";
+  //
+  //   setErrors({
+  //     ...temp,
+  //   });
+  //   return Object.values(temp).every((x) => x == "");
+  // };
+
   const handleFormChange = (index, event) => {
     let data = [...regimenDrug];
-    data[index][event.target.name] = event.target.value;
-    data[index]["prescribed"] =
-      data[index]["frequency"] * data[index]["duration"];
+    const prescribedQuantity = data[index]["frequency"] * data[index]["duration"];
+    if (event.target.name === "dispense" && event.target.value > prescribedQuantity) {
+      event.target.value = prescribedQuantity;
+      data[index][event.target.name] = prescribedQuantity;
+    } else {
+      data[index][event.target.name] = event.target.value;
+    }
+    data[index]["prescribed"] = prescribedQuantity;
     setRegimenDrug(data);
   };
-  //Validations of the forms
+
   const validateDrugDispense = () => {
     temp.dispense = regimenDrug[0].dispense ? "" : "This field is required";
     temp.frequency = regimenDrug[0].frequency ? "" : "This field is required";
-
+    if (regimenDrug[0].dispense > regimenDrug[0].prescribed) {
+      temp.dispense = "Dispensed quantity cannot be greater than prescribed quantity";
+    }
     setErrors({
       ...temp,
     });
     return Object.values(temp).every((x) => x == "");
   };
+
   const addDrug = (e) => {
     if (validateDrugDispense()) {
       setRegimenDrugList([...regimenDrugList, ...regimenDrug]);

@@ -912,7 +912,7 @@ const TbScreening = (props) => {
 
 
 
-  console.log("TB OBJECT IN TB", props.tbObj)
+  // console.log("TB OBJECT IN TB", props.tbObj)
 
 
   return (

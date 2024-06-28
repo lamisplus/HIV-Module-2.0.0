@@ -766,13 +766,27 @@ const Pharmacy = (props) => {
       setObjValues({ ...objValues, [e.target.name]: true });
     }
   };
+  // const handleFormChange = (index, event) => {
+  //   let data = [...regimenDrug];
+  //   data[index][event.target.name] = event.target.value;
+  //   data[index]["prescribed"] =
+  //     data[index]["frequency"] * data[index]["duration"];
+  //   setRegimenDrug(data);
+  // };
+
   const handleFormChange = (index, event) => {
     let data = [...regimenDrug];
-    data[index][event.target.name] = event.target.value;
-    data[index]["prescribed"] =
-      data[index]["frequency"] * data[index]["duration"];
+    const prescribedQuantity = data[index]["frequency"] * data[index]["duration"];
+    if (event.target.name === "dispense" && event.target.value > prescribedQuantity) {
+      event.target.value = prescribedQuantity;
+      data[index][event.target.name] = prescribedQuantity;
+    } else {
+      data[index][event.target.name] = event.target.value;
+    }
+    data[index]["prescribed"] = prescribedQuantity;
     setRegimenDrug(data);
   };
+
   const addDrug = (e) => {
     setRegimenDrugList([...regimenDrugList, ...regimenDrug]);
   };
