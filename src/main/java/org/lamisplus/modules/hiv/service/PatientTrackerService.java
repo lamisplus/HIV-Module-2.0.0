@@ -31,13 +31,18 @@ public class PatientTrackerService {
 	
 	public PatientTrackingDto createPatientTracker(PatientTrackingDto dto) {
 		PatientTracker patientTracker = mapDtoEntity(dto);
+		System.out.println("----------------------1111111111111111111111111111111111111111------------");
 		HIVStatusTrackerDto statusTracker = dto.getStatusTracker();
+		System.out.println("------------------------------I was able to get  -dto.getStatusTracker()--------------------");
 		if (statusTracker != null){
+			System.out.println("------------------------------222222222222---------------------");
 			HIVStatusTrackerDto statusDto = statusTrackerService.registerHIVStatusTracker(statusTracker);
+			System.out.println("------------------------------33333333333333333333---------------------");
 			HIVStatusTracker status = hivStatusTrackerRepository.findById(statusDto.getId()).orElseThrow(
 					() -> new EntityNotFoundException(HIVStatusTracker.class, "id", String.valueOf(statusDto.getId())));
 			patientTracker.setStatusTracker(status);
 		}
+		System.out.println("------------------------------4444444444444---------------------");
 		PatientTracker en = patientTrackerRepository.save(patientTracker);
 		Log.info("Emmanuel data patient tracker: {}", en);
 		return mapEntityDto(en);
@@ -88,6 +93,46 @@ public class PatientTrackerService {
 	}
 	
 	
+//	private PatientTrackingDto mapEntityDto(PatientTracker entity) {
+//		PatientTrackingDto patentTrackingDto = new PatientTrackingDto();
+//		patentTrackingDto.setDsdStatus(entity.getDsdStatus());
+//		patentTrackingDto.setDsdModel(entity.getDsdModel());
+//		patentTrackingDto.setReasonForTracking(entity.getReasonForTracking());
+//		patentTrackingDto.setCareInFacilityDiscountinued(entity.getCareInFacilityDiscountinued());
+//		patentTrackingDto.setReasonForDiscountinuation(entity.getReasonForDiscountinuation());
+//		patentTrackingDto.setCauseOfDeath(entity.getCauseOfDeath());
+//		patentTrackingDto.setDateOfDeath(entity.getDateOfDeath());
+//		patentTrackingDto.setReasonForLossToFollowUp(entity.getReasonForLossToFollowUp());
+//		patentTrackingDto.setReferredFor(entity.getReferredFor());
+//		patentTrackingDto.setReferredForOthers(entity.getReferredForOthers());
+//		patentTrackingDto.setReasonForTrackingOthers(entity.getReasonForTrackingOthers());
+//		patentTrackingDto.setCauseOfDeathOthers(entity.getCauseOfDeathOthers());
+//		patentTrackingDto.setReasonForLossToFollowUpOthers(entity.getReasonForLossToFollowUpOthers());
+//		patentTrackingDto.setAttempts(entity.getAttempts());
+//		patentTrackingDto.setDurationOnART(entity.getDurationOnART());
+//		patentTrackingDto.setDateLastAppointment(entity.getDateLastAppointment());
+//		patentTrackingDto.setDateReturnToCare(entity.getDateReturnToCare());
+//		patentTrackingDto.setDateOfDiscontinuation(entity.getDateOfDiscontinuation());
+//		patentTrackingDto.setDateMissedAppointment(entity.getDateMissedAppointment());
+//		patentTrackingDto.setFacilityId(entity.getFacilityId());
+//		patentTrackingDto.setPatientId(entity.getPerson().getId());
+//		patentTrackingDto.setDateOfObservation(entity.getDateOfObservation());
+////		HIVStatusTrackerDto statusTracker =
+////				statusTrackerService.convertEntityToDto(entity.getStatusTracker());
+////		patentTrackingDto.setStatusTracker(statusTracker);
+//		System.out.println("------------------------------I got to before checking for statusTracker---------------------");
+//		if(entity.getStatusTracker() != null) {
+//			HIVStatusTrackerDto statusTracker =
+//					statusTrackerService.convertEntityToDto(entity.getStatusTracker());
+//			patentTrackingDto.setStatusTracker(statusTracker);
+//		}
+//		entity.getPerson().getId();
+//		patentTrackingDto.setId(entity.getId());
+//		return patentTrackingDto;
+//
+//
+//	}
+
 	private PatientTrackingDto mapEntityDto(PatientTracker entity) {
 		PatientTrackingDto patentTrackingDto = new PatientTrackingDto();
 		patentTrackingDto.setDsdStatus(entity.getDsdStatus());
@@ -112,19 +157,17 @@ public class PatientTrackerService {
 		patentTrackingDto.setFacilityId(entity.getFacilityId());
 		patentTrackingDto.setPatientId(entity.getPerson().getId());
 		patentTrackingDto.setDateOfObservation(entity.getDateOfObservation());
-//		HIVStatusTrackerDto statusTracker =
-//				statusTrackerService.convertEntityToDto(entity.getStatusTracker());
-//		patentTrackingDto.setStatusTracker(statusTracker);
+
 		if(entity.getStatusTracker() != null) {
 			HIVStatusTrackerDto statusTracker =
 					statusTrackerService.convertEntityToDto(entity.getStatusTracker());
 			patentTrackingDto.setStatusTracker(statusTracker);
+		} else {
+			patentTrackingDto.setStatusTracker(null);
 		}
 		entity.getPerson().getId();
 		patentTrackingDto.setId(entity.getId());
 		return patentTrackingDto;
-		
-		
 	}
 	
 	private PatientTracker getPatientTrackerFromDto(PatientTrackingDto dto) {

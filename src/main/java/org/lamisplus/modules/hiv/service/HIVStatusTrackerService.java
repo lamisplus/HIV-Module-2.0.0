@@ -38,6 +38,9 @@ public class HIVStatusTrackerService {
     public static final String IIT = "IIT";
     public static final int TWENTY_NINE_DAYS = 29;
     public static final String ACTIVE_ON_TREATMENT = "Active on Treatment";
+    public static final String ART_TRANSFER_OUT = "ART Transfer Out";
+    public static final String ART_TRANSFER_IN = "ART Transfer In";
+
     private final HIVStatusTrackerRepository hivStatusTrackerRepository;
 
 
@@ -56,6 +59,7 @@ public class HIVStatusTrackerService {
 
 
     public HIVStatusTrackerDto registerHIVStatusTracker(HIVStatusTrackerDto hivStatusTrackerDto) {
+        System.out.println("------------------------------I got to registerHIVStatusTracker method---------------------");
         Long personId = hivStatusTrackerDto.getPersonId();
         Person existPerson = getPerson(personId);
         HIVStatusTracker hivStatusTracker = convertDtoToEntity(hivStatusTrackerDto);
@@ -152,7 +156,8 @@ public class HIVStatusTrackerService {
                 .getOneArtPharmaciesByPersonAndArchived(statusTracker.getPerson().getUuid(), 0);
 
         artPharmacy.ifPresent(p -> statusDate.set(p.getNextAppointment()));
-        List<String> staticStatus = Arrays.asList("Stopped Treatment", "Died (Confirmed)", "ART Transfer Out", "HIV_NEGATIVE");
+       System.out.println("+++++++++statusTracker.getHivStatus++++++==:"+ statusTracker.getHivStatus());
+        List<String> staticStatus = Arrays.asList("Stopped Treatment", "Died (Confirmed)", "ART Transfer Out", "HIV_NEGATIVE", "ART Transfer In" );
         if (staticStatus.contains(statusTracker.getHivStatus())) {
             if (statusTracker.getHivStatus().equalsIgnoreCase(HIV_NEGATIVE)) {
                 return new StatusDto(NOT_ENROLLED, statusTracker.getStatusDate());
@@ -167,6 +172,9 @@ public class HIVStatusTrackerService {
             }
             if (statusDate.get() != null && dateStatus != null && dateStatus.isBefore(LocalDate.now())) {
                 long days = ChronoUnit.DAYS.between(dateStatus, LocalDate.now());
+                if (statusTracker.getHivStatus().equalsIgnoreCase(ART_TRANSFER_IN)) {
+                    return new StatusDto(ART_TRANSFER_IN, statusTracker.getStatusDate());
+                }
                 if (days >= 29) {
                     return new StatusDto(IIT, dateStatus.plusDays(TWENTY_NINE_DAYS));
                 }

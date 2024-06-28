@@ -37,6 +37,8 @@ public class TreatmentTransferService {
     private final HIVStatusTrackerRepository hivStatusTrackerRepository;
     private final CurrentUserOrganizationService currentUserOrganizationService;
 
+
+
     public TransferPatientInfo getTransferPatientInfo(String patientUuid, Long facilityId) {
         TransferPatientInfo patient = observationRepository.getTransferPatientInfo(patientUuid, currentUserOrganizationService.getCurrentUserOrganization()).get();
         log.info("Transfer patient info: {}", patient);
@@ -102,6 +104,9 @@ public class TreatmentTransferService {
         HivEnrollmentDTO enrollment = hivEnrollmentService.getHivEnrollmentByPersonIdAndArchived(dto.getPatientId())
                 .orElseThrow(() -> new EntityNotFoundException(HivEnrollment.class, "personId", "" + dto.getPatientId()));
         enrollment.setStatusAtRegistrationId(codeSet.getId());
+        if(dto.getCurrentStatus().equalsIgnoreCase("ART Transfer Out")){
+            enrollment.setEntryPointId(21L);
+        }
         hivEnrollmentService.updateHivEnrollment(enrollment.getId(), enrollment);
     }
 
