@@ -286,7 +286,7 @@ const TPT = (props) => {
   // };
 
 
-  console.log("TPT OBJECT IN TPT COMPONENT", props.tpt)
+  // console.log("TPT OBJECT IN TPT COMPONENT", props.tpt)
 
   const handleTpt  = (e) => {
     const {name, value} = e.target;

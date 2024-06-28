@@ -124,7 +124,7 @@ const TBMonitoring = (props) => {
   }, []);
   // TPT Logic
   useEffect(() => {
-       console.log(props.tbObj) 
+       // console.log(props.tbObj)
 
   }, []);
  
