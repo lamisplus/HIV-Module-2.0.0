@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
 function SubMenu(props) {
   const [activeItem, setActiveItem] = useState("recent-history");
   const patientObj = props.patientObj;
+  console.log("PatientObj", props.patientObj )
   const [isOtzEnrollementDone, setIsOtzEnrollementDone] = useState(null);
   const [labResult, setLabResult] = useState(null);
   const patientCurrentStatus =
@@ -392,25 +393,33 @@ function SubMenu(props) {
                   History
                 </Menu.Item>
               </Menu>
+
             ) :
                   (
                <>
                  {
-                   patientObj && patientObj.currentStatus === "ART TRANSFER OUT" ? (
-                       <Menu size="tiny"  style={{
+                   patientObj && (patientObj.currentStatus === "DIED (CONFIRMED)" || patientObj.currentStatus === "ART TRANSFER OUT") ? (
+                       <Menu size="tiny" style={{
                          backgroundColor: "rgb(153, 46, 98)",
                          color: "#fff"
                        }} inverted>
                          <Menu.Item
-                             onClick={() => loadTransferForm(patientObj)}
-                             name="transfer"
-                             active={activeItem === "transfer"}
-                             title="Transfer"
+                             onClick={() => onClickHome()}
+                             name="home"
+                             active={activeItem === "recent-history"}
+                             title="Home"
                          >
-                           <Button  size='mini' style={{ backgroundColor: "green", color: '#fff', marginRight: '10px' }}>
-                             Activate
-                           </Button>
+                           Home
                          </Menu.Item>
+                         {patientObj.currentStatus === "DIED (CONFIRMED)" && (
+                             <Menu.Item
+                                 onClick={() => loadTrackingForm(patientObj)}
+                                 name="tracking"
+                                 active={activeItem === "tracking"}
+                                 title="Tracking Form"
+                             >
+                             </Menu.Item>
+                         )}
                          <Menu.Item
                              onClick={() => loadPatientHistory(patientObj)}
                              name="history"
@@ -419,6 +428,18 @@ function SubMenu(props) {
                          >
                            History
                          </Menu.Item>
+                         {patientObj.currentStatus === "ART TRANSFER OUT" && (
+                             <Menu.Item
+                                 onClick={() => loadTransferForm(patientObj)}
+                                 name="transfer"
+                                 active={activeItem === "transfer"}
+                                 title="Transfer"
+                             >
+                               <Button size='mini' style={{ backgroundColor: "green", color: '#fff', marginRight: '10px' }}>
+                                 Activate
+                               </Button>
+                             </Menu.Item>
+                         )}
                        </Menu>
                    ) : (
                        <Menu size="tiny" color={"black"} inverted>
@@ -432,6 +453,7 @@ function SubMenu(props) {
                            {" "}
                            Home
                          </Menu.Item>
+
                          {isPatientActive && (
                            <>
                              {!patientObj.clinicalEvaluation &&
