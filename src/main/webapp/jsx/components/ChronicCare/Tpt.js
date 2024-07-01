@@ -792,7 +792,7 @@ const TPT = (props) => {
                
                 
               </>)}
-              {(props.tpt.contractionForTpt === "No" && props.tpt.everCompletedTpt==='No') && (<>
+              {props.tpt.contractionForTpt === "No"&& (<>
                 <div className="form-group mb-3 col-md-6">
                   <FormGroup>
                     <Label>Weight</Label>
