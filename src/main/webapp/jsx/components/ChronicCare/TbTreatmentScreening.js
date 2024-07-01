@@ -497,7 +497,8 @@ const TbTreatmentScreening = (props) => {
                   (props.tbObj.tbTestResult==='MTB not detected' ||
                       props.tbObj.tbTestResult==='Negative')) || (props.tbObj.specimentSent || "").toLowerCase() === 'no'
 
-              )   && (<>
+              )   && (
+                  <>
                 <div className="form-group mb-3 col-md-6">
                   <FormGroup>
                     <Label>Clinically Evaluated </Label>
@@ -522,17 +523,20 @@ const TbTreatmentScreening = (props) => {
                     )}
                   </FormGroup>
                 </div>
-              </>)}
+
+                  </>
+
+              )}
 
               {/*{((props.tbObj.diagnosticTestType==='GeneXpert' || */}
               {/*props.tbObj.diagnosticTestType==='Truenat' || props.tbObj.diagnosticTestType==='Cobas' || props.tbObj.diagnosticTestType==='TB-LAMP' || props.tbObj.diagnosticTestType==='Smear Microscopy' || props.tbObj.diagnosticTestType==='LF-LAM') &&*/}
               {/*(props.tbObj.tbTestResult==='MTB not detected' ||*/}
               {/*props.tbObj.tbTestResult==='Negative' )*/}
 
-              {(((props.tbObj.diagnosticTestType==='GeneXpert' ||
-                          props.tbObj.diagnosticTestType==='Truenat' || props.tbObj.diagnosticTestType==='Cobas' || props.tbObj.diagnosticTestType==='TB-LAMP' || props.tbObj.diagnosticTestType==='Smear Microscopy' || ["LF-LAM"].includes(props.tbObj.diagnosticTestType)) &&
-                      (props.tbObj.tbTestResult==='MTB not detected' ||
-                          props.tbObj.tbTestResult==='Negative')) || (props.tbObj.specimentSent || "").toLowerCase() === 'no'
+              {(((props.tbObj.diagnosticTestType === 'GeneXpert' ||
+                          props.tbObj.diagnosticTestType === 'Truenat' || props.tbObj.diagnosticTestType === 'Cobas' || props.tbObj.diagnosticTestType === 'TB-LAMP' || props.tbObj.diagnosticTestType === 'Smear Microscopy' || ["LF-LAM"].includes(props.tbObj.diagnosticTestType)) &&
+                      (props.tbObj.tbTestResult === 'MTB not detected' ||
+                          props.tbObj.tbTestResult === 'Negative')) || (props.tbObj.specimentSent || "").toLowerCase() === 'no'
 
               ) && (
                   <>
@@ -560,7 +564,39 @@ const TbTreatmentScreening = (props) => {
                       ""
                   )}
                 </FormGroup>
-              </div>}
+              </div>
+                    }
+                    {
+                        props.tbObj?.clinicallyEvaulated === "Yes" &&
+                        props.tbObj?.specimentSent === 'No' &&
+                        props.tbObj?.chestXrayDone === "No"
+                        &&
+                        <div className="form-group mb-3 col-md-6">
+                          <FormGroup>
+                            <Label>Result of clinical evaluation </Label>
+                            <InputGroup>
+                              <Input
+                                  type="select"
+                                  name="resultOfClinicalEvaluation"
+                                  id="resultOfClinicalEvaluation"
+                                  onChange={props.handleInputChange}
+                                  value={props.tbObj.resultOfClinicalEvaluation}
+                                  disabled={props.action === "view" ? true : false}
+                              >
+                                <option value="">Select</option>
+                                <option value="Suggestive of TB">Suggestive of TB</option>
+                                <option value="Not suggestive of TB">Not suggestive of TB</option>
+                              </Input>
+                            </InputGroup>
+                            {/*{errors.clinicallyEvaulated !== "" ? (*/}
+                            {/*    <span className={classes.error}>{errors.clinicallyEvaulated}</span>*/}
+                            {/*) : (*/}
+                            {/*    ""*/}
+                            {/*)}*/}
+                          </FormGroup>
+                        </div>
+
+                    }
               </>)}
               {props.tbObj.chestXrayDone==='Yes' && (<>
                   <div className="form-group mb-3 col-md-6">
@@ -621,6 +657,8 @@ const TbTreatmentScreening = (props) => {
                 props.tbObj.tbTestResult=== 'MTB detected RR detected' ||
                 props.tbObj.tbTestResult ==='MTB detected RR not detected' ||
                 props.tbObj.tbTestResult ==='MTB trace RR indeterminate' ||
+                props.tbObj.tbTestResult ==='MTB detected INH detected' ||
+                  props.tbObj.tbTestResult === "MTB detected RIF/INH not detected" ||
                 props.tbObj.tbTestResult ==='Positive' ||
                 props.tbObj.chestXrayResultTest ==='Suggestive of TB'
                 )  && (<> 
@@ -675,29 +713,29 @@ const TbTreatmentScreening = (props) => {
                   )}
                 </FormGroup>
               </div>
-             
-              <div className="form-group mb-3 col-md-6">
-                <FormGroup>
-                  <Label>TB Treatment Start Date </Label>
-                  <InputGroup>
-                    <Input
-                      type="date"
-                      name="tbTreatmentStartDate"
-                      id="tbTreatmentStartDate"
-                      onChange={props.handleInputChange}
-                      value={props.tbObj.tbTreatmentStartDate}
-                      disabled={props.action === "view" ? true : false}
-                    >
-                      
-                    </Input>
-                  </InputGroup>
-                  {errors.tbTreatmentStartDate !== "" ? (
-                      <span className={classes.error}>{errors.tbTreatmentStartDate}</span>
-                  ) : (
-                      ""
-                  )}
-                </FormGroup>
-              </div>
+
+                {props.tbObj.tbTreatmentStarted === "Yes" && <div className="form-group mb-3 col-md-6">
+                  <FormGroup>
+                    <Label>TB Treatment Start Date </Label>
+                    <InputGroup>
+                      <Input
+                          type="date"
+                          name="tbTreatmentStartDate"
+                          id="tbTreatmentStartDate"
+                          onChange={props.handleInputChange}
+                          value={props.tbObj.tbTreatmentStartDate}
+                          disabled={props.action === "view" ? true : false}
+                      >
+
+                      </Input>
+                    </InputGroup>
+                    {errors.tbTreatmentStartDate !== "" ? (
+                        <span className={classes.error}>{errors.tbTreatmentStartDate}</span>
+                    ) : (
+                        ""
+                    )}
+                  </FormGroup>
+                </div>}
               </>)}
              
             </div>
@@ -707,7 +745,6 @@ const TbTreatmentScreening = (props) => {
                 TB Evaluation Outcome:<b>{" " + props.tbObj.tbEvaulationOutcome}</b>
                 </p>
               </>)}
-              
           </form>
         </CardBody>
       </Card>

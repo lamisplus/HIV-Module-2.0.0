@@ -144,12 +144,13 @@ const TBScreeningForm = (props) => {
       <div className="row">
         <div className="form-group mb-3 col-md-6">
           <FormGroup>
-            <Label>Patient TB Status #######</Label>
+            <Label>Patient TB Status</Label>
             <Input
               type="select"
               name="tbStatusId"
               id="tbStatusId"
-              value={props.tbObj.tbStatusId}
+              // value={props.tbObj.tbStatusId}
+                value={props.tbObj.careCardPatientTbStatus}
               onChange={handleInputChange}
               style={{ border: "1px solid #014D88", borderRadius: "0.25rem" }}
               required

@@ -160,7 +160,7 @@ const Tracking = (props) => {
         currentStatus: props.patientObj.currentStatus
     });
 
-    console.log("current status", patientCurrentStatus)
+    // console.log("current status", patientCurrentStatus)
 
     const [states1, setStates1] = useState([])
     const [lgas1, setLGAs1] = useState([])
@@ -207,7 +207,7 @@ const Tracking = (props) => {
                 .flat()
                 .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
             const isLastActivityArtTransferIn = lastActivity?.name === "ART Transfer In";
-            console.log("is last activity transfer in::::", isLastActivityArtTransferIn);
+            // console.log("is last activity transfer in::::", isLastActivityArtTransferIn);
         } catch (error) {
             toast.error("Fill DSD Form", {
                 position: toast.POSITION.TOP_RIGHT,
@@ -215,7 +215,7 @@ const Tracking = (props) => {
         }
     };
 
-    console.log("paylaod", payload)
+    // console.log("paylaod", payload)
     const loadStates1 = () => {
         axios.get(`${baseUrl}organisation-units/parent-organisation-units/1`, {
             headers: {
@@ -444,7 +444,7 @@ const Tracking = (props) => {
         setErrors({
             ...temp,
         });
-        console.log("temp", temp)
+        // console.log("temp", temp)
         return Object.values(temp).every((x) => x == "");
     };
 
@@ -465,8 +465,7 @@ const Tracking = (props) => {
             //     setSaving(false);
             //     return;
             // }
-            console.log("saving payload", payload)
-            toast.success("transfer successfull")
+            // console.log("saving payload", payload)
             postTransferForm(payload);
         } else {
             window.scroll(0, 0);

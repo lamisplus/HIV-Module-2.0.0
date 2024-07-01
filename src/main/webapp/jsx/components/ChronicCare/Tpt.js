@@ -619,7 +619,7 @@ const TPT = (props) => {
               <div className="form-group mb-3 col-md-6">
                 <FormGroup>
                   <Label>
-                  Ever completed a course of TPT {props.tpt.eligibilityTpt}
+                  Ever completed a course of TPT {" "}
                   </Label>
                   <InputGroup>
                     <Input

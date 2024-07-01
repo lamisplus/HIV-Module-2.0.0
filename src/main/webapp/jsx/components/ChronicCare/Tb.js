@@ -503,8 +503,7 @@ const TbScreening = (props) => {
     //   }
     // }
   
-  if ((props.tbObj.tbTestResult === "MTB not detected" ||
-      props.tbObj.tbTestResult === "MTB detected RR not detected")) {
+  if (props.tbObj.tbTestResult === "MTB not detected") {
       props.setTbObj({
         ...props.tbObj,
         tbEvaulationOutcome: "TB Not Diagnosed",
@@ -515,13 +514,13 @@ const TbScreening = (props) => {
           props.tbObj.tbTestResult === "MTB trace RR indeterminate" ||
           props.tbObj.tbTestResult === "MTB detected RIF/INH not detected" ||
           props.tbObj.tbTestResult === "MTB detected INH detected" ||
+           props.tbObj.tbTestResult === "MTB detected RR not detected" ||
           props.tbObj.tbTestResult === "MTB detected RIF&INH detected"
           ){
           props.setTbObj({
             ...props.tbObj,
             tbEvaulationOutcome: "TB Diagnosed",
           });
-        
     }
      if(props.tbObj.chestXrayResultTest==='Suggestive of TB'){
       props.setTbObj({
@@ -543,6 +542,54 @@ const TbScreening = (props) => {
       props.setTbObj({
         ...props.tbObj,
         tbEvaulationOutcome: "TB Not Diagnosed",
+      });
+    }
+
+    // #####################################################
+
+    if(props.tbObj?.specimentCollectedStatus.trim() === "Yes"
+        && props.tbObj?.specimentSent.trim() === 'No'
+        && props.tbObj?.clinicallyEvaulated === "Yes"
+        && props.tbObj?.chestXrayDone === "No"
+        && props.tbObj?.resultOfClinicalEvaluation ==="Suggestive of TB"){
+        props.setTbObj({
+            ...props.tbObj,
+          tbEvaulationOutcome: "TB Diagnosed"
+        });
+    }
+
+    if(props.tbObj?.specimentCollectedStatus.trim() === "Yes"
+        && props.tbObj?.specimentSent.trim() === 'No'
+        && props.tbObj?.clinicallyEvaulated === "Yes"
+        && props.tbObj?.chestXrayDone === "No"
+        && props.tbObj?.resultOfClinicalEvaluation === "Not suggestive of TB"){
+      props.setTbObj({
+        ...props.tbObj,
+        tbEvaulationOutcome: "TB Not Diagnosed"
+      });
+    }
+
+    if(props.tbObj?.specimentCollectedStatus.trim() === "Yes"
+        && props.tbObj?.specimentSent.trim() === 'No'
+        && props.tbObj?.clinicallyEvaulated === "Yes"
+        && props.tbObj?.chestXrayDone === "Yes"
+        && props.tbObj?.chestXrayResultTest === "Not suggestive of TB"
+    ){
+      props.setTbObj({
+        ...props.tbObj,
+        tbEvaulationOutcome: "TB Not Diagnosed"
+      });
+    }
+
+    if(props.tbObj?.specimentCollectedStatus.trim() === "Yes"
+        && props.tbObj?.specimentSent.trim() === 'No'
+        && props.tbObj?.clinicallyEvaulated === "Yes"
+        && props.tbObj?.chestXrayDone === "Yes"
+        && props.tbObj?.chestXrayResultTest === "Suggestive of TB"
+    ){
+      props.setTbObj({
+        ...props.tbObj,
+        tbEvaulationOutcome: "TB Diagnosed"
       });
     }
 
@@ -571,8 +618,12 @@ const TbScreening = (props) => {
     props.tbObj.tbEvaulationOutcome,
     props.tbObj.diagnosticTestType,
     props.tbObj.chestXrayResultTest,
-    props.tbObj?.diagnosticTestDone
+    props.tbObj.diagnosticTestDone,
 
+    props.tbObj.clinicallyEvaulated,
+    props.tbObj.specimentSent,
+    props.tbObj.resultOfClinicalEvaluation,
+    props.tbObj?.chestXrayDone,
   ]);
 
 
@@ -644,6 +695,9 @@ const TbScreening = (props) => {
         tbScreeningType: '',
         completedTbTreatment: '',
         specimentCollectedStatus: '',
+        diagnosticTestType:'',
+        tbEvaulationOutcome:'',
+        chestXrayResult:'',
         outcome:'',
         status:'',
       };
@@ -700,6 +754,13 @@ const TbScreening = (props) => {
       };
     }
     else if( name === 'chestXrayResult' || value === ''){
+      updateObj = {
+        ...updateObj,
+        completedTbTreatment: '',
+        specimentCollectedStatus: '',
+        // outcome:'',
+        // status:'',
+      };
        updatedTpt = {
          ...updatedTpt,
          weight: "",
@@ -742,17 +803,6 @@ const TbScreening = (props) => {
     else if (name === 'specimentCollectedStatus' || value === '') {
       updateObj = {
         ...updateObj,
-        // specimentSent: '',
-        // tbTestResult: '',
-        // diagnosticTestType:"",
-        // diagnosticTestDone: "",
-        // specimenType: "",
-        // DateDiagnosticTestResultReceived:"",
-        // dateOfChestXrayResultTestDone: '',
-        // dateSpecimenSent:"",
-        // chestXrayResultTest:"",
-        // tbType: '',
-        // tbTreatmentStarted: '',
           specimentSent: '',
           tbTestResult: '',
           diagnosticTestType:"",
@@ -825,6 +875,8 @@ const TbScreening = (props) => {
         ...updateObj,
         chestXrayResultTest: '',
         dateOfChestXrayResultTestDone: '',
+        resultOfClinicalEvaluation: '',
+        tbEvaulationOutcome:''
       };
     }
     else if (name === 'completedTbTreatment' || value === '') {
@@ -845,7 +897,7 @@ const TbScreening = (props) => {
       updateObj = {
         ...updateObj,
         dateOfChestXrayResultTestDone: '',
-        chestXrayResultTest:''
+        chestXrayResultTest:'',
       };
     }
 
@@ -1204,7 +1256,7 @@ const TbScreening = (props) => {
                           <div className="form-group mb-3 col-md-6">
                             <FormGroup>
                               <Label>
-                                Are you losing weight? (Unplanned weight loss)
+                                Are you losing weight? (Unexplained weight loss)
                                 <span style={{color: "red"}}> *</span>
                               </Label>
                               <InputGroup>

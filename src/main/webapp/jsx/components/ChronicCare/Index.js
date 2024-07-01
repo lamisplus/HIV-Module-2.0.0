@@ -270,6 +270,9 @@ const ChronicCare = (props) => {
     completedTbTreatment: "",
     dateOfChestXrayResultTestDone:"",
     DateDiagnosticTestResultReceived:"",
+    resultOfClinicalEvaluation:"",
+    careCardPatientTbStatus:""
+
 
   });
   const [observationObj, setObservationObj] = useState({
