@@ -53,8 +53,8 @@ public class ArtClinicVisitService {
 	private final HandleHIVVisitEncounter hivVisitEncounter;
 	
 	public ARTClinicVisitDto createArtClinicVisit(ARTClinicVisitDto artClinicVisitDto) {
-		log.info("payload to create card visit: " + artClinicVisitDto);
-		log.info("visit date: " + artClinicVisitDto.getVisitDate());
+//		log.info("payload to create card visit: " + artClinicVisitDto);
+//		log.info("visit date: " + artClinicVisitDto.getVisitDate());
 		Long hivEnrollmentId = artClinicVisitDto.getHivEnrollmentId();
 		HivEnrollment hivEnrollment = hivEnrollmentRepository
 				.findById(hivEnrollmentId)
