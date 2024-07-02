@@ -16,7 +16,8 @@ public interface TransferPatientInfo {
     LocalDate getDateEnrolledInTreatment();
     String getAdherenceLevel();
     String getCurrentWhoClinical();
-    Integer getCurrentCD4Count();
+//    Integer getCurrentCD4Count();
+    String getCurrentCD4Count();
     Integer getBaselineCD4();
     Double getViralLoad();
     String getCurrentRegimenLine();

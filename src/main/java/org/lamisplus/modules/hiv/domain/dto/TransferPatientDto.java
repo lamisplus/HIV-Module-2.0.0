@@ -30,7 +30,7 @@ public class TransferPatientDto {
     private String dateEnrolledInTreatment;
     private String adherenceLevel;
     private String currentWhoClinical;
-    private Integer currentCD4Count;
+    private String currentCD4Count;
     private Integer baselineCD4;
     private Integer viralLoad;
     private String currentRegimenLine;
