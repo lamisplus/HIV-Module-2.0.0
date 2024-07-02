@@ -242,7 +242,7 @@ const ClinicVisit = (props) => {
     fever: "",
     contactWithTBCase: "",
     lethergy: "",
-    tbStatusId: "",
+    // tbStatusId: "",
   });
   const [tests, setTests] = useState({
     comments: "",
@@ -995,8 +995,8 @@ const ClinicVisit = (props) => {
     temp.height = vital.height ? "" : "This field is required";
     temp.bodyWeight = vital.bodyWeight ? "" : "This field is required";
     //TB VALIDATION
-    temp.tbStatusId = tbObj.tbStatusId ? "" : "This field is required";
-
+    // temp.tbStatusId = tbObj.tbStatusId ? "" : "This field is required";
+    // temp.careCardPatientTbStatus = tbObj.careCardPatientTbStatus ? "" : "This field is required";
     setErrors({
       ...temp,
     });
@@ -1033,7 +1033,7 @@ const ClinicVisit = (props) => {
       objValues.hivEnrollmentId = getPatientObj.enrollment.id;
       objValues.opportunisticInfections = infectionList;
       objValues.tbScreen = tbObj;
-      objValues.tbStatus = tbObj.tbStatusId;
+      // objValues.tbStatus = tbObj.tbStatusId;
       objValues.viralLoadOrder = testOrderList;
       objValues.arvdrugsRegimen = arvDrugOrderList;
       objValues["vitalSignDto"] = vital;
@@ -1139,7 +1139,7 @@ const ClinicVisit = (props) => {
         fever: "",
         contactWithTBCase: "",
         lethergy: "",
-        tbStatusId: null,
+        // tbStatusId: null,
       },
       stiIds: "",
       stiTreated: "",
@@ -1184,7 +1184,7 @@ const ClinicVisit = (props) => {
       fever: "",
       contactWithTBCase: "",
       lethergy: "",
-      tbStatusId: null,
+      // tbStatusId: null,
     });
 
     setTests({

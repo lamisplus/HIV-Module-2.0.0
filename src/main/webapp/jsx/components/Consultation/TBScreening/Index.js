@@ -147,8 +147,8 @@ const TBScreeningForm = (props) => {
             <Label>Patient TB Status</Label>
             <Input
               type="select"
-              name="tbStatusId"
-              id="tbStatusId"
+              name="careCardPatientTbStatus"
+              id="careCardPatientTbStatus"
               // value={props.tbObj.tbStatusId}
                 value={props.tbObj.careCardPatientTbStatus}
               onChange={handleInputChange}
@@ -164,11 +164,11 @@ const TBScreeningForm = (props) => {
                 ))}
             </Input>
           </FormGroup>
-          {props.errors.tbStatusId !== "" ? (
-            <span className={classes.error}>{props.errors.tbStatusId}</span>
-          ) : (
-            ""
-          )}
+          {/*{props.errors.careCardPatientTbStatus !== "" ? (*/}
+          {/*  <span className={classes.error}>{props.errors.careCardPatientTbStatus}</span>*/}
+          {/*) : (*/}
+          {/*  ""*/}
+          {/*)}*/}
         </div>
         {/* <div className="form-group mb-3 col-md-6">
           <FormGroup>
