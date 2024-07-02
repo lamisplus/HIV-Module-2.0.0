@@ -41,7 +41,7 @@ public class TreatmentTransferService {
 
     public TransferPatientInfo getTransferPatientInfo(String patientUuid, Long facilityId) {
         TransferPatientInfo patient = observationRepository.getTransferPatientInfo(patientUuid, currentUserOrganizationService.getCurrentUserOrganization()).get();
-        log.info("Transfer patient info: {}", patient);
+//        log.info("Transfer patient info: {}", patient);
         return patient;
     }
 
@@ -55,7 +55,7 @@ public class TreatmentTransferService {
             }
         } catch (Exception e) {
             // Log the exception for troubleshooting
-            log.info("Error while retrieving transfer patient lab results", e);
+//            log.info("Error while retrieving transfer patient lab results", e);
             throw new NoRecordFoundException("Error while retrieving transfer patient lab result: " + e.getMessage());
         }
     }
@@ -86,7 +86,7 @@ public class TreatmentTransferService {
         String status = dto.getCurrentStatus().equalsIgnoreCase("ART TRANSFER OUT") ? "ART Transfer In" : "ART Transfer Out";
         ApplicationCodeSet codeSet = applicationCodesetRepository.findByDisplayAndCodesetGroup(status, Constants.CODE_SET_GROUP)
                 .orElseThrow(() -> new EntityNotFoundException(ApplicationCodeSet.class, "display", status));
-        log.info("patientUuid: {}", dto.getPersonUuid());
+//        log.info("patientUuid: {}", dto.getPersonUuid());
         Boolean existsRecordWithDiedStatus = hivStatusTrackerRepository.existsRecordWithDiedStatus(dto.getPersonUuid());
         if (existsRecordWithDiedStatus) {
             throw new Exception("Patient is confirmed dead");
@@ -158,7 +158,7 @@ public class TreatmentTransferService {
     }
 
     private ObservationDto createObservation(TransferPatientDto transferPatientDto, ApplicationCodeSet codeSet1) {
-        log.info("Inside createObservation");
+//        log.info("Inside createObservation");
         ObservationDto observationDto = new ObservationDto();
         observationDto.setPersonId(transferPatientDto.getPatientId());
         observationDto.setVisitId(null);

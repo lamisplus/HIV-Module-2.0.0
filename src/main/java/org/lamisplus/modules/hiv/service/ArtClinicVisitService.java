@@ -196,7 +196,7 @@ public class ArtClinicVisitService {
 		ARTClinicVisitDto artClinicVisitDto = new ARTClinicVisitDto();
 		BeanUtils.copyProperties(artClinical, artClinicVisitDto);
 		artClinicVisitDto.setVitalSignDto(requestDto);
-		log.info("converted artClinicVisitDto {}", artClinicVisitDto);
+//		log.info("converted artClinicVisitDto {}", artClinicVisitDto);
 		return artClinicVisitDto;
 	}
 	@NotNull

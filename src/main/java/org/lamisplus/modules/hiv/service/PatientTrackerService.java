@@ -39,7 +39,7 @@ public class PatientTrackerService {
 			patientTracker.setStatusTracker(status);
 		}
 		PatientTracker en = patientTrackerRepository.save(patientTracker);
-		Log.info("Emmanuel data patient tracker: {}", en);
+//		Log.info("Emmanuel data patient tracker: {}", en);
 		return mapEntityDto(en);
 	}
 	

@@ -99,7 +99,7 @@ public class HivPatientService {
         Long facilityId = currentUserOrganizationService.getCurrentUserOrganization();
         if (searchValue != null && !searchValue.isEmpty()) {
             Page<Person> persons = personRepository.findAllPersonBySearchParameters(searchValue, 0, facilityId, pageable);
-            Log.info("patient size {}", persons.getContent().size());
+//            Log.info("patient size {}", persons.getContent().size());
             List<HivPatientDto> content = getNonIitPersons(persons);
             return getPageDto(persons, content);
         }
@@ -110,7 +110,7 @@ public class HivPatientService {
     
     public PageDTO getHivPatients(String searchValue, Pageable pageable) {
         Long facilityId = currentUserOrganizationService.getCurrentUserOrganization();
-        log.info("searchValue is {}", searchValue);
+//        log.info("searchValue is {}", searchValue);
         Page<PatientProjection> persons = null;
 
        if(searchValue != null && !StringUtils.isBlank(searchValue) && !searchValue.equalsIgnoreCase("null")){
@@ -143,7 +143,7 @@ public class HivPatientService {
     
     public  List<PatientDTO> getHivEnrolledNonBiometricPatients(Long facilityId) {
         List<PatientDTO> nonBiometricPatients  = new ArrayList<PatientDTO>();
-        log.info("start fetching non biometric patients records ...");
+//        log.info("start fetching non biometric patients records ...");
         try {
             HashSet<String> negativeStatusTable = getNegativeStatusTable();
              nonBiometricPatients = enrollmentRepository.getEnrolledPatientsByFacilityMobile(facilityId)
@@ -151,7 +151,7 @@ public class HivPatientService {
                     .map(this::getPatientDTOBuild)
                     .filter(p -> !(negativeStatusTable.contains(p.getCurrentStatus())))
                     .collect(Collectors.toList());
-            log.info("finished fetching non-biometric Patients  total size {}", nonBiometricPatients.size());
+//            log.info("finished fetching non-biometric Patients  total size {}", nonBiometricPatients.size());
         }catch(Exception e){
             log.error("An error occurred when fetching non-biometric patients error:=> {}", e.getMessage());
         }
