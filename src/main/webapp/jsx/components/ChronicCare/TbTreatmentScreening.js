@@ -447,7 +447,7 @@ const TbTreatmentScreening = (props) => {
                       disabled={props.action === "view" ? true : false}
                     >
                       <option value="">Select</option>
-                      <option value="Positive ">Positive </option>
+                      <option value="Positive">Positive</option>
                       <option value="Negative">Negative</option>
                     </Input>
                   </InputGroup>
@@ -659,7 +659,7 @@ const TbTreatmentScreening = (props) => {
                 props.tbObj.tbTestResult ==='MTB trace RR indeterminate' ||
                 props.tbObj.tbTestResult ==='MTB detected INH detected' ||
                   props.tbObj.tbTestResult === "MTB detected RIF/INH not detected" ||
-                props.tbObj.tbTestResult ==='Positive' ||
+                props.tbObj.tbTestResult === "Positive" ||
                 props.tbObj.chestXrayResultTest ==='Suggestive of TB'
                 )  && (<> 
               <div className="form-group mb-3 col-md-6">
