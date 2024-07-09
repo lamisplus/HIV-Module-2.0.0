@@ -433,7 +433,7 @@ const TbTreatmentScreening = (props) => {
                 </FormGroup>
               </div>
               </>)}
-              {(props.tbObj.diagnosticTestType==='TB-LAMP' || props.tbObj.diagnosticTestType==='LF-LAM ' ||  props.tbObj.diagnosticTestType==='Smear Microscopy')   && (<>
+              {(props.tbObj.diagnosticTestType==='TB-LAMP' || props.tbObj.diagnosticTestType==='LF-LAM' ||  props.tbObj.diagnosticTestType==='Smear Microscopy')   && (<>
               <div className="form-group mb-3 col-md-6">
                 <FormGroup>
                   <Label>TB Test Result </Label>
@@ -723,6 +723,8 @@ const TbTreatmentScreening = (props) => {
                           name="tbTreatmentStartDate"
                           id="tbTreatmentStartDate"
                           onChange={props.handleInputChange}
+                          min={props.tbObj.DateDiagnosticTestResultReceived}
+                          max={moment(new Date()).format("YYYY-MM-DD")}
                           value={props.tbObj.tbTreatmentStartDate}
                           disabled={props.action === "view" ? true : false}
                       >

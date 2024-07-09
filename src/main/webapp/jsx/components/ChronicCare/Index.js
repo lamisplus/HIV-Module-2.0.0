@@ -263,16 +263,16 @@ const ChronicCare = (props) => {
     tbTreatmentStartDate: "",
     dateOfDiagnosticTest:"",
     chestXrayResultTest:"",
+    dateOfChestXrayResultTestDone:"",
+    DateDiagnosticTestResultReceived:"",
+    resultOfClinicalEvaluation:"",
+    careCardPatientTbStatus:"",
     treatmentType: "",
     treatmentOutcome: "",
     completionDate: "",
     treatmentCompletionStatus: "",
     completedTbTreatment: "",
-    dateOfChestXrayResultTestDone:"",
-    DateDiagnosticTestResultReceived:"",
-    resultOfClinicalEvaluation:"",
-    careCardPatientTbStatus:""
-
+    currentWeight:""
 
   });
   const [observationObj, setObservationObj] = useState({
@@ -322,41 +322,7 @@ const ChronicCare = (props) => {
       })
       .catch((error) => {});
   }
-  // const GetChronicCare = () => {
-  //   //function to get chronic care data for edit
-  //   axios
-  //     .get(`${baseUrl}observation/${props.activeContent.id}`, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     })
-  //     .then((response) => {
-  //       observationObj.eligibility = response.data.eligibility;
-  //       observationObj.nutrition = response.data;
-  //       observationObj.genderBase = response.data.genderBase;
-  //       observationObj.chronicCondition = response.data.chronicConditions;
-  //       observationObj.positiveHealth = response.data.positiveHealth;
-  //       observationObj.peproductive = response.data.peproductive;
-  //       observationObj.tbIptScreening = response.data.tbIptScreening;
-  //       observationObj.tptMonitoring = response.data.tptMonitoring;
-  //       setObservation(response.data);
-  //       setObservationObj(response.data.data);
-  //       setTpt({ ...tpt, ...response.data.data.tptMonitoring });
-  //       setTbObj({ ...tbObj, ...response.data.data.tbIptScreening });
-  //       setEligibility({ ...eligibility, ...response.data.data.eligibility });
-  //       setGenderBase({ ...genderBase, ...response.data.data.genderBase });
-  //       setChronicConditions({
-  //         ...chronicConditions,
-  //         ...response.data.data.chronicConditions,
-  //       });
-  //       setPreventive({ ...preventive, ...response.data.data.preventive });
-  //       setReproductive({
-  //         ...reproductive,
-  //         ...response.data.data.reproductive,
-  //       });
-  //       setTpt({ ...tpt, ...response.data.data.tptMonitoring });
-  //       setlastDateOfObservation(response.data.dateOfObservation); //set the date of onservation into this variable
-  //     })
-  //     .catch((error) => {});
-  // };
+
 
   const getIsHypertensive = async () => {
     try {
@@ -413,6 +379,8 @@ const ChronicCare = (props) => {
       if(tbObj.tbTreatment === "Yes"){
         temp.tbTreatmentStartDate = tbObj.tbTreatmentStartDate ? '' : "This field is required.";
         temp.completedTbTreatment = tbObj. completedTbTreatment ? '' : "This field is required.";
+        // temp.currentWeight = tbObj.currentWeight ? '' : "This field is required.";
+        temp.currentWeight = tbObj.currentWeight ? (tbObj.currentWeight > 200 ? "Current Weight cannot be greater than 200." : '') : "This field is required.";
       }
     if(tbObj.completedTbTreatment === "Yes"){
       temp.completionDate = tbObj.completionDate ? '' : "This field is required.";
@@ -504,7 +472,7 @@ const ChronicCare = (props) => {
     toast.success(message, { position: toast.POSITION.BOTTOM_CENTER });
   };
 
-console.log(errors)
+// console.log(errors)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -814,7 +782,10 @@ console.log(errors)
               {
                   (tbObj.tbEvaulationOutcome === 'TB Not Diagnosed' ||
                       tbObj.outcome === "Not Presumptive" ||
-                      (tbObj.status !== "" && tbObj.status === 'No signs or symptoms of TB')) && (
+                      (tbObj.status !== "" && tbObj.status === 'No signs or symptoms of TB'))
+                  || tbObj.tbTreatment === "No"
+                  &&
+                  (
                       <div className="card">
                         <div
                             className="card-header"

@@ -229,7 +229,14 @@ const TPT = (props) => {
         eligibilityTpt: "No",
         tptPreventionOutcome: "TPT Completed",
       });
-    } else if (props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt === 'Yes') {
+    }else if (props.tpt.enrolledOnTpt === "Yes" && props.tpt.dateTptStarted !== '') {
+      props.setTpt({
+        ...props.tpt,
+        eligibilityTpt: "Yes",
+        tptPreventionOutcome: "Currently on TPT",
+      });
+    }
+    else if (props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt === 'Yes') {
       props.setTpt({
         ...props.tpt,
         eligibilityTpt: "No",
@@ -254,7 +261,9 @@ const TPT = (props) => {
     props.tpt.currentlyOnTpt, props.tpt.liverSymptoms, props.tpt.neurologicSymptoms,
     props.tpt.chronicAlcohol, props.tpt.rash, props.tpt.endedTpt,
     props.tpt.treatmentOutcome, props.tpt.treatmentCompletionStatus,
-    props.tpt.everCompletedTpt, props.tpt.contractionForTpt]);
+    props.tpt.everCompletedTpt, props.tpt.contractionForTpt,
+    props.tpt.enrolledOnTpt, props.tpt.dateTptStarted
+  ]);
 
   // set contraIndication
   useEffect(() => {
@@ -278,15 +287,8 @@ const TPT = (props) => {
   };
   //let temp = { ...errors }
 
-  //Handle CheckBox
-  // const handleTpt = (e) => {
-  //   props.setErrors({ ...props.errors, [e.target.name]: "" });
-  //   props.setTpt({ ...props.tpt, [e.target.name]: e.target.value });
-  //   //making the field to be empty once the selection logic is apply(skip logic)
-  // };
-
-
   // console.log("TPT OBJECT IN TPT COMPONENT", props.tpt)
+  // console.log("Patient OBJECT IN TPT COMPONENT", props.patientObj)
 
   const handleTpt  = (e) => {
     const {name, value} = e.target;
@@ -427,190 +429,6 @@ const TPT = (props) => {
           <br />
           <form>
             <div className="row">
-              
-              {/*<div className="form-group mb-3 col-md-6">*/}
-              {/*    <FormGroup>*/}
-              {/*      <Label>*/}
-              {/*        Have you completed TB Treatment?{" "}*/}
-              {/*        <span style={{ color: "red" }}> *</span>*/}
-              {/*      </Label>*/}
-              {/*      <InputGroup>*/}
-              {/*        <Input*/}
-              {/*          type="select"*/}
-              {/*          name="tbTreatment"*/}
-              {/*          id="tbTreatment"*/}
-              {/*          onChange={handleTpt}*/}
-              {/*          value={props.tpt.tbTreatment}*/}
-              {/*          disabled={props.action === "view" ? true : false}*/}
-              {/*        >*/}
-              {/*          <option value="">Select</option>*/}
-              {/*          <option value="Yes">Yes</option>*/}
-              {/*          <option value="No">No</option>*/}
-              {/*        </Input>*/}
-              {/*      </InputGroup>*/}
-              {/*    </FormGroup>*/}
-              {/*    {props.errors.tbTreatment !== "" ? (*/}
-              {/*      <span className={classes.error}>*/}
-              {/*        {props.errors.tbTreatment}*/}
-              {/*      </span>*/}
-              {/*    ) : (*/}
-              {/*      ""*/}
-              {/*    )}*/}
-              {/*</div>*/}
-              {/*{props.tpt.tbTreatment === "Yes"  && (*/}
-              {/*  <>*/}
-              {/*    <div className="form-group mb-3 col-md-6">*/}
-              {/*      <FormGroup>*/}
-              {/*        <Label>*/}
-              {/*          TB Treatment Completion Date{" "}*/}
-              {/*          <span style={{ color: "red" }}> *</span>*/}
-              {/*        </Label>*/}
-              {/*        <InputGroup>*/}
-              {/*          <Input*/}
-              {/*            type="date"*/}
-              {/*            name="completionDate"*/}
-              {/*            id="completionDate"*/}
-              {/*            onChange={handleTpt}*/}
-              {/*            value={props.tpt.completionDate}*/}
-              {/*            // min={props.encounterDate}*/}
-              {/*            disabled={*/}
-              {/*              props.action === "view" ? true : false*/}
-              {/*            }*/}
-              {/*            max={moment(new Date()).format("YYYY-MM-DD")}*/}
-              {/*          ></Input>*/}
-              {/*        </InputGroup>*/}
-              {/*      </FormGroup>*/}
-              {/*      {props.errors.completionDate !== "" ? (*/}
-              {/*        <span className={classes.error}>*/}
-              {/*          {props.errors.completionDate}*/}
-              {/*        </span>*/}
-              {/*      ) : (*/}
-              {/*        ""*/}
-              {/*      )}*/}
-              {/*    </div>*/}
-              {/*    <div className="form-group mb-3 col-md-6">*/}
-              {/*        <FormGroup>*/}
-              {/*          <Label>*/}
-              {/*            Treatment Outcome{" "}*/}
-              {/*            <span style={{ color: "red" }}> *</span>*/}
-              {/*          </Label>*/}
-              {/*          <InputGroup>*/}
-              {/*            <Input*/}
-              {/*              type="select"*/}
-              {/*              name="treatmentOutcome"*/}
-              {/*              id="treatmentOutcome"*/}
-              {/*              onChange={handleTpt}*/}
-              {/*              value={props.tpt.treatmentOutcome}*/}
-              {/*              disabled={props.action === "view" ? true : false}*/}
-              {/*            >*/}
-              {/*              <option value="">Select</option>*/}
-              {/*              {tbTreatmentOutCome.map((value) => (*/}
-              {/*                <option key={value.id} value={value.display}>*/}
-              {/*                  {value.display}*/}
-              {/*                </option>*/}
-              {/*              ))}*/}
-              {/*            </Input>*/}
-              {/*          </InputGroup>*/}
-              {/*        </FormGroup>*/}
-              {/*        {props.errors.treatmentOutcome !== "" ? (*/}
-              {/*          <span className={classes.error}>*/}
-              {/*            {props.errors.treatmentOutcome}*/}
-              {/*          </span>*/}
-              {/*        ) : (*/}
-              {/*          ""*/}
-              {/*        )}*/}
-              {/*      </div>*/}
-              {/*    {( props.tpt.treatmentOutcome==='Cured' || props.tpt.treatmentOutcome==='Treatment completed')*/}
-              {/*        && <div className="form-group mb-3 col-md-6">*/}
-              {/*      <FormGroup>*/}
-              {/*        <Label>TB Treatment Completion Status</Label>*/}
-              {/*        <InputGroup>*/}
-              {/*          <Input*/}
-              {/*            type="text"*/}
-              {/*            name="treatmentCompletionStatus"*/}
-              {/*            id="treatmentCompletionStatus"*/}
-              {/*            onChange={handleTpt}*/}
-              {/*            disabled*/}
-              {/*            value={(props.tpt.treatmentOutcome==='Cured' || props.tpt.treatmentOutcome==='Treatment completed')?"Treatment success" : ""}*/}
-              {/*          >*/}
-              {/*            */}
-              {/*            */}
-              {/*          </Input>*/}
-              {/*        </InputGroup>*/}
-              {/*      </FormGroup>*/}
-              {/*      {props.errors.treatmentCompletionStatus !== "" ? (*/}
-              {/*        <span className={classes.error}>*/}
-              {/*          {props.errors.treatmentCompletionStatus}*/}
-              {/*        </span>*/}
-              {/*      ) : (*/}
-              {/*        ""*/}
-              {/*      )}*/}
-              {/*    </div>*/}
-              {/*    }*/}
-              {/*  </>*/}
-              {/*)}*/}
-              {props.tpt.tbTreatment === "Yes" && (
-                  <>
-                    {/* <div className="form-group mb-3 col-md-6">
-                      <FormGroup>
-                        <Label>
-                          TB treatment start date{" "}
-                          <span style={{ color: "red" }}> *</span>
-                        </Label>
-                        <InputGroup>
-                          <Input
-                            type="date"
-                            name="tbTreatmentStartDate"
-                            id="tbTreatmentStartDate"
-                            onChange={handleTpt}
-                            value={props.tpt.tbTreatmentStartDate}
-                            // min={props.encounterDate}
-                            max={moment(new Date()).format("YYYY-MM-DD")}
-                            disabled={props.action === "view" ? true : false}
-                          ></Input>
-                        </InputGroup>
-                      </FormGroup>
-                    </div> */}
-
-                    {/* <div className="form-group mb-3 col-md-6">
-                      <FormGroup>
-                        <Label>
-                          Treatment Type{" "}
-                          <span style={{ color: "red" }}> *</span>
-                        </Label>
-                        <InputGroup>
-                          <Input
-                            type="select"
-                            name="treatmentType"
-                            id="treatmentType"
-                            onChange={handleTpt}
-                            value={props.tpt.treatmentType}
-                            disabled={props.action === "view" ? true : false}
-                          >
-                            <option value="">Select</option>
-                            {tbTreatmentType.map((value) => (
-                              <option key={value.id} value={value.display}>
-                                {value.display}
-                              </option>
-                            ))}
-                          </Input>
-                        </InputGroup>
-                      </FormGroup>
-                      {props.errors.treatmentType !== "" ? (
-                        <span className={classes.error}>
-                          {props.errors.treatmentType}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </div> */}
-
-
-
-                   
-                  </>
-                )}
-
               <br/>
               <hr/>
               <br/>
@@ -792,7 +610,8 @@ const TPT = (props) => {
                
                 
               </>)}
-              {props.tpt.contractionForTpt === "No"&& (<>
+              {props.tpt.contractionForTpt === "No"&& (
+                  <>
                 <div className="form-group mb-3 col-md-6">
                   <FormGroup>
                     <Label>Weight</Label>
@@ -837,6 +656,8 @@ const TPT = (props) => {
                           id="dateTptStarted"
                           onChange={handleTpt}
                           value={props.tpt.dateTptStarted}
+                          min={props.patientObj.dateOfBirth}
+                          max={moment(new Date()).format("YYYY-MM-DD")}
                           disabled={props.action === "view" ? true : false}
                       ></Input>
                     </InputGroup>
@@ -1077,7 +898,7 @@ const TPT = (props) => {
 
                 <div className="form-group mb-3 col-md-6">
                   <FormGroup>
-                    <Label>Outcome of IPT</Label>
+                    <Label>Outcome of TPT</Label>
                     <InputGroup>
                       <Input
                           type="select"
@@ -1097,7 +918,8 @@ const TPT = (props) => {
                     </InputGroup>
                   </FormGroup>
                 </div>
-                <div className="form-group mb-3 col-md-6">
+                { props.tpt.outComeOfIpt === "Treatment completed" &&
+                    <div className="form-group mb-3 col-md-6">
                   <FormGroup>
                     <Label>Date TPT Ended </Label>
                     <InputGroup>
@@ -1107,11 +929,13 @@ const TPT = (props) => {
                           id="dateTptEnded"
                           onChange={handleTpt}
                           value={props.tpt.dateTptEnded}
+                          min={props.tpt.dateTptStarted}
+                          max={moment(new Date()).format("YYYY-MM-DD")}
                           disabled={props.action === "view" ? true : false}
                       ></Input>
                     </InputGroup>
                   </FormGroup>
-                </div>
+                </div>}
               </>)}
 
               {props.tpt.endedTpt === 'No' && (
