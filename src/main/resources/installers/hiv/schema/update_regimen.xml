@@ -39,6 +39,39 @@
             UPDATE public.hiv_regimen SET active = true WHERE description = 'ABC(60mg)+3TC(30mg)+DTG(50mg)';
             UPDATE public.hiv_regimen SET description = 'ABC(120mg)/3TC(60mg)/DTG(10mg)' WHERE description = 'ABC/3TC/DTG10mg';
         </sql>
+
+    </changeSet>
+
+    <changeSet id="20240704-02" author="Taiwo Gboyegun">
+        <sql>
+            UPDATE hiv_regimen
+            SET description = 'ABC(600mg)/3TC(300mg)+DTG(50mg)'
+            WHERE description = 'ABC(600mg)+3TC(300mg)+DTG(50mg)';
+
+            UPDATE hiv_regimen
+            SET description = 'ABC(60mg)/3TC(30mg)+DTG(10mg)'
+            WHERE description = 'ABC(60mg)/3TC(30mg)+DTG(50mg)';
+
+            UPDATE hiv_regimen
+            SET description = 'ABC(60mg)/3TC(30mg)+DTG(10mg)'
+            WHERE description = 'ABC(60mg)+3TC(30mg)+DTG(10mg)';
+
+            UPDATE hiv_regimen
+            SET description = 'ABC(120mg)/3TC(60mg)+DTG(10mg)'
+            WHERE description = 'ABC(120mg)/3TC(60mg)/DTG(10mg)';
+
+            UPDATE hiv_regimen
+            SET description = 'TDF(300mg)/3TC(300mg)/DTG(50mg)'
+            WHERE description = 'TDF(300mg)+3TC(300mg)+DTG(50mg)';
+        </sql>
+    </changeSet>
+
+    <changeSet id="20240704-03" author="Taiwo Gboyegun">
+        <sql>
+            UPDATE hiv_regimen
+            SET description = 'ABC(60mg)/3TC(30mg)+DTG(50mg)'
+            WHERE description = 'ABC(60mg)+3TC(30mg)+DTG(50mg)';
+        </sql>
     </changeSet>
 
 

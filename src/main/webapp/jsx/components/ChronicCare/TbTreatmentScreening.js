@@ -382,18 +382,21 @@ const TbTreatmentScreening = (props) => {
                   <Label>TB Test Result </Label>
                   <InputGroup>
                     <Input
-                      type="select"
-                      name="tbTestResult"
-                      id="tbTestResult"
-                      onChange={props.handleInputChange}
-                      value={props.tbObj.tbTestResult}
-                      disabled={props.action === "view" ? true : false}
+                        type="select"
+                        name="tbTestResult"
+                        id="tbTestResult"
+                        onChange={props.handleInputChange}
+                        value={props.tbObj.tbTestResult}
+                        disabled={props.action === "view" ? true : false}
                     >
                       <option value="">Select</option>
                       <option value="MTB not detected">MTB not detected</option>
                       <option value="MTB detected RR not detected">MTB detected RR not detected</option>
                       <option value="MTB detected RR detected">MTB detected RR detected</option>
                       <option value="MTB trace RR indeterminate">MTB trace RR indeterminate</option>
+                      <option value="Error">Error</option>
+                      <option value="Invalid">Invalid</option>
+                      <option value="Incomplete">Incomplete</option>
                     </Input>
                   </InputGroup>
                   {errors.tbTestResult !== "" ? (
