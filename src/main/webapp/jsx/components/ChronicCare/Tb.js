@@ -247,9 +247,10 @@ const TbScreening = (props) => {
     if (props.tbObj.tbTreatment === "Yes") {
       props.setTbObj({
         ...props.tbObj,
-        outcome: "Not Presumptive",
+        outcome: '',
+        // outcome: "Not Presumptive",
         status: "Currently on TB treatment",
-        activeTb: true,
+        activeTb: true
       });
     }
 
@@ -686,7 +687,6 @@ const TbScreening = (props) => {
       [name]: value,
     };
     let updatedTpt = { ...props.tpt, [name]: value }
-
     // Handle specific fields and their related state resets
     if (name === 'tbTreatment') {
       updateObj = {
@@ -955,7 +955,7 @@ const TbScreening = (props) => {
     }
   };
 
-  // console.log("TB OBJECT IN TB", props.tbObj)
+  console.log("TB OBJECT IN TB", props.tbObj)
   return (
     <>
       <Card className={classes.root}>

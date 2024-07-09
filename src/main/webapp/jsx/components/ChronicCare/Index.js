@@ -782,8 +782,9 @@ const ChronicCare = (props) => {
               {
                   (tbObj.tbEvaulationOutcome === 'TB Not Diagnosed' ||
                       tbObj.outcome === "Not Presumptive" ||
-                      (tbObj.status !== "" && tbObj.status === 'No signs or symptoms of TB'))
-                  || tbObj.tbTreatment === "No"
+                       tbObj.status === 'No signs or symptoms of TB'
+                  // || tbObj.tbTreatment === "No"
+                  )
                   &&
                   (
                       <div className="card">
