@@ -926,14 +926,7 @@ const TbScreening = (props) => {
        dateSpecimenSent:'',
        specimenType:'',
        diagnosticTestDone:'',
-       dateOfDiagnosticTest:'',
-       // diagnosticTestType:"",
-       // clinicallyEvaulated:"",
-       // chestXrayDone:'',
-       // chestXrayResultTest:'',
-       // tbType:'',
-       // tbTreatmentStarted:'',
-       // tbTreatmentStartDate:''
+       dateOfDiagnosticTest:''
      })
   },[props.tbObj.outcome])
 
@@ -962,14 +955,9 @@ const TbScreening = (props) => {
     }
   };
 
-
-
   // console.log("TB OBJECT IN TB", props.tbObj)
-
-
   return (
     <>
-    
       <Card className={classes.root}>
         <CardBody>
           <h2 style={{ color: "#000" }}>TB Treatment Section</h2>
@@ -1020,6 +1008,7 @@ const TbScreening = (props) => {
                         onChange={handleInputChange}
                         value={props.tbObj.tbTreatmentStartDate}
                         // min={props.encounterDate}
+                          min={props.patientObj.dateOfBirth}
                         max={moment(new Date()).format("YYYY-MM-DD")}
                         disabled={props.action === "view" ? true : false}
                         required
