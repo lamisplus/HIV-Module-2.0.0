@@ -233,7 +233,7 @@ const TPT = (props) => {
   };
   //let temp = { ...errors }
 
-  console.log("TPT OBJECT IN TPT COMPONENT", props.tpt)
+  // console.log("TPT OBJECT IN TPT COMPONENT", props.tpt)
   // console.log("Patient OBJECT IN TPT COMPONENT", props.patientObj)
 
   const handleTpt  = (e) => {

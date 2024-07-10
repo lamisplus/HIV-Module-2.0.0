@@ -459,7 +459,7 @@ const DashboardFilledTransferForm = (props) => {
     reasonForDefaulting: "",
     reasonForDefaultingOthers: "",
   });
-console.log("payload", payload)
+// console.log("payload", payload)
 
   //Validations of the forms
   const validate = () => {

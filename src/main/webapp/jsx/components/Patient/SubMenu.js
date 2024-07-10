@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 function SubMenu(props) {
   const [activeItem, setActiveItem] = useState("recent-history");
   const patientObj = props.patientObj;
-  console.log("PatientObj", props.patientObj )
+  // console.log("PatientObj", props.patientObj )
   const [isOtzEnrollementDone, setIsOtzEnrollementDone] = useState(null);
   const [labResult, setLabResult] = useState(null);
   const patientCurrentStatus =

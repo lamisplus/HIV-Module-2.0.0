@@ -242,7 +242,7 @@ const ClinicVisit = (props) => {
     fever: "",
     contactWithTBCase: "",
     lethergy: "",
-    // tbStatusId: "",
+    tbStatusId: "",
   });
   const [tests, setTests] = useState({
     comments: "",
@@ -879,6 +879,10 @@ const ClinicVisit = (props) => {
     }
   };
 
+  const updateTbStatusId = (newTbStatusId) => {
+    setTbObj((prevTbObj) => ({ ...prevTbObj, tbStatusId: newTbStatusId }));
+  };
+
   //to check the input value for clinical decision
   const handleInputValueCheckHeight = (e) => {
     if (
@@ -1019,6 +1023,8 @@ const ClinicVisit = (props) => {
     setTests({ ...tests, [e.target.name]: e.target.value });
   };
 
+  console.log("tb object inside parent", tbObj)
+
   /**** Submit Button Processing  */
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -1033,7 +1039,7 @@ const ClinicVisit = (props) => {
       objValues.hivEnrollmentId = getPatientObj.enrollment.id;
       objValues.opportunisticInfections = infectionList;
       objValues.tbScreen = tbObj;
-      // objValues.tbStatus = tbObj.tbStatusId;
+      objValues.tbStatus = tbObj.tbStatusId;
       objValues.viralLoadOrder = testOrderList;
       objValues.arvdrugsRegimen = arvDrugOrderList;
       objValues["vitalSignDto"] = vital;

@@ -152,8 +152,6 @@ const TbTreatmentScreening = (props) => {
       .catch((error) => {});
   };
 
-
-
   return (
     <>
       <Card className={classes.root}>
