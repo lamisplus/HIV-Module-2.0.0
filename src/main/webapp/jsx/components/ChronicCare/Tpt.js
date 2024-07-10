@@ -95,9 +95,16 @@ const TPT = (props) => {
   const [adherence, setAdherence] = useState([]);
   const [tbTreatmentType, setTbTreatmentType] = useState([]);
     const [tbTreatmentOutCome, setTbTreatmentOutCome] = useState([]);
-  const [contraindicationsState, setContraindicationsState] = useState("No");
-  
-    const TB_TREATMENT_TYPE = () => {
+  // const [contraindicationsState, setContraindicationsState] = useState("No");
+  const [contraindicationsState, setContraindicationsState] = useState("");
+
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  const TB_TREATMENT_TYPE = () => {
       axios
         .get(`${baseUrl}application-codesets/v2/TB_TREATMENT_TYPE`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -123,141 +130,76 @@ const TPT = (props) => {
     CLINIC_VISIT_LEVEL_OF_ADHERENCE();
   }, []);
   // TPT Logic
-  // useEffect(() => {
-  //
-  //   if (props.tpt.everCompletedTpt === "Yes") {
-  //     props.setTpt({
-  //       ...props.tpt,
-  //       eligibilityTpt: "No",
-  //       tptPreventionOutcome: "TPT Completed",
-  //     });
-  //   }
-  //   else if (props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='Yes') {
-  //     props.setTpt({
-  //       ...props.tpt,
-  //       eligibilityTpt: "No",
-  //       tptPreventionOutcome: "Currently on TPT",
-  //     });
-  //   }
-  //   else if((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='No' && props.tpt.contractionForTpt==='Yes' &&
-  //       ( props.tpt.liverSymptoms==="Yes" || props.tpt.neurologicSymptoms==='Yes' || props.tpt.chronicAlcohol==='Yes' || props.tpt.rash==='Yes'))){
-  //     props.setTpt({
-  //       ...props.tpt,
-  //       eligibilityTpt: "No",
-  //       tptPreventionOutcome: "",
-  //     });
-  //   }
-  //
-  //   else if((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt ==='No' && props.tpt.contractionForTpt==='Yes' &&
-  //       ( props.tpt.liverSymptoms==="No" || props.tpt.neurologicSymptoms==='No' || props.tpt.chronicAlcohol==='No' || props.tpt.rash==='No'))){
-  //     props.setTpt({
-  //       ...props.tpt,
-  //       eligibilityTpt: "No",
-  //       tptPreventionOutcome: "",
-  //     });
-  //   }
-  //
-  // }, [props.tpt.eligibilityTpt, props.tpt.tptPreventionOutcome, props.tpt.tbTreatment, props.tpt.currentlyOnTpt,
-  //   props.tpt.liverSymptoms, props.tpt.neurologicSymptoms, props.tpt.chronicAlcohol,
-  //   props.tpt.neurologicSymptoms,  props.tpt.rash, props.tpt.endedTpt,
-  //   props.tpt.treatmentOutcome, props.tpt.treatmentCompletionStatus,
-  //   props.tpt.everCompletedTpt, props.tpt.contractionForTpt  ]);
-
-  // useEffect(() => {
-  //   if (props.tpt.everCompletedTpt === "Yes") {
-  //     props.setTpt({
-  //       ...props.tpt,
-  //       eligibilityTpt: "No",
-  //       tptPreventionOutcome: "TPT Completed",
-  //     });
-  //   } else if (props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt === 'Yes') {
-  //     props.setTpt({
-  //       ...props.tpt,
-  //       eligibilityTpt: "No",
-  //       tptPreventionOutcome: "Currently on TPT",
-  //     });
-  //   } else if ((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt === 'No' &&
-  //       (props.tpt.liverSymptoms === "Yes" || props.tpt.neurologicSymptoms === 'Yes' || props.tpt.chronicAlcohol === 'Yes' || props.tpt.rash === 'Yes'))) {
-  //     props.setTpt({
-  //       ...props.tpt,
-  //       eligibilityTpt: "No",
-  //       tptPreventionOutcome: "",
-  //     });
-  //   } else if ((props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt === 'No' &&
-  //       (props.tpt.liverSymptoms === "No" && props.tpt.neurologicSymptoms === 'No' && props.tpt.chronicAlcohol === 'No' && props.tpt.rash === 'No'))) {
-  //     if (props.tpt.contractionForTpt === 'Yes') {
-  //       props.setTpt({
-  //         ...props.tpt,
-  //         eligibilityTpt: "No",
-  //         tptPreventionOutcome: "",
-  //       });
-  //     } else if (props.tpt.contractionForTpt === 'No') {
-  //       props.setTpt({
-  //         ...props.tpt,
-  //         eligibilityTpt: "Yes",
-  //         tptPreventionOutcome: "",
-  //       });
-  //     }
-  //   } else {
-  //     if (props.tpt.contractionForTpt === 'Yes') {
-  //       props.setTpt({
-  //         ...props.tpt,
-  //         eligibilityTpt: "No",
-  //         tptPreventionOutcome: "",
-  //       });
-  //     } else if (props.tpt.contractionForTpt === 'No') {
-  //       props.setTpt({
-  //         ...props.tpt,
-  //         eligibilityTpt: "Yes",
-  //         tptPreventionOutcome: "",
-  //       });
-  //     }
-  //   }
-  // }, [
-  //   props.tpt.eligibilityTpt, props.tpt.tptPreventionOutcome, props.tpt.tbTreatment,
-  //   props.tpt.currentlyOnTpt, props.tpt.liverSymptoms, props.tpt.neurologicSymptoms,
-  //   props.tpt.chronicAlcohol, props.tpt.rash, props.tpt.endedTpt,
-  //   props.tpt.treatmentOutcome, props.tpt.treatmentCompletionStatus,
-  //   props.tpt.everCompletedTpt, props.tpt.contractionForTpt
-  // ]);
-
 
   useEffect(() => {
-    if (props.tpt.everCompletedTpt === "Yes") {
-      props.setTpt({
-        ...props.tpt,
-        eligibilityTpt: "No",
-        tptPreventionOutcome: "TPT Completed",
-      });
-    }else if (props.tpt.enrolledOnTpt === "Yes" && props.tpt.dateTptStarted !== '') {
-      props.setTpt({
-        ...props.tpt,
-        eligibilityTpt: "Yes",
-        tptPreventionOutcome: "Currently on TPT",
-      });
+    if (hasMounted) {
+      if (props.tpt.everCompletedTpt === "Yes") {
+        props.setTpt({
+          ...props.tpt,
+          eligibilityTpt: "No",
+          tptPreventionOutcome: "TPT Completed",
+          contractionForTpt: "",
+        });
+      }
+      else if ( props.tpt.currentlyOnTpt === 'Yes' && props.tpt.everCompletedTpt === "No" ) {
+        props.setTpt({
+          ...props.tpt,
+          eligibilityTpt: "No",
+          tptPreventionOutcome: "Currently on TPT",
+          contractionForTpt: "",
+        });
+      }
+      else if ( props.tpt.liverSymptoms === "" &&
+          props.tpt.neurologicSymptoms === "" &&
+          props.tpt.chronicAlcohol === "" &&
+          props.tpt.rash === "") {
+        props.setTpt({
+          ...props.tpt,
+          contractionForTpt: "",
+        });
+      }
+      else if (props.tpt.enrolledOnTpt === "Yes" && props.tpt.dateTptStarted !== '') {
+        props.setTpt({
+          ...props.tpt,
+          eligibilityTpt: "Yes",
+          tptPreventionOutcome: "Currently on TPT",
+          contractionForTpt: "",
+        });
+      }
+      else {
+        const contraindications = [
+          props.tpt.liverSymptoms !== "No",
+          props.tpt.neurologicSymptoms !== "No",
+          props.tpt.chronicAlcohol !== "No",
+          props.tpt.rash !== "No",
+        ];
+        const hasContraindication = contraindications.some((contraindication) => contraindication);
+        const allContraindicationsNo = contraindications.every((contraindication) => !contraindication);
+        if (hasContraindication) {
+          props.setTpt({
+            ...props.tpt,
+            eligibilityTpt: "No",
+            tptPreventionOutcome: "",
+            contractionForTpt: "Yes",
+          });
+        } else if (allContraindicationsNo) {
+          props.setTpt({
+            ...props.tpt,
+            eligibilityTpt: "Yes",
+            tptPreventionOutcome: "",
+            contractionForTpt: "No",
+          });
+        } else {
+          props.setTpt({
+            ...props.tpt,
+            eligibilityTpt: "",
+            tptPreventionOutcome: "",
+            contractionForTpt: "",
+          });
+        }
+      }
     }
-    else if (props.tpt.everCompletedTpt === "No" && props.tpt.currentlyOnTpt === 'Yes') {
-      props.setTpt({
-        ...props.tpt,
-        eligibilityTpt: "No",
-        tptPreventionOutcome: "Currently on TPT",
-      });
-    } else {
-      const contraindications = [
-        props.tpt.liverSymptoms === "Yes",
-        props.tpt.neurologicSymptoms === 'Yes',
-        props.tpt.chronicAlcohol === 'Yes',
-        props.tpt.rash === 'Yes',
-      ];
-      const hasContraindication = contraindications.some((contraindication) => contraindication);
-      setContraindicationsState(hasContraindication ? "Yes" : "No");
-      props.setTpt({
-        ...props.tpt,
-        eligibilityTpt: hasContraindication ? "No" : "Yes",
-        tptPreventionOutcome: "",
-      });
-    }
-  }, [props.tpt.eligibilityTpt, props.tpt.tptPreventionOutcome, props.tpt.tbTreatment,
+  }, [hasMounted, props.tpt.eligibilityTpt, props.tpt.tptPreventionOutcome, props.tpt.tbTreatment,
     props.tpt.currentlyOnTpt, props.tpt.liverSymptoms, props.tpt.neurologicSymptoms,
     props.tpt.chronicAlcohol, props.tpt.rash, props.tpt.endedTpt,
     props.tpt.treatmentOutcome, props.tpt.treatmentCompletionStatus,
@@ -265,13 +207,17 @@ const TPT = (props) => {
     props.tpt.enrolledOnTpt, props.tpt.dateTptStarted
   ]);
 
-  // set contraIndication
   useEffect(() => {
-    props.setTpt({
-      ...props.tpt,
-       contractionForTpt: contraindicationsState
-    });
-  }, [contraindicationsState]);
+    if (hasMounted) {
+      if (name === 'contractionForTpt') {
+        props.setTpt({
+          ...props.tpt,
+          weight: "",
+          enrolledOnTpt: ""
+        });
+      }
+    }
+  }, [hasMounted, props.tpt.contractionForTpt]);
 
   //Get list of CLINIC_VISIT_LEVEL_OF_ADHERENCE
   const CLINIC_VISIT_LEVEL_OF_ADHERENCE = () => {
@@ -287,7 +233,7 @@ const TPT = (props) => {
   };
   //let temp = { ...errors }
 
-  // console.log("TPT OBJECT IN TPT COMPONENT", props.tpt)
+  console.log("TPT OBJECT IN TPT COMPONENT", props.tpt)
   // console.log("Patient OBJECT IN TPT COMPONENT", props.patientObj)
 
   const handleTpt  = (e) => {
@@ -324,23 +270,20 @@ const TPT = (props) => {
       });
     }
     else if(name === 'everCompletedTpt' || value === ''){
-      if(value === "Yes"){
-        props.setTpt({
-          ...props.tpt,
-          [name]: value,
-          currentlyOnTpt:'',
-          eligibilityTpt:"",
-          tptPreventionOutcome:"",
-        });
+          props.setTpt({
+            ...props.tpt,
+            [name]: value,
+            currentlyOnTpt:'',
+            eligibilityTpt:"",
+            tptPreventionOutcome:"",
+            liverSymptoms: "",
+            neurologicSymptoms: "",
+            rash:'',
+            contractionForTpt:'',
+            chronicAlcohol:'',
+            dateOfTptCompleted:'',
+          });
       }
-      else {
-        props.setTpt({
-          ...props.tpt,
-          [name]: value,
-          dateOfTptCompleted:'',
-        });
-      }
-    }
     else if(name === 'currentlyOnTpt' || value === ''){
       props.setTpt({
         ...props.tpt,
@@ -359,9 +302,20 @@ const TPT = (props) => {
         [name]: value,
         weight: "",
         enrolledOnTpt: ""
-
       });
     }
+    else if((name === 'liverSymptoms' && value !== props.tpt.liverSymptoms) ||
+        (name === 'neurologicSymptoms' && value !== props.tpt.neurologicSymptoms) ||
+        (name === 'chronicAlcohol' && value !== props.tpt.chronicAlcohol) ||
+        (name === 'rash' && value !== props.tpt.rash)){
+      props.setTpt({
+        ...props.tpt,
+        [name]: value,
+        weight: "",
+        enrolledOnTpt: ""
+      });
+    }
+
     else if(name === 'endedTpt' || value === ''){
       props.setTpt({
         ...props.tpt,
@@ -588,7 +542,7 @@ const TPT = (props) => {
               <div className="form-group mb-3 col-md-6">
                 <FormGroup>
                   <Label>
-                  Contraindications For TPT 
+                  Contraindications For TPT
                   </Label>
                   <InputGroup>
                     <Input
@@ -646,23 +600,25 @@ const TPT = (props) => {
                     </InputGroup>
                   </FormGroup>
                 </div>
-                {props.tpt.enrolledOnTpt === "Yes" && <div className="form-group mb-3 col-md-6">
-                  <FormGroup>
-                    <Label>Date TPT started </Label>
-                    <InputGroup>
-                      <Input
-                          type="date"
-                          name="dateTptStarted"
-                          id="dateTptStarted"
-                          onChange={handleTpt}
-                          value={props.tpt.dateTptStarted}
-                          min={props.patientObj.dateOfBirth}
-                          max={moment(new Date()).format("YYYY-MM-DD")}
-                          disabled={props.action === "view" ? true : false}
-                      ></Input>
-                    </InputGroup>
-                  </FormGroup>
-                </div>}
+                    {props.tpt.enrolledOnTpt === "Yes" && (
+                        <div className="form-group mb-3 col-md-6">
+                          <FormGroup>
+                            <Label>Date TPT started </Label>
+                            <InputGroup>
+                              <Input
+                                  type="date"
+                                  name="dateTptStarted"
+                                  id="dateTptStarted"
+                                  onChange={handleTpt}
+                                  value={props.tpt.dateTptStarted}
+                                  min={props.patientObj.dateOfBirth}
+                                  max={moment(new Date()).format("YYYY-MM-DD")}
+                                  disabled={props.action === "view" ? true : false}
+                              />
+                            </InputGroup>
+                          </FormGroup>
+                        </div>
+                    )}
                 {props.tpt.enrolledOnTpt === "Yes" && <div className="form-group mb-3 col-md-6">
                   <FormGroup>
                     <Label>Type of TPT Regimen </Label>

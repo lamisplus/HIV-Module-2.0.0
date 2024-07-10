@@ -429,8 +429,6 @@ const TbScreening = (props) => {
       }
     }
 
-   
-
     //Sixth Logic
     if (
       props.tbObj.tbTreatment === "No" &&
@@ -545,6 +543,20 @@ const TbScreening = (props) => {
         tbEvaulationOutcome: "TB Not Diagnosed",
       });
     }
+    // ++++++++++++++++++++++++++++++++++++++++++
+    if(
+        props.tbObj?.specimentCollectedStatus.trim() === "Yes" &&
+        props.tbObj?.specimentSent.trim() === 'Yes' &&
+        ['TB-LAMP', 'LF-LAM', 'Smear Microscopy'].includes(props.tbObj?.diagnosticTestType.trim()) &&
+        props.tbObj?.tbTestResult.trim() === "Negative" &&
+        props.tbObj?.chestXrayResultTest === "Suggestive of TB" &&
+        props.tbObj.clinicallyEvaulated === "Yes"
+    ){
+      props.setTbObj({
+        ...props.tbObj,
+        tbEvaulationOutcome: "TB Diagnosed",
+      });
+    }
 
     // #####################################################
 
@@ -591,6 +603,13 @@ const TbScreening = (props) => {
       props.setTbObj({
         ...props.tbObj,
         tbEvaulationOutcome: "TB Diagnosed"
+      });
+    }
+    if (props.tbObj?.tbTestResult=== "Error"
+        || props.tbObj?.tbTestResult=== "Invalid" || props.tbObj?.tbTestResult=== "Incomplete" ) {
+      props.setTbObj({
+        ...props.tbObj,
+        tbEvaulationOutcome: "",
       });
     }
 
@@ -700,6 +719,8 @@ const TbScreening = (props) => {
         chestXrayResult:'',
         outcome:'',
         status:'',
+        tbType:"",
+
       };
 
       updatedTpt = {
@@ -858,17 +879,23 @@ const TbScreening = (props) => {
         chestXrayResultTest: '',
         tbEvaulationOutcome: '',
       };
-    } else if (name === ' tbTestResult' || value === '') {
+    } else if (name === 'tbTestResult' || value === '') {
         updateObj = {
           ...updateObj,
           chestXrayDone: '',
-          clinicallyEvaulated:""
+          clinicallyEvaulated:"",
+          chestXrayResultTest: '',
+          tbEvaulationOutcome: '',
+          tbType: '',
+          tbTreatmentStarted: '',
+          dateOfChestXrayResultTestDone: '',
         };
     } else if (name === 'chestXrayResultTest' || value === '') {
       updateObj = {
         ...updateObj,
         tbType: '',
         tbTreatmentStarted: '',
+        dateOfChestXrayResultTestDone: ''
       };
     }else if (name === 'chestXrayDone' || value === '') {
       updateObj = {
@@ -955,7 +982,7 @@ const TbScreening = (props) => {
     }
   };
 
-  // console.log("TB OBJECT IN TB", props.tbObj)
+  console.log("TB OBJECT IN TB", props.tbObj)
   return (
     <>
       <Card className={classes.root}>
