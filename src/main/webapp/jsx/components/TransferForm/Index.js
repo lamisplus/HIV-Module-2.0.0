@@ -1213,7 +1213,8 @@ const Tracking = (props) => {
                                                             {" "}
                                                             <FormGroup className="col-md-6">
                                                                 <Input
-                                                                    type="text"
+                                                                    type="date"
+                                                                    min={moment(new Date()).format("YYYY-MM-DD")}
                                                                 // name="facilityName"
                                                                 // id="facilityName"
                                                                 // onChange={handleInputChange}
