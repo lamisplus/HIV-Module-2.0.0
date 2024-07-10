@@ -163,7 +163,7 @@ const TPT = (props) => {
           ...props.tpt,
           eligibilityTpt: "Yes",
           tptPreventionOutcome: "Currently on TPT",
-          contractionForTpt: "",
+          // contractionForTpt: "",
         });
       }
       else {
@@ -296,14 +296,14 @@ const TPT = (props) => {
         chronicAlcohol:'',
       });
     }
-    else if(name === 'contractionForTpt' || value === ''){
-      props.setTpt({
-        ...props.tpt,
-        [name]: value,
-        weight: "",
-        enrolledOnTpt: ""
-      });
-    }
+    // else if(name === 'contractionForTpt' && value === ''){
+    //   props.setTpt({
+    //     ...props.tpt,
+    //     [name]: value,
+    //     weight: "",
+    //     enrolledOnTpt: ""
+    //   });
+    // }
     else if((name === 'liverSymptoms' && value !== props.tpt.liverSymptoms) ||
         (name === 'neurologicSymptoms' && value !== props.tpt.neurologicSymptoms) ||
         (name === 'chronicAlcohol' && value !== props.tpt.chronicAlcohol) ||
@@ -549,7 +549,7 @@ const TPT = (props) => {
                       type="select"
                       name="contractionForTpt"
                       id="contractionForTpt"
-                      onChange={handleTpt}
+                      // onChange={handleTpt}
                       value={props.tpt.contractionForTpt}
                       disabled
                     >
