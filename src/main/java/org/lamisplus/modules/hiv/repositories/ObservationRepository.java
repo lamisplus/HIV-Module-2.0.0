@@ -33,15 +33,20 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
 
     Optional<Observation> findByUuid(String uuid);
     
-    @Query(value = "SELECT tbTreatmentPersonUuid FROM (SELECT \n" +
-            "COALESCE(NULLIF(CAST(data->'tbIptScreening'->>'eligibleForTPT' AS text), ''), '') as eligibleForTPT,\n" +
-            "person_uuid as tbTreatmentPersonUuid,\n" +
-            "ROW_NUMBER() OVER ( PARTITION BY person_uuid ORDER BY date_of_observation DESC)\n" +
-            "FROM hiv_observation WHERE type = 'Chronic Care'   \n" +
-            "\t\t\t   AND facility_id = ?1 \n" +
-            ") tbTreatment WHERE row_number = 1 AND  eligibleForTPT IS NOT NULL \n" +
-            "AND eligibleForTPT = 'Yes'\n" +
-            "AND tbTreatmentPersonUuid = ?2", nativeQuery = true)
+    @Query(value = "SELECT tbTreatmentPersonUuid\n" +
+            "FROM (\n" +
+            "  SELECT\n" +
+            "    COALESCE( COALESCE(NULLIF(CAST(data->'tptMonitoring'->>'eligibilityTpt' AS text), ''), NULL), COALESCE(NULLIF(CAST(data->'tbIptScreening'->>'eligibleForTPT' AS text), ''), '')) AS eligibleForTPT,\n" +
+            "    person_uuid AS tbTreatmentPersonUuid,\n" +
+            "    ROW_NUMBER() OVER (PARTITION BY person_uuid ORDER BY date_of_observation DESC) AS row_number\n" +
+            "  FROM hiv_observation\n" +
+            "  WHERE type = 'Chronic Care'\n" +
+            "    AND facility_id = ?1 \n" +
+            ") tbTreatment\n" +
+            "WHERE row_number = 1\n" +
+            "  AND eligibleForTPT IS NOT NULL\n" +
+            "  AND eligibleForTPT = 'Yes'\n" +
+            "  AND tbTreatmentPersonUuid = ?2", nativeQuery = true)
     Optional<String>  getIPTEligiblePatientUuid(Long facilityId, String uuid);
 
     
