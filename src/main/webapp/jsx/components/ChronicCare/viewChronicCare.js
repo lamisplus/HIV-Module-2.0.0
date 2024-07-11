@@ -301,6 +301,7 @@ const ViewChronicCare = (props) => {
         const DateObj = response.data.filter((x) => x.type === "Chronic Care");
         if (response.data) {
           setChronicDateExist(DateObj);
+
         }
       })
       .catch((error) => {});
@@ -395,20 +396,20 @@ const handleSubmit = async (e) => {
   }
 
   // Check for duplicate visit Date
-  if (
-    chronicDateExist !== null &&
-    chronicDateExist.find(
-      (x) => x.dateOfObservation === observation.dateOfObservation
-    )
-  ) {
-    showErrorMessage(
-      "Chronic Care visit date " +
-        observation.dateOfObservation +
-        " already exists."
-    );
-    setSaving(false);
-    return;
-  }
+  // if (
+  //   chronicDateExist !== null &&
+  //   chronicDateExist.find(
+  //     (x) => x.dateOfObservation === observation.dateOfObservation
+  //   )
+  // ) {
+  //   showErrorMessage(
+  //     "Chronic Care visit date " +
+  //       observation.dateOfObservation +
+  //       " already exists."
+  //   );
+  //   setSaving(false);
+  //   return;
+  // }
 
   // Send request
   try {
