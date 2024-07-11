@@ -43,6 +43,7 @@
     </changeSet>
 
     <changeSet id="20240704-02" author="Taiwo Gboyegun">
+
         <sql>
             UPDATE hiv_regimen
             SET description = 'ABC(600mg)/3TC(300mg)+DTG(50mg)'
@@ -74,6 +75,45 @@
         </sql>
     </changeSet>
 
+    <changeSet failOnError="true" id="20240711-03" author="Taiwo Gboyegun">
+        <sql>
+            INSERT INTO hiv_regimen_drug (id, regimen_id, drug_id)
+            VALUES ((SELECT MAX(id) + 1 FROM hiv_regimen_drug), 251, 102);
+
+            INSERT INTO hiv_regimen_drug (id, regimen_id, drug_id)
+            VALUES ((SELECT MAX(id) + 1 FROM hiv_regimen_drug), 251, 5);
+
+            INSERT INTO hiv_regimen_drug (id, regimen_id, drug_id)
+            VALUES ((SELECT MAX(id) + 1 FROM hiv_regimen_drug), 251, 22);
+
+            INSERT INTO hiv_regimen_drug (id, regimen_id, drug_id)
+            VALUES ((SELECT MAX(id) + 1 FROM hiv_regimen_drug), 124, 25);
+
+            INSERT INTO hiv_regimen_drug (id, regimen_id, drug_id)
+            VALUES ((SELECT MAX(id) + 1 FROM hiv_regimen_drug), 124, 36);
+
+            INSERT INTO hiv_regimen_drug (id, regimen_id, drug_id)
+            VALUES ((SELECT MAX(id) + 1 FROM hiv_regimen_drug), 124, 122);
+
+            INSERT INTO hiv_regimen_drug (id, regimen_id, drug_id)
+            VALUES ((SELECT MAX(id) + 1 FROM hiv_regimen_drug), 252, 25);
+
+            INSERT INTO hiv_regimen_drug (id, regimen_id, drug_id)
+            VALUES ((SELECT MAX(id) + 1 FROM hiv_regimen_drug), 252, 36);
+
+            INSERT INTO hiv_regimen_drug (id, regimen_id, drug_id)
+            VALUES ((SELECT MAX(id) + 1 FROM hiv_regimen_drug), 252, 118);
+
+            INSERT INTO hiv_regimen_drug (id, regimen_id, drug_id)
+            VALUES ((SELECT MAX(id) + 1 FROM hiv_regimen_drug), 250, 31);
+
+            INSERT INTO hiv_regimen_drug (id, regimen_id, drug_id)
+            VALUES ((SELECT MAX(id) + 1 FROM hiv_regimen_drug), 250, 5);
+
+            INSERT INTO hiv_regimen_drug (id, regimen_id, drug_id)
+            VALUES ((SELECT MAX(id) + 1 FROM hiv_regimen_drug), 250, 122);
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
 

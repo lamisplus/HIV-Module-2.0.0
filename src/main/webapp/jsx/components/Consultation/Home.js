@@ -984,13 +984,13 @@ const ClinicVisit = (props) => {
     temp.nextAppointment = objValues.nextAppointment
       ? ""
       : "This field is required";
-    temp.pregnancyStatus =
-      objValues.pregnancyStatus === "select" || !objValues.pregnancyStatus
-        ? "This field is required"
-        : "";
-
-    if (patientObj.sex.toLocaleLowerCase() === "male")
-      temp.pregnancyStatus = "";
+    // temp.pregnancyStatus =
+    //   objValues.pregnancyStatus === "select" || !objValues.pregnancyStatus
+    //     ? "This field is required"
+    //     : "";
+    //
+    // if (patientObj.sex.toLocaleLowerCase() === "male")
+    //   temp.pregnancyStatus = "";
 
     temp.stage = who?.stage ? "" : "This field is required";
     temp.functionalStatusId = objValues.functionalStatusId
@@ -1004,8 +1004,10 @@ const ClinicVisit = (props) => {
     setErrors({
       ...temp,
     });
+    // console.log("temp:", temp);
     return Object.values(temp).every((x) => x === "");
   };
+  // console.log("temp", temp)
   const handleSelectedTestGroup = (e) => {
     setTests({ ...tests, labTestGroupId: e.target.value });
     const getTestList = testGroup.filter(
@@ -1023,7 +1025,7 @@ const ClinicVisit = (props) => {
     setTests({ ...tests, [e.target.name]: e.target.value });
   };
 
-  console.log("tb object inside parent", tbObj)
+  // console.log("tb object inside parent", tbObj)
 
   /**** Submit Button Processing  */
   const handleSubmit = (e) => {
@@ -1043,7 +1045,6 @@ const ClinicVisit = (props) => {
       objValues.viralLoadOrder = testOrderList;
       objValues.arvdrugsRegimen = arvDrugOrderList;
       objValues["vitalSignDto"] = vital;
-
       axios
         .post(`${baseUrl}hiv/art/clinic-visit/`, objValues, {
           headers: { Authorization: `Bearer ${token}` },
