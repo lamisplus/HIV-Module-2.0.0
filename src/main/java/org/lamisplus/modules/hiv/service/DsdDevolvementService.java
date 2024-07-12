@@ -1,12 +1,14 @@
 package org.lamisplus.modules.hiv.service;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import liquibase.pro.packaged.I;
 import org.jetbrains.annotations.NotNull;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
 import org.lamisplus.modules.hiv.domain.dto.CurrentViralLoadDTO;
@@ -41,30 +43,31 @@ public class DsdDevolvementService {
 
     private final CurrentViralLoadRepository currentViralLoadRepository;
 
-    public DsdDevolvementDTO saveDsdDevolvement(DsdDevolvementDTO dto) throws IOException {
-        try {
 
-            DsdDevolvement dsdDevolvement = convertDsdDevolvementDtoToEntity(dto);
-            dsdDevolvement.setUuid(UUID.randomUUID().toString());
-            dsdDevolvement.setArchived(0);
-            // before saving check if the date of devolvement is existing for the person, if yes don't save
-            List<DsdDevolvementDTO> devolvements = this.getDsdDevolvementByPersonId(dto.getPersonId(), 0, 10);
-            if(devolvements.size() > 0){
-                for(DsdDevolvementDTO devolvement: devolvements){
-                    if(devolvement.getDateDevolved().equals(dto.getDateDevolved())){
-                        throw new RuntimeException("Devolvement already exists for this date");
-                    }
-                }
-            }
-            return convertEntityToDsdDevolvementDto(dsdDevolvementRepository.save(dsdDevolvement));
-        } catch (JsonProcessingException e) {
-            // Handle JsonProcessingException
-            e.printStackTrace();
-            return null;
+    public DsdDevolvementDTO saveDsdDevolvement(DsdDevolvementDTO dto) throws IOException {
+        DsdDevolvement dsdDevolvement = convertDsdDevolvementDtoToEntity(dto);
+        LocalDate dateDevolved = dto.getDateDevolved();
+        Long personId = dto.getPersonId();
+        String dsdType = dto.getDsdType();
+        String personUuid = dsdDevolvement.getPerson().getUuid();
+        boolean isDevolvedSameDay = dsdDevolvementRepository.existsByPersonIdAndDateDevolved(personUuid, dateDevolved);
+        boolean isDevolvedSameDsdType = dsdDevolvementRepository.existsByPersonIdAndDsdType(personUuid, dsdType);
+        if (isDevolvedSameDay || isDevolvedSameDsdType) {
+            throw new IllegalArgumentException("Patient has been devolved on the same day or on the same dsd type");
         }
+        dsdDevolvement.setUuid(UUID.randomUUID().toString());
+        dsdDevolvement.setArchived(0);
+        return convertEntityToDsdDevolvementDto(dsdDevolvementRepository.save(dsdDevolvement));
     }
 
-    public DsdDevolvementDTO updateDsdDevolvement(Long id, DsdDevolvementDTO dto) throws IOException{
+    // check if a patient has been devolved
+    public boolean checkIfPatientHasBeenDevolved(String personId) {
+        Long count = dsdDevolvementRepository.countByPersonId(personId);
+        return count > 0;
+    }
+
+
+    public DsdDevolvementDTO updateDsdDevolvement(Long id, DsdDevolvementDTO dto) throws IOException {
         DsdDevolvement existDevolvement = getDevolvement(id);
         DsdDevolvement dsdDevolvement = convertDsdDevolvementDtoToEntity(dto);
         dsdDevolvement.setId(existDevolvement.getId());
@@ -74,23 +77,23 @@ public class DsdDevolvementService {
     }
 
 
-    public DsdDevolvementDTO getDevolvementById(Long id) throws IOException{
+    public DsdDevolvementDTO getDevolvementById(Long id) throws IOException {
         return convertEntityToDsdDevolvementDto(getDevolvement(id));
     }
 
-    public List<DsdDevolvementDTO> getDsdDevolvementByPersonId(Long personId, int pageNo, int pageSize){
+    public List<DsdDevolvementDTO> getDsdDevolvementByPersonId(Long personId, int pageNo, int pageSize) {
         Person person = getPerson(personId);
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by("dateDevolved").descending());
         Page<DsdDevolvement> devolveVisits = dsdDevolvementRepository.findAllByPersonAndArchived(person, 0, paging);
         if (devolveVisits.hasContent()) {
-           return devolveVisits.getContent().stream().map(this::convertEntityToDsdDevolvementDto).collect(Collectors.toList());
+            return devolveVisits.getContent().stream().map(this::convertEntityToDsdDevolvementDto).collect(Collectors.toList());
         }
         return new ArrayList<>();
     }
 
-    public Optional<CurrentViralLoadDTO> getCurrentViralLoadByPersonId(Long personId){
-            Optional<CurrentViralLoad> currentViralLoad = currentViralLoadRepository.findViralLoadByPersonId(personId);
-            return  convertEntityTocurrentViralLoadDto(currentViralLoad);
+    public Optional<CurrentViralLoadDTO> getCurrentViralLoadByPersonId(Long personId) {
+        Optional<CurrentViralLoad> currentViralLoad = currentViralLoadRepository.findViralLoadByPersonId(personId);
+        return convertEntityTocurrentViralLoadDto(currentViralLoad);
     }
 
     public Optional<PatientCurrentViralLoad> getPatientCurrentViralLoadByPersonUuid(String personUuid) {
@@ -104,7 +107,7 @@ public class DsdDevolvementService {
     }
 
 
-    public String deleteById(Long id) throws IOException{
+    public String deleteById(Long id) throws IOException {
         DsdDevolvement existDevolvement = getDevolvement(id);
         existDevolvement.setArchived(1);
         dsdDevolvementRepository.save(existDevolvement);
@@ -113,19 +116,20 @@ public class DsdDevolvementService {
 
 
     //implement model mapper
-    private Optional<CurrentViralLoadDTO> convertEntityTocurrentViralLoadDto(Optional<CurrentViralLoad> entity){
+    private Optional<CurrentViralLoadDTO> convertEntityTocurrentViralLoadDto(Optional<CurrentViralLoad> entity) {
         CurrentViralLoadDTO dto = new CurrentViralLoadDTO();
         try {
             BeanUtils.copyProperties(entity, dto);
             dto.setId(entity.get().getId());
             dto.setViralLoadResultDate(entity.get().getViralLoadResultDate());
             dto.setViralLoadTestResult(entity.get().getViralLoadTestResult());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return Optional.of(dto);
     }
-    private DsdDevolvement  convertDsdDevolvementDtoToEntity(DsdDevolvementDTO dto) throws JsonProcessingException {
+
+    private DsdDevolvement convertDsdDevolvementDtoToEntity(DsdDevolvementDTO dto) throws JsonProcessingException {
         DsdDevolvement dsdDevolvement = new DsdDevolvement();
         try {
             BeanUtils.copyProperties(dto, dsdDevolvement);
@@ -133,42 +137,42 @@ public class DsdDevolvementService {
             Person person = getPerson(personId);
             dsdDevolvement.setPerson(person);
             dsdDevolvement.setFacilityId(organizationUtil.getCurrentUserOrganization());
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Error converting entity to DTO: " + e.getMessage(), e);
         }
         return dsdDevolvement;
     }
 
-    private DsdDevolvementDTO convertEntityToDsdDevolvementDto(DsdDevolvement entity){
-		DsdDevolvementDTO dto = new DsdDevolvementDTO();
+    private DsdDevolvementDTO convertEntityToDsdDevolvementDto(DsdDevolvement entity) {
+        DsdDevolvementDTO dto = new DsdDevolvementDTO();
         try {
             BeanUtils.copyProperties(entity, dto);
             dto.setPersonId(entity.getPerson().getId());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-		return dto;
-	}
+        return dto;
+    }
 
 
     //helper functions
-    private DsdDevolvement getDevolvement(Long id){
-        return dsdDevolvementRepository.findById(id).orElseThrow(()-> getDevolvementNotFoundException(id));
+    private DsdDevolvement getDevolvement(Long id) {
+        return dsdDevolvementRepository.findById(id).orElseThrow(() -> getDevolvementNotFoundException(id));
     }
 
     private Person getPerson(Long personId) {
-		return  personRepository.findById(personId).orElseThrow(() -> getPersonEntityNotFoundException(personId));
-	}
+        return personRepository.findById(personId).orElseThrow(() -> getPersonEntityNotFoundException(personId));
+    }
 
     @NotNull
-	private EntityNotFoundException getPersonEntityNotFoundException(Long personId) {
-		return new EntityNotFoundException(Person.class, "id ", "" + personId);
-	}
+    private EntityNotFoundException getPersonEntityNotFoundException(Long personId) {
+        return new EntityNotFoundException(Person.class, "id ", "" + personId);
+    }
 
     @NotNull
-	private EntityNotFoundException getDevolvementNotFoundException(Long id) {
-		return new EntityNotFoundException(DsdDevolvement.class, "id ", "" + id);
-	}
+    private EntityNotFoundException getDevolvementNotFoundException(Long id) {
+        return new EntityNotFoundException(DsdDevolvement.class, "id ", "" + id);
+    }
 
 }

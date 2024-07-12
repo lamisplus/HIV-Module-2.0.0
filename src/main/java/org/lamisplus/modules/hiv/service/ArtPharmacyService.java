@@ -77,7 +77,7 @@ public class ArtPharmacyService {
 	private void checkIfSelectRegimenIsAlreadyDispensed(RegisterArtPharmacyDTO dto) {
 		Set<RegimenRequestDto> regimens = dto.getRegimen();
 		if(!regimens.isEmpty()){
-			log.info("I am checking if a the give regimen exist");
+//			log.info("I am checking if a the give regimen exist");
 			Person person = getPerson(dto.getPersonId());
 			regimens.forEach(regimen -> {
 				LocalDate visitDate = dto.getVisitDate();
@@ -85,14 +85,14 @@ public class ArtPharmacyService {
 					Long count = artPharmacyRepository.getCountForAnAlreadyDispenseRegimen(person.getUuid(),
 							regimen.getRegimenId(),
 							visitDate);
-					log.info("already exist: " + count);
+//					log.info("already exist: " + count);
 					if(count != null)
 						throw new RecordExistException(Regimen.class, "name", regimen.getRegimenName() + " is already dispensed on this " +
 							"date "+ visitDate);
 				}
 			});
 		}
-		log.info("Checking completed");
+//		log.info("Checking completed");
 	}
 	
 	
@@ -162,7 +162,7 @@ public class ArtPharmacyService {
 						.map(ArtPharmacy::getRegimens);
 		if (regimen.isPresent()) {
 			Set<Regimen> regimen1 = regimen.get();
-			Log.info("regimen: {}", regimen1.size());
+//			Log.info("regimen: {}", regimen1.size());
 			Optional<Regimen> currentRegimen =
 					regimen1.stream()
 							.filter(regimen3 -> regimen3.getRegimenType().getDescription().contains("ART")

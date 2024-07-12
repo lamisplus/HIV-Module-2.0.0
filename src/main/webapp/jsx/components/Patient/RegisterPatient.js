@@ -924,22 +924,39 @@ const UserRegistration = (props) => {
      setBasicInfo({ ...basicInfo, [inputName]: NumberValue });
    };
    //Handle CheckBox
-   const handleCheckBox = (e) => {
-     if (e.target.checked) {
-       setOvcEnrolled(true);
-     } else {
-       //Clear value
-       objValues.ovc_enrolled = "";
-       objValues.ovcNumber = "";
-       objValues.householdNumber = "";
-       objValues.referredToOVCPartner = "";
-       objValues.dateReferredToOVCPartner = "";
-       objValues.referredFromOVCPartner = "";
-       objValues.dateReferredFromOVCPartner = "";
-       objValues.ovcUniqueId = "";
-       setOvcEnrolled(false);
-     }
-   };
+   // const handleCheckBox = (e) => {
+   //   if (e.target.checked) {
+   //     setOvcEnrolled(true);
+   //   } else {
+   //     //Clear value
+   //     objValues.ovc_enrolled = "";
+   //     objValues.ovcNumber = "";
+   //     objValues.householdNumber = "";
+   //     objValues.referredToOVCPartner = "";
+   //     objValues.dateReferredToOVCPartner = "";
+   //     objValues.referredFromOVCPartner = "";
+   //     objValues.dateReferredFromOVCPartner = "";
+   //     objValues.ovcUniqueId = "";
+   //     setOvcEnrolled(false);
+   //   }
+   // };
+
+      const handleCheckBox = (e) => {
+        setOvcEnrolled(e.target.checked);
+        if (!e.target.checked) {
+            //Clear values
+            objValues.ovc_enrolled = "";
+            objValues.ovcNumber = "";
+            objValues.householdNumber = "";
+            objValues.referredToOVCPartner = "";
+            objValues.dateReferredToOVCPartner = "";
+            objValues.referredFromOVCPartner = "";
+            objValues.dateReferredFromOVCPartner = "";
+            objValues.ovcUniqueId = "";
+        }
+    };
+
+
    const handleCancel = () => {
      history.push({ pathname: "/" });
    };
@@ -2503,25 +2520,46 @@ const UserRegistration = (props) => {
                          )}
                        </>
                      )}
+                     {/*{basicInfo.age !== "" && basicInfo.age <= 20 && (*/}
+                     {/*  <div className="form-group mb-3 col-md-3">*/}
+                     {/*    <div className="form-check custom-checkbox ml-1 ">*/}
+                     {/*      <input*/}
+                     {/*        type="checkbox"*/}
+                     {/*        className="form-check-input"*/}
+                     {/*        name="ovc_enrolled"*/}
+                     {/*        id="ovc_enrolled"*/}
+                     {/*        checked={isChecked}*/}
+                     {/*        onChange={handleCheckBox}*/}
+                     {/*      />*/}
+                     {/*      <label*/}
+                     {/*        className="form-check-label"*/}
+                     {/*        htmlFor="basic_checkbox_1"*/}
+                     {/*      >*/}
+                     {/*        Enrolled into OVC?*/}
+                     {/*      </label>*/}
+                     {/*    </div>*/}
+                     {/*  </div>*/}
+                     {/*)}*/}
+
                      {basicInfo.age !== "" && basicInfo.age <= 20 && (
-                       <div className="form-group mb-3 col-md-3">
-                         <div className="form-check custom-checkbox ml-1 ">
-                           <input
-                             type="checkbox"
-                             className="form-check-input"
-                             name="ovc_enrolled"
-                             id="ovc_enrolled"
-                             checked={isChecked}
-                             onChange={handleCheckBox}
-                           />
-                           <label
-                             className="form-check-label"
-                             htmlFor="basic_checkbox_1"
-                           >
-                             Enrolled into OVC?
-                           </label>
+                         <div className="form-group mb-3 col-md-3">
+                           <div className="form-check custom-checkbox ml-1 ">
+                             <input
+                                 type="checkbox"
+                                 className="form-check-input"
+                                 name="ovc_enrolled"
+                                 id="ovc_enrolled"
+                                 checked={ovcEnrolled}
+                                 onChange={handleCheckBox}
+                             />
+                             <label
+                                 className="form-check-label"
+                                 htmlFor="basic_checkbox_1"
+                             >
+                               Enrolled into OVC?
+                             </label>
+                           </div>
                          </div>
-                       </div>
                      )}
                      {ovcEnrolled === true && (
                        <>
@@ -2534,9 +2572,10 @@ const UserRegistration = (props) => {
                                  name="houseHoldNumber"
                                  id="houseHoldNumber"
                                  required={ovcEnrolled}
-                                 value={basicInfo.householdUniqueId}
+                                 // value={basicInfo.householdUniqueId}
+                                   value={basicInfo.householdNumber}
                                  onChange={handleInputChange}
-                                 disabled={true}
+                                 // disabled={true}
                                  style={{
                                    border: "1px solid #014D88",
                                    borderRadius: "0.2rem",
@@ -2554,7 +2593,7 @@ const UserRegistration = (props) => {
                                  required={ovcEnrolled}
                                  value={basicInfo.ovcUniqueId}
                                  onChange={handleInputChange}
-                                 disabled={true}
+                                 // disabled={true}
                                  style={{
                                    border: "1px solid #014D88",
                                    borderRadius: "0.2rem",
