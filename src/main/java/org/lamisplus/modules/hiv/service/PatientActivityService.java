@@ -39,6 +39,8 @@ public class PatientActivityService {
 	@NotNull
 	public List<TimelineVm> getTimelineVms(Long patientId, boolean full) {
 		List<PatientActivity> patientActivities = getActivitiesFor(patientId);
+//		System.out.println("=====================================================");
+//		System.out.println(patientActivities);
 		//Log.info("patientActivities : {}", patientActivities);
 		List<TimelineVm> timeline = new ArrayList<>();
 		
@@ -49,13 +51,20 @@ public class PatientActivityService {
 				.sorted(Comparator.comparing(PatientActivity::getName))
 				.sorted((a1, a2) -> a2.getDate().compareTo(a1.getDate()))
 				.collect(getPatientActivityMapCollector());
+//		System.out.println("=====================================================");
+//		System.out.println(activities);
+//		System.out.println("=====================================================");
 		
 		activities.forEach((d, a) -> {
 			TimelineVm timelineVm = new TimelineVm();
 			timelineVm.setDate(d);
 			timelineVm.setActivities(a);
+			System.out.println(timelineVm);
 			timeline.add(timelineVm);
 		});
+//		System.out.println("=====================================================");
+//		System.out.println(timeline);
+//		System.out.println("=====================================================");
 		return timeline.stream()
 				.sorted((t1, t2) -> LocalDate.parse(t2.getDate(), DateTimeFormatter.ofPattern("dd MMM, yyyy"))
 						.compareTo(LocalDate.parse(t1.getDate(), DateTimeFormatter.ofPattern("dd MMM, yyyy")))
@@ -72,6 +81,9 @@ public class PatientActivityService {
 	}
 	
 	public List<PatientActivity> getActivities(Long id) {
+//		System.out.println("===============================================");
+//		System.out.println(getActivitiesFor(id));
+//		System.out.println("===============================================");
 		return Objects.requireNonNull(getActivitiesFor(id))
 				.stream()
 				.filter(Objects::nonNull)

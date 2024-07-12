@@ -290,12 +290,23 @@ public class HivPatientService {
 
     private HivPatientDto convertPersonHivPatientDto(Long personId) {
         if (Boolean.TRUE.equals (personService.isPersonExist (personId))) {
+//            System.out.println("========================================");
+//            System.out.println("CODE WORKING");
             Person person = getPerson (personId);
+//            System.out.println("========================================");
+//            System.out.println(person);
+//            System.out.println("========================================");
             PersonResponseDto bioData = personService.getPersonById (personId);
+//            System.out.println(bioData);
+//            System.out.println("========================================");
             Optional<HivEnrollmentDTO> enrollment =
                     hivEnrollmentService.getHivEnrollmentByPersonIdAndArchived (bioData.getId ());
+           // System.out.println(enrollment);
+            //System.out.println("========================================");
             Optional<ARTClinical> artCommencement =
-                    artClinicalRepository.findByPersonAndIsCommencementIsTrueAndArchived (person, 0);
+                    artClinicalRepository.findTopByPersonAndIsCommencementIsTrueAndArchived(person, 0);
+//            System.out.println(artCommencement);
+//            System.out.println("========================================");
             HivPatientDto hivPatientDto = new HivPatientDto ();
             BeanUtils.copyProperties (bioData, hivPatientDto);
             hivPatientDto.setCreateBy(person.getCreatedBy());

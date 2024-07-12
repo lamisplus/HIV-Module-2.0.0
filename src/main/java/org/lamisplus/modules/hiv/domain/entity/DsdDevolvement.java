@@ -89,11 +89,11 @@ public class DsdDevolvement extends HivAuditEntity implements Persistable<Long>,
 
     @Basic
     @Column(name="dsd_outlet_state")
-    private int dsdOutletState;
+    private Integer dsdOutletState;
 
     @Basic
     @Column(name="dsd_outlet_lga")
-    private int dsdOutletLga;
+    private Integer dsdOutletLga;
 
     @Basic
     @Column(name="dsd_outlet")
