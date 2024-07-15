@@ -108,9 +108,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Patients = (props) => {
-  //const [patientList, setPatientList] = useState([])
   const [showPPI, setShowPPI] = useState(true);
-  //const [loading, setLoading] = useState(true)
+  const permissions = localStorage.getItem("permissions")?.split(",");
+
   const handleCheckBox = (e) => {
     if (e.target.checked) {
       setShowPPI(false);
@@ -144,7 +144,7 @@ const Patients = (props) => {
           { title: "Actions", field: "actions", filtering: false },
         ]}
         data={(query) =>
-          new Promise((resolve, reject) =>
+          new Promise((resolve, reject) => {
             axios
               .get(
                 `${baseUrl}hiv/patients?pageSize=${query.pageSize}&pageNo=${query.page}&searchValue=${query.search}`,
@@ -193,7 +193,8 @@ const Patients = (props) => {
                     ),
                     actions: (
                       <div>
-                        {row.currentStatus !== "Not Enrolled" ? (
+                        {permissions?.includes("HIV Enrollment Register") &&
+                        row.currentStatus !== "Not Enrolled" ? (
                           <>
                             <Link
                               to={{
@@ -242,50 +243,56 @@ const Patients = (props) => {
                           </>
                         ) : (
                           <>
-                            <Link
-                              to={{
-                                pathname: "/enroll-patient",
-                                state: { patientId: row.id, patientObj: row },
-                              }}
-                            >
-                              <ButtonGroup
-                                variant="contained"
-                                aria-label="split button"
-                                style={{
-                                  backgroundColor: "rgb(153, 46, 98)",
-                                  height: "30px",
-                                  width: "215px",
+                            {permissions?.includes(
+                              "HIV Enrollment Register"
+                            ) ? (
+                              <Link
+                                to={{
+                                  pathname: "/enroll-patient",
+                                  state: { patientId: row.id, patientObj: row },
                                 }}
-                                size="large"
                               >
-                                <Button
-                                  color="primary"
-                                  size="small"
-                                  aria-label="select merge strategy"
-                                  aria-haspopup="menu"
+                                <ButtonGroup
+                                  variant="contained"
+                                  aria-label="split button"
                                   style={{
                                     backgroundColor: "rgb(153, 46, 98)",
+                                    height: "30px",
+                                    width: "215px",
                                   }}
+                                  size="large"
                                 >
-                                  <TiArrowForward />
-                                </Button>
-                                <Button
-                                  style={{
-                                    backgroundColor: "rgb(153, 46, 98)",
-                                  }}
-                                >
-                                  <span
+                                  <Button
+                                    color="primary"
+                                    size="small"
+                                    aria-label="select merge strategy"
+                                    aria-haspopup="menu"
                                     style={{
-                                      fontSize: "12px",
-                                      color: "#fff",
-                                      fontWeight: "bolder",
+                                      backgroundColor: "rgb(153, 46, 98)",
                                     }}
                                   >
-                                    Enroll Patient
-                                  </span>
-                                </Button>
-                              </ButtonGroup>
-                            </Link>
+                                    <TiArrowForward />
+                                  </Button>
+                                  <Button
+                                    style={{
+                                      backgroundColor: "rgb(153, 46, 98)",
+                                    }}
+                                  >
+                                    <span
+                                      style={{
+                                        fontSize: "12px",
+                                        color: "#fff",
+                                        fontWeight: "bolder",
+                                      }}
+                                    >
+                                      Enroll Patient
+                                    </span>
+                                  </Button>
+                                </ButtonGroup>
+                              </Link>
+                            ) : (
+                              "Additional privileges needed to enroll this Patient"
+                            )}
                           </>
                         )}
                       </div>
@@ -294,8 +301,8 @@ const Patients = (props) => {
                   page: query.page,
                   totalCount: result.data.totalRecords,
                 });
-              })
-          )
+              });
+          })
         }
         options={{
           search: true,

@@ -19,7 +19,17 @@ const divStyle = {
 
 const Home = () => {
   const [key, setKey] = useState("home");
-  // tab
+
+  const getPermissions = async () => {
+    await axios
+      .get(`${baseUrl}account`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        localStorage.setItem("permissions", response.data.permissions);
+      })
+      .catch((error) => {});
+  };
 
   const fetchFacilityId = () => {
     axios
@@ -34,6 +44,7 @@ const Home = () => {
   };
 
   useEffect(() => {
+    getPermissions();
     fetchFacilityId();
   }, []);
 
@@ -77,6 +88,7 @@ const Home = () => {
                   <Tab eventKey="home" title="Find Patients">
                     <Dashboard />
                   </Tab>
+
                   <Tab eventKey="art-patients" title="ART Patients">
                     <ArtPatients />
                   </Tab>

@@ -62,8 +62,21 @@ const styles = (theme) => ({
 
 function PatientCard(props) {
   const { classes } = props;
-  //const patientCurrentStatus=props.patientObj && props.patientObj.currentStatus==="Died (Confirmed)" ? true : false ;
+  console.log(props);
+
   const patientObject = props.patientObj1;
+  const [status, setStatus] = useState("show");
+
+  let weight = parseInt(patientObject?.artCommence?.vitalSignDto?.bodyWeight);
+  let height = parseInt(patientObject?.artCommence?.vitalSignDto?.height);
+
+  const changeStatus = () => {
+    if (status === "show") {
+      setStatus("");
+    } else {
+      setStatus("show");
+    }
+  };
 
   const id = props.patientObj.id;
 
@@ -106,6 +119,28 @@ function PatientCard(props) {
   useEffect(() => {
     fetchPatientFlags(id);
   }, [])
+
+  const calculateBMI = (weight, height) => {
+    const BMI = Math.round(weight / ((height / 100) * (height / 100)));
+    if (BMI < 18.5) {
+      return (
+        <span className="text-primary">{`Patient is underweight with a BMI of ${BMI}`}</span>
+      );
+    } else if (BMI > 19 && BMI < 24.9) {
+      return (
+        <span className="text-success">{`Patient is normal weight with a BMI of ${BMI}`}</span>
+      );
+    } else if (BMI > 25 && BMI < 29.9) {
+      return (
+        <span className="text-info">{`Patient is overweight with a BMI of ${BMI}`}</span>
+      );
+    } else if (BMI > 30) {
+      return (
+        <span className="text-danger">{`Patient is obese with a BMI of ${BMI}`}</span>
+      );
+    }
+    return null;
+  };
 
   return (
     <Sticky>
@@ -159,7 +194,6 @@ function PatientCard(props) {
                           </b>
                         </span>
                       </Col>
-
                       <Col md={4} className={classes.root2}>
                         <span>
                           Date Of Birth :{" "}
@@ -265,19 +299,13 @@ function PatientCard(props) {
                           </Label>
                         </Typography>
                       </Col>
-                      <Col md={12}>
+                      <Col md={4}>
                         <div>
                           <Typography variant="caption">
                             <Label color={"teal"} size={"mini"}>
                               ART STATUS : {patientObject.currentStatus}
                             </Label>
-                          </Typography>
-                        </div>
-                      </Col>
-                      <Col md={12}>
-                        {/* {biometricStatus===true ? (
-                          <> */}
-                        <div>
+                          </Typography>{" "}
                           <Typography variant="caption">
                             <Label
                               color={
@@ -296,13 +324,32 @@ function PatientCard(props) {
                             </Label>
                           </Typography>
                         </div>
-                        {/* </>
-                          )
-                          :
-                          <>
-                              
-                          </>
-                      } */}
+                      </Col>
+                      <Col md={4}></Col>
+                      <Col md={4}>
+                        {patientObject?.artCommence !== null && (
+                          <ul className="d-flex align-items-center">
+                            <li className="nav-item dropdown">
+                              <a
+                                className="nav-link nav-icon show"
+                                onClick={() => changeStatus()}
+                              >
+                                <i className="bi bi-bell"></i>
+                                <span className="badge bg-primary badge-number">
+                                  1
+                                </span>
+                              </a>
+
+                              <ul
+                                className={`dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications ${status}`}
+                              >
+                                <li className="dropdown-header">
+                                  {calculateBMI(weight, height)}
+                                </li>
+                              </ul>
+                            </li>
+                          </ul>
+                        )}
                       </Col>
                     </>
                   ) : (

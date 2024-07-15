@@ -7,7 +7,7 @@ import ButtonMui from "@material-ui/core/Button";
 import { TiArrowBack } from "react-icons/ti";
 import { makeStyles } from "@material-ui/core";
 import { toast } from "react-toastify";
-import { Button } from 'semantic-ui-react';
+import { Button } from "semantic-ui-react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
 function SubMenu(props) {
   const [activeItem, setActiveItem] = useState("recent-history");
   const patientObj = props.patientObj;
+  const permissions = localStorage.getItem("permissions")?.split(",");
   // console.log("PatientObj", props.patientObj )
   const [isOtzEnrollementDone, setIsOtzEnrollementDone] = useState(null);
   const [labResult, setLabResult] = useState(null);
@@ -278,7 +279,6 @@ function SubMenu(props) {
     !props.patientObj.currentStatus.toLocaleLowerCase().includes("stop")
   );
 
-
   // const updateCurrentEnrollmentStatus = () => {
   //   axios
   //     .post(`${baseUrl}hiv/status/activate-stop_status/${props.patientObj.personUuid}`, {
@@ -305,34 +305,34 @@ function SubMenu(props) {
   //     });
   // };
 
-
   const updateCurrentEnrollmentStatus = () => {
-    axios.post(
+    axios
+      .post(
         `${baseUrl}hiv/status/activate-stop_status/${props.patientObj.personUuid}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
         }
-    )
-        .then((response) => {
-          if (response.status === 204) {
-            setIsPatientActive(true);
-            toast.success("Patient reactivated succesfully");
-          }
-          props.setActiveContent({
-            ...props.activeContent,
-            route: "recent-history",
-          });
-        })
-        .catch((error) => {
-          if (error.response && error.response.data) {
-            let errorMessage =
-                error.response.data && error.response.data.apierror.message !== ""
-                    ? error.response.data.apierror.message
-                    : "Something went wrong, please try again";
-            toast.error(errorMessage);
-          }
+      )
+      .then((response) => {
+        if (response.status === 204) {
+          setIsPatientActive(true);
+          toast.success("Patient reactivated succesfully");
+        }
+        props.setActiveContent({
+          ...props.activeContent,
+          route: "recent-history",
         });
+      })
+      .catch((error) => {
+        if (error.response && error.response.data) {
+          let errorMessage =
+            error.response.data && error.response.data.apierror.message !== ""
+              ? error.response.data.apierror.message
+              : "Something went wrong, please try again";
+          toast.error(errorMessage);
+        }
+      });
   };
 
   // useEffect(() => {
@@ -344,13 +344,11 @@ function SubMenu(props) {
       <div>
         {props.patientObj && props.patientObj !== null && (
           <Segment inverted>
-            {
-              (patientObj.commenced === false ||
+            {(patientObj.commenced === false ||
               patientObj.createBy.toUpperCase() !==
                 "LAMIS DATA MIGRATION SYSTEM") &&
             (patientObj.commenced !== true ||
-              patientObj.clinicalEvaluation !== true) ?
-                  (
+              patientObj.clinicalEvaluation !== true) ? (
               <Menu size="tiny" color={"blue"} inverted pointing>
                 <Menu.Item
                   onClick={() => onClickHome()}
@@ -362,17 +360,21 @@ function SubMenu(props) {
                   Home
                 </Menu.Item>
 
-                {!patientObj.clinicalEvaluation &&  (
-                  <Menu.Item
-                    onClick={() => loadAdultEvaluation()}
-                    name="initial"
-                    active={activeItem === "initial"}
-                    title="Initial Evaluation"
-                  >
-                    {" "}
-                    Initial Evaluation
-                  </Menu.Item>
-                )}
+                {permissions?.includes("Adult Initial Clinical Evaluation") ||
+                  (permissions?.includes(
+                    "Pediatric Initial Clinical Evaluation Form"
+                  ) &&
+                    !patientObj.clinicalEvaluation && (
+                      <Menu.Item
+                        onClick={() => loadAdultEvaluation()}
+                        name="initial"
+                        active={activeItem === "initial"}
+                        title="Initial Evaluation"
+                      >
+                        {" "}
+                        Initial Evaluation
+                      </Menu.Item>
+                    ))}
                 {!patientObj.commenced && (
                   <Menu.Item
                     onClick={() => loadArtCommencement()}
@@ -393,298 +395,362 @@ function SubMenu(props) {
                   History
                 </Menu.Item>
               </Menu>
+            ) : (
+              <>
+                {patientObj &&
+                (patientObj.currentStatus === "DIED (CONFIRMED)" ||
+                  patientObj.currentStatus === "ART TRANSFER OUT") ? (
+                  <Menu
+                    size="tiny"
+                    style={{
+                      backgroundColor: "rgb(153, 46, 98)",
+                      color: "#fff",
+                    }}
+                    inverted
+                  >
+                    <Menu.Item
+                      onClick={() => onClickHome()}
+                      name="home"
+                      active={activeItem === "recent-history"}
+                      title="Home"
+                    >
+                      Home
+                    </Menu.Item>
+                    {patientObj.currentStatus === "DIED (CONFIRMED)" &&
+                      permissions?.includes(
+                        "Client Tracking & Discontinuation Form"
+                      ) && (
+                        <Menu.Item
+                          onClick={() => loadTrackingForm(patientObj)}
+                          name="tracking"
+                          active={activeItem === "tracking"}
+                          title="Tracking Form"
+                        ></Menu.Item>
+                      )}
+                    <Menu.Item
+                      onClick={() => loadPatientHistory(patientObj)}
+                      name="history"
+                      active={activeItem === "history"}
+                      title="History"
+                    >
+                      History
+                    </Menu.Item>
+                    {patientObj.currentStatus === "ART TRANSFER OUT" &&
+                      permissions?.includes(
+                        "Client Tracking & Discontinuation Form"
+                      ) && (
+                        <Menu.Item
+                          onClick={() => loadTransferForm(patientObj)}
+                          name="transfer"
+                          active={activeItem === "transfer"}
+                          title="Transfer"
+                        >
+                          <Button
+                            size="mini"
+                            style={{
+                              backgroundColor: "green",
+                              color: "#fff",
+                              marginRight: "10px",
+                            }}
+                          >
+                            Activate
+                          </Button>
+                        </Menu.Item>
+                      )}
+                  </Menu>
+                ) : (
+                  <Menu size="tiny" color={"black"} inverted>
+                    <Menu.Item
+                      onClick={() => onClickHome()}
+                      disabled={patientCurrentStatus}
+                      name="home"
+                      active={activeItem === "recent-history"}
+                      title="Home"
+                    >
+                      {" "}
+                      Home
+                    </Menu.Item>
 
-            ) :
-                  (
-               <>
-                 {
-                   patientObj && (patientObj.currentStatus === "DIED (CONFIRMED)" || patientObj.currentStatus === "ART TRANSFER OUT") ? (
-                       <Menu size="tiny" style={{
-                         backgroundColor: "rgb(153, 46, 98)",
-                         color: "#fff"
-                       }} inverted>
-                         <Menu.Item
-                             onClick={() => onClickHome()}
-                             name="home"
-                             active={activeItem === "recent-history"}
-                             title="Home"
-                         >
-                           Home
-                         </Menu.Item>
-                         {patientObj.currentStatus === "DIED (CONFIRMED)" && (
-                             <Menu.Item
-                                 onClick={() => loadTrackingForm(patientObj)}
-                                 name="tracking"
-                                 active={activeItem === "tracking"}
-                                 title="Tracking Form"
-                             >
-                             </Menu.Item>
-                         )}
-                         <Menu.Item
-                             onClick={() => loadPatientHistory(patientObj)}
-                             name="history"
-                             active={activeItem === "history"}
-                             title="History"
-                         >
-                           History
-                         </Menu.Item>
-                         {patientObj.currentStatus === "ART TRANSFER OUT" && (
-                             <Menu.Item
-                                 onClick={() => loadTransferForm(patientObj)}
-                                 name="transfer"
-                                 active={activeItem === "transfer"}
-                                 title="Transfer"
-                             >
-                               <Button size='mini' style={{ backgroundColor: "green", color: '#fff', marginRight: '10px' }}>
-                                 Activate
-                               </Button>
-                             </Menu.Item>
-                         )}
-                       </Menu>
-                   ) : (
-                       <Menu size="tiny" color={"black"} inverted>
-                         <Menu.Item
-                           onClick={() => onClickHome()}
-                           disabled={patientCurrentStatus}
-                           name="home"
-                           active={activeItem === "recent-history"}
-                           title="Home"
-                         >
-                           {" "}
-                           Home
-                         </Menu.Item>
+                    {isPatientActive && (
+                      <>
+                        {permissions?.includes(
+                          "Adult Initial Clinical Evaluation"
+                        ) ||
+                          (permissions?.includes(
+                            "Pediatric Initial Clinical Evaluation Form"
+                          ) &&
+                            !patientObj.clinicalEvaluation &&
+                            patientObj.createBy.toUpperCase() ===
+                              "LAMIS DATA MIGRATION SYSTEM" && (
+                              <Menu.Item
+                                onClick={() => loadAdultEvaluation()}
+                                name="initial"
+                                active={activeItem === "initial"}
+                                title="Initial Evaluation"
+                              >
+                                Initial Evaluation
+                              </Menu.Item>
+                            ))}
+                        {permissions?.includes("Care and Support register") ||
+                        permissions?.includes("Care and support checklist") ? (
+                          <Menu.Item
+                            onClick={() => loadChronicCare(patientObj)}
+                            name="chronic care"
+                            active={activeItem === "chronic-care"}
+                          >
+                            Care & Support
+                          </Menu.Item>
+                        ) : (
+                          ""
+                        )}
+                        {permissions?.includes("Care Card") && (
+                          <Menu.Item
+                            onClick={() => onClickConsultation()}
+                            disabled={patientCurrentStatus}
+                            name="visit"
+                            active={activeItem === "visit"}
+                            title="Care Card"
+                          >
+                            Care Card
+                          </Menu.Item>
+                        )}
 
-                         {isPatientActive && (
-                           <>
-                             {!patientObj.clinicalEvaluation &&
-                               patientObj.createBy.toUpperCase() ===
-                                 "LAMIS DATA MIGRATION SYSTEM" && (
-                                 <Menu.Item
-                                   onClick={() => loadAdultEvaluation()}
-                                   name="initial"
-                                   active={activeItem === "initial"}
-                                   title="Initial Evaluation"
-                                 >
-                                   Initial Evaluation
-                                 </Menu.Item>
-                               )}
-                             {
-                               <Menu.Item
-                                 onClick={() => loadChronicCare(patientObj)}
-                                 name="chronic care"
-                                 active={activeItem === "chronic-care"}
-                               >
-                                 Care & Support
-                               </Menu.Item>
-                             }
-                             <Menu.Item
-                               onClick={() => onClickConsultation()}
-                               disabled={patientCurrentStatus}
-                               name="visit"
-                               active={activeItem === "visit"}
-                               title="Care Card"
-                             >
-                               Care Card
-                             </Menu.Item>
+                        {permissions?.includes(
+                          "Laboratory Order and Results Form"
+                        ) ||
+                        permissions?.includes(
+                          "Viral Load Order and Result Form"
+                        ) ||
+                        permissions?.includes(
+                          "Viral Load Monitoring Register"
+                        ) ? (
+                          <Menu.Menu
+                            position=""
+                            name="lab"
+                            active={activeItem === "lab"}
+                          >
+                            <Dropdown item text="Laboratory">
+                              <Dropdown.Menu>
+                                <Dropdown.Item
+                                  onClick={() => loadLaboratoryOrderResult()}
+                                  disabled={patientCurrentStatus}
+                                  title="Laboratory Order & Result"
+                                >
+                                  Laboratory Order & Result
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  onClick={() =>
+                                    loadLaboratoryViralLoadOrderResult()
+                                  }
+                                  disabled={patientCurrentStatus}
+                                  title="Viral Load Order & Result"
+                                >
+                                  Viral Load Order & Result
+                                </Dropdown.Item>
+                              </Dropdown.Menu>
+                            </Dropdown>
+                          </Menu.Menu>
+                        ) : (
+                          ""
+                        )}
+                        {permissions?.includes(
+                          "Combined Pharmacy Order Form"
+                        ) && (
+                          <Menu.Item
+                            onClick={() => loadPharmacyModal()}
+                            disabled={patientCurrentStatus}
+                            name="pharmacy"
+                            active={activeItem === "pharmacy"}
+                            title="Pharmacy"
+                          >
+                            Pharmacy
+                          </Menu.Item>
+                        )}
 
-                             <Menu.Menu
-                               position=""
-                               name="lab"
-                               active={activeItem === "lab"}
-                             >
-                               <Dropdown item text="Laboratory">
-                                 <Dropdown.Menu>
-                                   <Dropdown.Item
-                                     onClick={() => loadLaboratoryOrderResult()}
-                                     disabled={patientCurrentStatus}
-                                     title="Laboratory Order & Result"
-                                   >
-                                     Laboratory Order & Result
-                                   </Dropdown.Item>
-                                   <Dropdown.Item
-                                     onClick={() => loadLaboratoryViralLoadOrderResult()}
-                                     disabled={patientCurrentStatus}
-                                     title="Viral Load Order & Result"
-                                   >
-                                     Viral Load Order & Result
-                                   </Dropdown.Item>
-                                 </Dropdown.Menu>
-                               </Dropdown>
-                             </Menu.Menu>
-                             <Menu.Item
-                               onClick={() => loadPharmacyModal()}
-                               disabled={patientCurrentStatus}
-                               name="pharmacy"
-                               active={activeItem === "pharmacy"}
-                               title="Pharmacy"
-                             >
-                               Pharmacy
-                             </Menu.Item>
-                             <Menu.Item
-                               onClick={() => loadEAC(patientObj)}
-                               disabled={patientCurrentStatus}
-                               name="eac"
-                               active={activeItem === "eac"}
-                               title="EAC"
-                             >
-                               EAC
-                             </Menu.Item>
+                        {permissions?.includes("EAC Monitoring Register") && (
+                          <Menu.Item
+                            onClick={() => loadEAC(patientObj)}
+                            disabled={patientCurrentStatus}
+                            name="eac"
+                            active={activeItem === "eac"}
+                            title="EAC"
+                          >
+                            EAC
+                          </Menu.Item>
+                        )}
 
-                             {(props.patientObj.sex === "Female" ||
-                               props.patientObj.sex === "FEMALE" ||
-                               props.patientObj.sex === "female") && (
-                               <Menu.Item
-                                 onClick={() => loadCervicalCancer(patientObj)}
-                                 name="cancer"
-                                 active={activeItem === "cancer"}
-                                 title="Cervical Cancer"
-                               >
-                                 Cervical Cancer
-                               </Menu.Item>
-                             )}
+                        {(props.patientObj.sex === "Female" ||
+                          props.patientObj.sex === "FEMALE" ||
+                          props.patientObj.sex === "female") &&
+                          permissions?.includes(
+                            "Cervical cancer screening form"
+                          ) && (
+                            <Menu.Item
+                              onClick={() => loadCervicalCancer(patientObj)}
+                              name="cancer"
+                              active={activeItem === "cancer"}
+                              title="Cervical Cancer"
+                            >
+                              Cervical Cancer
+                            </Menu.Item>
+                          )}
+                        {permissions?.includes(
+                          "Client Tracking & Discontinuation Form"
+                        ) && (
+                          <Menu.Menu
+                            position=""
+                            name="lab"
+                            active={activeItem === "lab"}
+                          >
+                            <Dropdown item text="Other Forms">
+                              <Dropdown.Menu>
+                                <Dropdown.Item
+                                  onClick={() => loadTrackingForm(patientObj)}
+                                  name="tracking"
+                                  active={activeItem === "tracking"}
+                                  title="Tracking Form"
+                                >
+                                  Tracking Form
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  onClick={() => loadIntensiveForm(patientObj)}
+                                  name="intensive"
+                                  active={activeItem === "intensive"}
+                                  title="Intensive Follow Up"
+                                >
+                                  Intensive Follow Up
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  onClick={() =>
+                                    clientVerificationForm(patientObj)
+                                  }
+                                  name="clientVerificationForm"
+                                  active={
+                                    activeItem === "clientVerificationForm"
+                                  }
+                                  title="Client Verification Form"
+                                >
+                                  Client Verification Form
+                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  onClick={() => DsdServiceForm(patientObj)}
+                                  name="DsdServiceForm"
+                                  active={activeItem === "DsdServiceForm"}
+                                  title="DSD ASSESSMENT AND ACCEPTANCE FORM"
+                                >
+                                  Dsd Service Form
+                                </Dropdown.Item>
+                              </Dropdown.Menu>
+                            </Dropdown>
 
-                             <Menu.Menu
-                               position=""
-                               name="lab"
-                               active={activeItem === "lab"}
-                             >
-                               <Dropdown item text="Other Forms">
-                                 <Dropdown.Menu>
-                                   <Dropdown.Item
-                                     onClick={() => loadTrackingForm(patientObj)}
-                                     name="tracking"
-                                     active={activeItem === "tracking"}
-                                     title="Tracking Form"
-                                   >
-                                     Tracking Form
-                                   </Dropdown.Item>
-                                   <Dropdown.Item
-                                     onClick={() => loadIntensiveForm(patientObj)}
-                                     name="intensive"
-                                     active={activeItem === "intensive"}
-                                     title="Intensive Follow Up"
-                                   >
-                                     Intensive Follow Up
-                                   </Dropdown.Item>
-                                   <Dropdown.Item
-                                     onClick={() => clientVerificationForm(patientObj)}
-                                     name="clientVerificationForm"
-                                     active={activeItem === "clientVerificationForm"}
-                                     title="Client Verification Form"
-                                   >
-                                     Client Verification Form
-                                   </Dropdown.Item>
-                                   <Dropdown.Item
-                                     onClick={() => DsdServiceForm(patientObj)}
-                                     name="DsdServiceForm"
-                                     active={activeItem === "DsdServiceForm"}
-                                     title="DSD ASSESSMENT AND ACCEPTANCE FORM"
-                                   >
-                                     Dsd Service Form
-                                   </Dropdown.Item>
-                                 </Dropdown.Menu>
-                               </Dropdown>
+                            {(patientObj?.age >= 10 && patientObj?.age <= 23) ||
+                            patientObj.age <= 19 ? (
+                              <Dropdown item text="OTZ">
+                                <Dropdown.Menu>
+                                  {patientObj?.age >= 10 &&
+                                    patientObj?.age <= 23 && (
+                                      <>
+                                        {isOtzEnrollementDone === null ? (
+                                          <Dropdown.Item>
+                                            Checking patient enrollment...
+                                          </Dropdown.Item>
+                                        ) : isOtzEnrollementDone === false ? (
+                                          <Dropdown.Item
+                                            onClick={() =>
+                                              loadOtzEnrollmentForm()
+                                            }
+                                            name="OTZ Enrollment Form"
+                                            active={
+                                              activeItem ===
+                                              "otz-enrollment-form"
+                                            }
+                                            title="Enrollment Form"
+                                          >
+                                            OTZ Enrollment Form
+                                          </Dropdown.Item>
+                                        ) : null}
 
-                               {(patientObj?.age >= 10 && patientObj?.age <= 23) ||
-                               patientObj.age <= 19 ? (
-                                 <Dropdown item text="OTZ">
-                                   <Dropdown.Menu>
-                                     {patientObj?.age >= 10 && patientObj?.age <= 23 && (
-                                       <>
-                                         {isOtzEnrollementDone === null ? (
-                                           <Dropdown.Item>
-                                             Checking patient enrollment...
-                                           </Dropdown.Item>
-                                         ) : isOtzEnrollementDone === false ? (
-                                           <Dropdown.Item
-                                             onClick={() => loadOtzEnrollmentForm()}
-                                             name="OTZ Enrollment Form"
-                                             active={
-                                               activeItem === "otz-enrollment-form"
-                                             }
-                                             title="Enrollment Form"
-                                           >
-                                             OTZ Enrollment Form
-                                           </Dropdown.Item>
-                                         ) : null}
+                                        {isOtzEnrollementDone ? (
+                                          <Dropdown.Item
+                                            onClick={() => loadOtzServiceForm()}
+                                            name="OTZ Service Form"
+                                            active={
+                                              activeItem === "otz-service-form"
+                                            }
+                                            title="Tracking Form"
+                                          >
+                                            OTZ Service Form
+                                          </Dropdown.Item>
+                                        ) : null}
+                                      </>
+                                    )}
 
-                                         {isOtzEnrollementDone ? (
-                                           <Dropdown.Item
-                                             onClick={() => loadOtzServiceForm()}
-                                             name="OTZ Service Form"
-                                             active={activeItem === "otz-service-form"}
-                                             title="Tracking Form"
-                                           >
-                                             OTZ Service Form
-                                           </Dropdown.Item>
-                                         ) : null}
-                                       </>
-                                     )}
+                                  {patientObj.age <= 19 && (
+                                    <Dropdown.Item
+                                      onClick={() => loadOtzCheckList()}
+                                      name="Peadiatric Disclosure Checklist"
+                                      active={
+                                        activeItem ===
+                                        "otz-peadiatric-disclosure-checklist"
+                                      }
+                                      title="Peadiatric Disclosure Checklist"
+                                    >
+                                      Peadiatric Disclosure Checklist
+                                    </Dropdown.Item>
+                                  )}
+                                </Dropdown.Menu>
+                              </Dropdown>
+                            ) : null}
+                          </Menu.Menu>
+                        )}
 
-                                     {patientObj.age <= 19 && (
-                                       <Dropdown.Item
-                                         onClick={() => loadOtzCheckList()}
-                                         name="Peadiatric Disclosure Checklist"
-                                         active={
-                                           activeItem ===
-                                           "otz-peadiatric-disclosure-checklist"
-                                         }
-                                         title="Peadiatric Disclosure Checklist"
-                                       >
-                                         Peadiatric Disclosure Checklist
-                                       </Dropdown.Item>
-                                     )}
-                                   </Dropdown.Menu>
-                                 </Dropdown>
-                               ) : null}
-                             </Menu.Menu>
-
-                             <Menu.Item
-                               onClick={() => loadTransferForm(patientObj)}
-                               name="transfer"
-                               active={activeItem === "transfer"}
-                               title="Transfer"
-                             >
-                               Transfer
-                             </Menu.Item>
-                           </>
-                         )}
-                         <Menu.Item
-                           onClick={() => loadPatientHistory(patientObj)}
-                           name="history"
-                           active={activeItem === "history"}
-                           title="History"
-                         >
-                           History
-                         </Menu.Item>
-                         {!isPatientActive && (
-                           <ButtonMui
-                             onClick={() => {
-                               updateCurrentEnrollmentStatus();
-                             }}
-                             variant="contained"
-                             color="primary"
-                             className=" float-end ms-2 mr-2 mt-2"
-                             startIcon={<TiArrowBack />}
-                             style={{
-                               backgroundColor: "green",
-                               color: "#fff",
-                               height: "35px",
-                             }}
-                           >
-                             <span style={{ textTransform: "capitalize" }}>
-                               Reactivate
-                             </span>
-                           </ButtonMui>
-                         )}
-                         {/* } */}
-                       </Menu>
-
-                   )
-                 }
-               </>
-            )
-            }
+                        {permissions?.includes(
+                          "HIV Care and Treatment Transfer Form"
+                        ) && (
+                          <Menu.Item
+                            onClick={() => loadTransferForm(patientObj)}
+                            name="transfer"
+                            active={activeItem === "transfer"}
+                            title="Transfer"
+                          >
+                            Transfer
+                          </Menu.Item>
+                        )}
+                      </>
+                    )}
+                    <Menu.Item
+                      onClick={() => loadPatientHistory(patientObj)}
+                      name="history"
+                      active={activeItem === "history"}
+                      title="History"
+                    >
+                      History
+                    </Menu.Item>
+                    {!isPatientActive && (
+                      <ButtonMui
+                        onClick={() => {
+                          updateCurrentEnrollmentStatus();
+                        }}
+                        variant="contained"
+                        color="primary"
+                        className=" float-end ms-2 mr-2 mt-2"
+                        startIcon={<TiArrowBack />}
+                        style={{
+                          backgroundColor: "green",
+                          color: "#fff",
+                          height: "35px",
+                        }}
+                      >
+                        <span style={{ textTransform: "capitalize" }}>
+                          Reactivate
+                        </span>
+                      </ButtonMui>
+                    )}
+                    {/* } */}
+                  </Menu>
+                )}
+              </>
+            )}
           </Segment>
         )}
       </div>
