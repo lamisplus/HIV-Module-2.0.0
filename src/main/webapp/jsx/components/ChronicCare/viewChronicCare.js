@@ -173,22 +173,83 @@ const ViewChronicCare = (props) => {
   });
   //TPT object
   const [tpt, setTpt] = useState({
+    // date: null,
+    // weight: "",
+    // referredForServices: "",
+    // adherence: "",
+    // rash: "",
+    // neurologicSymptoms: "",
+    // hepatitisSymptoms: "",
+    // tbSymptoms: "",
+    // resonForStoppingIpt: "",
+    // outComeOfIpt: "",
+
     date: null,
     weight: "",
     referredForServices: "",
     adherence: "",
     rash: "",
-    neurologicSymptoms: "",
+    // neurologicSymptoms: "",g
     hepatitisSymptoms: "",
     tbSymptoms: "",
     resonForStoppingIpt: "",
     outComeOfIpt: "",
+    // tbTreatmentStartDate: "",
+
+    //TPT prevention
+    everCompletedTpt:"",
+    eligibilityTpt:"",
+    tptPreventionOutcome:"",
+    currentlyOnTpt:"",
+    contractionForTpt:"",
+    liverSymptoms:"",
+    chronicAlcohol:"",
+    neurologicSymptoms:"",
+    dateTptStarted:"",
+    tptRegimen:"",
+    endedTpt:"",
+    dateOfTptCompleted:"",
+    dateTptEnded:"",
+    tbSideEffect:"",
+    giUpsetEffect:"",
+    hepatotoxicityEffect:"",
+    neurologicSymptomsEffect:"",
+    giUpsetEffectSeverity:"",
+    hypersensitivityReactionEffect:"",
+    hypersensitivityReactionEffectSeverity:"",
+    neurologicSymptomsEffectSeverity:"",
+    hepatotoxicityEffectSeverity:'',
+    enrolledOnTpt:""
   });
   const [tbObj, setTbObj] = useState({
     //TB and IPT Screening Object
+    // currentlyOnTuberculosis: "",
+    // tbTreatment: "",
+    // tbTreatmentStartDate: "",
+    // coughing: "",
+    // fever: "",
+    // losingWeight: "",
+    // nightSweats: "",
+    // poorWeightGain: "",
+    // historyWithAdults: "",
+    // outcome: "",
+    // priorInh: false,
+    // highAlcohol: false,
+    // activeHepatitis: false,
+    // age1year: false,
+    // poorTreatmentAdherence: false,
+    // abnormalChest: false,
+    // activeTb: false,
+    // contraindications: "",
+    // eligibleForTPT: "",
+    // treatementOutcome: "",
+    // treatementType: "",
+    // completionDate: "",
+
+    //TB and IPT Screening Object
     currentlyOnTuberculosis: "",
     tbTreatment: "",
-    tbTreatmentStartDate: "",
+    // tbTreatmentStartDate: "",
     coughing: "",
     fever: "",
     losingWeight: "",
@@ -205,9 +266,36 @@ const ViewChronicCare = (props) => {
     activeTb: false,
     contraindications: "",
     eligibleForTPT: "",
-    treatementOutcome: "",
-    treatementType: "",
+    chestXrayResult:"",
+    isTbTestConfirmed:"",
+
+    // treatementOutcome: "",
+    //This is section for TB Treament Variable
+    specimentCollectedStatus: "",
+    specimenType: "",
+    dateSpecimenSent: "",
+    diagnosticTestDone: "",
+    diagnosticTestType: "",
+    tbTestResult: "",
+    specimentSent: "",
+    clinicallyEvaulated: "",
+    chestXrayDone: "",
+    tbEvaulationOutcome: "",
+    tbType: "",
+    tbTreatmentStarted: "",
+    tbTreatmentStartDate: "",
+    dateOfDiagnosticTest:"",
+    chestXrayResultTest:"",
+    dateOfChestXrayResultTestDone:"",
+    DateDiagnosticTestResultReceived:"",
+    resultOfClinicalEvaluation:"",
+    careCardPatientTbStatus:"",
+    treatmentType: "",
+    treatmentOutcome: "",
     completionDate: "",
+    treatmentCompletionStatus: "",
+    completedTbTreatment: "",
+    currentWeight:""
   });
   const [observationObj, setObservationObj] = useState({
     //Predefine object for chronic care DTO
@@ -389,11 +477,11 @@ const handleSubmit = async (e) => {
   observation.data = observationObj;
 
   // Validate form
-  if (!validate()) {
-    showErrorMessage("All fields are required");
-    setSaving(false);
-    return;
-  }
+  // if (!validate()) {
+  //   showErrorMessage("All fields are required");
+  //   setSaving(false);
+  //   return;
+  // }
 
   // Check for duplicate visit Date
   // if (
@@ -615,6 +703,8 @@ const handleSubmit = async (e) => {
                     encounterDate={observation.dateOfObservation}
                     patientObj={patientObj}
                     action={props.activeContent.actionType}
+                    setTpt={setTpt}
+                    tpt={tpt}
                   />
                 )}
               </div>
