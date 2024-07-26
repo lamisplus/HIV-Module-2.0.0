@@ -1285,6 +1285,7 @@ const Pharmacy = (props) => {
                         type="date"
                         name="visitDate"
                         id="visitDate"
+
                         onChange={handleInputChange}
                         value={objValues.visitDate}
                         min={enrollDate !== "" ? enrollDate : ""}
@@ -1293,6 +1294,7 @@ const Pharmacy = (props) => {
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
                         }}
+                        onKeyPress={(e) => e.preventDefault()}
                         required
                       />
                       {errors.visitDate && (

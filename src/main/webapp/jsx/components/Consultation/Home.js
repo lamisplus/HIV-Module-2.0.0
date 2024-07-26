@@ -999,8 +999,7 @@ const ClinicVisit = (props) => {
     temp.height = vital.height ? "" : "This field is required";
     temp.bodyWeight = vital.bodyWeight ? "" : "This field is required";
     //TB VALIDATION
-    // temp.tbStatusId = tbObj.tbStatusId ? "" : "This field is required";
-    // temp.careCardPatientTbStatus = tbObj.careCardPatientTbStatus ? "" : "This field is required";
+    temp.tbStatusId = tbObj.tbStatusId ? "" : "This field is required";
     setErrors({
       ...temp,
     });

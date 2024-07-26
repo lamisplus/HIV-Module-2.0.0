@@ -474,7 +474,7 @@ const ChronicCare = (props) => {
 
 // console.log(errors)
 
-  // console.log("temp", temp)
+  console.log("temp", temp)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);

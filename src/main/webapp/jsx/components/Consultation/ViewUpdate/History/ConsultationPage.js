@@ -2375,6 +2375,8 @@ const ClinicVisit = (props) => {
                       setTbObj={setTbObj}
                       errors={errors}
                       setErrors={setErrors}
+                      enebleUpdate={enableUpdate}
+                      setEnableUpdate = {setEnableUpdate}
                     />
 
                     <br />

@@ -80,40 +80,44 @@ const useStyles = makeStyles((theme) => ({
 const TBScreeningForm = (props) => {
   const classes = useStyles();
   const [tbStatus, setTbStatus] = useState([]);
+  // useEffect(() => {
+  //   TBStatus();
+  //   if (
+  //       props.tbObj.currentOnIpt !== "" &&
+  //       (props.tbObj.coughing === "YES" &&
+  //           props.tbObj.nightSweat === "YES" &&
+  //           props.tbObj.fever === "YES" &&
+  //           props.tbObj.contactWithTBCase === "YES" &&
+  //           props.tbObj.lethergy === "YES")
+  //   ) {
+  //     props.tbObj.tbStatusId = 68; //for any option with YES
+  //   } else if (
+  //       props.tbObj.currentOnIpt !== "" &&
+  //       props.tbObj.coughing === "NO" &&
+  //       props.tbObj.nightSweat === "NO" &&
+  //       props.tbObj.fever === "NO" &&
+  //       props.tbObj.contactWithTBCase === "NO" &&
+  //       props.tbObj.lethergy === "NO"
+  //   ) {
+  //     props.tbObj.tbStatusId = 67; //for any option with NO
+  //   } else if (
+  //       props.tbObj.tbStatusId === "" ||
+  //       props.tbObj.tbStatusId === null
+  //   ) {
+  //     props.tbObj.tbStatusId = "";
+  //   }
+  //
+  //   if(props.careSupportTb!==""){
+  //     //The value of the TB status id
+  //     const tbStatusId=tbStatus.find((x)=> x.display===props.careSupportTb)
+  //
+  //     props.tbObj.tbStatusId=tbStatusId && tbStatusId.id!==""? tbStatusId.id :""
+  //   }
+  // }, [props.tbObj,props.careSupportTb]);
+
   useEffect(() => {
-    TBStatus();
-    if (
-        props.tbObj.currentOnIpt !== "" &&
-        (props.tbObj.coughing === "YES" &&
-            props.tbObj.nightSweat === "YES" &&
-            props.tbObj.fever === "YES" &&
-            props.tbObj.contactWithTBCase === "YES" &&
-            props.tbObj.lethergy === "YES")
-    ) {
-      props.tbObj.tbStatusId = 68; //for any option with YES
-    } else if (
-        props.tbObj.currentOnIpt !== "" &&
-        props.tbObj.coughing === "NO" &&
-        props.tbObj.nightSweat === "NO" &&
-        props.tbObj.fever === "NO" &&
-        props.tbObj.contactWithTBCase === "NO" &&
-        props.tbObj.lethergy === "NO"
-    ) {
-      props.tbObj.tbStatusId = 67; //for any option with NO
-    } else if (
-        props.tbObj.tbStatusId === "" ||
-        props.tbObj.tbStatusId === null
-    ) {
-      props.tbObj.tbStatusId = "";
-    }
-
-    if(props.careSupportTb!==""){
-      //The value of the TB status id
-      const tbStatusId=tbStatus.find((x)=> x.display===props.careSupportTb)
-
-      props.tbObj.tbStatusId=tbStatusId && tbStatusId.id!==""? tbStatusId.id :""
-    }
-  }, [props.tbObj,props.careSupportTb]);
+    TBStatus()
+  }, []);
   ///GET LIST OF FUNCTIONAL%20_STATUS
   // TB STATUS
   const TBStatus = () => {
@@ -133,11 +137,11 @@ const TBScreeningForm = (props) => {
 
   const handleInputChange = (e) => {
     props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.value });
-    console.log(e.target.value)
+    // console.log(e.target.value)
   };
 
-
- console.log("obj in tbscreen", props.tbObj)
+// console.log("props.careSupportTb", props.careSupportTb)
+//  console.log("obj in tbscreen", props.tbObj)
   return (
       <div>
         <div className="row">
@@ -162,11 +166,11 @@ const TBScreeningForm = (props) => {
                     ))}
               </Input>
             </FormGroup>
-            {/*{props.errors.tbStatusId !== "" ? (*/}
-            {/*    <span className={classes.error}>{props.errors.tbStatusId}</span>*/}
-            {/*) : (*/}
-            {/*    ""*/}
-            {/*)}*/}
+            {props.errors.tbStatusId !== "" ? (
+                <span className={classes.error}>{props.errors.tbStatusId}</span>
+            ) : (
+                ""
+            )}
           </div>
           {/* <div className="form-group mb-3 col-md-6">
           <FormGroup>
