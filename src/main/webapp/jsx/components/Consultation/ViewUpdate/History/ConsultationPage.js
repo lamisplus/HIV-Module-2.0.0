@@ -1403,6 +1403,7 @@ const ClinicVisit = (props) => {
                             max={moment(new Date()).format("YYYY-MM-DD")}
                             disabled={!enableUpdate}
                             required
+                            onKeyPress={(e) => e.preventDefault()}
                           />
                           {errors.encounterDate !== "" ? (
                             <span className={classes.error}>
@@ -2712,6 +2713,7 @@ const ClinicVisit = (props) => {
                       }}
                       min={moment(new Date()).format("YYYY-MM-DD")}
                       disabled={!enableUpdate}
+                      onKeyPress={(e) => e.preventDefault()}
                     />
                     {errors.nextAppointment !== "" ? (
                       <span className={classes.error}>

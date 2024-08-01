@@ -598,6 +598,7 @@ const handleSubmit = async (e) => {
                         props.activeContent.actionType === "view" ? true : false
                       }
                       max={moment(new Date()).format("YYYY-MM-DD")}
+                      onKeyPress={(e) => e.preventDefault()}
                     ></Input>
                   </FormGroup>
                   {errors.dateOfObservation !== "" ? (

@@ -1589,6 +1589,7 @@ const ClinicVisit = (props) => {
                     min={enrollDate}
                     max={moment(new Date()).format("YYYY-MM-DD")}
                     required
+                    onKeyPress={(e) => e.preventDefault()}
                   />
                   {errors.encounterDate !== "" ? (
                     <span className={classes.error}>
@@ -2873,6 +2874,7 @@ const ClinicVisit = (props) => {
               onChange={handleInputChange}
               style={{ border: "1px solid #014D88", borderRadius: "0.25rem" }}
               min={vital.encounterDate}
+              onKeyPress={(e) => e.preventDefault()}
             />
             {errors.nextAppointment !== "" ? (
               <span className={classes.error}>{errors.nextAppointment}</span>

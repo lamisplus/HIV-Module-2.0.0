@@ -622,6 +622,7 @@ const Laboratory = (props) => {
                            borderRadius: "0.25rem",
                          }}
                          required
+                         onKeyPress={(e) => e.preventDefault()}
                        />
                        {errors.sampleCollectionDate !== "" ? (
                          <span className={classes.error}>
@@ -658,6 +659,7 @@ const Laboratory = (props) => {
                            borderRadius: "0.25rem",
                          }}
                          required
+                         onKeyPress={(e) => e.preventDefault()}
                        />
                        {errors.dateResultReceived !== "" ? (
                          <span className={classes.error}>
@@ -1537,6 +1539,7 @@ const Laboratory = (props) => {
                            borderRadius: "0.25rem",
                          }}
                          required
+                         onKeyPress={(e) => e.preventDefault()}
                        />
                        {errors.orderedDate !== "" ? (
                          <span className={classes.error}>
@@ -1617,6 +1620,7 @@ const Laboratory = (props) => {
                            borderRadius: "0.25rem",
                          }}
                          required
+                         onKeyPress={(e) => e.preventDefault()}
                        />
                        {errors.dateChecked !== "" ? (
                          <span className={classes.error}>

@@ -423,6 +423,7 @@ const TPT = (props) => {
                       onChange={handleTpt}
                       value={props.tpt.dateOfTptCompleted}
                       disabled={props.action === "view" ? true : false}
+                      onKeyPress={(e) => e.preventDefault()}
                     >
                       
                     </Input>
@@ -614,6 +615,7 @@ const TPT = (props) => {
                                   min={props.patientObj.dateOfBirth}
                                   max={moment(new Date()).format("YYYY-MM-DD")}
                                   disabled={props.action === "view" ? true : false}
+                                  onKeyPress={(e) => e.preventDefault()}
                               />
                             </InputGroup>
                           </FormGroup>
@@ -888,6 +890,7 @@ const TPT = (props) => {
                           min={props.tpt.dateTptStarted}
                           max={moment(new Date()).format("YYYY-MM-DD")}
                           disabled={props.action === "view" ? true : false}
+                          onKeyPress={(e) => e.preventDefault()}
                       ></Input>
                     </InputGroup>
                   </FormGroup>

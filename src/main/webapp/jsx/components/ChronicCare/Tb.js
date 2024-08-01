@@ -1247,6 +1247,7 @@ const TbScreening = (props) => {
                         max={moment(new Date()).format("YYYY-MM-DD")}
                         disabled={props.action === "view" ? true : false}
                         required
+                        onKeyPress={(e) => e.preventDefault()}
                       ></Input>
                     </InputGroup>
                   </FormGroup>

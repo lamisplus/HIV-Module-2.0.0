@@ -224,6 +224,7 @@ const TBMonitoring = (props) => {
                               }
                               min={props.tbObj.tbTreatmentStartDate}
                               max={moment(new Date()).format("YYYY-MM-DD")}
+                              onKeyPress={(e) => e.preventDefault()}
                           ></Input>
                         </InputGroup>
                         {errors.completionDate !== "" ? (

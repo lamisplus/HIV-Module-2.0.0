@@ -322,7 +322,7 @@ const NEWEACSESSION = (props) => {
                                     max= {moment(new Date()).format("YYYY-MM-DD") }
                                     onChange={handleInputChange}
                                     style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                                    
+                                    onKeyPress={(e) => e.preventDefault()}
                                 />
                                  
                                  
@@ -520,6 +520,7 @@ const NEWEACSESSION = (props) => {
                                 max= {moment(new Date()).format("YYYY-MM-DD") }
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 required
+                                onKeyPress={(e) => e.preventDefault()}
                             />
                            
                             </FormGroup>

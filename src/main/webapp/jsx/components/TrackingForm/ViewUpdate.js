@@ -844,6 +844,7 @@ const Tracking = (props) => {
                       }}
                       max={moment(new Date()).format("YYYY-MM-DD")}
                       disabled={disabledField}
+                      onKeyPress={(e) => e.preventDefault()}
                     ></Input>
                     {errors.dateOfObservation !== "" ? (
                       <span className={classes.error}>
@@ -1011,6 +1012,7 @@ const Tracking = (props) => {
                       borderRadius: "0.25rem",
                     }}
                     disabled={disabledField}
+                    onKeyPress={(e) => e.preventDefault()}
                   />
                   {errors.dateLastAppointment !== "" ? (
                     <span className={classes.error}>
@@ -1037,6 +1039,7 @@ const Tracking = (props) => {
                       borderRadius: "0.25rem",
                     }}
                     disabled={disabledField}
+                    onKeyPress={(e) => e.preventDefault()}
                   />
                   {errors.dateMissedAppointment !== "" ? (
                     <span className={classes.error}>
@@ -1066,6 +1069,7 @@ const Tracking = (props) => {
                       min={enrollDate !== "" ? enrollDate : ""}
                       max={moment(new Date()).format("YYYY-MM-DD")}
                       disabled={disabledField}
+                      onKeyPress={(e) => e.preventDefault()}
                     ></Input>
                     {errors.attemptDate !== "" ? (
                       <span className={classes.error}>
@@ -1308,6 +1312,7 @@ const Tracking = (props) => {
                           borderRadius: "0.25rem",
                         }}
                         disabled={disabledField}
+                        onKeyPress={(e) => e.preventDefault()}
                       />
                       {errors.dateReturnToCare !== "" ? (
                         <span className={classes.error}>
@@ -1394,6 +1399,7 @@ const Tracking = (props) => {
                           borderRadius: "0.25rem",
                         }}
                         disabled={disabledField}
+                        onKeyPress={(e) => e.preventDefault()}
                       />
                       {errors.dateOfDiscontinuation !== "" ? (
                         <span className={classes.error}>
@@ -1558,6 +1564,7 @@ const Tracking = (props) => {
                               borderRadius: "0.25rem",
                             }}
                             disabled={disabledField}
+                            onKeyPress={(e) => e.preventDefault()}
                         />
                         {errors.dateOfDeath !== "" ? (
                             <span className={classes.error}>
