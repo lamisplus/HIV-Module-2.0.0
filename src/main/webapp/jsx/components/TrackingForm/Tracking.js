@@ -1317,26 +1317,27 @@ const Tracking = (props) => {
                   <div className="form-group mb-3 col-md-4">
                     <FormGroup>
                       <Label for=""> Date of Discontinuation</Label>
+                      <span style={{color: "red"}}> *</span>
                       <Input
-                        type="date"
-                        name="dateOfDiscontinuation"
-                        id="dateOfDiscontinuation"
-                        onChange={handleInputChange}
-                        value={objValues.dateOfDiscontinuation}
-                        min={enrollDate !== "" ? enrollDate : ""}
-                        max={moment(new Date()).format("YYYY-MM-DD")}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                        onKeyPress={(e) => e.preventDefault()}
+                          type="date"
+                          name="dateOfDiscontinuation"
+                          id="dateOfDiscontinuation"
+                          onChange={handleInputChange}
+                          value={objValues.dateOfDiscontinuation}
+                          min={enrollDate !== "" ? enrollDate : ""}
+                          max={moment(new Date()).format("YYYY-MM-DD")}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
+                          onKeyPress={(e) => e.preventDefault()}
                       />
                       {errors.dateOfDiscontinuation !== "" ? (
-                        <span className={classes.error}>
+                          <span className={classes.error}>
                           {errors.dateOfDiscontinuation}
                         </span>
                       ) : (
-                        ""
+                          ""
                       )}
                     </FormGroup>
                   </div>
