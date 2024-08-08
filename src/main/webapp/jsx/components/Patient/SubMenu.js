@@ -35,6 +35,7 @@ function SubMenu(props) {
       ? true
       : false;
   const { transferOut } = useStyles();
+  const [shouldDeactivateButton, setShouldDeactivateButton] = useState(false);
 
   useEffect(() => {
     if (props.patientObj && props.patientObj !== null) {
@@ -339,6 +340,40 @@ function SubMenu(props) {
   //   setIsPatientActive(false);
   // }, []);
 
+  const getPatientActivities = async () => {
+    try {
+      const response = await axios.get(
+          `${baseUrl}hiv/patients/${patientObj.id}/history/activities`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+      );
+      const activities = response.data;
+      const lastActivity = activities.sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+
+      const isRecentActivityTransfer =
+          lastActivity?.name === "ART Transfer In" ||
+          lastActivity?.name === "ART Transfer Out";
+
+      const isToday = new Date(lastActivity?.date).toDateString() === new Date().toDateString();
+
+      return isRecentActivityTransfer && isToday;
+    } catch (error) {
+      console.log(error)
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    const checkPatientActivities = async () => {
+      const result = await getPatientActivities();
+      setShouldDeactivateButton(result);
+    };
+    checkPatientActivities();
+  }, []);
+
+  // console.log("Should deactivate button",shouldDeactivateButton)
+
   return (
     <div>
       <div>
@@ -434,8 +469,9 @@ function SubMenu(props) {
                                  name="transfer"
                                  active={activeItem === "transfer"}
                                  title="Transfer"
+                                 disabled={shouldDeactivateButton}
                              >
-                               <Button size='mini' style={{ backgroundColor: "green", color: '#fff', marginRight: '10px' }}>
+                               <Button disabled={shouldDeactivateButton} size='mini' style={{ backgroundColor: "green", color: '#fff', marginRight: '10px' }}>
                                  Activate
                                </Button>
                              </Menu.Item>
@@ -644,6 +680,7 @@ function SubMenu(props) {
                                name="transfer"
                                active={activeItem === "transfer"}
                                title="Transfer"
+                               disabled={shouldDeactivateButton}
                              >
                                Transfer
                              </Menu.Item>
