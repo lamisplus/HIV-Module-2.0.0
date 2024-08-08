@@ -24,11 +24,14 @@ import ViewColumn from "@material-ui/icons/ViewColumn";
 import { Card, CardBody } from "reactstrap";
 import "react-toastify/dist/ReactToastify.css";
 import { makeStyles } from "@material-ui/core/styles";
-import { MdDashboard } from "react-icons/md";
-import { Menu, MenuList, MenuButton, MenuItem } from "@reach/menu-button";
+import Button from "@material-ui/core/Button";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
+import { TiArrowForward } from "react-icons/ti";
+
 import "@reach/menu-button/styles.css";
 import { Label } from "semantic-ui-react";
-import moment from "moment";
+
+import Spinner from "react-bootstrap/Spinner";
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -97,23 +100,47 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Patients = (props) => {
+const CheckedInPatients = (props) => {
+  const permissions = localStorage.getItem("permissions")?.split(",");
   const [patientList, setPatientList] = useState([]);
-  const [patientObj, setpatientObj] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const getServiceCode = () => {
+    setLoading(true);
+    axios
+      .get(`${baseUrl}opd-setting`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        let data = response.data;
+        let hivCode = data.find(
+          (item) => item.moduleServiceName.toUpperCase() === "HIV"
+        )?.moduleServiceCode;
+        if (hivCode !== null || hivCode !== null) {
+          patients(hivCode);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+      });
+  };
 
   useEffect(() => {
-    patients();
+    getServiceCode();
   }, []);
   ///GET LIST OF Patients
-  async function patients() {
+  async function patients(hivCode) {
     axios
-      .get(`${baseUrl}patient/checked-in-by-service/hiv-code`, {
+      .get(`${baseUrl}patient/checked-in-by-service/${hivCode}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
         setPatientList(response.data);
+        setLoading(false);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        setLoading(false);
+      });
   }
 
   const getHospitalNumber = (identifier) => {
@@ -128,9 +155,10 @@ const Patients = (props) => {
     <div>
       <Card>
         <CardBody>
+          {loading && <Spinner animation="border" />}
           <MaterialTable
             icons={tableIcons}
-            title="Find Patient "
+            title="HIV Checked In Patients "
             columns={[
               // { title: " ID", field: "Id" },
               {
@@ -142,58 +170,92 @@ const Patients = (props) => {
                 field: "hospital_number",
                 filtering: false,
               },
-              { title: "Gender", field: "gender", filtering: false },
+              { title: "Sex", field: "sex", filtering: false },
               { title: "Age", field: "age", filtering: false },
+              { title: "Biometrics", field: "biometrics", filtering: false },
+              { title: "ART Status", field: "status", filtering: false },
               { title: "Actions", field: "actions", filtering: false },
             ]}
-            data={patientList.map((row) => ({
-              name: row.firstName + " " + row.surname,
-              hospital_number: getHospitalNumber(row.identifier),
-              gender: row.gender.display,
-              age:
-                row.dateOfBirth === 0 ||
-                row.dateOfBirth === undefined ||
-                row.dateOfBirth === null ||
-                row.dateOfBirth === ""
-                  ? 0
-                  : calculate_age(row.dateOfBirth),
+            data={patientList.reverse().map((row) => ({
+              name: row.fullname,
+              hospital_number: row.hospitalNumber,
+              sex: row.sex,
+              age: row.age,
+              biometrics:
+                row.biometric === "Yes" ? (
+                  <Label color="green" size="mini">
+                    {`Biometric Captured`}
+                  </Label>
+                ) : (
+                  <Label color="red" size="mini">
+                    {`No Biometric`}
+                  </Label>
+                ),
+              status: (
+                <Label color="blue" size="mini">
+                  {`Not Enrolled`}
+                </Label>
+              ),
 
               actions: (
                 <div>
-                  <Menu>
-                    <MenuButton
-                      style={{
-                        backgroundColor: "#3F51B5",
-                        color: "#fff",
-                        border: "2px solid #3F51B5",
-                        borderRadius: "4px",
-                      }}
-                    >
-                      Actions <span aria-hidden>▾</span>
-                    </MenuButton>
-                    <MenuList style={{ color: "#000000 !important" }}>
-                      <MenuItem style={{ color: "#000 !important" }}>
+                  {permissions?.includes("HIV Enrollment Register") &&
+                    row.biometric === "Yes" && (
+                      <>
                         <Link
                           to={{
-                            pathname: "/patient-history",
-                            state: { patientObj: row },
+                            pathname: "/enroll-patient",
+                            state: { patientId: row.id, patientObj: row },
                           }}
                         >
-                          <MdDashboard size="15" color="black" />{" "}
-                          <span style={{ color: "#000" }}>
-                            Patient Dashboard
-                          </span>
+                          <ButtonGroup
+                            variant="contained"
+                            aria-label="split button"
+                            style={{
+                              backgroundColor: "rgb(153, 46, 98)",
+                              height: "30px",
+                              width: "215px",
+                            }}
+                            size="large"
+                          >
+                            <Button
+                              color="primary"
+                              size="small"
+                              aria-label="select merge strategy"
+                              aria-haspopup="menu"
+                              style={{
+                                backgroundColor: "rgb(153, 46, 98)",
+                              }}
+                            >
+                              <TiArrowForward />
+                            </Button>
+                            <Button
+                              style={{
+                                backgroundColor: "rgb(153, 46, 98)",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  fontSize: "12px",
+                                  color: "#fff",
+                                  fontWeight: "bolder",
+                                }}
+                              >
+                                Enroll Patient
+                              </span>
+                            </Button>
+                          </ButtonGroup>
                         </Link>
-                      </MenuItem>
-                    </MenuList>
-                  </Menu>
+                      </>
+                    )}
                 </div>
               ),
             }))}
             options={{
+              search: true,
               headerStyle: {
-                //backgroundColor: "#9F9FA5",
-                color: "#000",
+                backgroundColor: "#014d88",
+                color: "#fff",
               },
               searchFieldStyle: {
                 width: "200%",
@@ -213,4 +275,4 @@ const Patients = (props) => {
   );
 };
 
-export default Patients;
+export default CheckedInPatients;

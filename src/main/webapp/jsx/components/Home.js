@@ -1,6 +1,7 @@
 import React, { useState, Fragment, useEffect } from "react";
 import { Row, Col, Card, Tab, Tabs } from "react-bootstrap";
 import Dashboard from "./Patient/PatientList";
+import CheckedInPatients from "./Patient/CheckedInPatients";
 import VisualisationHome from "./Visualisation/Index";
 import LostToFollowUp from "./Patient/PatientListIit";
 import ArtPatients from "./Patient/ArtPatients";
@@ -87,6 +88,10 @@ const Home = () => {
                 >
                   <Tab eventKey="home" title="Find Patients">
                     <Dashboard />
+                  </Tab>
+
+                  <Tab eventKey="checkedIn" title="Checked-In Patients">
+                    <CheckedInPatients />
                   </Tab>
 
                   <Tab eventKey="art-patients" title="ART Patients">

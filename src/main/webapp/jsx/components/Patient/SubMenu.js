@@ -361,20 +361,22 @@ function SubMenu(props) {
                 </Menu.Item>
 
                 {permissions?.includes("Adult Initial Clinical Evaluation") ||
-                  (permissions?.includes(
-                    "Pediatric Initial Clinical Evaluation Form"
-                  ) &&
-                    !patientObj.clinicalEvaluation && (
-                      <Menu.Item
-                        onClick={() => loadAdultEvaluation()}
-                        name="initial"
-                        active={activeItem === "initial"}
-                        title="Initial Evaluation"
-                      >
-                        {" "}
-                        Initial Evaluation
-                      </Menu.Item>
-                    ))}
+                (permissions?.includes(
+                  "Pediatric Initial Clinical Evaluation Form"
+                ) &&
+                  !patientObj.clinicalEvaluation) ? (
+                  <Menu.Item
+                    onClick={() => loadAdultEvaluation()}
+                    name="initial"
+                    active={activeItem === "initial"}
+                    title="Initial Evaluation"
+                  >
+                    {" "}
+                    Initial Evaluation
+                  </Menu.Item>
+                ) : (
+                  ""
+                )}
                 {!patientObj.commenced && (
                   <Menu.Item
                     onClick={() => loadArtCommencement()}
@@ -476,21 +478,23 @@ function SubMenu(props) {
                         {permissions?.includes(
                           "Adult Initial Clinical Evaluation"
                         ) ||
-                          (permissions?.includes(
-                            "Pediatric Initial Clinical Evaluation Form"
-                          ) &&
-                            !patientObj.clinicalEvaluation &&
-                            patientObj.createBy.toUpperCase() ===
-                              "LAMIS DATA MIGRATION SYSTEM" && (
-                              <Menu.Item
-                                onClick={() => loadAdultEvaluation()}
-                                name="initial"
-                                active={activeItem === "initial"}
-                                title="Initial Evaluation"
-                              >
-                                Initial Evaluation
-                              </Menu.Item>
-                            ))}
+                        (permissions?.includes(
+                          "Pediatric Initial Clinical Evaluation Form"
+                        ) &&
+                          !patientObj.clinicalEvaluation &&
+                          patientObj.createBy.toUpperCase() ===
+                            "LAMIS DATA MIGRATION SYSTEM") ? (
+                          <Menu.Item
+                            onClick={() => loadAdultEvaluation()}
+                            name="initial"
+                            active={activeItem === "initial"}
+                            title="Initial Evaluation"
+                          >
+                            Initial Evaluation
+                          </Menu.Item>
+                        ) : (
+                          ""
+                        )}
                         {permissions?.includes("Care and Support register") ||
                         permissions?.includes("Care and support checklist") ? (
                           <Menu.Item
@@ -579,21 +583,29 @@ function SubMenu(props) {
                           </Menu.Item>
                         )}
 
-                        {(props.patientObj.sex === "Female" ||
+                        {((props.patientObj.sex === "Female" ||
                           props.patientObj.sex === "FEMALE" ||
                           props.patientObj.sex === "female") &&
                           permissions?.includes(
                             "Cervical cancer screening form"
-                          ) && (
-                            <Menu.Item
-                              onClick={() => loadCervicalCancer(patientObj)}
-                              name="cancer"
-                              active={activeItem === "cancer"}
-                              title="Cervical Cancer"
-                            >
-                              Cervical Cancer
-                            </Menu.Item>
-                          )}
+                          )) ||
+                        permissions?.includes(
+                          "Cervical cancer care Register"
+                        ) ||
+                        permissions?.includes("Cervical cancer consent form") ||
+                        permissions?.includes("Cervical cancer care card") ? (
+                          <Menu.Item
+                            onClick={() => loadCervicalCancer(patientObj)}
+                            name="cancer"
+                            active={activeItem === "cancer"}
+                            title="Cervical Cancer"
+                          >
+                            Cervical Cancer
+                          </Menu.Item>
+                        ) : (
+                          ""
+                        )}
+
                         {permissions?.includes(
                           "Client Tracking & Discontinuation Form"
                         ) && (

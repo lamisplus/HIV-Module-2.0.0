@@ -245,7 +245,7 @@ const Patients = (props) => {
                           <>
                             {permissions?.includes(
                               "HIV Enrollment Register"
-                            ) ? (
+                            ) && (
                               <Link
                                 to={{
                                   pathname: "/enroll-patient",
@@ -290,8 +290,6 @@ const Patients = (props) => {
                                   </Button>
                                 </ButtonGroup>
                               </Link>
-                            ) : (
-                              "Additional privileges needed to enroll this Patient"
                             )}
                           </>
                         )}

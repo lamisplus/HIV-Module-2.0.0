@@ -17,7 +17,7 @@ import * as moment from "moment";
 import { makeStyles } from "@material-ui/core/styles";
 import { Card, CardContent } from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
-//import AddIcon from "@material-ui/icons/Add";
+import { calculate_age } from "../../../utils";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -129,9 +129,12 @@ const UserRegistration = (props) => {
     dateOfLpm: "",
     tbStatusId: "",
     targetGroupId: "",
-    ovcNumber:"",
-    houseHoldNumber:"", referredToOVCPartner:"", dateReferredToOVCPartner:"",
-    referredFromOVCPartner:"", dateReferredFromOVCPartner:"",
+    ovcNumber: "",
+    houseHoldNumber: "",
+    referredToOVCPartner: "",
+    dateReferredToOVCPartner: "",
+    referredFromOVCPartner: "",
+    dateReferredFromOVCPartner: "",
     ovc_enrolled: "",
     careEntryPointOther: "",
     personId: "",
@@ -159,6 +162,7 @@ const UserRegistration = (props) => {
   let patientObj = {};
   patientId = locationState ? locationState.patientId : null;
   patientObj = locationState ? locationState.patientObj : {};
+  //console.log(patientObj);
   const [basicInfo, setBasicInfo] = useState(patientObj);
   //objValues.uniqueId=basicInfo.hospitalNumber
   useEffect(() => {
@@ -275,12 +279,9 @@ const UserRegistration = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        
         setCarePoints(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //Get list of Source of Referral
   const SourceReferral = () => {
@@ -289,12 +290,9 @@ const UserRegistration = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        
         setSourceReferral(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //Get list of HIV STATUS ENROLLMENT
   const HivStatus = () => {
@@ -303,12 +301,9 @@ const UserRegistration = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        
         setHivStatus(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //Get list of HIV STATUS ENROLLMENT
   const EnrollmentSetting = () => {
@@ -317,12 +312,9 @@ const UserRegistration = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        
         setEnrollSetting(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //Get list of HIV STATUS ENROLLMENT
   const TBStatus = () => {
@@ -331,12 +323,9 @@ const UserRegistration = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        
         setTbStatus(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //Get list of KP
   const KP = () => {
@@ -345,12 +334,9 @@ const UserRegistration = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        
         setKP(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   //Get list of KP
   const PregnancyStatus = () => {
@@ -359,12 +345,9 @@ const UserRegistration = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        
         setPregnancyStatus(response.data);
       })
-      .catch((error) => {
-        
-      });
+      .catch((error) => {});
   };
   const handleInputChange = (e) => {
     setErrors({ ...errors, [e.target.name]: "" });
@@ -409,56 +392,90 @@ const UserRegistration = (props) => {
   const handleCancel = () => {
     history.push({ pathname: "/" });
   };
+
+  const handleSubmitCheckOut = () => {
+    axios
+      .put(
+        `${baseUrl}patient/visit/checkout/${patientObj.visitId}`,
+        patientObj.visitId,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .then((response) => {
+        //console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (validate()) {
       setSaving(true);
-      try {
-        objValues.personId = patientId;
-        const response = await axios.post(
-          `${baseUrl}hiv/enrollment`,
-          objValues,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        toast.success("Patient Register successful", {
-          position: toast.POSITION.BOTTOM_CENTER,
-        });
-        setSaving(false);
-        history.push("/");
-      } catch (error) {
-        setSaving(false);
-        if (error.response && error.response.data) {
-          let errorMessage =
-            error.response.data.apierror &&
-            error.response.data.apierror.message !== ""
-              ? error.response.data.apierror.message
-              : "Something went wrong, please try again";
-          if (
-            error.response.data.apierror &&
-            error.response.data.apierror.message !== "" &&
-            error.response.data.apierror &&
-            error.response.data.apierror.subErrors[0].message !== ""
-          ) {
-            toast.error(
-              error.response.data.apierror.message +
-                " : " +
-                error.response.data.apierror.subErrors[0].field +
-                " " +
-                error.response.data.apierror.subErrors[0].message,
-              { position: toast.POSITION.BOTTOM_CENTER }
-            );
-          } else {
-            toast.error(errorMessage, {
-              position: toast.POSITION.BOTTOM_CENTER,
-            });
+      // try {
+      objValues.personId = patientId;
+      await axios
+        .post(`${baseUrl}hiv/enrollment`, objValues, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          console.log(response.data);
+          if (patientObj.visitId !== null && patientObj.status === "PENDING") {
+            handleSubmitCheckOut();
           }
-        } else {
+
+          toast.success("Patient Registered successfully", {
+            position: toast.POSITION.BOTTOM_CENTER,
+          });
+          setSaving(false);
+          history.push("/");
+        })
+        .catch((error) => {
+          console.log(error);
+          setSaving(false);
           toast.error("Something went wrong. Please try again...", {
             position: toast.POSITION.BOTTOM_CENTER,
           });
-        }
-      }
+        });
+      // }
+      // catch (error) {
+      //   console.log(error);
+      //   setSaving(false);
+      //   toast.error("Something went wrong. Please try again...", {
+      //     position: toast.POSITION.BOTTOM_CENTER,
+      //   });
+      //   // if (error.response && error.response.data) {
+      //   //   let errorMessage =
+      //   //     error.response.data.apierror &&
+      //   //     error.response.data.apierror.message !== ""
+      //   //       ? error.response.data.apierror.message
+      //   //       : "Something went wrong, please try again";
+      //   //   if (
+      //   //     error.response.data.apierror &&
+      //   //     error.response.data.apierror.message !== "" &&
+      //   //     error.response.data.apierror &&
+      //   //     error.response.data.apierror.subErrors[0].message !== ""
+      //   //   ) {
+      //   //     toast.error(
+      //   //       error.response.data.apierror.message +
+      //   //         " : " +
+      //   //         error.response.data.apierror.subErrors[0].field +
+      //   //         " " +
+      //   //         error.response.data.apierror.subErrors[0].message,
+      //   //       { position: toast.POSITION.BOTTOM_CENTER }
+      //   //     );
+      //   //   } else {
+      //   //     toast.error(errorMessage, {
+      //   //       position: toast.POSITION.BOTTOM_CENTER,
+      //   //     });
+      //   //   }
+      //   // } else {
+      //   //   toast.error("Something went wrong. Please try again...", {
+      //   //     position: toast.POSITION.BOTTOM_CENTER,
+      //   //   });
+      //   // }
+      // }
     }
   };
 
@@ -529,7 +546,14 @@ const UserRegistration = (props) => {
                             name="firstName"
                             id="firstName"
                             value={
-                              basicInfo.firstName + " " + basicInfo.surname
+                              (basicInfo?.firstName !== undefined
+                                ? basicInfo?.firstName
+                                : "") +
+                              " " +
+                              (basicInfo?.surname !== undefined
+                                ? basicInfo?.surname
+                                : "") +
+                              basicInfo?.fullname
                             }
                             onChange={handleInputChangeBasic}
                             style={{
@@ -556,7 +580,10 @@ const UserRegistration = (props) => {
                             type="text"
                             name="hospitalNumber"
                             id="hospitalNumber"
-                            value={basicInfo.hospitalNumber}
+                            value={
+                              basicInfo.hospitalNumber ||
+                              basicInfo?.identifier?.identifier[0]?.value
+                            }
                             onChange={handleInputChangeBasic}
                             style={{
                               border: "none",
@@ -593,7 +620,10 @@ const UserRegistration = (props) => {
                             type="text"
                             name="age"
                             id="age"
-                            value={basicInfo.age}
+                            value={
+                              basicInfo.age ||
+                              calculate_age(basicInfo?.dateOfBirth)
+                            }
                             disabled={ageDisabled}
                             onChange={handleAgeChange}
                             style={{
@@ -1132,7 +1162,7 @@ const UserRegistration = (props) => {
                                     }
                                 </div> */}
 
-                    {ovcEnrolled=== true && (
+                    {ovcEnrolled === true && (
                       <>
                         <div className="row">
                           <div className="form-group mb-3 col-md-6">
@@ -1174,13 +1204,16 @@ const UserRegistration = (props) => {
                             <FormGroup>
                               <Label>Referred To OVC Partner</Label>
                               <Input
-                                  type="select"
-                                  name="referredToOVCPartner"
-                                  id="referredToOVCPartner"
-                                  required={ovcEnrolled}
-                                  onChange={handleInputChange}
-                                  style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
-                                  value={objValues.referredToOVCPartner}
+                                type="select"
+                                name="referredToOVCPartner"
+                                id="referredToOVCPartner"
+                                required={ovcEnrolled}
+                                onChange={handleInputChange}
+                                style={{
+                                  border: "1px solid #014D88",
+                                  borderRadius: "0.2rem",
+                                }}
+                                value={objValues.referredToOVCPartner}
                               >
                                 <option value=""> Select</option>
                                 <option value="YES"> YES</option>
@@ -1213,14 +1246,16 @@ const UserRegistration = (props) => {
                             <FormGroup>
                               <Label>Referred From OVC Partner</Label>
                               <Input
-                                  type="select"
-                                  name="referredFromOVCPartner"
-                                  id="referredFromOVCPartner"
-                                  required={ovcEnrolled}
-                                  onChange={handleInputChange}
-                                  style={{border: "1px solid #014D88", borderRadius:"0.2rem"}}
-                                  value={objValues.referredFromOVCPartner}
-
+                                type="select"
+                                name="referredFromOVCPartner"
+                                id="referredFromOVCPartner"
+                                required={ovcEnrolled}
+                                onChange={handleInputChange}
+                                style={{
+                                  border: "1px solid #014D88",
+                                  borderRadius: "0.2rem",
+                                }}
+                                value={objValues.referredFromOVCPartner}
                               >
                                 <option value=""> Select</option>
                                 <option value="YES"> YES</option>
@@ -1249,7 +1284,6 @@ const UserRegistration = (props) => {
                                             ) : "" }  */}
                             </FormGroup>
                           </div>
-
                         </div>
                       </>
                     )}
