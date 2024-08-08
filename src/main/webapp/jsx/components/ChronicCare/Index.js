@@ -474,6 +474,7 @@ const ChronicCare = (props) => {
 
 // console.log(errors)
 
+  // console.log("temp", temp)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -618,6 +619,7 @@ const ChronicCare = (props) => {
                       }}
                       min={enrollDate}
                       max={moment(new Date()).format("YYYY-MM-DD")}
+                      onKeyPress={(e) => e.preventDefault()}
                     ></Input>
                   </FormGroup>
                   {errors.dateOfObservation !== "" ? (

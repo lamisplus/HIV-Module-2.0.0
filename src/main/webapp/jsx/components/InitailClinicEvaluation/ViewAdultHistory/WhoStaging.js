@@ -320,6 +320,7 @@ const Laboratory = (props) => {
                           borderRadius: "0.25rem",
                         }}
                         required
+                        onKeyPress={(e) => e.preventDefault()}
                       />
                       {errors.sampleCollectionDate !== "" ? (
                         <span className={classes.error}>
@@ -375,6 +376,7 @@ const Laboratory = (props) => {
                           borderRadius: "0.25rem",
                         }}
                         required
+                        onKeyPress={(e) => e.preventDefault()}
                       />
                       {errors.resultDate !== "" ? (
                         <span className={classes.error}>
@@ -469,6 +471,7 @@ const Laboratory = (props) => {
                           borderRadius: "0.25rem",
                         }}
                         required
+                        onKeyPress={(e) => e.preventDefault()}
                       />
                       {errors.clinicianName !== "" ? (
                         <span className={classes.error}>
@@ -517,6 +520,7 @@ const Laboratory = (props) => {
                           borderRadius: "0.25rem",
                         }}
                         required
+                        onKeyPress={(e) => e.preventDefault()}
                       />
                       {errors.clinicianName !== "" ? (
                         <span className={classes.error}>
@@ -529,7 +533,7 @@ const Laboratory = (props) => {
                   </Col>
                   <Col md={6} className="form-group mb-3">
                     <FormGroup>
-                      <Label for="encounterDate">Clinician Name Hafiz</Label>
+                      <Label for="encounterDate">Clinician Name</Label>
                       <Input
                         type="date"
                         name="clinicianName"
@@ -541,6 +545,7 @@ const Laboratory = (props) => {
                           borderRadius: "0.25rem",
                         }}
                         required
+                        onKeyPress={(e) => e.preventDefault()}
                       />
                       {errors.clinicianName !== "" ? (
                         <span className={classes.error}>

@@ -906,6 +906,7 @@ const DsdServiceForm = (props) => {
                                     }}
                                     // disabled
                                     readOnly
+                                    onKeyPress={(e) => e.preventDefault()}
                                 />
 
                             </FormGroup>
@@ -1121,6 +1122,7 @@ const DsdServiceForm = (props) => {
                                         }}
                                         // disabled={isDisabled}
                                         // disabled
+                                        onKeyPress={(e) => e.preventDefault()}
                                     />
                                     {errors.dateReturnToSite !== "" ? (<span className={classes.error}>
                         {errors.dateReturnToSite}
@@ -1225,6 +1227,7 @@ const DsdServiceForm = (props) => {
                                     style={{
                                         border: "1px solid #014D88", borderRadius: "0.25rem",
                                     }}
+                                    onKeyPress={(e) => e.preventDefault()}
                                     // disabled
                                 />
                                 {errors.dateDevolved !== "" ? (<span className={classes.error}>

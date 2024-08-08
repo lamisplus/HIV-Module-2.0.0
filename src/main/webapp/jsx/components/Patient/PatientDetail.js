@@ -5,7 +5,8 @@ import { url as baseUrl, token } from "./../../../api";
 import { withStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import "semantic-ui-css/semantic.min.css";
-import { Sticky } from "semantic-ui-react";
+import { Sticky, Button } from "semantic-ui-react";
+import { Modal } from "react-bootstrap";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import PatientCardDetail from "./PatientCard";
@@ -584,6 +585,38 @@ function PatientCard(props) {
           )}
         </CardContent>
       </Card>
+
+      {/*<Modal*/}
+      {/*    show={true}*/}
+      {/*    // toggle={toggle}*/}
+      {/*    className="fade"*/}
+      {/*    size="sm"*/}
+      {/*    aria-labelledby="contained-modal-title-vcenter"*/}
+      {/*    centered*/}
+      {/*>*/}
+      {/*  <Modal.Header>*/}
+      {/*    <Modal.Title id="contained-modal-title-vcenter">*/}
+      {/*      Reminder: Update TPT Status*/}
+      {/*    </Modal.Title>*/}
+      {/*  </Modal.Header>*/}
+      {/*  <Modal.Body>*/}
+      {/*    <h4>It's been 180 days since you started TPT. Please update your completion status.</h4>*/}
+      {/*  </Modal.Body>*/}
+      {/*  <Modal.Footer>*/}
+      {/*    <Button*/}
+      {/*        // onClick={toggle}*/}
+      {/*        style={{ backgroundColor: "#014d88", color: "#fff" }}*/}
+      {/*    >*/}
+      {/*      Cancel*/}
+      {/*    </Button>*/}
+      {/*    <Button*/}
+      {/*        // onClick={toggle}*/}
+      {/*        style={{ backgroundColor: "#014d88", color: "#fff" }}*/}
+      {/*    >*/}
+      {/*      Update*/}
+      {/*    </Button>*/}
+      {/*  </Modal.Footer>*/}
+      {/*</Modal>*/}
     </div>
   );
 }

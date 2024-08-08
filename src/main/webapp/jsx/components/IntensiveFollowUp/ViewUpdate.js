@@ -300,7 +300,7 @@ const Tracking = (props) => {
                                     onChange={handleInputChange}
                                     style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                     max= {moment(new Date()).format("YYYY-MM-DD") }
-                                    
+                                    onKeyPress={(e) => e.preventDefault()}
                                     > 
                                 </Input>
                                 {errors.dateOfObservation !=="" ? (
@@ -324,7 +324,7 @@ const Tracking = (props) => {
                                     onChange={handleInputChangeAttempt}
                                     style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                     max= {moment(new Date()).format("YYYY-MM-DD") }
-                                    
+                                    onKeyPress={(e) => e.preventDefault()}
                                     > 
                                 </Input>
                                 {errors.callDate !=="" ? (

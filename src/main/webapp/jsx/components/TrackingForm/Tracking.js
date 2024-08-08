@@ -953,6 +953,7 @@ const Tracking = (props) => {
                       border: "1px solid #014D88",
                       borderRadius: "0.25rem",
                     }}
+                    onKeyPress={(e) => e.preventDefault()}
                   />
                   {errors.dateLastAppointment !== "" ? (
                     <span className={classes.error}>
@@ -978,6 +979,7 @@ const Tracking = (props) => {
                       border: "1px solid #014D88",
                       borderRadius: "0.25rem",
                     }}
+                    onKeyPress={(e) => e.preventDefault()}
                   />
                   {errors.dateMissedAppointment !== "" ? (
                     <span className={classes.error}>
@@ -1006,6 +1008,7 @@ const Tracking = (props) => {
                       }}
                       min={enrollDate !== "" ? enrollDate : ""}
                       max={moment(new Date()).format("YYYY-MM-DD")}
+                      onKeyPress={(e) => e.preventDefault()}
                     ></Input>
                     {errors.attemptDate !== "" ? (
                       <span className={classes.error}>
@@ -1241,6 +1244,7 @@ const Tracking = (props) => {
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
                         }}
+                        onKeyPress={(e) => e.preventDefault()}
                       />
                       {errors.dateReturnToCare !== "" ? (
                         <span className={classes.error}>
@@ -1313,25 +1317,27 @@ const Tracking = (props) => {
                   <div className="form-group mb-3 col-md-4">
                     <FormGroup>
                       <Label for=""> Date of Discontinuation</Label>
+                      <span style={{color: "red"}}> *</span>
                       <Input
-                        type="date"
-                        name="dateOfDiscontinuation"
-                        id="dateOfDiscontinuation"
-                        onChange={handleInputChange}
-                        value={objValues.dateOfDiscontinuation}
-                        min={enrollDate !== "" ? enrollDate : ""}
-                        max={moment(new Date()).format("YYYY-MM-DD")}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
+                          type="date"
+                          name="dateOfDiscontinuation"
+                          id="dateOfDiscontinuation"
+                          onChange={handleInputChange}
+                          value={objValues.dateOfDiscontinuation}
+                          min={enrollDate !== "" ? enrollDate : ""}
+                          max={moment(new Date()).format("YYYY-MM-DD")}
+                          style={{
+                            border: "1px solid #014D88",
+                            borderRadius: "0.25rem",
+                          }}
+                          onKeyPress={(e) => e.preventDefault()}
                       />
                       {errors.dateOfDiscontinuation !== "" ? (
-                        <span className={classes.error}>
+                          <span className={classes.error}>
                           {errors.dateOfDiscontinuation}
                         </span>
                       ) : (
-                        ""
+                          ""
                       )}
                     </FormGroup>
                   </div>
@@ -1448,6 +1454,7 @@ const Tracking = (props) => {
                               border: "1px solid #014D88",
                               borderRadius: "0.25rem",
                             }}
+                            onKeyPress={(e) => e.preventDefault()}
                         />
                         {errors.dateOfDeath !== "" ? (
                             <span className={classes.error}>

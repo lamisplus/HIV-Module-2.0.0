@@ -160,6 +160,7 @@ const DashboardFilledTransferForm = (props) => {
     patientAttendedHerFirstVisit: "",
     acknowlegdeReceiveDate: "",
     type:"",
+    encounterDate:""
     // acknowlegdeTelephoneNumber: "",
   });
   const [defaultFacility, setDefaultFacility] = useState({
@@ -235,8 +236,8 @@ const DashboardFilledTransferForm = (props) => {
       .then((response) => {
         setObservationType(response.data.type)
         setPayload({ ...response.data.data });
-        console.log("observation", response.data.data)
-        console.log("observation type", response.data.type)
+        // console.log("observation", response.data.data)
+        // console.log("observation type", response.data.type)
         setDefaultFacility({
           value: "",
           label: response.data.data.facilityTransferTo,
@@ -462,37 +463,54 @@ const DashboardFilledTransferForm = (props) => {
 // console.log("payload", payload)
 
   //Validations of the forms
-  const validate = () => {
-    // new error validaqtion
-    // temp.facilityTransferTo = payload.facilityTransferTo
-    //   ? ""
-    //   : "This field is required";
-    temp.reasonForTransfer = payload.reasonForTransfer
-      ? ""
-      : "This field is required";
-    temp.modeOfHIVTest = payload.modeOfHIVTest ? "" : "This field is required";
-    // temp.stateTransferTo = payload.stateTransferTo
-    //   ? ""
-    //   : "This field is required";
-    // temp.lgaTransferTo = payload.lgaTransferTo ? "" : "This field is required";
-    // temp.facilityTransferTo = payload.facilityTransferTo
-    //   ? ""
-    //   : "This field is required";
+  // const validate = () => {
+  //   temp.reasonForTransfer = payload.reasonForTransfer
+  //     ? ""
+  //     : "This field is required";
+  //   temp.modeOfHIVTest = payload.modeOfHIVTest ? "" : "This field is required";
+  //   setErrors({
+  //     ...temp,
+  //   });
+  //   return Object.values(temp).every((x) => x == "");
+  // };
 
+  const validate = async () => {
+    temp.reasonForTransfer = payload.reasonForTransfer !== "" ? "" : "This field is required";
+    temp.modeOfHIVTest = payload.modeOfHIVTest !== "" ? "" : "This field is required";
+    temp.encounterDate = payload.encounterDate !== "" ? "" : "This field is required";
+
+    if (payload.encounterDate !== "") {
+      try {
+        const response = await axios.get(
+            `${baseUrl}treatment-transfers/validate-encounter-date?personUuid=${patientObj?.personUuid}&encounterDate=${payload.encounterDate}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+        );
+        if (response.data === 'Date is valid.') {
+          temp.encounterDate = '';
+        } else if (response.data === 'The selected date is already used for transfer in or out.') {
+          temp.encounterDate = "The selected date is already used for transfer in or out";
+        } else {
+          temp.encounterDate = "An unexpected error occurred";
+        }
+      } catch (error) {
+        console.error('Error validating date:', error);
+        temp.encounterDate = 'The selected date is already used for transfer in or out';
+      }
+    }
     setErrors({
       ...temp,
     });
-    return Object.values(temp).every((x) => x == "");
+    return Object.values(temp).every((x) => !x);
   };
 
 
   /**** Submit Button Processing  */
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     let facId = localStorage.getItem("faciltyId");
-
     e.preventDefault();
-
-    if (validate()) {
+    if (await validate()) {
       payload.bmi = BMI;
       payload.currentMedication = currentMedication;
       payload.labResult = labResult;
@@ -521,6 +539,38 @@ const DashboardFilledTransferForm = (props) => {
             <div className="row">
               <h2>Transfer {observationType === "ART Transfer Out" ? "Out" : "In"} Form</h2>
               <br/>
+              <div className="row">
+                <div className="form-group mb-3 col-md-12">
+                  <FormGroup>
+                    <Label for="">Encounter Date</Label>
+                    <span style={{color: "red"}}> *</span>
+                    <Input
+                        type="date"
+                        name="encounterDate"
+                        id="encounterDate"
+                        onChange={handleInputChange}
+                        value={payload.encounterDate}
+                        //min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
+                        max={moment(new Date()).format("YYYY-MM-DD")}
+                        style={{
+                          border: "1px solid #014D88",
+                          borderRadius: "0.25rem",
+                        }}
+                        disabled={
+                          props.activeContent.actionType === "view" ? true : false
+                        }
+                        onKeyPress={(e) => e.preventDefault()}
+                    />
+                    {errors.encounterDate !== "" ? (
+                        <span className={classes.error}>
+                                                {errors.encounterDate}
+                                            </span>
+                    ) : (
+                        ""
+                    )}
+                  </FormGroup>
+                </div>
+              </div>
               <br/>
               {observationType !== "ART Transfer Out" ?
                   (
@@ -841,6 +891,7 @@ const DashboardFilledTransferForm = (props) => {
                           border: "1px solid #014D88",
                           borderRadius: "0.2rem",
                         }}
+                        onKeyPress={(e) => e.preventDefault()}
                     />
                   </FormGroup>
                 </div>
@@ -946,6 +997,7 @@ const DashboardFilledTransferForm = (props) => {
                         // onChange={handleInputChange}
                         disabled={true}
                         value={payload.dateEnrolledInTreatment}
+                        onKeyPress={(e) => e.preventDefault()}
                     />
                     {/* {errors.reasonForTrackingOthers !== "" ? (
                       <span className={classes.error}>
@@ -1290,7 +1342,7 @@ const DashboardFilledTransferForm = (props) => {
                         }
                         value={payload.reasonForTransfer}
                         //min= {moment(payload.dateOfLastViralLoad).format("YYYY-MM-DD") }
-                        max={moment(new Date()).format("YYYY-MM-DD")}
+                        // max={moment(new Date()).format("YYYY-MM-DD")}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
@@ -1358,7 +1410,7 @@ const DashboardFilledTransferForm = (props) => {
                         onChange={handleInputChange}
                         value={payload.contactAddressOfTreatmentSupporter}
                         //min= {moment(payload.dateOfLastViralLoad).format("YYYY-MM-DD") }
-                        max={moment(new Date()).format("YYYY-MM-DD")}
+                        // max={moment(new Date()).format("YYYY-MM-DD")}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
@@ -1387,7 +1439,7 @@ const DashboardFilledTransferForm = (props) => {
                         onChange={handleInputChange}
                         value={payload.phoneNumberOfTreatmentSupporter}
                         //min= {moment(payload.dateOfLastViralLoad).format("YYYY-MM-DD") }
-                        max={moment(new Date()).format("YYYY-MM-DD")}
+                        // max={moment(new Date()).format("YYYY-MM-DD")}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
@@ -1416,7 +1468,7 @@ const DashboardFilledTransferForm = (props) => {
                         onChange={handleInputChange}
                         value={payload.relationshipWithClients}
                         //min= {moment(payload.dateOfLastViralLoad).format("YYYY-MM-DD") }
-                        max={moment(new Date()).format("YYYY-MM-DD")}
+                        // max={moment(new Date()).format("YYYY-MM-DD")}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
@@ -1476,7 +1528,7 @@ const DashboardFilledTransferForm = (props) => {
                         onChange={handleInputChange}
                         value={payload.cliniciansName}
                         //min= {moment(payload.dateOfLastViralLoad).format("YYYY-MM-DD") }
-                        max={moment(new Date()).format("YYYY-MM-DD")}
+                        // max={moment(new Date()).format("YYYY-MM-DD")}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
@@ -1512,6 +1564,7 @@ const DashboardFilledTransferForm = (props) => {
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
                         }}
+                        onKeyPress={(e) => e.preventDefault()}
                     />
                     {errors.dateLastAppointment !== "" ? (
                         <span className={classes.error}>
@@ -1543,6 +1596,7 @@ const DashboardFilledTransferForm = (props) => {
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
                         }}
+                        onKeyPress={(e) => e.preventDefault()}
                     />
                     {errors.dateLastAppointment !== "" ? (
                         <span className={classes.error}>
@@ -1632,7 +1686,7 @@ const DashboardFilledTransferForm = (props) => {
                         onChange={handleInputChange}
                         value={payload.patientAttendedHerFirstVisit}
                         //min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
-                        max={moment(new Date()).format("YYYY-MM-DD")}
+                        // max={moment(new Date()).format("YYYY-MM-DD")}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
@@ -1669,6 +1723,7 @@ const DashboardFilledTransferForm = (props) => {
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
                         }}
+                        onKeyPress={(e) => e.preventDefault()}
                     />
                     {errors.dateLastAppointment !== "" ? (
                         <span className={classes.error}>
@@ -1697,6 +1752,7 @@ const DashboardFilledTransferForm = (props) => {
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
                         }}
+                        onKeyPress={(e) => e.preventDefault()}
                     />
                     {errors.dateLastAppointment !== "" ? (
                         <span className={classes.error}>
@@ -1722,7 +1778,7 @@ const DashboardFilledTransferForm = (props) => {
                         onChange={handleInputChange}
                         value={payload.nameOfClinicianReceivingTheTransfer}
                         //min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
-                        max={moment(new Date()).format("YYYY-MM-DD")}
+                        // max={moment(new Date()).format("YYYY-MM-DD")}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
@@ -1750,7 +1806,7 @@ const DashboardFilledTransferForm = (props) => {
                         }
                         value={payload.clinicianTelephoneNumber}
                         //min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
-                        max={moment(new Date()).format("YYYY-MM-DD")}
+                        // max={moment(new Date()).format("YYYY-MM-DD")}
                         style={{
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",

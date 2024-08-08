@@ -163,7 +163,7 @@ const TPT = (props) => {
           ...props.tpt,
           eligibilityTpt: "Yes",
           tptPreventionOutcome: "Currently on TPT",
-          contractionForTpt: "",
+          // contractionForTpt: "",
         });
       }
       else {
@@ -296,14 +296,14 @@ const TPT = (props) => {
         chronicAlcohol:'',
       });
     }
-    else if(name === 'contractionForTpt' || value === ''){
-      props.setTpt({
-        ...props.tpt,
-        [name]: value,
-        weight: "",
-        enrolledOnTpt: ""
-      });
-    }
+    // else if(name === 'contractionForTpt' && value === ''){
+    //   props.setTpt({
+    //     ...props.tpt,
+    //     [name]: value,
+    //     weight: "",
+    //     enrolledOnTpt: ""
+    //   });
+    // }
     else if((name === 'liverSymptoms' && value !== props.tpt.liverSymptoms) ||
         (name === 'neurologicSymptoms' && value !== props.tpt.neurologicSymptoms) ||
         (name === 'chronicAlcohol' && value !== props.tpt.chronicAlcohol) ||
@@ -423,6 +423,7 @@ const TPT = (props) => {
                       onChange={handleTpt}
                       value={props.tpt.dateOfTptCompleted}
                       disabled={props.action === "view" ? true : false}
+                      onKeyPress={(e) => e.preventDefault()}
                     >
                       
                     </Input>
@@ -549,7 +550,7 @@ const TPT = (props) => {
                       type="select"
                       name="contractionForTpt"
                       id="contractionForTpt"
-                      onChange={handleTpt}
+                      // onChange={handleTpt}
                       value={props.tpt.contractionForTpt}
                       disabled
                     >
@@ -614,6 +615,7 @@ const TPT = (props) => {
                                   min={props.patientObj.dateOfBirth}
                                   max={moment(new Date()).format("YYYY-MM-DD")}
                                   disabled={props.action === "view" ? true : false}
+                                  onKeyPress={(e) => e.preventDefault()}
                               />
                             </InputGroup>
                           </FormGroup>
@@ -888,6 +890,7 @@ const TPT = (props) => {
                           min={props.tpt.dateTptStarted}
                           max={moment(new Date()).format("YYYY-MM-DD")}
                           disabled={props.action === "view" ? true : false}
+                          onKeyPress={(e) => e.preventDefault()}
                       ></Input>
                     </InputGroup>
                   </FormGroup>

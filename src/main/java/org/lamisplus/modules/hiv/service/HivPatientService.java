@@ -298,7 +298,7 @@ public class HivPatientService {
             Optional<HivEnrollmentDTO> enrollment =
                     hivEnrollmentService.getHivEnrollmentByPersonIdAndArchived (bioData.getId ());
             Optional<ARTClinical> artCommencement =
-                    artClinicalRepository.findByPersonAndIsCommencementIsTrueAndArchived (person, 0);
+                    artClinicalRepository.findTopByPersonAndIsCommencementIsTrueAndArchived(person, 0);
             HivPatientDto hivPatientDto = new HivPatientDto ();
             BeanUtils.copyProperties (bioData, hivPatientDto);
             hivPatientDto.setCreateBy(person.getCreatedBy());

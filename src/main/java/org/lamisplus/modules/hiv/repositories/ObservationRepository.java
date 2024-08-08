@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -32,19 +33,24 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
     List<Observation> getAllDueForServerUpload(LocalDateTime dateLastSync, Long facilityId);
 
     Optional<Observation> findByUuid(String uuid);
-    
-    @Query(value = "SELECT tbTreatmentPersonUuid FROM (SELECT \n" +
-            "COALESCE(NULLIF(CAST(data->'tbIptScreening'->>'eligibleForTPT' AS text), ''), '') as eligibleForTPT,\n" +
-            "person_uuid as tbTreatmentPersonUuid,\n" +
-            "ROW_NUMBER() OVER ( PARTITION BY person_uuid ORDER BY date_of_observation DESC)\n" +
-            "FROM hiv_observation WHERE type = 'Chronic Care'   \n" +
-            "\t\t\t   AND facility_id = ?1 \n" +
-            ") tbTreatment WHERE row_number = 1 AND  eligibleForTPT IS NOT NULL \n" +
-            "AND eligibleForTPT = 'Yes'\n" +
-            "AND tbTreatmentPersonUuid = ?2", nativeQuery = true)
+
+    @Query(value = "SELECT tbTreatmentPersonUuid\n" +
+            "FROM (\n" +
+            "  SELECT\n" +
+            "    COALESCE( COALESCE(NULLIF(CAST(data->'tptMonitoring'->>'eligibilityTpt' AS text), ''), NULL), COALESCE(NULLIF(CAST(data->'tbIptScreening'->>'eligibleForTPT' AS text), ''), '')) AS eligibleForTPT,\n" +
+            "    person_uuid AS tbTreatmentPersonUuid,\n" +
+            "    ROW_NUMBER() OVER (PARTITION BY person_uuid ORDER BY date_of_observation DESC) AS row_number\n" +
+            "  FROM hiv_observation\n" +
+            "  WHERE type = 'Chronic Care'\n" +
+            "    AND facility_id = ?1 \n" +
+            ") tbTreatment\n" +
+            "WHERE row_number = 1\n" +
+            "  AND eligibleForTPT IS NOT NULL\n" +
+            "  AND eligibleForTPT = 'Yes'\n" +
+            "  AND tbTreatmentPersonUuid = ?2", nativeQuery = true)
     Optional<String>  getIPTEligiblePatientUuid(Long facilityId, String uuid);
 
-    
+
     List<Observation> getAllByPersonAndFacilityId(Person person, Long orgId);
 
 
@@ -258,5 +264,7 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
 
   @Query(value = "SELECT data->'chronicCondition'->>'hypertensive' AS hypertensive_value FROM public.hiv_observation WHERE type = 'Chronic Care' and facility_id = ?1 and person_uuid = ?2  AND archived = 0 AND data->'chronicCondition'->>'hypertensive' = 'Yes' limit 1", nativeQuery = true)
   Optional<String> getIsHypertensive(Long facilityId, String uuid);
-  
+
+    @Query(value = "SELECT CASE WHEN COUNT(o) > 0 THEN true ELSE false END FROM hiv_observation o WHERE o.person_uuid = :personUuid AND o.type IN ('ART Transfer In', 'ART Transfer Out') AND (o.data ->> 'encounterDate' IS NOT NULL) AND o.data ->> 'encounterDate' = :encounterDate", nativeQuery = true)
+    boolean existsByPersonUuidAndEncounterDate(@Param("personUuid") String personUuid, @Param("encounterDate") String encounterDate);
 }

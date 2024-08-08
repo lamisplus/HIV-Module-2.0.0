@@ -933,6 +933,7 @@ const Pharmacy = (props) => {
                           borderRadius: "0.25rem",
                         }}
                         disabled={disabledField}
+                        onKeyPress={(e) => e.preventDefault()}
                       />
                     </FormGroup>
                   </div>
@@ -1110,6 +1111,7 @@ const Pharmacy = (props) => {
                           borderRadius: "0.25rem",
                         }}
                         disabled={disabledField}
+                        onKeyPress={(e) => e.preventDefault()}
                       />
                     </FormGroup>
                   </div>
@@ -1230,6 +1232,7 @@ const Pharmacy = (props) => {
                             borderRadius: "0.25rem",
                           }}
                           required
+                          onKeyPress={(e) => e.preventDefault()}
                       />
                     </FormGroup>
                   </div>
@@ -1340,6 +1343,7 @@ const Pharmacy = (props) => {
                               name="deliveryPoint"
                               id="deliveryPoint"
                               disabled
+                              onKeyPress={(e) => e.preventDefault()}
                             />
                           </FormGroup>
                         </div>
@@ -1358,6 +1362,7 @@ const Pharmacy = (props) => {
                               name="deliveryPoint"
                               id="deliveryPoint"
                               disabled
+                              onKeyPress={(e) => e.preventDefault()}
                             />
                           </FormGroup>
                         </div>

@@ -258,7 +258,7 @@ const TbTreatmentScreening = (props) => {
                       min={props.dateOfObservation}
                       max={moment(new Date()).format("YYYY-MM-DD")}
                       // disabled={props.action === "view" ? true : false}
-                     
+                      onKeyPress={(e) => e.preventDefault()}
                     />
                   </InputGroup>
                   {errors.dateSpecimenSent !== "" ? (
@@ -310,6 +310,7 @@ const TbTreatmentScreening = (props) => {
                       min={props.tbObj.dateSpecimenSent}
                       max={moment(new Date()).format("YYYY-MM-DD")}
                       disabled={props.action === "view" ? true : false}
+                      onKeyPress={(e) => e.preventDefault()}
                     >
                      
                     </Input>
@@ -362,6 +363,7 @@ const TbTreatmentScreening = (props) => {
                             disabled={props.action === "view" ? true : false}
                             min={props.tbObj.dateOfDiagnosticTest}
                             max={moment(new Date()).format("YYYY-MM-DD")}
+                            onKeyPress={(e) => e.preventDefault()}
                         >
                         </Input>
                       </InputGroup>
@@ -641,6 +643,7 @@ const TbTreatmentScreening = (props) => {
                       min={props.tbObj.dateOfDiagnosticTest}
                       max={moment(new Date()).format("YYYY-MM-DD")}
                       disabled={props.action === "view" ? true : false}
+                      onKeyPress={(e) => e.preventDefault()}
                     >
                     </Input>
                   </InputGroup>
@@ -728,6 +731,7 @@ const TbTreatmentScreening = (props) => {
                           max={moment(new Date()).format("YYYY-MM-DD")}
                           value={props.tbObj.tbTreatmentStartDate}
                           disabled={props.action === "view" ? true : false}
+                          onKeyPress={(e) => e.preventDefault()}
                       >
 
                       </Input>

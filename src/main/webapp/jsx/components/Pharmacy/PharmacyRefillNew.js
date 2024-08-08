@@ -1285,6 +1285,7 @@ const Pharmacy = (props) => {
                         type="date"
                         name="visitDate"
                         id="visitDate"
+
                         onChange={handleInputChange}
                         value={objValues.visitDate}
                         min={enrollDate !== "" ? enrollDate : ""}
@@ -1293,6 +1294,7 @@ const Pharmacy = (props) => {
                           border: "1px solid #014D88",
                           borderRadius: "0.25rem",
                         }}
+                        onKeyPress={(e) => e.preventDefault()}
                         required
                       />
                       {errors.visitDate && (
@@ -1416,6 +1418,7 @@ const Pharmacy = (props) => {
                             border: "1px solid #014D88",
                             borderRadius: "0.25rem",
                           }}
+                          onKeyPress={(e) => e.preventDefault()}
                           required
                       />
                     </FormGroup>
@@ -1528,6 +1531,7 @@ const Pharmacy = (props) => {
                               id="dateOfViralLoad"
                               disabled
                               value={eacStatusObj.dateOfViralLoad}
+                              onKeyPress={(e) => e.preventDefault()}
                             />
                           </FormGroup>
                         </div>
@@ -1547,6 +1551,7 @@ const Pharmacy = (props) => {
                               id="eacsessionDate"
                               disabled
                               value={eacStatusObj.eacsessionDate}
+                              onKeyPress={(e) => e.preventDefault()}
                             />
                           </FormGroup>
                         </div>

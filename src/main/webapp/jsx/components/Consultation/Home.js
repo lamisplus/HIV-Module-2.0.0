@@ -984,13 +984,13 @@ const ClinicVisit = (props) => {
     temp.nextAppointment = objValues.nextAppointment
       ? ""
       : "This field is required";
-    temp.pregnancyStatus =
-      objValues.pregnancyStatus === "select" || !objValues.pregnancyStatus
-        ? "This field is required"
-        : "";
-
-    if (patientObj.sex.toLocaleLowerCase() === "male")
-      temp.pregnancyStatus = "";
+    // temp.pregnancyStatus =
+    //   objValues.pregnancyStatus === "select" || !objValues.pregnancyStatus
+    //     ? "This field is required"
+    //     : "";
+    //
+    // if (patientObj.sex.toLocaleLowerCase() === "male")
+    //   temp.pregnancyStatus = "";
 
     temp.stage = who?.stage ? "" : "This field is required";
     temp.functionalStatusId = objValues.functionalStatusId
@@ -999,13 +999,14 @@ const ClinicVisit = (props) => {
     temp.height = vital.height ? "" : "This field is required";
     temp.bodyWeight = vital.bodyWeight ? "" : "This field is required";
     //TB VALIDATION
-    // temp.tbStatusId = tbObj.tbStatusId ? "" : "This field is required";
-    // temp.careCardPatientTbStatus = tbObj.careCardPatientTbStatus ? "" : "This field is required";
+    temp.tbStatusId = tbObj.tbStatusId ? "" : "This field is required";
     setErrors({
       ...temp,
     });
+    // console.log("temp:", temp);
     return Object.values(temp).every((x) => x === "");
   };
+  // console.log("temp", temp)
   const handleSelectedTestGroup = (e) => {
     setTests({ ...tests, labTestGroupId: e.target.value });
     const getTestList = testGroup.filter(
@@ -1023,7 +1024,7 @@ const ClinicVisit = (props) => {
     setTests({ ...tests, [e.target.name]: e.target.value });
   };
 
-  console.log("tb object inside parent", tbObj)
+  // console.log("tb object inside parent", tbObj)
 
   /**** Submit Button Processing  */
   const handleSubmit = (e) => {
@@ -1043,7 +1044,6 @@ const ClinicVisit = (props) => {
       objValues.viralLoadOrder = testOrderList;
       objValues.arvdrugsRegimen = arvDrugOrderList;
       objValues["vitalSignDto"] = vital;
-
       axios
         .post(`${baseUrl}hiv/art/clinic-visit/`, objValues, {
           headers: { Authorization: `Bearer ${token}` },
@@ -1589,6 +1589,7 @@ const ClinicVisit = (props) => {
                     min={enrollDate}
                     max={moment(new Date()).format("YYYY-MM-DD")}
                     required
+                    onKeyPress={(e) => e.preventDefault()}
                   />
                   {errors.encounterDate !== "" ? (
                     <span className={classes.error}>
@@ -2563,7 +2564,7 @@ const ClinicVisit = (props) => {
                     required
                   >
                     <option value="select">Select </option>
-                    {patientAge >= 17 && (
+                    {patientAge >= 15 && (
                       <>
                         {adultRegimenLine.map((value) => (
                           <option key={value.id} value={value.id}>
@@ -2572,7 +2573,7 @@ const ClinicVisit = (props) => {
                         ))}
                       </>
                     )}
-                    {patientAge < 17 && (
+                    {patientAge < 15 && (
                       <>
                         {childRegimenLine.map((value) => (
                           <option key={value.id} value={value.id}>
@@ -2873,6 +2874,7 @@ const ClinicVisit = (props) => {
               onChange={handleInputChange}
               style={{ border: "1px solid #014D88", borderRadius: "0.25rem" }}
               min={vital.encounterDate}
+              onKeyPress={(e) => e.preventDefault()}
             />
             {errors.nextAppointment !== "" ? (
               <span className={classes.error}>{errors.nextAppointment}</span>

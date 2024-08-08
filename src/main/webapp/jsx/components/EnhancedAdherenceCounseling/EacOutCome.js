@@ -328,6 +328,7 @@ const EAC = (props) => {
                                 //max= {moment(new Date()).format("YYYY-MM-DD") }
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 disabled
+                                onKeyPress={(e) => e.preventDefault()}
                             />
                            </FormGroup> 
                         </div>
@@ -447,6 +448,7 @@ const EAC = (props) => {
                                 max= {moment(new Date()).format("YYYY-MM-DD") }
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 required
+                                onKeyPress={(e) => e.preventDefault()}
                             />
                             {errors.dateSwitched !=="" ? (
                                 <span className={classes.error}>{errors.dateSwitched}</span>
@@ -525,6 +527,7 @@ const EAC = (props) => {
                                 max= {moment(new Date()).format("YYYY-MM-DD") }
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 required
+                                onKeyPress={(e) => e.preventDefault()}
                             />
                             {errors.dateSubstituted !=="" ? (
                                 <span className={classes.error}>{errors.dateSubstituted}</span>
@@ -560,6 +563,7 @@ const EAC = (props) => {
                                 max= {moment(new Date()).format("YYYY-MM-DD") }
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 required
+                                onKeyPress={(e) => e.preventDefault()}
                             />
                             {errors.outComeDate !=="" ? (
                                 <span className={classes.error}>{errors.outComeDate}</span>

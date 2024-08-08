@@ -143,6 +143,32 @@ const TbScreening = (props) => {
       }
     }
 
+    // FOR PRDIATIRC
+    if (patientAge <= 14) {
+      // Pediatric patient (age 14 or below)
+      if (
+          props.tbObj.tbTreatment === "No" &&
+          props.tbObj.tbScreeningType === "Symptom screen (alone)"
+      ) {
+        if (
+            props.tbObj.coughing === "No" &&
+            props.tbObj.fever === "No" &&
+            props.tbObj.nightSweats === "No" &&
+            props.tbObj.losingWeight === "No" &&
+            props.tbObj.historyWithAdults === "No" &&
+            props.tbObj.poorWeightGain === "No"
+        ) {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Not Presumptive",
+            status: "No signs or symptoms of TB",
+            eligibleForTPT: "",
+          });
+        }
+      }
+    }
+
+
     if (
       props.tbObj.tbTreatment === "No" &&
       props.tbObj.tbScreeningType === "Symptom screen (alone)" &&
@@ -164,6 +190,33 @@ const TbScreening = (props) => {
       }
     }
 
+    // FOR PEDIATRIC PEDIATRIC
+    if (patientAge <= 14) {
+      // Pediatric patient (age 14 or below)
+      if (
+          props.tbObj.tbTreatment === "No" &&
+          props.tbObj.tbScreeningType === "Symptom screen (alone)" &&
+          //props.tbObj.currentlyOnTuberculosis === "No" &&
+          props.tbObj.previouslyCompletedTPT === "No"
+      ) {
+        if (
+            props.tbObj.coughing === "No" &&
+            props.tbObj.fever === "No" &&
+            props.tbObj.nightSweats === "No" &&
+            props.tbObj.losingWeight === "No" &&
+            props.tbObj.historyWithAdults === "No" &&
+            props.tbObj.poorWeightGain === "No"
+        ) {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Not Presumptive",
+            status: "No signs or symptoms of TB",
+            eligibleForTPT: "Yes",
+          });
+        }
+      }
+    }
+
 
     if (
       props.tbObj.tbTreatment === "No" &&
@@ -181,6 +234,31 @@ const TbScreening = (props) => {
           status: "Presumptive TB and referred for evaluation",
           eligibleForTPT: "",
         });
+      }
+    }
+
+    // FOR PEDIATRIC PEDIATRIC
+    if (patientAge <= 14) {
+      // Pediatric patient (age 14 or below)
+      if (
+          props.tbObj.tbTreatment === "No" &&
+          props.tbObj.tbScreeningType === "Symptom screen (alone)"
+      ) {
+        if (
+            props.tbObj.coughing === "Yes" ||
+            props.tbObj.fever === "Yes" ||
+            props.tbObj.nightSweats === "Yes" ||
+            props.tbObj.losingWeight === "Yes" ||
+            props.tbObj.historyWithAdults === "Yes" ||
+            props.tbObj.poorWeightGain === "Yes"
+        ) {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Presumptive TB",
+            status: "Presumptive TB and referred for evaluation",
+            eligibleForTPT: "",
+          });
+        }
       }
     }
 
@@ -276,6 +354,33 @@ const TbScreening = (props) => {
       }
     }
 
+    // FOR PEDIATRIC PEDIATRIC
+    if (patientAge <= 14) {
+      // Pediatric patient (age 14 or below)
+      if (
+          props.tbObj.tbTreatment === "No" &&
+          //props.tbObj.currentlyOnTuberculosis === "No" &&
+          props.tbObj.previouslyCompletedTPT === "No" &&
+          props.tbObj.tbScreeningType === "Symptom screen (alone)"
+      ) {
+        if (
+            props.tbObj.coughing === "Yes" ||
+            props.tbObj.fever === "Yes" ||
+            props.tbObj.nightSweats === "Yes" ||
+            props.tbObj.losingWeight === "Yes" ||
+            props.tbObj.historyWithAdults === "Yes" ||
+            props.tbObj.poorWeightGain === "Yes"
+        ) {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Presumptive",
+            status: "Presumptive TB and referred for evaluation",
+            eligibleForTPT: "No",
+          });
+        }
+      }
+    }
+
     if (
       props.tbObj.tbTreatment === "No" &&
       //props.tbObj.currentlyOnTuberculosis === "No" &&
@@ -294,6 +399,33 @@ const TbScreening = (props) => {
           status: "Presumptive TB and referred for evaluation",
           eligibleForTPT: "No",
         });
+      }
+    }
+
+    // FOR PEDIATRIC
+    if (patientAge <= 14) {
+      // Pediatric patient (age 14 or below)
+      if (
+          props.tbObj.tbTreatment === "No" &&
+          //props.tbObj.currentlyOnTuberculosis === "No" &&
+          props.tbObj.previouslyCompletedTPT === "Yes" &&
+          props.tbObj.tbScreeningType === "Symptom screen (alone)"
+      ) {
+        if (
+            props.tbObj.coughing === "Yes" ||
+            props.tbObj.fever === "Yes" ||
+            props.tbObj.nightSweats === "Yes" ||
+            props.tbObj.losingWeight === "Yes" ||
+            props.tbObj.historyWithAdults === "Yes" ||
+            props.tbObj.poorWeightGain === "Yes"
+        ) {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Presumptive",
+            status: "Presumptive TB and referred for evaluation",
+            eligibleForTPT: "No",
+          });
+        }
       }
     }
 
@@ -351,6 +483,34 @@ const TbScreening = (props) => {
         });
       }
     }
+
+ // FOR PEDIATRIC
+    if (patientAge <= 14) {
+      // Pediatric patient (age 14 or below)
+      if (
+          props.tbObj.tbTreatment === "No" &&
+          //tbObj.currentlyOnTuberculosis === "No" &&
+          // props.tbObj.previouslyCompletedTPT === "Yes" &&
+          props.tbObj.tbScreeningType === "Symptom screen (alone)"
+      ) {
+        if (
+            props.tbObj.coughing === "No" &&
+            props.tbObj.fever === "No" &&
+            props.tbObj.nightSweats === "No" &&
+            props.tbObj.losingWeight === "No" &&
+            props.tbObj.historyWithAdults === "No" &&
+            props.tbObj.poorWeightGain === "No"
+        ) {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Not Presumptive",
+            status: "No signs or symptoms of TB",
+            eligibleForTPT: "No",
+          });
+        }
+      }
+    }
+
 
     // if (
     //   props.tbObj.tbTreatment === "No" &&
@@ -485,6 +645,46 @@ const TbScreening = (props) => {
           status: "Confirmed TB",
           eligibleForTPT: "No",
         });
+      }
+    }
+
+    if (patientAge <= 14) {
+      // Pediatric patient (age 14 or below)
+      if (
+          props.tbObj.coughing === "No" &&
+          props.tbObj.fever === "No" &&
+          props.tbObj.nightSweats === "No" &&
+          props.tbObj.losingWeight === "No" &&
+          props.tbObj.historyWithAdults === "No" &&
+          props.tbObj.poorWeightGain === "No"
+      ) {
+        if (props.tbObj.isTbTestConfirmed === "Yes") {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Not Presumptive",
+            status: "Confirmed TB",
+            eligibleForTPT: "",
+          });
+        }
+      }
+
+      // Ninth Logic
+      if (
+          props.tbObj.coughing === "Yes" ||
+          props.tbObj.fever === "Yes" ||
+          props.tbObj.nightSweats === "Yes" ||
+          props.tbObj.losingWeight === "Yes" ||
+          props.tbObj.historyWithAdults === "Yes" ||
+          props.tbObj.poorWeightGain === "Yes"
+      ) {
+        if (props.tbObj.isTbTestConfirmed === "Yes") {
+          props.setTbObj({
+            ...props.tbObj,
+            outcome: "Presumptive",
+            status: "Confirmed TB",
+            eligibleForTPT: "No",
+          });
+        }
       }
     }
     //This is TB EValuation Outcome
@@ -644,6 +844,8 @@ const TbScreening = (props) => {
     props.tbObj.specimentSent,
     props.tbObj.resultOfClinicalEvaluation,
     props.tbObj?.chestXrayDone,
+    props.tbObj.historyWithAdults,
+    props.tbObj.poorWeightGain
   ]);
 
 
@@ -720,7 +922,12 @@ const TbScreening = (props) => {
         outcome:'',
         status:'',
         tbType:"",
-
+        coughing : '',
+        fever : '',
+        nightSweats : '',
+        losingWeight:"",
+        historyWithAdults :'',
+        poorWeightGain : ''
       };
 
       updatedTpt = {
@@ -729,7 +936,6 @@ const TbScreening = (props) => {
         referredForServices: "",
         adherence: "",
         rash: "",
-
         hepatitisSymptoms: "",
         tbSymptoms: "",
         resonForStoppingIpt: "",
@@ -758,8 +964,6 @@ const TbScreening = (props) => {
         hepatotoxicityEffectSeverity:'',
         enrolledOnTpt:"",
       }
-
-
     } else if (name === 'tbScreeningType' || value === '') {
       updateObj = {
         ...updateObj,
@@ -771,6 +975,8 @@ const TbScreening = (props) => {
         coughing: '',
         losingWeight: '',
         outcome: '',
+        historyWithAdults:'',
+        poorWeightGain:'',
         status: '',
       };
     }
@@ -983,6 +1189,8 @@ const TbScreening = (props) => {
   };
 
   // console.log("TB OBJECT IN TB", props.tbObj)
+  // console.log("TB PATIENT AGE", patientAge)
+
   return (
     <>
       <Card className={classes.root}>
@@ -1039,6 +1247,7 @@ const TbScreening = (props) => {
                         max={moment(new Date()).format("YYYY-MM-DD")}
                         disabled={props.action === "view" ? true : false}
                         required
+                        onKeyPress={(e) => e.preventDefault()}
                       ></Input>
                     </InputGroup>
                   </FormGroup>
@@ -1302,7 +1511,6 @@ const TbScreening = (props) => {
                                       <FormGroup>
                                         <Label>
                                           History of contacts with TB adults
-                                          (Paediatrics clients {"<"} 12 months){" "}
                                         </Label>
                                         <InputGroup>
                                           <Input
@@ -1325,7 +1533,7 @@ const TbScreening = (props) => {
                                     <div className="form-group mb-3 col-md-6">
                                       <FormGroup>
                                         <Label>
-                                          Poor weight gain (Paediatrics clients {"<"}12
+                                          Poor weight gain
                                           months){" "}
                                         </Label>
                                         <InputGroup>
