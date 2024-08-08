@@ -649,7 +649,7 @@ const ArtCommencement = (props) => {
                       <option value="Semi-Quantitative">
                         Semi-Quantitative
                       </option>
-                      <option value="Flow Cyteometry">Flow Cyteometry</option>
+                      <option value="Flow Cyteometry">Flow Cytometry</option>
                     </select>
                   </FormGroup>
                 </div>
@@ -679,7 +679,7 @@ const ArtCommencement = (props) => {
                 {objValues.cd4Type === "Flow Cyteometry" && (
                   <div className="form-group mb-3 col-md-6">
                     <FormGroup>
-                      <Label for="">CD4 Count Value (Flow Cyteometry)</Label>
+                      <Label for="">CD4 Count Value (Flow Cytometry)</Label>
                       <Input
                         type="number"
                         min={1}
