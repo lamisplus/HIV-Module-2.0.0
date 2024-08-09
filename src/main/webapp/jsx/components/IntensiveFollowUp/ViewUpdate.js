@@ -177,7 +177,7 @@ const Tracking = (props) => {
     //Get list of PrepSideEffect
     const PrepSideEffect =()=>{
         axios
-            .get(`${baseUrl}application-codesets/v2/PREP_SIDE_EFFECTS`,
+            .get(`${baseUrl}application-codesets/v2/DO_YOU_HAVE_THE_FOLLOWING`,
                 { headers: {"Authorization" : `Bearer ${token}`} }
             )
             .then((response) => {
