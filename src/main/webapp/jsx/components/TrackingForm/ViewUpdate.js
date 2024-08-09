@@ -1857,7 +1857,8 @@ const Tracking = (props) => {
                     {/* End of VA Cause of Death  base on selection  */}
                   </>
               )}
-              {(objValues.causeOfDeath === "Natural Cause" ||
+              {(objValues.causeOfDeath === "Natural Cause" || objValues.causeOfDeath === "Suspected Opportunistic Infection (specify)"
+                  || objValues.causeOfDeath === "Suspected ARV Side effect (Speciify)" ||
                   objValues.causeOfDeath === "Unknown cause") && (
                   <div className="form-group mb-3 col-md-6">
                     <FormGroup>
