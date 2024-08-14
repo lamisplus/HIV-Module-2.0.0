@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import liquibase.pro.packaged.I;
 import org.jetbrains.annotations.NotNull;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
+import org.lamisplus.modules.hiv.domain.dto.ClientDetailDTOForTracking;
 import org.lamisplus.modules.hiv.domain.dto.CurrentViralLoadDTO;
 import org.lamisplus.modules.hiv.domain.dto.DsdDevolvementDTO;
 import org.lamisplus.modules.hiv.domain.dto.PatientCurrentViralLoad;
@@ -106,7 +107,6 @@ public class DsdDevolvementService {
         }
     }
 
-
     public String deleteById(Long id) throws IOException {
         DsdDevolvement existDevolvement = getDevolvement(id);
         existDevolvement.setArchived(1);
@@ -173,6 +173,15 @@ public class DsdDevolvementService {
     @NotNull
     private EntityNotFoundException getDevolvementNotFoundException(Long id) {
         return new EntityNotFoundException(DsdDevolvement.class, "id ", "" + id);
+    }
+
+    public Optional<ClientDetailDTOForTracking> getClientDetailDTOForTracking(String personUuid) {
+        try {
+            return dsdDevolvementRepository.getClientDetailsForTracking(personUuid);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
     }
 
 }
