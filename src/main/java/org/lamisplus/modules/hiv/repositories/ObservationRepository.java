@@ -1,6 +1,7 @@
 package org.lamisplus.modules.hiv.repositories;
 
 import org.lamisplus.modules.hiv.domain.dto.LabReport;
+import org.lamisplus.modules.hiv.domain.dto.LatestLabResult;
 import org.lamisplus.modules.hiv.domain.dto.MedicationInfo;
 import org.lamisplus.modules.hiv.domain.dto.TransferPatientInfo;
 import org.lamisplus.modules.hiv.domain.entity.Observation;
@@ -221,28 +222,26 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
     Optional<TransferPatientInfo> getTransferPatientInfo( String uuid, Long facility_id);
 
     @Query(nativeQuery = true, value =
-            "SELECT " +
-                    "    a.facility_id AS facilityId, " +
-                    "    (SELECT x.name FROM base_organisation_unit x WHERE x.id = a.facility_id LIMIT 1) AS facility, " +
-                    "    a.patient_uuid AS patientId, " +
-                    "    (SELECT x.hospital_number FROM patient_person x WHERE x.uuid = a.patient_uuid LIMIT 1) AS hospitalNum, " +
-                    "    c.lab_test_name AS test, " +
-                    "    d.date_sample_collected AS sampleCollectionDate, " +
-                    "    oi.code AS datimId, " +
-                    "    b.result_reported AS result, " +
-                    "    b.date_result_reported AS dateReported " +
-                    "FROM " +
-                    "    laboratory_test a " +
-                    "    INNER JOIN laboratory_result b ON a.id = b.test_id " +
-                    "    INNER JOIN laboratory_labtest c ON a.lab_test_id = c.id " +
-                    "    INNER JOIN base_organisation_unit_identifier oi ON oi.organisation_unit_id = a.facility_id " +
-                    "    INNER JOIN laboratory_sample d ON a.id = d.test_id " +
-                    "WHERE " +
-                    "    c.lab_test_name = 'Viral Load' " +
-                    "    AND b.result_reported != '' " +
-                    "    AND a.facility_id = ?1 " +
-                    "    AND a.patient_uuid = ?2")
-    List<LabReport> getPatientLabResults(@Param("facilityId") Long facilityId, @Param("patientUuid") String patientUuid);
+            "SELECT \n" +
+                    "    lbr.facility_id AS facilityId,\n" +
+                    "    lbr.patient_uuid AS patientId,\n" +
+                    "    lbr.result_reported AS result, \n" +
+                    "    lbr.date_result_reported AS dateReported, \n" +
+                    "    llt.lab_test_name AS test\n" +
+                    "FROM \n" +
+                    "    laboratory_result lbr\n" +
+                    "LEFT JOIN \n" +
+                    "    laboratory_test lt ON lt.id = lbr.test_id\n" +
+                    "LEFT JOIN \n" +
+                    "    laboratory_labtest llt ON llt.id = lt.lab_test_id\n" +
+                    "WHERE \n" +
+                    "    lbr.patient_uuid = ?2\n" +
+                    "    AND lbr.archived = 0\n" +
+                    "    AND lbr.facility_id = ?1\n" +
+                    "ORDER BY \n" +
+                    "    lbr.date_result_reported DESC\n" +
+                    "LIMIT 5")
+    List<LatestLabResult> getPatientLabResults(@Param("facilityId") Long facilityId, @Param("patientUuid") String patientUuid);
 
     @Query(nativeQuery = true, value = "SELECT\n" +
             "  obj.value->>'name' AS regimenName,\n" +
@@ -260,23 +259,12 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
             "CROSS JOIN LATERAL jsonb_array_elements(hap.regimens) as obj;")
     List<MedicationInfo> getTransferPatientTreatmentMedication(@Param("uuid") String uuid);
 
-
-
   @Query(value = "SELECT data->'chronicCondition'->>'hypertensive' AS hypertensive_value FROM public.hiv_observation WHERE type = 'Chronic Care' and facility_id = ?1 and person_uuid = ?2  AND archived = 0 AND data->'chronicCondition'->>'hypertensive' = 'Yes' limit 1", nativeQuery = true)
   Optional<String> getIsHypertensive(Long facilityId, String uuid);
 
     @Query(value = "SELECT CASE WHEN COUNT(o) > 0 THEN true ELSE false END FROM hiv_observation o WHERE o.person_uuid = :personUuid AND o.type IN ('ART Transfer In', 'ART Transfer Out') AND (o.data ->> 'encounterDate' IS NOT NULL) AND o.data ->> 'encounterDate' = :encounterDate", nativeQuery = true)
     boolean existsByPersonUuidAndEncounterDate(@Param("personUuid") String personUuid, @Param("encounterDate") String encounterDate);
 
-    @Query(value = "SELECT hap.visit_date as visitDate, ho.data as observationData, hap.extra as pharmacyData " +
-            "FROM hiv_observation ho " +
-            "INNER JOIN hiv_art_pharmacy hap ON ho.person_uuid = hap.person_uuid " +
-            "AND ho.date_of_observation = hap.visit_date " +
-            "WHERE ho.person_uuid = :personUuid " +
-            "AND ho.type = 'Chronic Care' " +
-            "AND ho.archived = 0",
-            nativeQuery = true)
-    List<Object[]> findHivDataNative(@Param("personUuid") String personUuid);
 
 
 }

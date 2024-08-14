@@ -29,7 +29,7 @@ public class TreatmentTransferController {
 
     @GetMapping("/patient_result/{facilityId}/{patientUuid}")
     @ApiOperation(value = "Get patient lab results")
-    public ResponseEntity<List<LabReport>> getPatientLabResult(@PathVariable("patientUuid") String uuid, @PathVariable("facilityId") Long facilityId) {
+    public ResponseEntity< List<LatestLabResult>> getPatientLabResult(@PathVariable("patientUuid") String uuid, @PathVariable("facilityId") Long facilityId) {
         return ResponseEntity.ok(treatmentTransferService.retrieveTransferPatientLabResult(facilityId, uuid));
     }
 

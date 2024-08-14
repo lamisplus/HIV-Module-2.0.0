@@ -41,12 +41,11 @@ public class TreatmentTransferService {
 
     public TransferPatientInfo getTransferPatientInfo(String patientUuid, Long facilityId) {
         TransferPatientInfo patient = observationRepository.getTransferPatientInfo(patientUuid, currentUserOrganizationService.getCurrentUserOrganization()).get();
-//        log.info("Transfer patient info: {}", patient);
         return patient;
     }
 
 
-    public List<LabReport> retrieveTransferPatientLabResult(Long facilityId, String uuid) {
+    public  List<LatestLabResult> retrieveTransferPatientLabResult(Long facilityId, String uuid) {
         try {
             if (uuid != null && facilityId != null) {
                 return observationRepository.getPatientLabResults(facilityId, uuid);
@@ -54,8 +53,6 @@ public class TreatmentTransferService {
                 throw new IllegalArgumentException("Transfer patient uuid or facility id can not be null");
             }
         } catch (Exception e) {
-            // Log the exception for troubleshooting
-//            log.info("Error while retrieving transfer patient lab results", e);
             throw new NoRecordFoundException("Error while retrieving transfer patient lab result: " + e.getMessage());
         }
     }
