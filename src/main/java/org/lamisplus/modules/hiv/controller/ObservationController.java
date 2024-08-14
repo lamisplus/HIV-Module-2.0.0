@@ -58,6 +58,13 @@ public class ObservationController {
 		return ResponseEntity.ok(observationService.getIsHypertensive(personId));
 	}
 
+	@GetMapping("/check-tpt-completion")
+	public ResponseEntity<String> checkTptCompletion(@RequestParam String personUuid) {
+		String result = observationService.checkTptCompletion(personUuid);
+		return ResponseEntity.ok(result);
+	}
+
+
 //    @PostMapping(value="/eac", produces = MediaType.APPLICATION_JSON_VALUE)
 //    public ResponseEntity<HIVEacDto> handleEac(@RequestBody HIVEacDto dto) {
 //        return ResponseEntity.ok (hivEacService.handleEac (dto));

@@ -120,7 +120,8 @@ function PatientCard(props) {
       ? history.location.state.patientObj
       : {};
   const [patientObj1, setPatientObj1] = useState(null);
-
+  const [showModal, setShowModal] = useState(false);
+  const [message, setMessage] = useState('');
   // useQuery(
   //   [GET_CURRENT_PATIENT_RECORD, patientObj?.id],
   //   () => getCurrentPatientRecord(patientObj?.id),
@@ -198,6 +199,21 @@ function PatientCard(props) {
         }, []);
       };
 
+// get patient tpt completion status messgae
+  useEffect(() => {
+    axios.get( `${baseUrl}observation/check-tpt-completion?personUuid=${patientObj.personUuid}`,{
+      headers: { Authorization: `Bearer ${token}` }
+    })
+        .then(response => {
+          if (response.data !== '') {
+            setShowModal(true);
+            setMessage(response.data);
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+  }, [patientObj.personUuid]);
 
   return (
     <div className={classes.root}>
@@ -586,37 +602,36 @@ function PatientCard(props) {
         </CardContent>
       </Card>
 
-      {/*<Modal*/}
-      {/*    show={true}*/}
-      {/*    // toggle={toggle}*/}
-      {/*    className="fade"*/}
-      {/*    size="sm"*/}
-      {/*    aria-labelledby="contained-modal-title-vcenter"*/}
-      {/*    centered*/}
-      {/*>*/}
-      {/*  <Modal.Header>*/}
-      {/*    <Modal.Title id="contained-modal-title-vcenter">*/}
-      {/*      Reminder: Update TPT Status*/}
-      {/*    </Modal.Title>*/}
-      {/*  </Modal.Header>*/}
-      {/*  <Modal.Body>*/}
-      {/*    <h4>It's been 180 days since you started TPT. Please update your completion status.</h4>*/}
-      {/*  </Modal.Body>*/}
-      {/*  <Modal.Footer>*/}
-      {/*    <Button*/}
-      {/*        // onClick={toggle}*/}
-      {/*        style={{ backgroundColor: "#014d88", color: "#fff" }}*/}
-      {/*    >*/}
-      {/*      Cancel*/}
-      {/*    </Button>*/}
-      {/*    <Button*/}
-      {/*        // onClick={toggle}*/}
-      {/*        style={{ backgroundColor: "#014d88", color: "#fff" }}*/}
-      {/*    >*/}
-      {/*      Update*/}
-      {/*    </Button>*/}
-      {/*  </Modal.Footer>*/}
-      {/*</Modal>*/}
+      {showModal && (
+          <Modal
+              show={true}
+              className="fade"
+              size="sm"
+              aria-labelledby="contained-modal-title-vcenter"
+              centered
+          >
+            <Modal.Header>
+              <Modal.Title id="contained-modal-title-vcenter">
+                Reminder: Update TPT Status
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <h4>{message}</h4>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                  style={{ backgroundColor: "#014d88", color: "#fff" }}
+              >
+                Cancel
+              </Button>
+              <Button
+                  style={{ backgroundColor: "#014d88", color: "#fff" }}
+              >
+                Update
+              </Button>
+            </Modal.Footer>
+          </Modal>
+      )}
     </div>
   );
 }

@@ -267,4 +267,16 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
 
     @Query(value = "SELECT CASE WHEN COUNT(o) > 0 THEN true ELSE false END FROM hiv_observation o WHERE o.person_uuid = :personUuid AND o.type IN ('ART Transfer In', 'ART Transfer Out') AND (o.data ->> 'encounterDate' IS NOT NULL) AND o.data ->> 'encounterDate' = :encounterDate", nativeQuery = true)
     boolean existsByPersonUuidAndEncounterDate(@Param("personUuid") String personUuid, @Param("encounterDate") String encounterDate);
+
+    @Query(value = "SELECT hap.visit_date as visitDate, ho.data as observationData, hap.extra as pharmacyData " +
+            "FROM hiv_observation ho " +
+            "INNER JOIN hiv_art_pharmacy hap ON ho.person_uuid = hap.person_uuid " +
+            "AND ho.date_of_observation = hap.visit_date " +
+            "WHERE ho.person_uuid = :personUuid " +
+            "AND ho.type = 'Chronic Care' " +
+            "AND ho.archived = 0",
+            nativeQuery = true)
+    List<Object[]> findHivDataNative(@Param("personUuid") String personUuid);
+
+
 }
