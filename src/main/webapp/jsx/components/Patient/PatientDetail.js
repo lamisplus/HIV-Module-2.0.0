@@ -177,16 +177,16 @@ function PatientCard(props) {
               const today = new Date();
               const differenceInDays = (today - visitDate) / (1000 * 3600 * 24);
 
-              if (regimenNames.includes('Isoniazid-(INH) 300mg') && differenceInDays >= 18) {
-                setShowModal({ show: true, message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: please update the of the outcome of TPT ` });
+              if (regimenNames.includes('Isoniazid-(INH) 300mg') && differenceInDays >= 180) {
+                setShowModal({ show: true, message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: Please update Outcome of TPT ` });
               } else if (regimenNames.includes('Isoniazid-(INH) 100mg') && differenceInDays >= 180) {
-                setShowModal({show: true, message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: please update the of the outcome of TPT `});
+                setShowModal({show: true, message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: Please update Outcome of TPT `});
               } else if (regimenNames.includes('Isoniazid(300mg)/Pyridoxine(25mg)/Cotrimoxazole(960mg)') && differenceInDays >= 180) {
-                setShowModal({show: true, message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: please update the of the outcome of TPT ` });
+                setShowModal({show: true, message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: Please update Outcome of TPT ` });
               } else if (regimenNames.includes('Isoniazid and Rifapentine-(3HP)') && differenceInDays >= 90) {
-                setShowModal({show: true, message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 90 days ago: please update the of the outcome of TPT ` });
+                setShowModal({show: true, message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 90 days ago: Please update Outcome of TPT ` });
               } else if (regimenNames.includes('Isoniazid and Rifampicin-(3HR)') && differenceInDays >= 90) {
-                setShowModal({ show: true, message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 90 days ago: please update the of the outcome of TPT ` });
+                setShowModal({ show: true, message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 90 days ago: Please update Outcome of TPT ` });
               } else {
                 setShowModal({ show: false, message: '' });
               }
