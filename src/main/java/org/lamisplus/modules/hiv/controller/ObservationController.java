@@ -19,53 +19,52 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/observation")
 public class ObservationController {
-	
-	private final ObservationService observationService;
-	private final ObjectMapper objectMapper;
-	
-	@PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ObservationDto> createObservation(@RequestBody ObservationDto observationDto) {
-		return ResponseEntity.ok(observationService.createAnObservation(observationDto));
-	}
-	
-	
-	@PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ObservationDto> updateObservation(@PathVariable("id") Long id, @RequestBody ObservationDto observationDto) {
-		return ResponseEntity.ok(observationService.updateObservation(id, observationDto));
-	}
-	
-	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ObservationDto> getObservationById(@PathVariable("id") Long id) {
-		return ResponseEntity.ok(observationService.getObservationById(id));
-	}
-	
-	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> deleteObservationById(@PathVariable("id") Long id) {
-		return ResponseEntity.ok(observationService.deleteById(id));
-	}
-	
-	@GetMapping(value = "/person/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<ObservationDto>> getObservationByPersonId(@PathVariable("id") Long id) {
-		return ResponseEntity.ok(observationService.getAllObservationByPerson(id));
-	}
 
-	@GetMapping(value = "/check-ipt-eligible/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public  ResponseEntity<Map<String, Boolean>> checkIptEligible(@PathVariable("id") Long personId) {
-		return ResponseEntity.ok(observationService.isEligibleForIpt(personId));
-	}
+    private final ObservationService observationService;
+    private final ObjectMapper objectMapper;
+
+    @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ObservationDto> createObservation(@RequestBody ObservationDto observationDto) {
+        return ResponseEntity.ok(observationService.createAnObservation(observationDto));
+    }
 
 
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ObservationDto> updateObservation(@PathVariable("id") Long id, @RequestBody ObservationDto observationDto) {
+        return ResponseEntity.ok(observationService.updateObservation(id, observationDto));
+    }
 
-	@GetMapping(value = "/is-hypertensive/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public  ResponseEntity<Map<String, Boolean>> getIsHypertensive(@PathVariable("id") Long personId) {
-		return ResponseEntity.ok(observationService.getIsHypertensive(personId));
-	}
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ObservationDto> getObservationById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(observationService.getObservationById(id));
+    }
 
-	@GetMapping("/tpt-completion-status-info")
-	public ResponseEntity<TPtCompletionStatusInfoDTO> getTptCompletionStatusInformation(@RequestParam String personUuid) throws JsonProcessingException {
-		TPtCompletionStatusInfoDTO response = observationService.getTptCompletionStatusInformation(personUuid);
-		return ResponseEntity.ok(response);
-	}
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deleteObservationById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(observationService.deleteById(id));
+    }
+
+    @GetMapping(value = "/person/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<ObservationDto>> getObservationByPersonId(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(observationService.getAllObservationByPerson(id));
+    }
+
+    @GetMapping(value = "/check-ipt-eligible/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, Boolean>> checkIptEligible(@PathVariable("id") Long personId) {
+        return ResponseEntity.ok(observationService.isEligibleForIpt(personId));
+    }
+
+
+    @GetMapping(value = "/is-hypertensive/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, Boolean>> getIsHypertensive(@PathVariable("id") Long personId) {
+        return ResponseEntity.ok(observationService.getIsHypertensive(personId));
+    }
+
+    @GetMapping("/tpt-completion-status-info")
+    public ResponseEntity<TPtCompletionStatusInfoDTO> getTptCompletionStatusInformation(@RequestParam String personUuid) throws JsonProcessingException {
+        TPtCompletionStatusInfoDTO response = observationService.getTptCompletionStatusInformation(personUuid);
+        return ResponseEntity.ok(response);
+    }
 
 //    @PostMapping(value="/eac", produces = MediaType.APPLICATION_JSON_VALUE)
 //    public ResponseEntity<HIVEacDto> handleEac(@RequestBody HIVEacDto dto) {

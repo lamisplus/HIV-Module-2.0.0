@@ -100,7 +100,7 @@ public class ObservationService {
         boolean sameEncounterObservation = personObservations.stream()
                 .anyMatch(o -> o.getType().equals(observationDto.getType())
                         && o.getDateOfObservation().equals(observationDto.getDateOfObservation())
-                        && o.getArchived()==0);
+                        && o.getArchived() == 0);
         if (sameEncounterObservation) {
             throw new RecordExistException(Observation.class, "date of observation", "" + observationDto.getDateOfObservation());
         }
@@ -203,27 +203,27 @@ public class ObservationService {
 
     private void processAndUpdateIptFromPharmacy(ObservationDto observationDto, Person person) {
 //        log.info ("Processing and updating IPT from pharmacy....");
-        if(observationDto.getType().equals("Chronic Care")){
+        if (observationDto.getType().equals("Chronic Care")) {
             JsonNode tptMonitoring = observationDto.getData().get("tptMonitoring");
             JsonNode iptCompletionDate = tptMonitoring.get("date");
             JsonNode outComeOfIpt = tptMonitoring.get("outComeOfIpt");
 //            log.info ("checking for IPT out come");
-            if( (outComeOfIpt != null && !outComeOfIpt.isEmpty() ) || (iptCompletionDate != null && !iptCompletionDate.asText().isEmpty()) ){
+            if ((outComeOfIpt != null && !outComeOfIpt.isEmpty()) || (iptCompletionDate != null && !iptCompletionDate.asText().isEmpty())) {
 //                log.info ("found for IPT out come");
                 StringBuilder dateIptCompleted = new StringBuilder();
                 StringBuilder iptCompletionStatus = new StringBuilder();
 //                log.info ("checking if IPT out come has a date");
-                if(iptCompletionDate != null ){
+                if (iptCompletionDate != null) {
 //                    log.info ("found for IPT out come date");
                     dateIptCompleted.append(iptCompletionDate.asText());
                 }
-                if(outComeOfIpt != null){
+                if (outComeOfIpt != null) {
                     iptCompletionStatus.append(outComeOfIpt.asText());
                 }
 //                log.info ("fetching current IPT from pharmacy");
                 Optional<ArtPharmacy> recentIPtPharmacy =
                         pharmacyRepository.getPharmacyIpt(person.getUuid());
-                if(recentIPtPharmacy.isPresent()){
+                if (recentIPtPharmacy.isPresent()) {
 //                    log.info ("found current IPT from pharmacy");
                     ArtPharmacy artPharmacy = recentIPtPharmacy.get();
                     JsonNode ipt = artPharmacy.getIpt();
@@ -241,65 +241,65 @@ public class ObservationService {
 
     private List<Observation> getAnExistingClinicalEvaluationType(String type, Person person, Long orgId) {
         return observationRepository
-                .getAllByTypeAndPersonAndFacilityIdAndArchived (type, person, orgId, 0);
+                .getAllByTypeAndPersonAndFacilityIdAndArchived(type, person, orgId, 0);
     }
 
 
     public ObservationDto updateObservation(Long id, ObservationDto observationDto) {
-        Observation existingObservation = observationRepository.findById (id)
-                .orElseThrow (() -> new EntityNotFoundException (Observation.class, "id", String.valueOf (id)));
-        existingObservation.setType (observationDto.getType ());
-        existingObservation.setDateOfObservation (observationDto.getDateOfObservation ());
-        existingObservation.setData (observationDto.getData ());
+        Observation existingObservation = observationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Observation.class, "id", String.valueOf(id)));
+        existingObservation.setType(observationDto.getType());
+        existingObservation.setDateOfObservation(observationDto.getDateOfObservation());
+        existingObservation.setData(observationDto.getData());
         processAndUpdateIptFromPharmacy(observationDto, existingObservation.getPerson());
-        Observation saveObservation = observationRepository.save (existingObservation);
-        observationDto.setId (saveObservation.getId ());
-        observationDto.setFacilityId (saveObservation.getFacilityId ());
+        Observation saveObservation = observationRepository.save(existingObservation);
+        observationDto.setId(saveObservation.getId());
+        observationDto.setFacilityId(saveObservation.getFacilityId());
         return observationDto;
     }
 
     public ObservationDto getObservationById(Long id) {
-        return convertObservationToDto (getObservation (id));
+        return convertObservationToDto(getObservation(id));
     }
 
     public String deleteById(Long id) {
-        Observation observation = getObservation (id);
-        observation.setArchived (1);
-        observationRepository.save (observation);
+        Observation observation = getObservation(id);
+        observation.setArchived(1);
+        observationRepository.save(observation);
         return "successfully";
     }
 
     private Observation getObservation(Long id) {
-        return observationRepository.findById (id).orElseThrow (() -> new EntityNotFoundException (Observation.class, "id", Long.toString (id)));
+        return observationRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Observation.class, "id", Long.toString(id)));
     }
 
     public List<ObservationDto> getAllObservationByPerson(Long personId) {
-        Person person = getPerson (personId);
-        Long currentUserOrganization = currentUserOrganizationService.getCurrentUserOrganization ();
-        List<Observation> observations = observationRepository.getAllByPersonAndFacilityId (person, currentUserOrganization);
-        return observations.stream ()
-                .filter (observation -> observation.getArchived () == 0)
-                .map (this::convertObservationToDto).collect (Collectors.toList ());
+        Person person = getPerson(personId);
+        Long currentUserOrganization = currentUserOrganizationService.getCurrentUserOrganization();
+        List<Observation> observations = observationRepository.getAllByPersonAndFacilityId(person, currentUserOrganization);
+        return observations.stream()
+                .filter(observation -> observation.getArchived() == 0)
+                .map(this::convertObservationToDto).collect(Collectors.toList());
 
 
     }
 
     private ObservationDto convertObservationToDto(Observation observation) {
         return ObservationDto
-                .builder ()
-                .dateOfObservation (observation.getDateOfObservation ())
-                .data (observation.getData ())
-                .personId (observation.getPerson ().getId ())
-                .facilityId (observation.getFacilityId ())
-                .type (observation.getType ())
-                .visitId (observation.getVisit ().getId ())
-                .id (observation.getId ())
-                .build ();
+                .builder()
+                .dateOfObservation(observation.getDateOfObservation())
+                .data(observation.getData())
+                .personId(observation.getPerson().getId())
+                .facilityId(observation.getFacilityId())
+                .type(observation.getType())
+                .visitId(observation.getVisit().getId())
+                .id(observation.getId())
+                .build();
     }
 
     private Person getPerson(Long personId) {
-        return personRepository.findById (personId)
-                .orElseThrow (() -> new EntityNotFoundException (Person.class, "id", String.valueOf (personId)));
+        return personRepository.findById(personId)
+                .orElseThrow(() -> new EntityNotFoundException(Person.class, "id", String.valueOf(personId)));
 
     }
 
@@ -351,4 +351,4 @@ public class ObservationService {
     }
 
 
-    }
+}
