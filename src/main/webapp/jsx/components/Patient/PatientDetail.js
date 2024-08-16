@@ -21,18 +21,15 @@ import EnhancedAdherenceCounseling from "../EnhancedAdherenceCounseling/Index";
 import CervicalCancer from "./../CervicalCancer/Index";
 import CervicalCancerUpdate from "./../CervicalCancer/ViewPage";
 import ClientStatusUpdate from "./../ClientStatusUpdate/ClientStatusUpdate";
-//import AdultClinicEvaluationFrom from '../InitailClinicEvaluation/index__'
 import AdultClinicEvaluationForm from "../InitailClinicEvaluation/Adult/Index";
 import ViewAdultClinicEvaluationForm from "../InitailClinicEvaluation/ViewAdultHistory/Index";
-//import ChildClinicEvaluationForm from '../InitailClinicEvaluation/ChildClinicEvaluationForm'
 import MentalHealthScreening from "../MentalHealthScreening/index";
 import LabHistory from "./../Laboratory/LabHistory";
 import PatientHistory from "./../History/PatientHistory";
 import ArtCommencement from "./../ArtCommencement/ArtCommencement";
 import ArtCommencementPage from "./../ArtCommencement/ArtCommencementPage";
-//History of patient
+
 import ViewMentalHealthScreening from "./../MentalHealthScreening/ViewMhs";
-//import ViewAdultClinicEvaluationFrom from './../InitailClinicEvaluation/ViewAdultClinicEvaluationFrom'
 import ViewArtCommencement from "./../ArtCommencement/ViewArtCommencement";
 import FirstEac from "./../EnhancedAdherenceCounseling/ViewEAC/FirstEac";
 import SecondEac from "./../EnhancedAdherenceCounseling/ViewEAC/SecondEac";
@@ -65,9 +62,7 @@ import EnrollmentOtz from "../Otz/Enrollment";
 import ViewChronicCare from "../ChronicCare/viewChronicCare";
 import DsdServiceForm from "../DSD/DsdServiceForm";
 import DsdServiceFormView from "../DSD/DsdServiceFormView";
-import { getCurrentPatientRecord } from "../../services/getCurrentPatientRecord";
-import { useQuery } from "react-query";
-import { GET_CURRENT_PATIENT_RECORD } from "../../../utils/queryKeys";
+
 
 const styles = (theme) => ({
   root: {
@@ -120,44 +115,7 @@ function PatientCard(props) {
       ? history.location.state.patientObj
       : {};
   const [patientObj1, setPatientObj1] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [message, setMessage] = useState('');
-  // useQuery(
-  //   [GET_CURRENT_PATIENT_RECORD, patientObj?.id],
-  //   () => getCurrentPatientRecord(patientObj?.id),
-  //   {
-  //     onSuccess: (data) => {
-  //       setPatientObj1(data);
-  //     },
-  //     refetchOnMount: "always",
-  //     staleTime: 100,
-  //     cacheTime: 100,
-  //     onError: (error) => {
-  //       if (error.response && error.response.data) {
-  //         let errorMessage =
-  //           error.response.data.apierror &&
-  //           error.response.data.apierror.message !== ""
-  //             ? error.response.data.apierror.message
-  //             : "Something went wrong, please try again";
-  //         toast.error(errorMessage);
-  //       } else {
-  //         toast.error("Something went wrong. Please try again...");
-  //       }
-  //     },
-  //   }
-  // );
-
-  // const PatientCurrentObject = () => {
-  //   axios
-  //       .get(`${baseUrl}hiv/patient/${patientObj.id}`, {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       })
-  //       .then((response) => {
-  //         setPatientObj1(response.data);
-  //       })
-  //       .catch((error) => {});
-  // };
-
+  const [showModal, setShowModal] = useState({ show: false, message: '' });
       useEffect(() => {
         const getCurrentPatientRecord = async (id) => {
           try {
@@ -199,15 +157,42 @@ function PatientCard(props) {
         }, []);
       };
 
-// get patient tpt completion status messgae
+  const hideModal = () => {
+    setShowModal({ show: false, message: '' });
+  };
+
+  // This function checks if a patient has completed their Tuberculosis Preventive Treatment (TPT) and displays a modal message if necessary
   useEffect(() => {
-    axios.get( `${baseUrl}observation/check-tpt-completion?personUuid=${patientObj.personUuid}`,{
+    axios.get(`${baseUrl}observation/tpt-completion-status-info?personUuid=${patientObj.personUuid}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
         .then(response => {
-          if (response.data !== '') {
-            setShowModal(true);
-            setMessage(response.data);
+          const data = response.data;
+          if (data !== null) {
+            if ('outComeOfIpt' in data.observationData.tptMonitoring && data.observationData.tptMonitoring.outComeOfIpt !== '') {
+              setShowModal({ show: false, message: '' });
+            } else {
+              const regimenNames = data.pharmacyData.regimens.map(regimen => regimen.regimenName);
+              const visitDate = new Date(response.data.visitDate);
+              const today = new Date();
+              const differenceInDays = (today - visitDate) / (1000 * 3600 * 24);
+
+              if (regimenNames.includes('Isoniazid-(INH) 300mg') && differenceInDays >= 18) {
+                setShowModal({ show: true, message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: please update the of the outcome of TPT ` });
+              } else if (regimenNames.includes('Isoniazid-(INH) 100mg') && differenceInDays >= 180) {
+                setShowModal({show: true, message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: please update the of the outcome of TPT `});
+              } else if (regimenNames.includes('Isoniazid(300mg)/Pyridoxine(25mg)/Cotrimoxazole(960mg)') && differenceInDays >= 180) {
+                setShowModal({show: true, message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: please update the of the outcome of TPT ` });
+              } else if (regimenNames.includes('Isoniazid and Rifapentine-(3HP)') && differenceInDays >= 90) {
+                setShowModal({show: true, message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 90 days ago: please update the of the outcome of TPT ` });
+              } else if (regimenNames.includes('Isoniazid and Rifampicin-(3HR)') && differenceInDays >= 90) {
+                setShowModal({ show: true, message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 90 days ago: please update the of the outcome of TPT ` });
+              } else {
+                setShowModal({ show: false, message: '' });
+              }
+            }
+          } else {
+            setShowModal({ show: false, message: '' });
           }
         })
         .catch(error => {
@@ -602,9 +587,9 @@ function PatientCard(props) {
         </CardContent>
       </Card>
 
-      {showModal && (
+      {showModal.show && (
           <Modal
-              show={true}
+              show={showModal.show}
               className="fade"
               size="sm"
               aria-labelledby="contained-modal-title-vcenter"
@@ -612,22 +597,18 @@ function PatientCard(props) {
           >
             <Modal.Header>
               <Modal.Title id="contained-modal-title-vcenter">
-                Reminder: Update TPT Status
+                Update TPT Completion Status
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <h4>{message}</h4>
+              <h4>{showModal.message}</h4>
             </Modal.Body>
             <Modal.Footer>
               <Button
                   style={{ backgroundColor: "#014d88", color: "#fff" }}
+                  onClick={hideModal}
               >
                 Cancel
-              </Button>
-              <Button
-                  style={{ backgroundColor: "#014d88", color: "#fff" }}
-              >
-                Update
               </Button>
             </Modal.Footer>
           </Modal>

@@ -4,13 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vladmihalcea.hibernate.type.json.JsonStringType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.query.NativeQuery;
 import org.hibernate.type.StringType;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
 import org.lamisplus.modules.base.controller.apierror.RecordExistException;
+import org.lamisplus.modules.hiv.domain.dto.TPtCompletionStatusInfoDTO;
 import org.lamisplus.modules.hiv.domain.dto.ObservationDto;
 import org.lamisplus.modules.hiv.domain.entity.ArtPharmacy;
 import org.lamisplus.modules.hiv.domain.entity.Observation;
@@ -21,14 +21,10 @@ import org.lamisplus.modules.patient.domain.entity.Visit;
 import org.lamisplus.modules.patient.repository.PersonRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -325,11 +321,8 @@ public class ObservationService {
         return map;
     }
 
-    private boolean isInvalidPersonUuid(String personUuid) {
-        return personUuid == null || personUuid.isEmpty();
-    }
 
-    private List<String> executeQuery(String personUuid) {
+    public TPtCompletionStatusInfoDTO getTptCompletionStatusInformation(String personUuid) throws JsonProcessingException {
         String sqlQuery = "SELECT row_to_json(t) AS object " +
                 "FROM ( " +
                 "    SELECT hap.visit_date as visitdate, ho.data as observationdata, hap.extra as pharmacydata " +
@@ -340,76 +333,22 @@ public class ObservationService {
                 "    AND ho.type = 'Chronic Care' " +
                 "    AND ho.archived = 0 " +
                 ") AS t";
-
         Query query = entityManager.createNativeQuery(sqlQuery);
         query.unwrap(NativeQuery.class).addScalar("object", StringType.INSTANCE);
         query.setParameter("personUuid", personUuid);
 
-        return query.getResultList();
-    }
-
-    private JsonNode getObservationData(JsonNode row) {
-        return parseJson(row.get("observationdata").asText());
-    }
-
-    private JsonNode getPharmacyData(JsonNode row) {
-        return parseJson(row.get("pharmacydata").asText());
-    }
-
-    private boolean isTptPreventionOutcomeCompleted(JsonNode observationData) {
-        JsonNode tptMonitoringNode = observationData.path("tptMonitoring");
-        return tptMonitoringNode.path("outComeOfIpt").asText().isEmpty();
-    }
-    private LocalDate getVisitDate(String visitDate) {
-        return LocalDate.parse(visitDate);
-    }
-
-    private JsonNode parseJson(String jsonData) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readTree(jsonData);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to parse JSON", e);
+        List<String> observations = query.getResultList();
+        if (observations.isEmpty()) {
+            return null;
         }
+        String jsonString = observations.get(0);
+        JsonNode json = new ObjectMapper().readTree(jsonString);
+        TPtCompletionStatusInfoDTO response = new TPtCompletionStatusInfoDTO();
+        response.setVisitDate(json.get("visitdate").asText());
+        response.setObservationData(json.get("observationdata"));
+        response.setPharmacyData(json.get("pharmacydata"));
+        return response;
     }
 
-    public String checkTptCompletion(String personUuid) {
-        if (isInvalidPersonUuid(personUuid)) {
-            throw new IllegalArgumentException("Person UUID cannot be null or empty");
-        }
-        List<String> results = executeQuery(personUuid);
-        if (results.isEmpty()) {
-            return "";
-        }
-//       System.out.println("results: "+ results);
-        for (String result : results) {
-            JsonNode row = parseJson(result);
-            JsonNode observationData = getObservationData(row);
-            JsonNode pharmacyData = getPharmacyData(row);
-            if (isTptPreventionOutcomeCompleted(observationData)) {
-                String message = isRegimenCompleted(pharmacyData, row);
-                if (!message.isEmpty()) {
-                    return message;
-                }
-            }
-        }
-        return "";
-    }
-
-    private String isRegimenCompleted(JsonNode pharmacyData, JsonNode row) {
-        JsonNode regimens = pharmacyData.path("regimens");
-        LocalDate visitDate = getVisitDate(row.get("visitdate").asText());
-        for (JsonNode regimen : regimens) {
-            String regimenName = regimen.path("name").asText();
-            LocalDate today = LocalDate.now();
-            long daysBetween = ChronoUnit.DAYS.between(visitDate, today);
-            if ((regimenName.equals("Isoniazid 300mg") || regimenName.equals("Isoniazid 100mg") || regimenName.equals("Isoniazid(300mg)/Pyridoxine(25mg)/Cotrimoxazole(960mg)")) && daysBetween >= 180) {
-                return "180 days from the date the drug was dispensed.";
-            } else if ((regimenName.equals("Isoniazid and Rifapentine-(3HP)") || regimenName.equals("Isoniazid and Rifampicin-(3HR)")) && daysBetween >= 90) {
-                return "90 days from the date the drug was dispensed.";
-            }
-        }
-        return "";
-       }
 
     }

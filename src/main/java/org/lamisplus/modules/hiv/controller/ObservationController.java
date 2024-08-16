@@ -1,7 +1,10 @@
 package org.lamisplus.modules.hiv.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.lamisplus.modules.hiv.domain.dto.TPtCompletionStatusInfoDTO;
 import org.lamisplus.modules.hiv.domain.dto.ObservationDto;
 import org.lamisplus.modules.hiv.service.ObservationService;
 import org.springframework.http.MediaType;
@@ -18,7 +21,7 @@ import java.util.Map;
 public class ObservationController {
 	
 	private final ObservationService observationService;
-	
+	private final ObjectMapper objectMapper;
 	
 	@PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ObservationDto> createObservation(@RequestBody ObservationDto observationDto) {
@@ -58,12 +61,11 @@ public class ObservationController {
 		return ResponseEntity.ok(observationService.getIsHypertensive(personId));
 	}
 
-	@GetMapping("/check-tpt-completion")
-	public ResponseEntity<String> checkTptCompletion(@RequestParam String personUuid) {
-		String result = observationService.checkTptCompletion(personUuid);
-		return ResponseEntity.ok(result);
+	@GetMapping("/tpt-completion-status-info")
+	public ResponseEntity<TPtCompletionStatusInfoDTO> getTptCompletionStatusInformation(@RequestParam String personUuid) throws JsonProcessingException {
+		TPtCompletionStatusInfoDTO response = observationService.getTptCompletionStatusInformation(personUuid);
+		return ResponseEntity.ok(response);
 	}
-
 
 //    @PostMapping(value="/eac", produces = MediaType.APPLICATION_JSON_VALUE)
 //    public ResponseEntity<HIVEacDto> handleEac(@RequestBody HIVEacDto dto) {
