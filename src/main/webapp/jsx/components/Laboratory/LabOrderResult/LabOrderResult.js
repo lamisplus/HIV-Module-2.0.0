@@ -622,7 +622,7 @@ const Laboratory = (props) => {
                            borderRadius: "0.25rem",
                          }}
                          required
-                         onKeyPress={(e) => e.preventDefault()}
+                         onKeyDown={(e) => e.preventDefault()}
                        />
                        {errors.sampleCollectionDate !== "" ? (
                          <span className={classes.error}>
@@ -1538,8 +1538,8 @@ const Laboratory = (props) => {
                            border: "1px solid #014D88",
                            borderRadius: "0.25rem",
                          }}
-                         required
                          onKeyPress={(e) => e.preventDefault()}
+                         required
                        />
                        {errors.orderedDate !== "" ? (
                          <span className={classes.error}>
