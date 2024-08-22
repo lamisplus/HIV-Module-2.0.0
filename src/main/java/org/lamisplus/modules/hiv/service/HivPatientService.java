@@ -108,23 +108,34 @@ public class HivPatientService {
         return getPageDto(persons, content);
     }
     
+//    public PageDTO getHivPatients(String searchValue, Pageable pageable) {
+//        Long facilityId = currentUserOrganizationService.getCurrentUserOrganization();
+//        Page<PatientProjection> persons = null;
+//
+//       if(searchValue != null && !StringUtils.isBlank(searchValue) && !searchValue.equalsIgnoreCase("null")){
+//            searchValue = searchValue.replaceAll("\\s", "");
+//            searchValue = searchValue.replaceAll(",", "");
+//
+//            String queryParam = "%" + searchValue + "%";
+//            persons = enrollmentRepository.getPatientsByFacilityBySearchParam(facilityId, queryParam, pageable);
+//           return getPageDTO(persons);
+//        }
+//       persons = enrollmentRepository.getPatientsByFacilityId(facilityId, pageable);
+//       return getPageDTO(persons);
+//    }
+
     public PageDTO getHivPatients(String searchValue, Pageable pageable) {
         Long facilityId = currentUserOrganizationService.getCurrentUserOrganization();
-//        log.info("searchValue is {}", searchValue);
         Page<PatientProjection> persons = null;
 
-       if(searchValue != null && !StringUtils.isBlank(searchValue) && !searchValue.equalsIgnoreCase("null")){
-            searchValue = searchValue.replaceAll("\\s", "");
-            searchValue = searchValue.replaceAll(",", "");
-
+        if (searchValue != null && !StringUtils.isBlank(searchValue) && !searchValue.equalsIgnoreCase("null")) {
+            searchValue = searchValue.replaceAll("\\s|,", "");  // Single replaceAll for spaces and commas
             String queryParam = "%" + searchValue + "%";
             persons = enrollmentRepository.getPatientsByFacilityBySearchParam(facilityId, queryParam, pageable);
-            //log.info("person searched size is {}", persons.getSize());
-           return getPageDTO(persons);
+        } else {
+            persons = enrollmentRepository.getPatientsByFacilityId(facilityId, pageable);
         }
-       persons = enrollmentRepository.getPatientsByFacilityId(facilityId, pageable);
-       //log.info("person not searched size is {}", persons.getSize());
-       return getPageDTO(persons);
+        return getPageDTO(persons);
     }
     
     
