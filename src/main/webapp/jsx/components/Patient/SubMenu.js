@@ -213,7 +213,7 @@ function SubMenu(props) {
   const loadOtzServiceForm = () => {
     //Please do not remove
     queryClient.invalidateQueries();
-    refetch();
+    // refetch();
     setActiveItem("otz-service-form");
     props.setActiveContent({
       ...props.activeContent,
@@ -225,7 +225,7 @@ function SubMenu(props) {
   const loadOtzEnrollmentForm = () => {
     //Please do not remove
     queryClient.invalidateQueries();
-    refetch();
+    // refetch();
     setActiveItem("otz-enrollment-form");
     props.setActiveContent({
       ...props.activeContent,
