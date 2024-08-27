@@ -62,6 +62,10 @@ import EnrollmentOtz from "../Otz/Enrollment";
 import ViewChronicCare from "../ChronicCare/viewChronicCare";
 import DsdServiceForm from "../DSD/DsdServiceForm";
 import DsdServiceFormView from "../DSD/DsdServiceFormView";
+// import EACOutcome from "../EnhancedAdherenceCounseling/EacOutCome";
+import EACOutcome from '../EnhancedAdherenceCounseling/EACOutcome/index'
+import ViewUpdateEACOutcome from "../EnhancedAdherenceCounseling/EACOutcome/ViewUpdateEACOutcome";
+
 
 
 const styles = (theme) => ({
@@ -441,8 +445,22 @@ function PatientCard(props) {
                             activeContent={activeContent}
                         />
                     )}
+                    {/*{activeContent.route === "eac-outcome" && (*/}
+                    {/*    <EACOUTCOME*/}
+                    {/*        patientObj={patientObj}*/}
+                    {/*        setActiveContent={setActiveContent}*/}
+                    {/*        activeContent={activeContent}*/}
+                    {/*    />*/}
+                    {/*)}*/}
                     {activeContent.route === "eac-outcome" && (
-                        <EACOUTCOME
+                        <EACOutcome
+                            patientObj={patientObj}
+                            setActiveContent={setActiveContent}
+                            activeContent={activeContent}
+                        />
+                    )}
+                    {activeContent.route === "view-outcome" && (
+                        <ViewUpdateEACOutcome
                             patientObj={patientObj}
                             setActiveContent={setActiveContent}
                             activeContent={activeContent}

@@ -125,6 +125,12 @@ const LabHistory = (props) => {
          props.setActiveContent({...props.activeContent, route:'eac-session', id:row.id, activeTab:"history", actionType:actionType, obj:row})
      }
 
+    const LoadEacOutCome = (row, actionType) =>{
+        // const row= props.activeContent.obj
+        // const actionType ="history"
+        props.setActiveContent({...props.activeContent, route:'eac-outcome', id:row.id, activeTab:"history", actionType:actionType, obj:row})
+    }
+
      const LoadDeletePage = (row) =>{  
       axios.delete(`${baseUrl}laboratory/rde-orders/tests/${row.id}`,
               { headers: {"Authorization" : `Bearer ${token}`} }
@@ -184,7 +190,7 @@ const LabHistory = (props) => {
                         aria-label="split button"
                         style={{backgroundColor:'rgb(153, 46, 98)', height:'30px'}}
                         size="large"
-                        onClick={()=>onClickHome(row, 'view')}
+                        // onClick={()=>onClickHome(row, 'view')}
                     >
                     <Button
                     color="primary"
@@ -192,9 +198,21 @@ const LabHistory = (props) => {
                     aria-label="select merge strategy"
                     aria-haspopup="menu"
                     style={{backgroundColor:'rgb(153, 46, 98)'}}
+                    onClick={()=>onClickHome(row, 'view')}
                     >
                        Eac Session
                     </Button>
+                        { row?.status === "COMPLETED" && <Button
+                            color="primary"
+                            size="small"
+                            aria-label="select merge strategy"
+                            aria-haspopup="menu"
+                            style={{backgroundColor:'rgb(153, 46, 98)'}}
+                            onClick={()=>LoadEacOutCome(row, 'view')}
+                        >
+                            Outcome
+                        </Button>
+                        }
                     </ButtonGroup>
                   ), 
                   // <div>
