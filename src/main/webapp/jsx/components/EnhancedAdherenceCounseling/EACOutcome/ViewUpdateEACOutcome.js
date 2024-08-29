@@ -72,105 +72,125 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const ViewUpdateEACOutcome = (props) => {
-    //const patientObj = props.patientObj;
-    const classes = useStyles()
+    const classes = useStyles();
     const [saving, setSaving] = useState(false);
     const [errors, setErrors] = useState({});
     const [currentViralLoad, setCurrentViralLoad] = useState({});
     const [allViralLoad, setAllViralLoad] = useState([]);
-    const [ eacSession, setEacSession] = useState([]);
-    const[postViralLoadObj, setPostViralLoadObj] = useState(null);
+    const [eacSession, setEacSession] = useState([]);
+    const [postViralLoadObj, setPostViralLoadObj] = useState(null);
     const [postViralLoadResult, setPostViralLoadResult] = useState("");
     const [currentRegimen, setCurrentRegimen] = useState({});
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true);
     const [regimenType, setRegimenType] = useState([]);
     const [regimenLine, setRegimenLine] = useState([]);
     const [regimenLineLineType, setRegimenLineLineType] = useState([]);
-    const [patientRegimenInfo, setPatientRegimenInfo] = useState(null)
-    const [objValues, setObjValues]=useState({
+    const [patientRegimenInfo, setPatientRegimenInfo] = useState(null);
+    const [persistedRegimen, setPersistedRegimen] = useState([]);
+
+    const [objValues, setObjValues] = useState({
         currentRegimen: "",
-        planAction:"",
-        eacId: props.activeContent.obj.id,
+        planAction: "",
+        eacId: "",
         id: "",
         outComeDate: "",
         outcome: "",
-        repeatViralLoader:"",
-        personId: props.patientObj.id,
+        repeatViralLoader: "",
+        personId: "",
         plan: "",
         visitId: "",
-        switchRegimen:"",
-        comment:""
-    })
-    const [switchs, setSwitchs]=useState({
+        switchRegimen: "",
+        comment: ""
+    });
+
+    const [switchs, setSwitchs] = useState({
         currentRegimen: "",
         dateSwitched: "",
         reasonSwitched: "",
-        switchRegimenLine:"",
-        switchRegimenLineType:""
+        switchRegimenLine: "",
+        switchRegimenLineType: ""
+    });
 
-    })
-    const [Substitutes, setSubstitutes]=useState({
+    const [Substitutes, setSubstitutes] = useState({
         currentRegimen: "",
         substituteRegimen: "",
         dateSubstituted: "",
         reasonSubstituted: "",
-        substituteRegimenLineType:'',
-
-    })
+        substituteRegimenLineType: ""
+    });
 
     useEffect(() => {
+        // Fetch initial data when component mounts
         CurrentRegimen();
         getPatientCurrentRegimen();
         RegimenLine();
         getAllViralLoadLabResult();
         getEacSessions();
 
-        if (props.activeContent.obj) {
-            setObjValues({
-                currentRegimen: props.activeContent.obj.currentRegimen || "",
-                planAction: props.activeContent.obj.planAction || "",
-                eacId: props.activeContent.obj.eacId || "",
-                id: props.activeContent.obj.id || "",
-                outComeDate: props.activeContent.obj.outComeDate || "",
-                outcome: props.activeContent.obj.outcome || "",
-                repeatViralLoader: props.activeContent.obj.repeatViralLoader || "",
-                personId: props.activeContent.obj.personId || "",
-                plan: props.activeContent.obj.plan || "",
-                visitId: props.activeContent.obj.visitId || "",
-                switchRegimen: props.activeContent.obj.switchRegimen || "",
-                comment: props.activeContent.obj.comment || ""
-            });
-        }
 
+    }, [ props.patientObj]);
+
+
+
+    useEffect(()=>{
+        // Populate the form only if the component is being used for editing/viewing
         if (props.activeContent.obj) {
+            console.log("ActiveContent in update eac:", props.activeContent.obj);
+            const newObjValues = props.activeContent.obj
             setObjValues({
-                ...props.activeContent.obj,
-                planAction: props.activeContent.obj.planAction || {
-                    currentRegimen: "",
-                    dateSubstituted: "",
-                    reasonSubstituted: "",
-                    substituteRegimen: "",
-                    substituteRegimenLineType: ""
-                },
-                comment: props.activeContent.obj.comment || ""
+                currentRegimen: newObjValues.currentRegimen,
+                planAction: newObjValues.planAction,
+                eacId: newObjValues.eacId ,
+                id: newObjValues.id ,
+                outComeDate: newObjValues.outComeDate ,
+                outcome: newObjValues.outcome ,
+                repeatViralLoader: newObjValues.repeatViralLoader ,
+                personId:props.patientObj.id,
+                plan: newObjValues.plan,
+                visitId: newObjValues.visitId,
+                switchRegimen: newObjValues.switchRegimen ,
+                comment: newObjValues.comment
             });
 
-            // Additionally set Substitutes state if needed
-            if (props.activeContent.obj.planAction) {
+            // Populate Substitutes or Switches based on the plan
+            if (newObjValues.plan === '"Substitute regimen' && newObjValues.planAction) {
+
+                // i want to filter the regimen from the list of response.data
+
+                let newSubstituteRegimenLineType = "";
+                const response = axios.get(`${baseUrl}hiv/regimen/types/${newObjValues.planAction.substituteRegimen}`,
+                    { headers: {"Authorization" : `Bearer ${token}`} })
+                if(response.data.length >0){
+                    setRegimenLineLineType(response.data)
+                    console.log("Regimen line type", response.data)
+                    newSubstituteRegimenLineType = response.data.filter(reg => reg.id === newObjValues.planAction.substituteRegimenLineType )
+
+                }
                 setSubstitutes({
-                    currentRegimen: props.activeContent.obj.planAction.currentRegimen || "",
-                    substituteRegimen: props.activeContent.obj.planAction.substituteRegimen || "",
-                    dateSubstituted: props.activeContent.obj.planAction.dateSubstituted || "",
-                    reasonSubstituted: props.activeContent.obj.planAction.reasonSubstituted || "",
-                    substituteRegimenLineType: props.activeContent.obj.planAction.substituteRegimenLineType || ""
+                    currentRegimen: newObjValues.planAction.currentRegimen,
+                    substituteRegimen: newObjValues.planAction.substituteRegimen,
+                    dateSubstituted: newObjValues.planAction.dateSubstituted,
+                    reasonSubstituted: newObjValues.planAction.reasonSubstituted,
+                    substituteRegimenLineType: newObjValues.planAction.substituteRegimenLineType
+                    // substituteRegimenLineType:newSubstituteRegimenLineType?.description
+                });
+
+            } else if (newObjValues.plan === 'Switch regimen' && newObjValues.planAction) {
+                setSwitchs({
+                    currentRegimen:newObjValues.planAction.currentRegimen ,
+                    dateSwitched: newObjValues.planAction.dateSubstituted ,
+                    reasonSwitched: newObjValues.planAction.reasonSubstituted ,
+                    switchRegimenLine: newObjValues.planAction.substituteRegimen,
+                    switchRegimenLineType: newObjValues.planAction.substituteRegimenLineType
                 });
             }
         }
+    }, [props.activeContent.obj])
 
-    }, [props.patientObj.id, props.activeContent.obj]);
 
-   console.log("ActiveContent in update eac:", props.activeContent)
-    console.log("ObjectVale:", objValues)
+    // console.log("ObjectVale:", objValues);
+
+
 
     useEffect(() => {
         axios
@@ -256,18 +276,6 @@ const ViewUpdateEACOutcome = (props) => {
         }
     }, [allViralLoad, eacSession]);
 
-    // AUTO POPULATE THE OUTCOME FILED
-    useEffect(() =>{
-        if(postViralLoadObj && postViralLoadObj.result != null){
-            const outcome = postViralLoadObj.result < 1000 ? "Suppressed" : "Unsuppressed"
-            setObjValues((prevState) => (
-                {
-                    ...prevState,
-                    outcome: outcome
-                }
-            ))
-        }
-    },[postViralLoadObj])
 
     const RegimenLine = () => {
         setLoading(true);
@@ -333,10 +341,6 @@ const ViewUpdateEACOutcome = (props) => {
                 // console.log("RESPONSE **** ", response.data)
                 setLoading(false)
                 setPatientRegimenInfo(response.data)
-                setObjValues({
-                    ...objValues,
-                    currentRegimen: response.data?.currentartregimen
-                })
             })
             .catch((error) => {
                 console.log("Error ", error)
@@ -456,6 +460,7 @@ const ViewUpdateEACOutcome = (props) => {
                 const response = await axios.get(`${baseUrl}hiv/regimen/types/${id}`,
                     { headers: {"Authorization" : `Bearer ${token}`} })
                 if(response.data.length >0){
+                    console.log("Regimen line type", response.data)
                     setRegimenLineLineType(response.data)
                 }
             }catch(e) {
@@ -618,6 +623,7 @@ const ViewUpdateEACOutcome = (props) => {
                                         name="plan"
                                         id="plan"
                                         value={objValues.plan}
+                                        // value ={props.activeContent.obj.plan}
                                         onChange={handleInputChange}
                                         style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
 
@@ -643,7 +649,7 @@ const ViewUpdateEACOutcome = (props) => {
                                                 name="currentRegimen"
                                                 id="currentRegimen"
                                                 // value={currentRegimen && currentRegimen.description ? currentRegimen.description : ""}
-                                                value={patientRegimenInfo && patientRegimenInfo.currentartregimen ? patientRegimenInfo.currentartregimen : ""}
+                                                value={patientRegimenInfo && patientRegimenInfo?.currentartregimen ? patientRegimenInfo?.currentartregimen : ""}
                                                 onChange={handleInputChange}
                                                 disabled
                                                 style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
@@ -760,7 +766,7 @@ const ViewUpdateEACOutcome = (props) => {
                                                 name="currentRegimen"
                                                 id="currentRegimen"
                                                 // value={currentRegimen && currentRegimen.description ? currentRegimen.description : ""}
-                                                value={patientRegimenInfo && patientRegimenInfo.currentartregimen ? patientRegimenInfo.currentartregimen : ""}
+                                                value={patientRegimenInfo && patientRegimenInfo?.currentartregimen ? patientRegimenInfo?.currentartregimen : ""}
                                                 onChange={handleInputChange}
                                                 disabled
                                                 style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
@@ -789,9 +795,11 @@ const ViewUpdateEACOutcome = (props) => {
                                             <Label>Substitute Regimen Line </Label>
                                             <Input
                                                 type="select"
+                                                // type="text"
                                                 name="substituteRegimen"
                                                 id="substituteRegimen"
-                                                value={Substitutes.substituteRegimen}
+                                                value={objValues.planAction.substituteRegimen}
+                                                // value ={Substitutes.substituteRegimen}
                                                 // onChange={handleInputSubstituteChange}
                                                 onChange={handleSelectedSubstituteRegimen}
                                                 style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
@@ -814,7 +822,8 @@ const ViewUpdateEACOutcome = (props) => {
                                                 type="select"
                                                 name="substituteRegimenLineType"
                                                 id="substituteRegimenLineType"
-                                                value={Substitutes.substituteRegimenLineType}
+                                                value={objValues.planAction.substituteRegimenLineType}
+                                                // value={Substitutes.substituteRegimenLineType}
                                                 onChange={handleSelectedSubstituteRegimen}
                                                 style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
 
@@ -836,7 +845,8 @@ const ViewUpdateEACOutcome = (props) => {
                                                 type="date"
                                                 name="dateSubstituted"
                                                 id="dateSubstituted"
-                                                value={Substitutes.dateSubstituted}
+                                                // value={Substitutes.dateSubstituted}
+                                                value ={objValues.planAction.dateSubstituted}
                                                 onChange={handleSelectedSubstituteRegimen}
                                                 min={moment(currentViralLoad && currentViralLoad.dateResultReceived ? currentViralLoad.dateResultReceived : "").format("YYYY-MM-DD")}
                                                 max={moment(new Date()).format("YYYY-MM-DD")}
@@ -856,7 +866,8 @@ const ViewUpdateEACOutcome = (props) => {
                                                 type="textarea"
                                                 name="reasonSubstituted"
                                                 id="reasonSubstituted"
-                                                value={Substitutes.reasonSubstituted}
+                                                // value={Substitutes.reasonSubstituted}
+                                                value ={objValues.planAction.reasonSubstituted}
                                                 // onChange={handleInputSubstituteChange}
                                                 onChange={handleSelectedSubstituteRegimen}
                                                 style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
