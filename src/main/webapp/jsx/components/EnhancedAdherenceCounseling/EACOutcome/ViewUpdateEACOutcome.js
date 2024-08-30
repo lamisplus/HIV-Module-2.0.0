@@ -135,7 +135,7 @@ const ViewUpdateEACOutcome = (props) => {
     useEffect(()=>{
         // Populate the form only if the component is being used for editing/viewing
         if (props.activeContent.obj) {
-            console.log("ActiveContent in update eac:", props.activeContent.obj);
+            // console.log("ActiveContent in update eac:", props.activeContent.obj);
             const newObjValues = props.activeContent.obj
             setObjValues({
                 currentRegimen: newObjValues.currentRegimen,
@@ -162,7 +162,7 @@ const ViewUpdateEACOutcome = (props) => {
                     { headers: {"Authorization" : `Bearer ${token}`} })
                 if(response.data.length >0){
                     setRegimenLineLineType(response.data)
-                    console.log("Regimen line type", response.data)
+                    // console.log("Regimen line type", response.data)
                     newSubstituteRegimenLineType = response.data.filter(reg => reg.id === newObjValues.planAction.substituteRegimenLineType )
 
                 }
@@ -383,10 +383,10 @@ const ViewUpdateEACOutcome = (props) => {
                         reasonSubstituted: "",
                         substituteRegimenLineType:'',
                     });
-                    setObjValues({
-                        ...objValues,
-                        outComeDate: "",
-                    })
+                    // setObjValues({
+                    //     ...objValues,
+                    //     outComeDate: "",
+                    // })
                     break;
                 case "Switch regimen":
                     setSubstitutes({
@@ -396,10 +396,10 @@ const ViewUpdateEACOutcome = (props) => {
                         reasonSubstituted: "",
                         substituteRegimenLineType:'',
                     });
-                    setObjValues({
-                        ...objValues,
-                        outComeDate: "",
-                    })
+                    // setObjValues({
+                    //     ...objValues,
+                    //     outComeDate: "",
+                    // })
                     break;
                 case "Substitute regimen":
                     setSwitchs({
@@ -425,10 +425,10 @@ const ViewUpdateEACOutcome = (props) => {
                         reasonSubstituted: "",
                         substituteRegimenLineType:'',
                     });
-                    setObjValues({
-                        ...objValues,
-                        outComeDate: "",
-                    })
+                    // setObjValues({
+                    //     ...objValues,
+                    //     outComeDate: "",
+                    // })
                     break;
                 default:
                     break;
@@ -460,11 +460,10 @@ const ViewUpdateEACOutcome = (props) => {
                 const response = await axios.get(`${baseUrl}hiv/regimen/types/${id}`,
                     { headers: {"Authorization" : `Bearer ${token}`} })
                 if(response.data.length >0){
-                    console.log("Regimen line type", response.data)
+                    // console.log("Regimen line type", response.data)
                     setRegimenLineLineType(response.data)
                 }
             }catch(e) {
-
             }
         }
         getCharacters();
@@ -482,7 +481,7 @@ const ViewUpdateEACOutcome = (props) => {
         if(objValues.plan==='Switch regimen'){
             objValues.planAction=switchs
         }
-        axios.post(`${baseUrl}hiv/eac/out-come?eacId=${props.activeContent.obj.id}`,objValues,
+        axios.put(`${baseUrl}hiv/eac/eac-outcome/${props.activeContent.obj.id}`,objValues,
             { headers: {"Authorization" : `Bearer ${token}`}},
 
         )
@@ -626,7 +625,9 @@ const ViewUpdateEACOutcome = (props) => {
                                         // value ={props.activeContent.obj.plan}
                                         onChange={handleInputChange}
                                         style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
-
+                                        disabled={
+                                            props.activeContent.actionType === "view" ? true : false
+                                        }
                                     >
                                         <option value="">Select</option>
                                         <option value="Remain on current regimen">Remain on current regimen</option>
@@ -683,7 +684,9 @@ const ViewUpdateEACOutcome = (props) => {
                                                 value={switchs.switchRegimenLine}
                                                 onChange={handleSelectedRegimen}
                                                 style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
-
+                                                disabled={
+                                                    props.activeContent.actionType === "view" ? true : false
+                                                }
                                             >
                                                 <option value="">Select</option>
                                                 {regimenLine.map((value) => (
@@ -706,7 +709,9 @@ const ViewUpdateEACOutcome = (props) => {
                                                 onChange={handleInputSwitchChange}
 
                                                 style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
-
+                                                disabled={
+                                                    props.activeContent.actionType === "view" ? true : false
+                                                }
                                             >
                                                 <option value="">Select</option>
                                                 {regimenLineLineType.map((value) => (
@@ -733,6 +738,9 @@ const ViewUpdateEACOutcome = (props) => {
                                                 style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
                                                 required
                                                 onKeyPress={(e) => e.preventDefault()}
+                                                disabled={
+                                                    props.activeContent.actionType === "view" ? true : false
+                                                }
                                             />
                                             {errors.dateSwitched !== "" ? (
                                                 <span className={classes.error}>{errors.dateSwitched}</span>
@@ -749,6 +757,9 @@ const ViewUpdateEACOutcome = (props) => {
                                                 value={switchs.reasonSwitched}
                                                 onChange={handleInputSwitchChange}
                                                 style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
+                                                disabled={
+                                                    props.activeContent.actionType === "view" ? true : false
+                                                }
                                             />
                                         </FormGroup>
                                     </div>
@@ -803,7 +814,9 @@ const ViewUpdateEACOutcome = (props) => {
                                                 // onChange={handleInputSubstituteChange}
                                                 onChange={handleSelectedSubstituteRegimen}
                                                 style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
-
+                                                disabled={
+                                                    props.activeContent.actionType === "view" ? true : false
+                                                }
                                             >
                                                 <option value="">Select</option>
                                                 {regimenLine.map((value) => (
@@ -826,7 +839,9 @@ const ViewUpdateEACOutcome = (props) => {
                                                 // value={Substitutes.substituteRegimenLineType}
                                                 onChange={handleSelectedSubstituteRegimen}
                                                 style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
-
+                                                disabled={
+                                                    props.activeContent.actionType === "view" ? true : false
+                                                }
                                             >
                                                 <option value="">Select</option>
                                                 {regimenLineLineType.map((value) => (
@@ -853,6 +868,9 @@ const ViewUpdateEACOutcome = (props) => {
                                                 style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
                                                 required
                                                 onKeyPress={(e) => e.preventDefault()}
+                                                disabled={
+                                                    props.activeContent.actionType === "view" ? true : false
+                                                }
                                             />
                                             {errors.dateSubstituted !== "" ? (
                                                 <span className={classes.error}>{errors.dateSubstituted}</span>
@@ -871,6 +889,9 @@ const ViewUpdateEACOutcome = (props) => {
                                                 // onChange={handleInputSubstituteChange}
                                                 onChange={handleSelectedSubstituteRegimen}
                                                 style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
+                                                disabled={
+                                                    props.activeContent.actionType === "view" ? true : false
+                                                }
                                             />
                                         </FormGroup>
                                     </div>
@@ -891,6 +912,9 @@ const ViewUpdateEACOutcome = (props) => {
                                         style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
                                         required
                                         onKeyPress={(e) => e.preventDefault()}
+                                        disabled={
+                                            props.activeContent.actionType === "view" ? true : false
+                                        }
                                     />
                                     {errors.outComeDate !== "" ? (
                                         <span className={classes.error}>{errors.outComeDate}</span>
@@ -910,10 +934,15 @@ const ViewUpdateEACOutcome = (props) => {
                                         value={objValues.comment}
                                         onChange={handleInputChange}
                                         style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
+                                        disabled={
+                                            props.activeContent.actionType === "view" ? true : false
+                                        }
                                     />
                                 </FormGroup>
                             </div>
                         </div>
+                        {props.activeContent.actionType === "update" && (
+                        <div>
                         {saving ? <Spinner/> : ""}
                         <br/>
 
@@ -928,11 +957,13 @@ const ViewUpdateEACOutcome = (props) => {
                             disabled={objValues.dateOfEac3==="" ? true : false}
                         >
                             {!saving ? (
-                                <span style={{ textTransform: "capitalize" }}>Save</span>
+                                <span style={{ textTransform: "capitalize" }}>Update</span>
                             ) : (
                                 <span style={{ textTransform: "capitalize" }}>Saving...</span>
                             )}
                         </MatButton>
+                        </div>
+                        )}
                     </form>
                 </CardBody>
             </Card>

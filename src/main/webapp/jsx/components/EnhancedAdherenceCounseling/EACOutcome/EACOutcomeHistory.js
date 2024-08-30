@@ -127,8 +127,8 @@ const EACHistory = (props) => {
 
                                             <Dropdown.Menu style={{ marginTop:"10px", }}>
                                                 <Dropdown.Item  onClick={()=>viewEacOutCome(row, 'view')}><Icon name='eye' />View</Dropdown.Item>
-                                                <Dropdown.Item  onClick={()=>onClickHome(row, 'update')}><Icon name='edit' />Update</Dropdown.Item>
-                                                <Dropdown.Item  onClick={()=>LoadModal(row)}> <Icon name='trash' /> Delete</Dropdown.Item>
+                                                <Dropdown.Item  onClick={()=>viewEacOutCome(row, 'update')}><Icon name='edit' />Update</Dropdown.Item>
+                                                {/*<Dropdown.Item  onClick={()=>LoadModal(row)}> <Icon name='trash' /> Delete</Dropdown.Item>*/}
                                             </Dropdown.Menu>
                                         </Dropdown>
                                     </Button>
