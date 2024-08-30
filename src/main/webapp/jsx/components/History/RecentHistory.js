@@ -46,13 +46,14 @@ const RecentHistory = (props) => {
   const toggle = () => setOpen(!open);
   const [activeAccordionHeaderShadow, setActiveAccordionHeaderShadow] =
       useState(0);
-
+  const [patientStatus, setPatientStatus] = useState([]);
   useEffect(() => {
     if (props.patientObj && props.patientObj !== null) {
       LaboratoryHistory();
       PharmacyList();
       ClinicVisitList();
       RecentActivities();
+      PatientStatus();
     }
   }, [props.patientObj]);
 
@@ -87,6 +88,40 @@ const RecentHistory = (props) => {
           setLoadingLab(false);
         });
   };
+
+// get the list of patient tracker using the person id
+  const PatientStatus = () => {
+    setLoading(true);
+    axios
+        .get(`${baseUrl}hiv/status/patient/${props.patientObj.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          setLoading(false);
+          // console.log(response.data)
+          setPatientStatus(response.data)
+
+        })
+        .catch((error) => {});
+  };
+
+  // UPDATE PATIENT STATUS
+  const updatePatientStatus = () => {
+    // Check if patientStatus is not empty or null
+    if (!patientStatus || patientStatus.length === 0) return;
+    // Sort patientStatus in desc order using the statusDate
+    patientStatus.sort((a, b) => new Date(b.statusDate) - new Date(a.statusDate));
+    if (patientStatus[0].hivStatus === "ART Transfer Out") {
+      axios
+          .delete(`${baseUrl}hiv/status/${patientStatus[0].id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .catch(error => {
+            console.error(error);
+          });
+    }
+  }
+
   //GET LIST Drug Refill
   const PharmacyList = () => {
     setLoading(true);
@@ -688,6 +723,7 @@ const RecentHistory = (props) => {
           })
           .then((response) => {
             toast.success("Record Deleted Successfully");
+            updatePatientStatus();
             RecentActivities();
             toggle();
             setSaving(false);

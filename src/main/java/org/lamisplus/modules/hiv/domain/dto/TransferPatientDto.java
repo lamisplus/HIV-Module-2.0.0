@@ -60,4 +60,5 @@ public class TransferPatientDto {
     private String clinicianTelephoneNumber;
     private String patientCameWithTransferForm;
     private String patientAttendedHerFirstVisit;
+    private String encounterDate;
 }
