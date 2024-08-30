@@ -376,10 +376,10 @@ const EAC = (props) => {
                         reasonSubstituted: "",
                         substituteRegimenLineType:'',
                     });
-                    setObjValues({
-                        ...objValues,
-                        outComeDate: "",
-                    })
+                    // setObjValues({
+                    //     ...objValues,
+                    //     outComeDate: "",
+                    // })
                     break;
                 case "Switch regimen":
                     setSubstitutes({
@@ -389,10 +389,10 @@ const EAC = (props) => {
                         reasonSubstituted: "",
                         substituteRegimenLineType:'',
                     });
-                    setObjValues({
-                        ...objValues,
-                        outComeDate: "",
-                    })
+                    // setObjValues({
+                    //     ...objValues,
+                    //     outComeDate: "",
+                    // })
                     break;
                 case "Substitute regimen":
                     setSwitchs({
@@ -418,10 +418,10 @@ const EAC = (props) => {
                         reasonSubstituted: "",
                         substituteRegimenLineType:'',
                     });
-                    setObjValues({
-                        ...objValues,
-                        outComeDate: "",
-                    })
+                    // setObjValues({
+                    //     ...objValues,
+                    //     outComeDate: "",
+                    // })
                     break;
                 default:
                     break;

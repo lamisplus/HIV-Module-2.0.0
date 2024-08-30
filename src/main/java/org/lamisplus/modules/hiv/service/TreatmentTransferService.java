@@ -150,6 +150,7 @@ public class TreatmentTransferService {
         transferPatientDto.setPersonEffectingTheTransfer(transferPatientDto.getPersonEffectingTheTransfer());
         transferPatientDto.setAcknowlegdeReceiveDate(transferPatientDto.getAcknowlegdeReceiveDate());
         transferPatientDto.setAcknowlegdeTelephoneNumber(transferPatientDto.getAcknowlegdeTelephoneNumber());
+        transferPatientDto.setEncounterDate(transferPatientDto.getEncounterDate());
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.valueToTree(transferPatientDto);
     }
