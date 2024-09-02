@@ -119,6 +119,22 @@ const ViewUpdateEACOutcome = (props) => {
         substituteRegimenLineType: ""
     });
 
+
+    // function RegimenType(id) {//Get Regimen by regimen ID
+    //     async function getCharacters() {
+    //         try{
+    //             const response = await axios.get(`${baseUrl}hiv/regimen/types/${id}`,
+    //                 { headers: {"Authorization" : `Bearer ${token}`} })
+    //             if(response.data.length >0){
+    //                 setRegimenLineLineType(response.data)
+    //             }
+    //         }catch(e) {
+    //
+    //         }
+    //     }
+    //     getCharacters();
+    // }
+
     useEffect(() => {
         // Fetch initial data when component mounts
         CurrentRegimen();
@@ -134,8 +150,10 @@ const ViewUpdateEACOutcome = (props) => {
 
     useEffect(()=>{
         // Populate the form only if the component is being used for editing/viewing
+
+
+
         if (props.activeContent.obj) {
-            // console.log("ActiveContent in update eac:", props.activeContent.obj);
             const newObjValues = props.activeContent.obj
             setObjValues({
                 currentRegimen: newObjValues.currentRegimen,
@@ -153,19 +171,11 @@ const ViewUpdateEACOutcome = (props) => {
             });
 
             // Populate Substitutes or Switches based on the plan
-            if (newObjValues.plan === '"Substitute regimen' && newObjValues.planAction) {
+            if (newObjValues.plan === 'Substitute regimen' && newObjValues.planAction) {
 
-                // i want to filter the regimen from the list of response.data
+                // console.log("innnnewObjValues.plan" , newObjValues.plan)
 
-                let newSubstituteRegimenLineType = "";
-                const response = axios.get(`${baseUrl}hiv/regimen/types/${newObjValues.planAction.substituteRegimen}`,
-                    { headers: {"Authorization" : `Bearer ${token}`} })
-                if(response.data.length >0){
-                    setRegimenLineLineType(response.data)
-                    // console.log("Regimen line type", response.data)
-                    newSubstituteRegimenLineType = response.data.filter(reg => reg.id === newObjValues.planAction.substituteRegimenLineType )
-
-                }
+                 RegimenType(newObjValues.planAction.substituteRegimen)
                 setSubstitutes({
                     currentRegimen: newObjValues.planAction.currentRegimen,
                     substituteRegimen: newObjValues.planAction.substituteRegimen,
@@ -176,12 +186,13 @@ const ViewUpdateEACOutcome = (props) => {
                 });
 
             } else if (newObjValues.plan === 'Switch regimen' && newObjValues.planAction) {
+                RegimenType(newObjValues.planAction.switchRegimenLine)
                 setSwitchs({
                     currentRegimen:newObjValues.planAction.currentRegimen ,
-                    dateSwitched: newObjValues.planAction.dateSubstituted ,
-                    reasonSwitched: newObjValues.planAction.reasonSubstituted ,
-                    switchRegimenLine: newObjValues.planAction.substituteRegimen,
-                    switchRegimenLineType: newObjValues.planAction.substituteRegimenLineType
+                    dateSwitched: newObjValues.planAction.dateSwitched ,
+                    reasonSwitched: newObjValues.planAction.reasonSwitched,
+                    switchRegimenLine: newObjValues.planAction.switchRegimenLine,
+                    switchRegimenLineType: newObjValues.planAction.switchRegimenLineType
                 });
             }
         }
@@ -189,7 +200,7 @@ const ViewUpdateEACOutcome = (props) => {
 
 
     // console.log("ObjectVale:", objValues);
-
+    // console.log("ActiveContent in update eac:", props.activeContent.obj);
 
 
     useEffect(() => {
@@ -352,12 +363,17 @@ const ViewUpdateEACOutcome = (props) => {
     }
 
     const handleSelectedSubstituteRegimen = e => {
-        const regimenId = e.target.value;
+
+        // console.log("check event", e.target.name, e.target.value )
         setSubstitutes({ ...Substitutes, [e.target.name]: e.target.value });
-        if (regimenId !== "") {
-            RegimenType(regimenId);
-        } else {
-            setRegimenType([]);
+
+        //
+        if(e.target.name === "substituteRegimen"){
+            if (e.target.value !== "") {
+                RegimenType(e.target.value);
+            } else {
+                setRegimenType([]);
+            }
         }
     };
 
@@ -463,6 +479,8 @@ const ViewUpdateEACOutcome = (props) => {
                     // console.log("Regimen line type", response.data)
                     setRegimenLineLineType(response.data)
                 }
+                return response;
+
             }catch(e) {
             }
         }
@@ -792,7 +810,6 @@ const ViewUpdateEACOutcome = (props) => {
                                                 type="text"
                                                 name="currentRegimenLine"
                                                 id="currentRegimenLine"
-                                                // value={currentRegimen && currentRegimen.description ? currentRegimen.description : ""}
                                                 value={patientRegimenInfo && patientRegimenInfo.currentregimenline ? patientRegimenInfo.currentregimenline : ""}
                                                 onChange={handleInputChange}
                                                 disabled
@@ -809,8 +826,8 @@ const ViewUpdateEACOutcome = (props) => {
                                                 // type="text"
                                                 name="substituteRegimen"
                                                 id="substituteRegimen"
-                                                value={objValues.planAction.substituteRegimen}
-                                                // value ={Substitutes.substituteRegimen}
+                                                // value={objValues.planAction.substituteRegimen}
+                                                value ={Substitutes.substituteRegimen}
                                                 // onChange={handleInputSubstituteChange}
                                                 onChange={handleSelectedSubstituteRegimen}
                                                 style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
@@ -835,8 +852,8 @@ const ViewUpdateEACOutcome = (props) => {
                                                 type="select"
                                                 name="substituteRegimenLineType"
                                                 id="substituteRegimenLineType"
-                                                value={objValues.planAction.substituteRegimenLineType}
-                                                // value={Substitutes.substituteRegimenLineType}
+                                                // value={objValues.planAction.substituteRegimenLineType}
+                                                value={Substitutes.substituteRegimenLineType}
                                                 onChange={handleSelectedSubstituteRegimen}
                                                 style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
                                                 disabled={
@@ -860,8 +877,8 @@ const ViewUpdateEACOutcome = (props) => {
                                                 type="date"
                                                 name="dateSubstituted"
                                                 id="dateSubstituted"
-                                                // value={Substitutes.dateSubstituted}
-                                                value ={objValues.planAction.dateSubstituted}
+                                                value={Substitutes.dateSubstituted}
+                                                // value ={objValues.planAction.dateSubstituted}
                                                 onChange={handleSelectedSubstituteRegimen}
                                                 min={moment(currentViralLoad && currentViralLoad.dateResultReceived ? currentViralLoad.dateResultReceived : "").format("YYYY-MM-DD")}
                                                 max={moment(new Date()).format("YYYY-MM-DD")}
@@ -884,8 +901,8 @@ const ViewUpdateEACOutcome = (props) => {
                                                 type="textarea"
                                                 name="reasonSubstituted"
                                                 id="reasonSubstituted"
-                                                // value={Substitutes.reasonSubstituted}
-                                                value ={objValues.planAction.reasonSubstituted}
+                                                 value={Substitutes.reasonSubstituted}
+                                                // value ={objValues.planAction.reasonSubstituted}
                                                 // onChange={handleInputSubstituteChange}
                                                 onChange={handleSelectedSubstituteRegimen}
                                                 style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
