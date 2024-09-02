@@ -174,19 +174,23 @@ function PatientCard(props) {
                 const data = response.data;
                 if (data !== null) {
                     if ('outComeOfIpt' in data.observationData.tptMonitoring && data.observationData.tptMonitoring.outComeOfIpt !== '') {
-                        setShowModal({show: false, message: ''});
-                    } else {
+                        setShowModal({ show: false, message:''});
+                    }
+
+                    else {
                         const regimenNames = data.pharmacyData.regimens.map(regimen => regimen.regimenName);
                         const visitDate = new Date(response.data.visitDate);
                         const today = new Date();
                         const differenceInDays = (today - visitDate) / (1000 * 3600 * 24);
 
-                        if (regimenNames.includes('Isoniazid-(INH) 300mg') && differenceInDays >= 180) {
+                        if (regimenNames.includes('Isoniazid-(INH) 300mg') && differenceInDays >= 18) {
+                            console.log("300 isamid is present")
                             setShowModal({
                                 show: true,
                                 message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: Please update Outcome of TPT `
                             });
-                        } else if (regimenNames.includes('Isoniazid-(INH) 100mg') && differenceInDays >= 180) {
+                        } else if (regimenNames.includes('Isoniazid-(INH) 100mg') && differenceInDays >= 18) {
+                            console.log("100 isamid is present")
                             setShowModal({
                                 show: true,
                                 message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: Please update Outcome of TPT `

@@ -188,8 +188,14 @@ const LabHistory = (props) => {
                   (
                     <ButtonGroup variant="contained" 
                         aria-label="split button"
-                        style={{backgroundColor:'rgb(153, 46, 98)', height:'30px'}}
-                        size="large"
+                                 style={{
+                                     backgroundColor:'rgb(153, 46, 98)',
+                                     height:'30px',
+                                     whiteSpace: 'nowrap',
+                                     overflow: 'hidden',
+                                     textOverflow: 'ellipsis'
+                                 }}
+                                 size="large"
                         // onClick={()=>onClickHome(row, 'view')}
                     >
                     <Button
@@ -197,7 +203,14 @@ const LabHistory = (props) => {
                     size="small"
                     aria-label="select merge strategy"
                     aria-haspopup="menu"
-                    style={{backgroundColor:'rgb(153, 46, 98)'}}
+                    style={{
+                        backgroundColor:'rgb(153, 46, 98)',
+                        height:'30px',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis'
+                    }}
+
                     onClick={()=>onClickHome(row, 'view')}
                     >
                        Eac Session
@@ -214,25 +227,9 @@ const LabHistory = (props) => {
                         </Button>
                         }
                     </ButtonGroup>
-                  ), 
-                  // <div>
-                  //           <Menu.Menu position='right'  >
-                  //           <Menu.Item >
-                  //               <Button style={{backgroundColor:'rgb(153,46,98)'}} primary>
-                  //               <Dropdown item text='Action'>
-
-                  //               <Dropdown.Menu style={{ marginTop:"10px", }}>
-                  //                  <Dropdown.Item  onClick={()=>onClickHome(row, 'view')}> EAC SESSIONS</Dropdown.Item>
-                  //                  {/* <Dropdown.Item  onClick={()=>onClickHome(row, 'update')}><Icon name='edit' />Update</Dropdown.Item>
-                  //                   <Dropdown.Item  onClick={()=>LoadDeletePage(row)}> <Icon name='trash' /> Delete</Dropdown.Item> */}
-                  //               </Dropdown.Menu>
-                  //           </Dropdown>
-                  //               </Button>
-                  //           </Menu.Item>
-                  //           </Menu.Menu>
-                  //        </div>
+                  ),
                   }))}
-            
+
                         options={{
                           headerStyle: {
                               backgroundColor: "#014d88",

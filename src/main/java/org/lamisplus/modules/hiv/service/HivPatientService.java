@@ -129,7 +129,7 @@ public class HivPatientService {
         Page<PatientProjection> persons = null;
 
         if (searchValue != null && !StringUtils.isBlank(searchValue) && !searchValue.equalsIgnoreCase("null")) {
-            searchValue = searchValue.replaceAll("\\s|,", "");  // Single replaceAll for spaces and commas
+            searchValue = searchValue.replaceAll("\\s|,", "");
             String queryParam = "%" + searchValue + "%";
             persons = enrollmentRepository.getPatientsByFacilityBySearchParam(facilityId, queryParam, pageable);
         } else {
