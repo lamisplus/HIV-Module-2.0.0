@@ -182,20 +182,30 @@ function PatientCard(props) {
                         const visitDate = new Date(response.data.visitDate);
                         const today = new Date();
                         const differenceInDays = (today - visitDate) / (1000 * 3600 * 24);
+                        if (regimenNames.includes('Isoniazid-(INH) 300mg') && differenceInDays >= 180) {
+                            setShowModal({
+                                show: true,
+                                message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: Please update Outcome of TPT `
+                            });
+                        } else if (regimenNames.includes('Isoniazid-(INH) 100mg') && differenceInDays >= 180) {
+                            setShowModal({
+                                show: true,
+                                message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: Please update Outcome of TPT `
+                            });
 
-                        if (regimenNames.includes('Isoniazid-(INH) 300mg') && differenceInDays >= 18) {
-                            console.log("300 isamid is present")
+                        }else if (regimenNames.includes('Isoniazid 100mg') && differenceInDays >= 180) {
                             setShowModal({
                                 show: true,
                                 message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: Please update Outcome of TPT `
                             });
-                        } else if (regimenNames.includes('Isoniazid-(INH) 100mg') && differenceInDays >= 18) {
-                            console.log("100 isamid is present")
+                        }
+                        else if (regimenNames.includes('Isoniazid 300mg') && differenceInDays >= 180) {
                             setShowModal({
                                 show: true,
                                 message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: Please update Outcome of TPT `
                             });
-                        } else if (regimenNames.includes('Isoniazid(300mg)/Pyridoxine(25mg)/Cotrimoxazole(960mg)') && differenceInDays >= 180) {
+                        }
+                        else if (regimenNames.includes('Isoniazid(300mg)/Pyridoxine(25mg)/Cotrimoxazole(960mg)') && differenceInDays >= 180) {
                             setShowModal({
                                 show: true,
                                 message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: Please update Outcome of TPT `
