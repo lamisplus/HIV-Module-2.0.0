@@ -502,17 +502,18 @@ const handleSubmit = async (e) => {
   // Send request
   try {
     let response;
-    if (isUpdate) {
+    // if (isUpdate) {
       response = await axios.put(
         `${baseUrl}observation/${props.activeContent.id}`,
         observation,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-    } else {
-      response = await axios.post(`${baseUrl}observation`, observation, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-    }
+    // }
+    // else {
+    //   response = await axios.post(`${baseUrl}observation`, observation, {
+    //     headers: { Authorization: `Bearer ${token}` },
+    //   });
+    // }
 
     setSaving(false);
     showSuccessMessage("Chronic Care Save successful");
@@ -706,6 +707,7 @@ const handleSubmit = async (e) => {
                     action={props.activeContent.actionType}
                     setTpt={setTpt}
                     tpt={tpt}
+                    act="view"
                   />
                 )}
               </div>

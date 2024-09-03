@@ -743,7 +743,7 @@ const TbScreening = (props) => {
         tbEvaulationOutcome: "TB Not Diagnosed",
       });
     }
-    // ++++++++++++++++++++++++++++++++++++++++++
+
     if(
         props.tbObj?.specimentCollectedStatus.trim() === "Yes" &&
         props.tbObj?.specimentSent.trim() === 'Yes' &&
@@ -894,7 +894,6 @@ const TbScreening = (props) => {
       })
       .then((response) => {
         setTbScreeningType(response.data);
-        // console.log(response.data)
       })
       .catch((error) => {});
   };
@@ -1150,17 +1149,41 @@ const TbScreening = (props) => {
 
 
   // RESET:TB Diagnosis and Treatment Enrolment on outcome changes
+  // useEffect(() => {
+  //    props.setTbObj({
+  //      ...props.tbObj,
+  //      specimentCollectedStatus: '',
+  //      specimentSent:'',
+  //      tbTestResult:'',
+  //      dateSpecimenSent:'',
+  //      specimenType:'',
+  //      diagnosticTestDone:'',
+  //      dateOfDiagnosticTest:''
+  //    })
+  // },[props.tbObj.outcome])
+
+  // RESET:TB Diagnosis and Treatment Enrolment on outcome changes
   useEffect(() => {
-     props.setTbObj({
-       ...props.tbObj,
-       specimentCollectedStatus: '',
-       specimentSent:'',
-       tbTestResult:'',
-       dateSpecimenSent:'',
-       specimenType:'',
-       diagnosticTestDone:'',
-       dateOfDiagnosticTest:''
-     })
+    if(props.act === "create"){
+      props.setTbObj({
+        ...props.tbObj,
+        specimentCollectedStatus: '',
+        specimentSent:'',
+        tbTestResult:'',
+        dateSpecimenSent:'',
+        specimenType:'',
+        diagnosticTestDone:'',
+        dateOfDiagnosticTest:'',
+        // diagnosticTestType:"",
+        // clinicallyEvaulated:"",
+        // chestXrayDone:'',
+        // chestXrayResultTest:'',
+        // tbType:'',
+        // tbTreatmentStarted:'',
+        // tbTreatmentStartDate:''
+      })
+    }
+
   },[props.tbObj.outcome])
 
 
@@ -1187,9 +1210,6 @@ const TbScreening = (props) => {
       props.setTbObj({ ...props.tbObj, [e.target.name]: false });
     }
   };
-
-  // console.log("TB OBJECT IN TB", props.tbObj)
-  // console.log("TB PATIENT AGE", patientAge)
 
   return (
     <>

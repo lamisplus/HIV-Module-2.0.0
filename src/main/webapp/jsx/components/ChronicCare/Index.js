@@ -725,6 +725,7 @@ const ChronicCare = (props) => {
                     patientObj={patientObj}
                     setTpt={setTpt}
                     tpt={tpt}
+                    act="create"
                   />
                 )}
               </div>
