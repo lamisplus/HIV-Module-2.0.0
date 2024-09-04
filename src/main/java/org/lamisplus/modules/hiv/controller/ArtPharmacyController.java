@@ -30,11 +30,6 @@ public class ArtPharmacyController {
 
     private final DsdDevolvementService  dsdDevolvementService;
 
-
-
-
-
-
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<RegisterArtPharmacyDTO> registerArtPharmacy(@RequestBody RegisterArtPharmacyDTO registerArtPharmacyDto) throws IOException {
         return ResponseEntity.ok (artPharmacyService.registerArtPharmacy (registerArtPharmacyDto));

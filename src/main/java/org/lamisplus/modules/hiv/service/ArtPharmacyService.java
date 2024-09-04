@@ -18,6 +18,7 @@ import org.lamisplus.modules.hiv.domain.entity.ArtPharmacy;
 import org.lamisplus.modules.hiv.domain.entity.Regimen;
 import org.lamisplus.modules.hiv.repositories.ArtPharmacyRepository;
 import org.lamisplus.modules.hiv.repositories.RegimenRepository;
+import org.lamisplus.modules.hiv.utility.Constants;
 import org.lamisplus.modules.patient.domain.dto.EncounterResponseDto;
 import org.lamisplus.modules.patient.domain.entity.Person;
 import org.lamisplus.modules.patient.domain.entity.Visit;
@@ -211,6 +212,10 @@ public class ArtPharmacyService {
 		processAndSetIpt(dto.getIptType(), isoniazid, dto.getVisitDate(), artPharmacy);
 		artPharmacy.setRegimens(regimenList);
 		artPharmacy.setFacilityId(organizationUtil.getCurrentUserOrganization());
+		artPharmacy.setLatitude(dto.getLatitude());
+		artPharmacy.setLongitude(dto.getLongitude());
+		String sourceSupport = dto.getSource() == null || dto.getSource().isEmpty() ? Constants.WEB_SOURCE : Constants.MOBILE_SOURCE;
+		artPharmacy.setSource(sourceSupport);
 		return artPharmacy;
 	}
 	private void processAndSetIpt(
