@@ -7,5 +7,6 @@ public class Constants {
     public final static String DEAD_CONFIRMED_DISPLAY = "Dead (Confirmed)";
 
     public final static String CODE_SET_GROUP = "HIV_STATUS";
-
+    public final static String WEB_SOURCE = "Web";
+    public static final String MOBILE_SOURCE = "Mobile";
 }
