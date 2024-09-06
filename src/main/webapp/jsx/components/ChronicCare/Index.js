@@ -583,7 +583,6 @@ const ChronicCare = (props) => {
   const handleCancel = () => {
     //history.push({ pathname: '/' });
   };
-
   return (
     <>
       <ToastContainer autoClose={3000} hideProgressBar />
