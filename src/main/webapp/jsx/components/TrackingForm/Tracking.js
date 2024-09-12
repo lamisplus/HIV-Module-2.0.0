@@ -840,6 +840,7 @@ const Tracking = (props) => {
                         borderRadius: "0.25rem",
                       }}
                       max={moment(new Date()).format("YYYY-MM-DD")}
+                      onKeyPress={(e) => e.preventDefault()}
                     ></Input>
                     {errors.dateOfObservation !== "" ? (
                       <span className={classes.error}>

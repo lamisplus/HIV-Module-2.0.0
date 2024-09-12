@@ -569,7 +569,7 @@ const ArtCommencement = (props) => {
                         ART Start Date <span style={{ color: "red" }}> *</span>{" "}
                       </Label>
                       <Input
-                        type="date"
+                         type="date" onKeyPress={(e) => e.preventDefault()}
                         name="visitDate"
                         id="visitDate"
                         onChange={handleInputChange}
@@ -600,7 +600,7 @@ const ArtCommencement = (props) => {
                         ART Start Date <span style={{ color: "red" }}> *</span>{" "}
                       </Label>
                       <Input
-                        type="date"
+                         type="date" onKeyPress={(e) => e.preventDefault()}
                         name="visitDate"
                         id="visitDate"
                         onChange={handleInputChange}
@@ -849,7 +849,7 @@ const ArtCommencement = (props) => {
                     <FormGroup>
                       <Label>Date of Viral Load at Start of ART</Label>
                       <Input
-                        type="date"
+                         type="date" onKeyPress={(e) => e.preventDefault()}
                         name="dateOfViralLoadAtStartOfArt"
                         id="dateOfViralLoadAtStartOfArt"
                         max={moment(new Date()).format("YYYY-MM-DD")}
@@ -977,7 +977,7 @@ const ArtCommencement = (props) => {
                       <FormGroup>
                         <Label>LMP</Label>
                         <Input
-                          type="date"
+                           type="date" onKeyPress={(e) => e.preventDefault()}
                           name="dateOfLpm"
                           id="dateOfLpm"
                           onChange={handleInputChange}
