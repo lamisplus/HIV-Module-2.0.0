@@ -16,6 +16,7 @@ import org.lamisplus.modules.hiv.domain.entity.ArtPharmacy;
 import org.lamisplus.modules.hiv.domain.entity.Observation;
 import org.lamisplus.modules.hiv.repositories.ArtPharmacyRepository;
 import org.lamisplus.modules.hiv.repositories.ObservationRepository;
+import org.lamisplus.modules.hiv.utility.Constants;
 import org.lamisplus.modules.patient.domain.entity.Person;
 import org.lamisplus.modules.patient.domain.entity.Visit;
 import org.lamisplus.modules.patient.repository.PersonRepository;
@@ -64,6 +65,10 @@ public class ObservationService {
 
             if (visit != null) {
                 observationDto.setVisitId(visit.getId());
+                observationDto.setLatitude(observationDto.getLatitude());
+                observationDto.setLongitude(observationDto.getLongitude());
+                String sourceSupport = observationDto.getSource() == null || observationDto.getSource().isEmpty() ? Constants.WEB_SOURCE : Constants.MOBILE_SOURCE;
+                observationDto.setSource(sourceSupport);
             }
 
 //            log.info("Appending additional info and saving observation of type {}", observationDto.getType());
@@ -201,12 +206,10 @@ public class ObservationService {
 
 
     private void processAndUpdateIptFromPharmacy(ObservationDto observationDto, Person person) {
-//        log.info ("Processing and updating IPT from pharmacy....");
         if (observationDto.getType().equals("Chronic Care")) {
             JsonNode tptMonitoring = observationDto.getData().get("tptMonitoring");
             JsonNode iptCompletionDate = tptMonitoring.get("date");
             JsonNode outComeOfIpt = tptMonitoring.get("outComeOfIpt");
-//            log.info ("checking for IPT out come");
             if ((outComeOfIpt != null && !outComeOfIpt.isEmpty()) || (iptCompletionDate != null && !iptCompletionDate.asText().isEmpty())) {
 //                log.info ("found for IPT out come");
                 StringBuilder dateIptCompleted = new StringBuilder();

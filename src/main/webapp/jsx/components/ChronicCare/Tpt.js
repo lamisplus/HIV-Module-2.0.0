@@ -886,7 +886,7 @@ const TPT = (props) => {
                           name="dateTptEnded"
                           id="dateTptEnded"
                           onChange={handleTpt}
-                          value={props.tpt.dateTptEnded}
+                          value={moment(props.tpt.dateTptEnded).format("YYYY-MM-DD")}
                           min={props.tpt.dateTptStarted}
                           max={moment(new Date()).format("YYYY-MM-DD")}
                           disabled={props.action === "view" ? true : false}

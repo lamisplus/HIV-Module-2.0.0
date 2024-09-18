@@ -19,6 +19,7 @@ import org.lamisplus.modules.hiv.domain.entity.CurrentViralLoad;
 import org.lamisplus.modules.hiv.domain.entity.DsdDevolvement;
 import org.lamisplus.modules.hiv.repositories.CurrentViralLoadRepository;
 import org.lamisplus.modules.hiv.repositories.DsdDevolvementRepository;
+import org.lamisplus.modules.hiv.utility.Constants;
 import org.lamisplus.modules.patient.domain.entity.Person;
 import org.lamisplus.modules.patient.repository.PersonRepository;
 
@@ -57,6 +58,10 @@ public class DsdDevolvementService {
             throw new IllegalArgumentException("Patient has been devolved on the same day or on the same dsd type");
         }
         dsdDevolvement.setUuid(UUID.randomUUID().toString());
+        dsdDevolvement.setLatitude(dto.getLatitude());
+        dsdDevolvement.setLongitude(dto.getLongitude());
+        String sourceSupport = dto.getSource() == null || dto.getSource().isEmpty() ? Constants.WEB_SOURCE : Constants.MOBILE_SOURCE;
+        dsdDevolvement.setSource(sourceSupport);
         dsdDevolvement.setArchived(0);
         return convertEntityToDsdDevolvementDto(dsdDevolvementRepository.save(dsdDevolvement));
     }
