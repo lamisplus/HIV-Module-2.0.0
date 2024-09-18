@@ -132,65 +132,30 @@
     </changeSet>
 
     <changeSet  id="20240911-1031"  author="taiwo-data.fi">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
-                SELECT COUNT(*) FROM hiv_regimen WHERE description = 'TDF(300mg)/3TC(300mg)/DTG(50mg)' AND regimen_type_id = 2;
-            </sqlCheck>
-        </preConditions>
         <sql>
-            insert into hiv_regimen_resolver (regimensys, regimen) values ('TDF(300mg)/3TC(300mg)/DTG(50mg)', 'TDF-3TC-DTG');
-            insert into ndr_code_set (code_Set_nm, code, code_description, alt_description, sys_description) values ('ARV_REGIMEN', '4a', 'TDF-3TC-DTG','', '');
+            INSERT INTO hiv_regimen_resolver (regimensys, regimen) SELECT 'ABC(600mg)/3TC(300mg)+DTG(50mg)', 'ABC-3TC-DTG' WHERE NOT EXISTS (SELECT 1 FROM hiv_regimen_resolver WHERE regimensys = 'TDF(300mg)/3TC(300mg)/DTG(50mg)' AND regimen = 'ABC-3TC-DTG');
         </sql>
+        <sql>
+            INSERT INTO hiv_regimen_resolver (regimensys, regimen) SELECT 'ABC(60mg)/3TC(30mg)+DTG(10mg)', 'ABC-3TC-DTG' WHERE NOT EXISTS (SELECT 1 FROM hiv_regimen_resolver WHERE regimensys = 'ABC(60mg)/3TC(30mg)+DTG(10mg)' AND regimen = 'ABC-3TC-DTG');
+        </sql>
+        <sql>
+            INSERT INTO hiv_regimen_resolver (regimensys, regimen) SELECT 'ABC(60mg)/3TC(30mg)+DTG(50mg)', 'ABC-3TC-DTG' WHERE NOT EXISTS (SELECT 1 FROM hiv_regimen_resolver WHERE regimensys = 'ABC(60mg)/3TC(30mg)+DTG(50mg)' AND regimen = 'ABC-3TC-DTG');
+        </sql>
+        <sql>
+            INSERT INTO hiv_regimen_resolver (regimensys, regimen) SELECT 'ABC(120mg)/3TC(60mg)+DTG(10mg)', 'ABC-3TC-DTG' WHERE NOT EXISTS (SELECT 1 FROM hiv_regimen_resolver WHERE regimensys = 'ABC(120mg)/3TC(60mg)+DTG(10mg)' AND regimen = 'ABC-3TC-DTG');
+        </sql>
+        <sql>
+            INSERT INTO hiv_regimen_resolver (regimensys, regimen) SELECT 'TDF(300mg)/3TC(300mg)/DTG(50mg)', 'TDF-3TC-DTG' WHERE NOT EXISTS (SELECT 1 FROM hiv_regimen_resolver WHERE regimensys = 'TDF(300mg)/3TC(300mg)/DTG(50mg)' AND regimen = 'TDF-3TC-DTG');
+        </sql>
+
     </changeSet>
 
-    <changeSet  id="20240911-1032"  author="taiwo-data.fi">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
-                SELECT COUNT(*) FROM hiv_regimen_resolver WHERE regimensys ='ABC(600mg)/3TC(300mg)+DTG(50mg)' AND regimen = 'ABC-3TC-DTG';
-            </sqlCheck>
-        </preConditions>
-        <sql>
-            insert into hiv_regimen_resolver (regimensys, regimen) values ('ABC(600mg)/3TC(300mg)+DTG(50mg)', 'ABC-3TC-DTG');
-            insert into hiv_regimen_resolver (regimensys, regimen) values ('ABC(600mg)/3TC(300mg)+DTG(50mg)', 'ABC-3TC-DTG50');
-            insert into ndr_code_set (code_Set_nm, code, code_description, alt_description, sys_description) values ('ARV_REGIMEN', '1c', 'ABC-3TC-DTG','', '');
-            insert into ndr_code_set (code_Set_nm, code, code_description, alt_description, sys_description) values ('ARV_REGIMEN', '4b', 'ABC-3TC-DTG50','', '');
-        </sql>
+    <changeSet  id="20240917-1031"  author="taiwo-data.fi">
+        <sql>DELETE FROM hiv_regimen_resolver WHERE regimensys= 'ABC(600mg)/3TC(300mg)+DTG(50mg)' AND  regimen = 'ABC/3TC+DTG50';</sql>
+        <sql>DELETE FROM hiv_regimen_resolver WHERE regimensys= 'ABC(60mg)/3TC(30mg)+DTG(10mg)' AND  regimen = '60/30+DTG10';</sql>
+        <sql>DELETE FROM hiv_regimen_resolver WHERE regimensys= 'ABC(60mg)/3TC(30mg)+DTG(50mg)' AND  regimen = '60/30+DTG50';</sql>
+        <sql>DELETE FROM hiv_regimen_resolver WHERE regimensys= 'TDF(300mg)/3TC(300mg)/DTG(50mg)' AND  regimen = 'TLD';</sql>
     </changeSet>
 
-    <changeSet  id="20240911-1033"  author="taiwo-data.fi">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
-                SELECT COUNT(*) FROM hiv_regimen_resolver WHERE regimensys = 'ABC(60mg)/3TC(30mg)+DTG(10mg)' AND regimen = 'ABC-3TC-DTG10';
-            </sqlCheck>
-        </preConditions>
-        <sql>
-            insert into hiv_regimen_resolver (regimensys, regimen) values ('ABC(60mg)/3TC(30mg)+DTG(10mg)', 'ABC-3TC-DTG10');
-            insert into ndr_code_set (code_Set_nm, code, code_description, alt_description, sys_description)  values ('ARV_REGIMEN', '4b', 'ABC-3TC-DTG10','', '');
-
-        </sql>
-    </changeSet>
-
-    <changeSet  id="20240911-1034"  author="taiwo-data.fi">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
-                SELECT COUNT(*) FROM hiv_regimen_resolver WHERE regimensys = 'ABC(60mg)/3TC(30mg)+DTG(50mg)' AND regimen = 'ABC-3TC-DTG50';
-            </sqlCheck>
-        </preConditions>
-        <sql>
-            insert into hiv_regimen_resolver (regimensys, regimen) values ('ABC(60mg)/3TC(30mg)+DTG(50mg)', 'ABC-3TC-DTG50');
-        </sql>
-    </changeSet>
-
-    <changeSet  id="20240911-1035"  author="taiwo-data.fi">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
-                SELECT COUNT(*) FROM ndr_code_set WHERE code = '4a' AND code_description = 'TDF-3TC-DTG';
-            </sqlCheck>
-        </preConditions>
-        <sql>
-            INSERT INTO hiv_regimen (id, description, composition, regimen_type_id, active,priority) VALUES ( (SELECT MAX(id) + 1 FROM hiv_regimen), 'TDF(300mg)/3TC(300mg)/DTG(50mg)','Tenofovir+Lamivudine+Dolutegravir', 2, true, 1);
-
-        </sql>
-    </changeSet>
 
 </databaseChangeLog>
