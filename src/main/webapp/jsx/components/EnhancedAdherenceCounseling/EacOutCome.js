@@ -240,28 +240,6 @@ const EAC = (props) => {
         }
     },[postViralLoadObj])
 
-    ///GET CURRENT LAB RESULT
-    // const RegimenLine =()=>{
-    //     setLoading(true)
-    //     axios
-    //         .get(`${baseUrl}hiv/regimen/types`,
-    //             { headers: {"Authorization" : `Bearer ${token}`} }
-    //         )
-    //         .then((response) => {
-    //             console.log("RESPONSE **** ", response.data)
-    //             setRegimenLine(response.data)
-    //             setLoading(false)
-    //             const filterRegimen=response.data.filter(item => [1, 2, 3, 4, 14].includes(item.id))
-    //             console.log("Filtered regemenLine ****", filterRegimen)
-    //             // response.data.filter((x)=> (x.id===1 || x.id===2 || x.id===3 || x.id===4 || x.id===14))
-    //             setRegimenLine(filterRegimen)
-    //             console.log("Filtered Regimen line is ", filterRegimen)
-    //         })
-    //         .catch((error) => {
-    //             console.log("Error ", error)
-    //         });
-    // }
-
     const RegimenLine = () => {
         setLoading(true);
         axios
@@ -511,8 +489,6 @@ const EAC = (props) => {
                                     variant="contained"
                                     color="primary"
                                     className=" float-end ms-2 mr-2 mt-2 "
-                                    //startIcon={<FaUserPlus size="10"/>}
-                                    //startIcon={<TiArrowBack  />}
                                     onClick={() => BackToSession(props.activeContent.obj, 'view')}
                                     style={{backgroundColor: "#014D88", color: '#fff', height: '35px'}}
 

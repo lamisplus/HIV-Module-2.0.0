@@ -159,13 +159,8 @@ const LabHistory = (props) => {
         
             <MaterialTable
             icons={tableIcons}
-              title="Laboratory Order"
+              title="EAC LIST"
               columns={[
-              // { title: " ID", field: "Id" },
-                // {
-                //   title: "Test Group",
-                //   field: "testGroup",
-                // },
                 { title: "Test Name", field: "testName", filtering: false },
                 { title: "Lab Number", field: "labNumber", filtering: false },
                 { title: "Viral Load", field: "lastViralLoad", filtering: false },
