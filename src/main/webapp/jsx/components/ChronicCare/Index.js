@@ -414,11 +414,11 @@ const ChronicCare = (props) => {
     if(tbObj.specimentCollectedStatus === "Yes"){
       temp.specimentSent = tbObj.specimentSent ? '' : "This field is required.";
     }
-    if(tbObj.specimentSent === "Yes"){
-      temp.dateSpecimenSent = tbObj.dateSpecimenSent ? '' : "This field is required.";
-      temp.specimenType = tbObj.specimenType ? '' : "This field is required.";
-      temp.diagnosticTestDone = tbObj.diagnosticTestDone ? '' : "This field is required.";
-    }
+    // if(tbObj.specimentSent === "Yes"){
+      // temp.dateSpecimenSent = tbObj.dateSpecimenSent ? '' : "This field is required.";
+      // temp.specimenType = tbObj.specimenType ? '' : "This field is required.";
+      // temp.diagnosticTestDone = tbObj.diagnosticTestDone ? '' : "This field is required.";
+    // }
     if(tbObj.diagnosticTestType !== ''){
       temp.tbTestResult = tbObj.tbTestResult ? '' : "This field is required.";
     }

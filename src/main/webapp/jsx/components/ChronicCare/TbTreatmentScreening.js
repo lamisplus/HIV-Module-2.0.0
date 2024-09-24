@@ -234,11 +234,6 @@ const TbTreatmentScreening = (props) => {
                       ))}
                     </Input>
                   </InputGroup>
-                  {errors.specimenType !== "" ? (
-                      <span className={classes.error}>{errors.specimenType}</span>
-                  ) : (
-                      ""
-                  )}
                 </FormGroup>
                 </div>
                 </>)}
@@ -260,11 +255,6 @@ const TbTreatmentScreening = (props) => {
                       onKeyPress={(e) => e.preventDefault()}
                     />
                   </InputGroup>
-                  {errors.dateSpecimenSent !== "" ? (
-                      <span className={classes.error}>{errors.dateSpecimenSent}</span>
-                  ) : (
-                      ""
-                  )}
                 </FormGroup>
                 {/* )} */}
               </div>
@@ -287,11 +277,6 @@ const TbTreatmentScreening = (props) => {
                       <option value="No">No</option>
                     </Input>
                   </InputGroup>
-                  {errors.diagnosticTestDone !== "" ? (
-                      <span className={classes.error}>{errors.diagnosticTestDone}</span>
-                  ) : (
-                      ""
-                  )}
                 </FormGroup>
               </div>
               </>)}
@@ -366,11 +351,6 @@ const TbTreatmentScreening = (props) => {
                         >
                         </Input>
                       </InputGroup>
-                      {/*{errors.DateDiagnosticTestResultReceived !== "" ? (*/}
-                      {/*    <span className={classes.error}>{errors.DateDiagnosticTestResultReceived}</span>*/}
-                      {/*) : (*/}
-                      {/*    ""*/}
-                      {/*)}*/}
                     </FormGroup>
                   </div>
                 </>)}
@@ -461,39 +441,6 @@ const TbTreatmentScreening = (props) => {
                 </FormGroup>
               </div>
               </>)}
-
-              {/*{((props.tbObj.diagnosticTestType==='GeneXpert' ||*/}
-              {/*props.tbObj.diagnosticTestType==='Truenat' || props.tbObj.diagnosticTestType==='Cobas' || props.tbObj.diagnosticTestType==='TB-LAMP' || props.tbObj.diagnosticTestType==='Smear Microscopy' || (props.tbObj.diagnosticTestType || "").includes("LF-LAM")) &&*/}
-              {/*(props.tbObj.tbTestResult==='MTB not detected' ||*/}
-              {/*props.tbObj.tbTestResult==='Negative')*/}
-
-              {/*)   && (<>*/}
-              {/*<div className="form-group mb-3 col-md-6">*/}
-              {/*  <FormGroup>*/}
-              {/*    <Label>Clinically Evaluated </Label>*/}
-              {/*    <InputGroup>*/}
-              {/*      <Input*/}
-              {/*        type="select"*/}
-              {/*        name="clinicallyEvaulated"*/}
-              {/*        id="clinicallyEvaulated"*/}
-              {/*        onChange={props.handleInputChange}*/}
-              {/*        value={props.tbObj.clinicallyEvaulated}*/}
-              {/*        disabled={props.action === "view" ? true : false}*/}
-              {/*      >*/}
-              {/*        <option value="">Select</option>*/}
-              {/*        <option value="Yes">Yes</option>*/}
-              {/*        <option value="No">No</option>*/}
-              {/*      </Input>*/}
-              {/*    </InputGroup>*/}
-              {/*    {errors.clinicallyEvaulated !== "" ? (*/}
-              {/*        <span className={classes.error}>{errors.clinicallyEvaulated}</span>*/}
-              {/*    ) : (*/}
-              {/*        ""*/}
-              {/*    )}*/}
-              {/*  </FormGroup>*/}
-              {/*</div>*/}
-              {/* </>)}*/}
-
               {(((props.tbObj.diagnosticTestType==='GeneXpert' ||
                       props.tbObj.diagnosticTestType==='Truenat' || props.tbObj.diagnosticTestType==='Cobas' || props.tbObj.diagnosticTestType==='TB-LAMP' || props.tbObj.diagnosticTestType==='Smear Microscopy' || ["LF-LAM"].includes(props.tbObj.diagnosticTestType)) &&
                   (props.tbObj.tbTestResult==='MTB not detected' ||
