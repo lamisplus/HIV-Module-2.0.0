@@ -91,18 +91,20 @@ const useStyles = makeStyles((theme) => ({
 
 const TPT = (props) => {
   const classes = useStyles();
-  //const [errors, setErrors] = useState({});
   const [adherence, setAdherence] = useState([]);
   const [tbTreatmentType, setTbTreatmentType] = useState([]);
     const [tbTreatmentOutCome, setTbTreatmentOutCome] = useState([]);
-  // const [contraindicationsState, setContraindicationsState] = useState("No");
   const [contraindicationsState, setContraindicationsState] = useState("");
 
   const [hasMounted, setHasMounted] = useState(false);
+  const [careAndSupportEncounterDate, setCareAndSupportEncounterDate] = useState("");
+  const [tptCompletionDate, setTptCompletionDate] = useState("")
 
   useEffect(() => {
     setHasMounted(true);
   }, []);
+
+
 
   const TB_TREATMENT_TYPE = () => {
       axios
@@ -124,13 +126,58 @@ const TPT = (props) => {
         })
         .catch((error) => {});
     };
+
+
+  const PATIENT_ENCOUNTER = () => {
+    // if(hasMounted){
+      axios.get( `${baseUrl}hiv/patients/${props.patientObj.id}/history/activities`, {
+        headers: { Authorization: `Bearer ${token}`},
+      })
+          .then((response) => {
+            let patientEncounters = response.data;
+            // Filter encounters to find ones with the name 'Chronic Care'
+            const chronicCareEncounters = patientEncounters.filter(
+                (encounter) => encounter.name === 'Chronic Care'
+            );
+            if (chronicCareEncounters.length > 0) {
+              const latestEncounter = chronicCareEncounters.reduce((prev, current) =>
+                  new Date(prev.date) > new Date(current.date) ? prev : current
+              );
+              setCareAndSupportEncounterDate(latestEncounter.date);
+            } else {
+              setCareAndSupportEncounterDate('');
+            }
+          })
+          .catch((error) => {
+            console.error('Error fetching patient encounters:', error);
+          });
+      // }
+  };
+
+  // Effect that calls when hasCareAndSupportEncounter has a value
+  useEffect(() => {
+    if (careAndSupportEncounterDate) {
+      axios.get( `${baseUrl}observation/tpt-completion-date?personUuid=${props.patientObj.personUuid}&dateOfObservation=${careAndSupportEncounterDate}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+          .then((response) => {
+            setTptCompletionDate(response.data)
+          })
+          .catch((error) => {
+            console.error('Error fetching support encounter data:', error);
+          });
+    }
+  }, [careAndSupportEncounterDate]);
+
+
   useEffect(() => {
     TB_TREATMENT_TYPE();
     TB_TREATMENT_OUTCOME();
     CLINIC_VISIT_LEVEL_OF_ADHERENCE();
+    PATIENT_ENCOUNTER();
   }, []);
-  // TPT Logic
 
+  // TPT Logic
   useEffect(() => {
     if (hasMounted) {
       if (props.tpt.everCompletedTpt === "Yes") {
@@ -138,6 +185,7 @@ const TPT = (props) => {
           ...props.tpt,
           eligibilityTpt: "No",
           tptPreventionOutcome: "TPT Completed",
+          dateOfTptCompleted: tptCompletionDate ? tptCompletionDate : "",
           contractionForTpt: "",
         });
       }
@@ -233,8 +281,6 @@ const TPT = (props) => {
   };
   //let temp = { ...errors }
 
-  // console.log("TPT OBJECT IN TPT COMPONENT", props.tpt)
-  // console.log("Patient OBJECT IN TPT COMPONENT", props.patientObj)
 
   const handleTpt  = (e) => {
     const {name, value} = e.target;
@@ -425,7 +471,6 @@ const TPT = (props) => {
                       disabled={props.action === "view" ? true : false}
                       onKeyPress={(e) => e.preventDefault()}
                     >
-                      
                     </Input>
                   </InputGroup>
                 </FormGroup>
@@ -642,157 +687,6 @@ const TPT = (props) => {
                   </FormGroup>
                 </div>}
               </>)}
-              {/* <div className="form-group mb-3 col-md-6">
-                <FormGroup>
-                  <Label>
-                    TB Symptoms (cough, fever, night sweats, weight
-                    loss,contacts)
-                  </Label>
-                  <InputGroup>
-                    <Input
-                      type="select"
-                      name="tbSymptoms"
-                      id="tbSymptoms"
-                      onChange={handleTpt}
-                      value={props.tpt.tbSymptoms}
-                      disabled={props.action === "view" ? true : false}
-                    >
-                      <option value="">Select</option>
-                      <option value="Yes">Yes</option>
-                      <option value="No">No</option>
-                      <option value="Uncertain">Uncertain</option>
-                    </Input>
-                  </InputGroup>
-                </FormGroup>
-              </div>
-              <div className="form-group mb-3 col-md-6">
-                <FormGroup>
-                  <Label>
-                    Hepatitis Symptoms (Abdominal pain, nausea, vomiting,
-                    abnormal LFTs, Children: persistent irritability, yellowish
-                    urine and eyes)
-                  </Label>
-                  <InputGroup>
-                    <Input
-                      type="select"
-                      name="hepatitisSymptoms"
-                      id="hepatitisSymptoms"
-                      onChange={handleTpt}
-                      disabled={props.action === "view" ? true : false}
-                      value={props.tpt.hepatitisSymptoms}
-                    >
-                      <option value="">Select</option>
-                      <option value="Yes">Yes</option>
-                      <option value="No">No</option>
-                      <option value="Uncertain">Uncertain</option>
-                    </Input>
-                  </InputGroup>
-                </FormGroup>
-              </div>
-              
-
-              
-              
-              <div className="form-group mb-3 col-md-6">
-                <FormGroup>
-                  <Label>Referred for further services</Label>
-                  <InputGroup>
-                    <Input
-                      type="select"
-                      name="referredForServices"
-                      id="referredForServices"
-                      onChange={handleTpt}
-                      value={props.tpt.referredForServices}
-                      disabled={props.action === "view" ? true : false}
-                    >
-                      <option value="">Select</option>
-                      <option value="Yes">Yes</option>
-                      <option value="No">No</option>
-                      <option value="Uncertain">Uncertain</option>
-                    </Input>
-                  </InputGroup>
-                </FormGroup>
-              </div>
-              <div className="form-group mb-3 col-md-6">
-                <FormGroup>
-                  <Label>Outcome of IPT</Label>
-                  <InputGroup>
-                    <Input
-                      type="select"
-                      name="outComeOfIpt"
-                      id="outComeOfIpt"
-                      onChange={handleTpt}
-                      value={props.tpt.outComeOfIpt}
-                      disabled={props.action === "view" ? true : false}
-                    >
-                      <option value="">Select</option>
-                      <option value="IPT Completed">IPT Completed</option>
-                      <option value="Developed active TB">
-                        Developed active TB
-                      </option>
-                      <option value="Died">Died </option>
-                      <option value="Transferred out">Transferred out </option>
-                      <option value="Stopped IPT">Stopped IPT</option>
-                      <option value="Lost to follow up">
-                        Lost to follow up{" "}
-                      </option>
-                    </Input>
-                  </InputGroup>
-                </FormGroup>
-              </div>
-              {props.tpt.outComeOfIpt !== "" && (
-                <div className="form-group mb-3 col-md-4">
-                  <FormGroup>
-                    <Label>Outcome Date </Label>
-                    <InputGroup>
-                      <Input
-                        type="date"
-                        name="date"
-                        id="date"
-                        value={props.tpt.date}
-                        onChange={handleTpt}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                        // min={props.encounterDate}
-                        max={moment(new Date()).format("YYYY-MM-DD")}
-                        disabled={props.action === "view" ? true : false}
-                      ></Input>
-                    </InputGroup>
-                  </FormGroup>
-                  {props.errors.outcomeDate !== "" ? (
-                    <span className={classes.error}>
-                      {props.errors.outcomeDate}
-                    </span>
-                  ) : (
-                    ""
-                  )}
-                </div>
-              )}
-              {props.tpt.outComeOfIpt === "Stopped IPT" && (
-                <div className="form-group mb-3 col-md-6">
-                  <FormGroup>
-                    <Label>Reasons for stopping IPT</Label>
-                    <InputGroup>
-                      <Input
-                        type="text"
-                        name="resonForStoppingIpt"
-                        id="resonForStoppingIpt"
-                        onChange={handleTpt}
-                        value={props.tpt.resonForStoppingIpt}
-                        disabled={props.action === "view" ? true : false}
-                      >
-                        <option value="">Select</option>
-                        <option value="Developed symptoms of hepatitis">
-                          Developed symptoms of hepatitis
-                        </option>
-                      </Input>
-                    </InputGroup>
-                  </FormGroup>
-                </div>
-              )} */}
-
               <p style={{ color: "black" }}>
                  Eligibility For TPT:
                 <b>

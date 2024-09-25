@@ -265,6 +265,21 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
     @Query(value = "SELECT CASE WHEN COUNT(o) > 0 THEN true ELSE false END FROM hiv_observation o WHERE o.person_uuid = :personUuid AND o.type IN ('ART Transfer In', 'ART Transfer Out') AND (o.data ->> 'encounterDate' IS NOT NULL) AND o.data ->> 'encounterDate' = :encounterDate", nativeQuery = true)
     boolean existsByPersonUuidAndEncounterDate(@Param("personUuid") String personUuid, @Param("encounterDate") String encounterDate);
 
+    @Query(value = "SELECT CASE " +
+            "WHEN o.data -> 'tptMonitoring' ->> 'everCompletedTpt' = 'Yes' " +
+            "THEN o.data -> 'tptMonitoring' ->> 'dateOfTptCompleted' " +
+            "ELSE '' END AS tptCompletionDate " +
+            "FROM hiv_observation o " +
+            "JOIN patient_person p ON o.person_uuid = p.uuid " +
+            "WHERE p.uuid = :personUuid " +
+            "AND o.date_of_observation = :dateOfObservation " +
+            "AND o.type = 'Chronic Care'", nativeQuery = true)
+    Optional<String> findTptCompletionDateByPersonAndDate(
+            @Param("personUuid") String personUuid,
+            @Param("dateOfObservation") LocalDate dateOfObservation
+          );
+
+
 
 
 }
