@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.audit4j.core.util.Log;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
@@ -37,7 +36,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -69,8 +67,6 @@ public class ArtPharmacyService {
 		checkIfSelectRegimenIsAlreadyDispensed(dto);
 		Visit visit = handleHIVisitEncounter.processAndCreateVisit(dto.getPersonId(), dto.getVisitDate());
 		dto.setVisitId(visit.getId());
-//		if (dto.getVisitId() == null)
-//			throw new IllegalTypeException(Visit.class, "visit date", "kindly create a clinic visit for this patient");
 		
 		ArtPharmacy artPharmacy = convertRegisterDtoToEntity(dto);
 		artPharmacy.setUuid(UUID.randomUUID().toString());
@@ -85,7 +81,6 @@ public class ArtPharmacyService {
 	private void checkIfSelectRegimenIsAlreadyDispensed(RegisterArtPharmacyDTO dto) {
 		Set<RegimenRequestDto> regimens = dto.getRegimen();
 		if(!regimens.isEmpty()){
-//			log.info("I am checking if a the give regimen exist");
 			Person person = getPerson(dto.getPersonId());
 			regimens.forEach(regimen -> {
 				LocalDate visitDate = dto.getVisitDate();
@@ -93,14 +88,12 @@ public class ArtPharmacyService {
 					Long count = artPharmacyRepository.getCountForAnAlreadyDispenseRegimen(person.getUuid(),
 							regimen.getRegimenId(),
 							visitDate);
-//					log.info("already exist: " + count);
 					if(count != null)
 						throw new RecordExistException(Regimen.class, "name", regimen.getRegimenName() + " is already dispensed on this " +
 							"date "+ visitDate);
 				}
 			});
 		}
-//		log.info("Checking completed");
 	}
 	
 	
@@ -170,7 +163,6 @@ public class ArtPharmacyService {
 						.map(ArtPharmacy::getRegimens);
 		if (regimen.isPresent()) {
 			Set<Regimen> regimen1 = regimen.get();
-//			Log.info("regimen: {}", regimen1.size());
 			Optional<Regimen> currentRegimen =
 					regimen1.stream()
 							.filter(regimen3 -> regimen3.getRegimenType().getDescription().contains("ART")
@@ -262,7 +254,6 @@ public class ArtPharmacyService {
 	private RegisterArtPharmacyDTO convertEntityToRegisterDto(ArtPharmacy entity) throws IOException {
 		RegisterArtPharmacyDTO dto = new RegisterArtPharmacyDTO();
 		BeanUtils.copyProperties(entity, dto);
-		//log.info(" dto 1st:  {}", dto);
 		dto.setPersonId(entity.getPerson().getId());
 		return dto;
 	}
@@ -340,6 +331,5 @@ public class ArtPharmacyService {
 		ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(jsonResult, CurrentRegimenInfoDTO.class);
 	}
-
 
 }

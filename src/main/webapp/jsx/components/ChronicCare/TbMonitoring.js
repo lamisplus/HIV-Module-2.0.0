@@ -15,15 +15,12 @@ import { Card } from "@material-ui/core";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "react-widgets/dist/css/react-widgets.css";
-import { useHistory } from "react-router-dom";
-// import {TiArrowBack} from 'react-icons/ti'
 import { token, url as baseUrl } from "../../../api";
 import "react-phone-input-2/lib/style.css";
 import "semantic-ui-css/semantic.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import "react-widgets/dist/css/react-widgets.css";
 import "react-phone-input-2/lib/style.css";
-import { Button } from "semantic-ui-react";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -33,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
+    width: "100%",
     marginTop: theme.spacing(3),
   },
   submit: {
@@ -92,7 +89,6 @@ const useStyles = makeStyles((theme) => ({
 const TBMonitoring = (props) => {
   const classes = useStyles();
   let errors = props.errors
-  //const [errors, setErrors] = useState({});
   const [adherence, setAdherence] = useState([]);
   const [tbTreatmentType, setTbTreatmentType] = useState([]);
     const [tbTreatmentOutCome, setTbTreatmentOutCome] = useState([]);
@@ -122,13 +118,8 @@ const TBMonitoring = (props) => {
     TB_TREATMENT_OUTCOME();
     CLINIC_VISIT_LEVEL_OF_ADHERENCE();
   }, []);
-  // TPT Logic
-  useEffect(() => {
-       // console.log(props.tbObj)
 
-  }, []);
 
-  // console.log("TB IN TBMONITORING", props.tbObj)
   //Get list of CLINIC_VISIT_LEVEL_OF_ADHERENCE
   const CLINIC_VISIT_LEVEL_OF_ADHERENCE = () => {
     axios
@@ -141,8 +132,6 @@ const TBMonitoring = (props) => {
       })
       .catch((error) => {});
   };
-  //let temp = { ...errors }
-
 
 
   return (
@@ -218,7 +207,6 @@ const TBMonitoring = (props) => {
                               id="completionDate"
                               onChange={props.handleInputChange}
                               value={props.tbObj.completionDate}
-                              // min={props.encounterDate}
                               disabled={
                                 props.action === "view" ? true : false
                               }

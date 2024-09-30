@@ -19,26 +19,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class PatientFlagService {
-
     private final PatientFlagRepository patientFlagRepository;
     private final CurrentUserOrganizationService currentUserOrganizationService;
-
     private static final int UN_ARCHIVED = 0;
     private static final int ARCHIVED = 1;
 
-//    public PatientFlagDto createPatientFlag(PatientFlagDto patientFlagDto){
-//        PatientFlag patientFlag = new PatientFlag();
-//
-//
-//        BeanUtils.copyProperties(patientFlagDto, patientFlag);
-//        patientFlag.setFacilityId(currentUserOrganizationService.getCurrentUserOrganization());
-//        patientFlag.setUuid(UUIDUtils.random().toString());
-//        return convertPatientFlagToDto(patientFlagRepository.save(patientFlag));
-//    }
-
     public PatientFlagDto createOrUpdatePatientFlag(PatientFlagDto patientFlagDto) {
         PatientFlag patientFlag;
-
         if (patientFlagDto.getId() != null) {
             Optional<PatientFlag> existingPatientFlagOpt = patientFlagRepository.findById(patientFlagDto.getId());
             if (existingPatientFlagOpt.isPresent()) {
@@ -56,7 +43,6 @@ public class PatientFlagService {
             patientFlag.setFacilityId(currentUserOrganizationService.getCurrentUserOrganization());
             patientFlag.setUuid(UUIDUtils.random().toString());
         }
-
         return convertPatientFlagToDto(patientFlagRepository.save(patientFlag));
     }
 
@@ -64,11 +50,8 @@ public class PatientFlagService {
     private PatientFlagDto convertPatientFlagToDto(PatientFlag patientFlag) {
         return PatientFlagDto.builder()
                 .id(patientFlag.getId())
-//                .gracePeriod(patientFlag.getGracePeriod())
                 .surpressionValue(patientFlag.getSurpressionValue())
-//                .message(patientFlag.getMessage())
                 .uuid(patientFlag.getUuid())
-//                .api(patientFlag.getApi())
                 .build();
     }
 

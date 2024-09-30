@@ -13,7 +13,6 @@ import org.lamisplus.modules.hiv.domain.entity.HIVStatusTracker;
 import org.lamisplus.modules.hiv.domain.entity.HivEnrollment;
 import org.lamisplus.modules.hiv.domain.entity.Observation;
 import org.lamisplus.modules.hiv.repositories.HIVStatusTrackerRepository;
-import org.lamisplus.modules.hiv.repositories.HivEnrollmentRepository;
 import org.lamisplus.modules.hiv.repositories.ObservationRepository;
 import org.lamisplus.modules.hiv.utility.Constants;
 import org.springframework.beans.BeanUtils;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -70,12 +68,6 @@ public class TreatmentTransferService {
     }
 
 
-    /**
-     * check patient hiv status before form was submitted
-     * if dead, return a message that patient is dead
-     * if not  register form, save information in the observation table
-     * change the patient hiv_status_tracker to transfer out
-     */
     public ObservationDto registerTransferPatientInfo(TransferPatientDto dto) throws Exception {
         if (dto == null) {
             throw new IllegalArgumentException("TransferPatientInfo is null");
@@ -83,16 +75,12 @@ public class TreatmentTransferService {
         String status = dto.getCurrentStatus().equalsIgnoreCase("ART TRANSFER OUT") ? "ART Transfer In" : "ART Transfer Out";
         ApplicationCodeSet codeSet = applicationCodesetRepository.findByDisplayAndCodesetGroup(status, Constants.CODE_SET_GROUP)
                 .orElseThrow(() -> new EntityNotFoundException(ApplicationCodeSet.class, "display", status));
-//        log.info("patientUuid: {}", dto.getPersonUuid());
         Boolean existsRecordWithDiedStatus = hivStatusTrackerRepository.existsRecordWithDiedStatus(dto.getPersonUuid());
         if (existsRecordWithDiedStatus) {
             throw new Exception("Patient is confirmed dead");
         }
-        // Create observation
         ObservationDto createdObservation = createObservation(dto, codeSet);
-        //update hiv_enrollment status
         updateHivEnrollStatus(dto, codeSet);
-        //create hiv_status_tracker record
         createNewHivStatus(dto, status);
         return createdObservation;
     }
@@ -156,7 +144,6 @@ public class TreatmentTransferService {
     }
 
     private ObservationDto createObservation(TransferPatientDto transferPatientDto, ApplicationCodeSet codeSet1) {
-//        log.info("Inside createObservation");
         ObservationDto observationDto = new ObservationDto();
         observationDto.setPersonId(transferPatientDto.getPatientId());
         observationDto.setVisitId(null);

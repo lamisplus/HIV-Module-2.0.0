@@ -30,13 +30,6 @@ public class PatientFlag {
 
     @Column(name = "surpression_value")
     private Integer surpressionValue;
-
-//    @Column(name = "message")
-//    private String message;
-
-//    @Column(name = "api")
-//    private String api;
-
     @Column(name = "facility_id")
     @JsonIgnore
     @ToString.Exclude
@@ -73,7 +66,5 @@ public class PatientFlag {
     @ToString.Exclude
     @LastModifiedDate
     private LocalDateTime dateModified = LocalDateTime.now();
-
-
 
 }

@@ -3,7 +3,6 @@ package org.lamisplus.modules.hiv.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.audit4j.core.util.Log;
 import org.jetbrains.annotations.NotNull;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
 import org.lamisplus.modules.base.domain.dto.PageDTO;
@@ -87,19 +86,10 @@ public class HivPatientService {
                 .collect (Collectors.toList ());
     }
 
-
-//    public List<HivPatientDto> getHivPatients() {
-//        return personService.getAllPerson ()
-//                .stream ()
-//                .sorted (Comparator.comparing (PersonResponseDto::getId).reversed ())
-//                .collect (Collectors.toList ());
-//    }
-    
     public PageDTO getHivPatientsPage(String searchValue, Pageable pageable) {
         Long facilityId = currentUserOrganizationService.getCurrentUserOrganization();
         if (searchValue != null && !searchValue.isEmpty()) {
             Page<Person> persons = personRepository.findAllPersonBySearchParameters(searchValue, 0, facilityId, pageable);
-//            Log.info("patient size {}", persons.getContent().size());
             List<HivPatientDto> content = getNonIitPersons(persons);
             return getPageDto(persons, content);
         }
@@ -107,22 +97,6 @@ public class HivPatientService {
         List<HivPatientDto> content = getNonIitPersons(persons);
         return getPageDto(persons, content);
     }
-    
-//    public PageDTO getHivPatients(String searchValue, Pageable pageable) {
-//        Long facilityId = currentUserOrganizationService.getCurrentUserOrganization();
-//        Page<PatientProjection> persons = null;
-//
-//       if(searchValue != null && !StringUtils.isBlank(searchValue) && !searchValue.equalsIgnoreCase("null")){
-//            searchValue = searchValue.replaceAll("\\s", "");
-//            searchValue = searchValue.replaceAll(",", "");
-//
-//            String queryParam = "%" + searchValue + "%";
-//            persons = enrollmentRepository.getPatientsByFacilityBySearchParam(facilityId, queryParam, pageable);
-//           return getPageDTO(persons);
-//        }
-//       persons = enrollmentRepository.getPatientsByFacilityId(facilityId, pageable);
-//       return getPageDTO(persons);
-//    }
 
     public PageDTO getHivPatients(String searchValue, Pageable pageable) {
         Long facilityId = currentUserOrganizationService.getCurrentUserOrganization();
@@ -154,7 +128,6 @@ public class HivPatientService {
     
     public  List<PatientDTO> getHivEnrolledNonBiometricPatients(Long facilityId) {
         List<PatientDTO> nonBiometricPatients  = new ArrayList<PatientDTO>();
-//        log.info("start fetching non biometric patients records ...");
         try {
             HashSet<String> negativeStatusTable = getNegativeStatusTable();
              nonBiometricPatients = enrollmentRepository.getEnrolledPatientsByFacilityMobile(facilityId)
@@ -162,7 +135,6 @@ public class HivPatientService {
                     .map(this::getPatientDTOBuild)
                     .filter(p -> !(negativeStatusTable.contains(p.getCurrentStatus())))
                     .collect(Collectors.toList());
-//            log.info("finished fetching non-biometric Patients  total size {}", nonBiometricPatients.size());
         }catch(Exception e){
             log.error("An error occurred when fetching non-biometric patients error:=> {}", e.getMessage());
         }

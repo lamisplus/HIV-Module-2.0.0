@@ -1,7 +1,6 @@
 package org.lamisplus.modules.hiv.service;
 
 import lombok.RequiredArgsConstructor;
-import org.audit4j.core.util.Log;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
 import org.lamisplus.modules.hiv.domain.dto.HIVStatusTrackerDto;
 import org.lamisplus.modules.hiv.domain.dto.PatientTrackingDto;
@@ -39,7 +38,6 @@ public class PatientTrackerService {
 			patientTracker.setStatusTracker(status);
 		}
 		PatientTracker en = patientTrackerRepository.save(patientTracker);
-//		Log.info("Emmanuel data patient tracker: {}", en);
 		return mapEntityDto(en);
 	}
 	
