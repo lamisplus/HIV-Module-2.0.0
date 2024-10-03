@@ -71,6 +71,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Laboratory = (props) => {
+
   let visitId = "";
   //let =""
   const patientObj = props.patientObj;
@@ -96,6 +97,8 @@ const Laboratory = (props) => {
   const [labTestOptions, setLabTestOptions] = useState([]);
   const [labOrderIndication, setLabOrderIndication] = useState([]);
   let testsOptions = [];
+  const [chronicCareTestResult, setChronicCareTestResult] = useState("TrueNAT")
+  const [userHasChanged, setUserHasChanged] = useState(false);
   let temp = { ...errors };
   const [tests, setTests] = useState({
     comments: "",
@@ -194,6 +197,24 @@ const Laboratory = (props) => {
       .catch((error) => {});
   };
 
+  useEffect(() => {
+    if (chronicCareTestResult && !userHasChanged) {
+      // Filter the options to find the one that matches your condition (e.g., "LF-LAMP")
+      const matchedOption = labTestOptions.find(
+          (option) => option.label === chronicCareTestResult
+      );
+      // Auto-populate the select field if the matched option exists
+      if (matchedOption) {
+        setSelectedOption(matchedOption);
+        setTests((prevObject) => ({
+          ...prevObject,
+          labTestGroupId: matchedOption.testGroupId,
+          labTestId: matchedOption.value,
+        }));
+      }
+    }
+  }, [chronicCareTestResult, labTestOptions, userHasChanged]);
+
   //Load the tests of all Laboratory
   //Get list of Test Group
   const PriorityOrder = () => {
@@ -238,7 +259,7 @@ const Laboratory = (props) => {
   };
 
   const handleInputChangeObject = (e) => {
-    console.log(e);
+    setUserHasChanged(true)
     setSelectedOption(e);
     setTests((prevObject) => ({
       ...prevObject,
@@ -359,7 +380,7 @@ const Laboratory = (props) => {
       .catch((error) => {});
   };
 
-  
+  console.log("test:", testsOptions)
 
    const handleSubmit = (e) => {
      e.preventDefault();
