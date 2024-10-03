@@ -23,6 +23,7 @@ import "semantic-ui-css/semantic.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import "react-widgets/dist/css/react-widgets.css";
 import "react-phone-input-2/lib/style.css";
+import {calculate_age_to_number} from "../../../utils";
 import { Button } from "semantic-ui-react";
 
 const useStyles = makeStyles((theme) => ({
@@ -99,7 +100,9 @@ const TPT = (props) => {
   const [hasMounted, setHasMounted] = useState(false);
   const [careAndSupportEncounterDate, setCareAndSupportEncounterDate] = useState("");
   const [tptCompletionDate, setTptCompletionDate] = useState("")
-
+  const [adultArtRegimenLine, setAdultArtRegimenLine] = useState([]);
+  const [oIRegimenLine, setOIRegimenLine] = useState([]);
+  const [childrenOI, setChildrenOI] = useState([]);
   useEffect(() => {
     setHasMounted(true);
   }, []);
@@ -127,6 +130,36 @@ const TPT = (props) => {
         .catch((error) => {});
     };
 
+  const patientAge = calculate_age_to_number(props.patientObj.dateOfBirth);
+
+  //GET ChildRegimenLine
+  const ChildRegimenLine = () => {
+    axios
+        .get(`${baseUrl}hiv/regimen/arv/children`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          setChildrenOI(
+              response.data.filter((x) => x.id === 15)
+          );
+        })
+        .catch((error) => {});
+  };
+
+  //GET AdultRegimenLinem
+  const AdultRegimenLine = () => {
+    axios
+        .get(`${baseUrl}hiv/regimen/types/15`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((response) => {
+          // const oIRegimen = response.data.filter(
+          //     (x) => x.id === 15
+          // );
+          setOIRegimenLine(response.data);
+        })
+        .catch((error) => {});
+  };
 
   const PATIENT_ENCOUNTER = () => {
     // if(hasMounted){
@@ -179,6 +212,8 @@ const TPT = (props) => {
     TB_TREATMENT_OUTCOME();
     CLINIC_VISIT_LEVEL_OF_ADHERENCE();
     PATIENT_ENCOUNTER();
+    AdultRegimenLine();
+    ChildRegimenLine();
   }, []);
 
   // TPT Logic
@@ -285,7 +320,7 @@ const TPT = (props) => {
   };
   //let temp = { ...errors }
 
-
+console.log("Tpt object :", props.tpt)
   const handleTpt  = (e) => {
     const {name, value} = e.target;
     if(name === 'tbTreatment' || value === ''  ){
@@ -684,9 +719,11 @@ const TPT = (props) => {
                           disabled={props.action === "view" ? true : false}
                       >
                         <option value="">Select</option>
-                        <option value="6H">6H</option>
-                        <option value="3HP">3HP</option>
-                        <option value="1HP">1HP</option>
+                        {oIRegimenLine.map((value) => (
+                            <option key={value.id} value={value.id}>
+                              {value.description}
+                            </option>
+                        ))}
                       </Input>
                     </InputGroup>
                   </FormGroup>

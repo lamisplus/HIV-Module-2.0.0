@@ -83,7 +83,6 @@ const Pharmacy = (props) => {
   const [mmdType, setmmdType] = useState();
   const [showmmdType, setShowmmdType] = useState(false);
   const [showIptType, setIptType] = useState(false);
-  //const [showAdr, setShowAdr] = useState(false);
   const [showRegimen, setShowRegimen] = useState(false);
   const [showRegimenOI, setShowRegimenOI] = useState(false);
   const [showRegimenTB, setShowRegimenTB] = useState(false);
@@ -98,12 +97,9 @@ const Pharmacy = (props) => {
   const [regimenDrug, setRegimenDrug] = useState([]);
   const [regimenDrugList, setRegimenDrugList] = useState([]);
   const [showCurrentVitalSigns, setShowCurrentVitalSigns] = useState(false);
-  // const [currentVitalSigns, setcurrentVitalSigns] = useState({})
-  // const [adultRegimenLine, setAdultRegimenLine] = useState([]);
   const [adultArtRegimenLine, setAdultArtRegimenLine] = useState([]);
   const [oIRegimenLine, setOIRegimenLine] = useState([]);
   const [tbRegimenLine, setTbRegimenLine] = useState([]);
-  //const [othersRegimenLine, setOthersRegimenLine] = useState([]);
   const [childRegimenLine, setChildRegimenLine] = useState([]);
   const [childrenOI, setChildrenOI] = useState([]);
   const [childrenTB, setChildrenTB] = useState([]);
@@ -116,7 +112,6 @@ const Pharmacy = (props) => {
     const [clientDsdStatus, setClientDsdStatus] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-  //const [currentRegimenValue, setCurrentRegimenValue] = useState("");//this is to get the current regimen value/ID the patient is on
   //IPT_TYPE
   const [
     getAllPharmacyByPatientIdReponse,
@@ -312,9 +307,8 @@ const Pharmacy = (props) => {
       .catch((error) => {});
   };
 
-  // console.log("RegimenType", regimenType);
-  const patientAge = calculate_age_to_number(patientObj.dateOfBirth); //Age calculation
-  //GET ChildRegimenLine
+  const patientAge = calculate_age_to_number(patientObj.dateOfBirth);
+
   const ChildRegimenLine = () => {
     axios
       .get(`${baseUrl}hiv/regimen/arv/children`, {
