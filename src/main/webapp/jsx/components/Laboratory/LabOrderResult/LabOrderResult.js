@@ -97,8 +97,8 @@ const Laboratory = (props) => {
   const [labTestOptions, setLabTestOptions] = useState([]);
   const [labOrderIndication, setLabOrderIndication] = useState([]);
   let testsOptions = [];
-  const [chronicCareTestResult, setChronicCareTestResult] = useState("TrueNAT")
-  const [userHasChanged, setUserHasChanged] = useState(false);
+  // const [chronicCareTestResult, setChronicCareTestResult] = useState("TrueNAT")
+  // const [userHasChanged, setUserHasChanged] = useState(false);
   let temp = { ...errors };
   const [tests, setTests] = useState({
     comments: "",
@@ -197,23 +197,23 @@ const Laboratory = (props) => {
       .catch((error) => {});
   };
 
-  useEffect(() => {
-    if (chronicCareTestResult && !userHasChanged) {
-      // Filter the options to find the one that matches your condition (e.g., "LF-LAMP")
-      const matchedOption = labTestOptions.find(
-          (option) => option.label === chronicCareTestResult
-      );
-      // Auto-populate the select field if the matched option exists
-      if (matchedOption) {
-        setSelectedOption(matchedOption);
-        setTests((prevObject) => ({
-          ...prevObject,
-          labTestGroupId: matchedOption.testGroupId,
-          labTestId: matchedOption.value,
-        }));
-      }
-    }
-  }, [chronicCareTestResult, labTestOptions, userHasChanged]);
+  // useEffect(() => {
+  //   if (chronicCareTestResult && !userHasChanged) {
+  //     // Filter the options to find the one that matches your condition (e.g., "LF-LAMP")
+  //     const matchedOption = labTestOptions.find(
+  //         (option) => option.label === chronicCareTestResult
+  //     );
+  //     // Auto-populate the select field if the matched option exists
+  //     if (matchedOption) {
+  //       setSelectedOption(matchedOption);
+  //       setTests((prevObject) => ({
+  //         ...prevObject,
+  //         labTestGroupId: matchedOption.testGroupId,
+  //         labTestId: matchedOption.value,
+  //       }));
+  //     }
+  //   }
+  // }, [chronicCareTestResult, labTestOptions, userHasChanged]);
 
   //Load the tests of all Laboratory
   //Get list of Test Group
@@ -259,7 +259,7 @@ const Laboratory = (props) => {
   };
 
   const handleInputChangeObject = (e) => {
-    setUserHasChanged(true)
+    // setUserHasChanged(true)
     setSelectedOption(e);
     setTests((prevObject) => ({
       ...prevObject,
@@ -278,7 +278,7 @@ const Laboratory = (props) => {
   const handleInputChange = (e) => {
     setErrors({ ...temp, [e.target.name]: "" });
     if (e.target.name === "labNumber") {
-      const onlyPositiveNumber = e.target.value; //Math.abs(e.target.value)
+      const onlyPositiveNumber = e.target.value;
       setTests({ ...tests, [e.target.name]: onlyPositiveNumber });
     } else {
       setTests({ ...tests, [e.target.name]: e.target.value });
@@ -380,7 +380,7 @@ const Laboratory = (props) => {
       .catch((error) => {});
   };
 
-  console.log("test:", testsOptions)
+  // console.log("test:", testsOptions)
 
    const handleSubmit = (e) => {
      e.preventDefault();

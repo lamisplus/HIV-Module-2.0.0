@@ -1187,22 +1187,6 @@ const TbScreening = (props) => {
   },[props.tbObj.outcome])
 
 
-
-  // RESET: Clinically evalauted on changes in  specimen sent and tbEvaulationOutcome
-  // useEffect(() => {
-  //   props.setTbObj({
-  //     ...props.tbObj,
-  //     // dateOfDiagnosticTest:'',
-  //     // diagnosticTestType:"",
-  //     // clinicallyEvaulated:"",
-  //     // chestXrayDone:'',
-  //     // chestXrayResultTest:'',
-  //     // tbType:'',
-  //     // tbTreatmentStarted:'',
-  //     // tbTreatmentStartDate:''
-  //   })
-  // },[props.tbObj.specimentSent, props.tbObj.tbEvaulationOutcome])
-
   const handleInputChangeContrain = (e) => {
     if (e.target.checked) {
       props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.checked });
