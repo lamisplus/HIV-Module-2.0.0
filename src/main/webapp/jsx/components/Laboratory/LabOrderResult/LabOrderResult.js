@@ -27,6 +27,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { toast } from "react-toastify";
 import { Icon } from "semantic-ui-react";
 import Select from "react-select";
+import {Get} from "react-lodash";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -97,8 +98,8 @@ const Laboratory = (props) => {
   const [labTestOptions, setLabTestOptions] = useState([]);
   const [labOrderIndication, setLabOrderIndication] = useState([]);
   let testsOptions = [];
-  // const [chronicCareTestResult, setChronicCareTestResult] = useState("TrueNAT")
-  // const [userHasChanged, setUserHasChanged] = useState(false);
+  const [chronicCareTestResult, setChronicCareTestResult] = useState("")
+  const [userHasChanged, setUserHasChanged] = useState(false);
   let temp = { ...errors };
   const [tests, setTests] = useState({
     comments: "",
@@ -197,23 +198,67 @@ const Laboratory = (props) => {
       .catch((error) => {});
   };
 
-  // useEffect(() => {
-  //   if (chronicCareTestResult && !userHasChanged) {
-  //     // Filter the options to find the one that matches your condition (e.g., "LF-LAMP")
-  //     const matchedOption = labTestOptions.find(
-  //         (option) => option.label === chronicCareTestResult
-  //     );
-  //     // Auto-populate the select field if the matched option exists
-  //     if (matchedOption) {
-  //       setSelectedOption(matchedOption);
-  //       setTests((prevObject) => ({
-  //         ...prevObject,
-  //         labTestGroupId: matchedOption.testGroupId,
-  //         labTestId: matchedOption.value,
-  //       }));
-  //     }
-  //   }
-  // }, [chronicCareTestResult, labTestOptions, userHasChanged]);
+  // Fetch chronic care
+  const GetCareAndSupportDiagnosticTest = () => {
+    axios
+        .get(  `${baseUrl}observation/person/${props.patientObj.id}`, {
+          headers: { Authorization: `Bearer ${token}` }, // Add token here
+        })
+        .then((response) => {
+          const data = response.data;
+          console.log("response.data", data)
+          const filteredRecords = data.filter(
+              (item) =>
+                  item.type === "Chronic Care" &&
+                  item.data?.tptMonitoring?.diagnosticTestType !== null &&
+                  item.data?.tptMonitoring?.diagnosticTestType !== ""
+          );
+          if (filteredRecords.length > 0) {
+            const mostRecentRecord = filteredRecords.sort(
+                (a, b) => new Date(b.dateOfObservation) - new Date(a.dateOfObservation)
+            )[0];
+            const { diagnosticTestType } = mostRecentRecord.data.tptMonitoring;
+            if (diagnosticTestType === "TB-LAMP") {
+              setChronicCareTestResult("TB LAMP");
+            } else if (diagnosticTestType === "LF-LAM") {
+              setChronicCareTestResult("LF-LAM");
+            } else if (diagnosticTestType === "Truenat") {
+              setChronicCareTestResult("TrueNAT");
+            } else if (diagnosticTestType === "Smear Microscopy") {
+              setChronicCareTestResult("AFB smear microscopy");
+            } else if (diagnosticTestType === "Cobas") {
+              setChronicCareTestResult("Cobas");
+            }
+          } else {
+            setChronicCareTestResult("");
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching care and support data:", error);
+        });
+  };
+
+  useEffect(() => {
+    GetCareAndSupportDiagnosticTest();
+  }, []);
+
+// Auto-populate the select field when chronicCareTestResult is updated
+  useEffect(() => {
+    if (chronicCareTestResult && !userHasChanged) {
+      const matchedOption = labTestOptions.find(
+          (option) => option.label === chronicCareTestResult
+      );
+      // Auto-populate the select field if the matched option exists
+      if (matchedOption) {
+        setSelectedOption(matchedOption);
+        setTests((prevObject) => ({
+          ...prevObject,
+          labTestGroupId: matchedOption.testGroupId,
+          labTestId: matchedOption.value,
+        }));
+      }
+    }
+  }, [chronicCareTestResult, labTestOptions, userHasChanged]);
 
   //Load the tests of all Laboratory
   //Get list of Test Group
@@ -259,7 +304,7 @@ const Laboratory = (props) => {
   };
 
   const handleInputChangeObject = (e) => {
-    // setUserHasChanged(true)
+    setUserHasChanged(true)
     setSelectedOption(e);
     setTests((prevObject) => ({
       ...prevObject,

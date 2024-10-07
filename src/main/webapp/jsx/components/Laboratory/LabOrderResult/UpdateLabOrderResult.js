@@ -217,13 +217,6 @@ const Laboratory = (props) => {
     setErrors({ ...temp, [e.target.name]: "" }); //reset the error message to empty once the field as value
     setTests({ ...tests, [e.target.name]: e.target.value });
   };
-    //  useEffect(() => {
-    //    // Clear result when labTestId changes
-    //    if (tests.labTestId !== 65 && tests.labTestId !== 50) {
-    //      setTests((prevTests) => ({ ...prevTests, result: "" }));
-    //    }
-    //  }, [tests.labTestId]);
-
   const handleInputChangeObject = (e) => {
     setSelectedOption(e);
 
@@ -438,51 +431,11 @@ const Laboratory = (props) => {
                       )}
                     </FormGroup>
                   </Col>
-                  {/* <Col md={4} className="form-group mb-3">
-                            <FormGroup>
-                                <Label for="testGroup">Select Test Group*</Label>
-                                <Input
-                                    type="select"
-                                    name="labTestGroupId"
-                                    id="labTestGroupId"
-                                    value={tests.labTestGroupId}
-                                    onChange={handleSelectedTestGroup} 
-                                    style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}                  
-                                    >
-                                    <option value="">Select </option>
-                                                    
-                                        {testGroup.map((value) => (
-                                            <option key={value.id} value={value.id}>
-                                                {value.groupName}
-                                            </option>
-                                        ))}
-                                </Input>
-                                {errors.labTestGroupId !=="" ? (
-                                    <span className={classes.error}>{errors.labTestGroupId}</span>
-                                ) : "" }
-                            </FormGroup>
-                        </Col> */}
                   <Col md={4} className="form-group mb-3">
                     <FormGroup>
                       <Label for="testGroup">
                         Select Test <span style={{ color: "red" }}> *</span>
                       </Label>
-                      {/* <Input
-                                    type="select"
-                                    name="labTestId"
-                                    id="labTestId"
-                                    value={tests.labTestId}
-                                    onChange={handleInputChangeTest} 
-                                    style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}                  
-                                    >
-                                    <option value="">Select </option>
-                                                    
-                                        {test.map((value) => (
-                                            <option key={value.id} value={value.id}>
-                                                {value.labTestName}
-                                            </option>
-                                        ))}
-                                </Input> */}
                       <Select
                         defaultValue={defaultSelectedOption}
                         value={selectedOption}
@@ -1473,18 +1426,6 @@ const Laboratory = (props) => {
                 ""
               )}
             </form>
-            {/* )}
-            {moduleStatus==="2" && (
-            <>
-            <Alert
-                variant="warning"
-                className="alert-dismissible solid fade show"
-            >
-                <p>Laboratory Module is not install</p>
-            </Alert>
-           
-            </>
-            )}  */}
           </CardBody>
         </Card>
       </div>
