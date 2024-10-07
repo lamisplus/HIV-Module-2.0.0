@@ -206,7 +206,6 @@ const Laboratory = (props) => {
         })
         .then((response) => {
           const data = response.data;
-          console.log("response.data", data)
           const filteredRecords = data.filter(
               (item) =>
                   item.type === "Chronic Care" &&
@@ -424,8 +423,6 @@ const Laboratory = (props) => {
       })
       .catch((error) => {});
   };
-
-  // console.log("test:", testsOptions)
 
    const handleSubmit = (e) => {
      e.preventDefault();
