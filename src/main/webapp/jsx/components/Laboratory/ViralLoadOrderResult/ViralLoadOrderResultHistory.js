@@ -83,9 +83,28 @@ const LabHistory = (props) => {
                     // Use row.sampleNumber for test result
                     [`${row.sampleNumber}_result`]: row.result
                         ? row.result
-                        : response.data?.testResult
-                            ? <div style={{ display:'inline-block', backgroundColor: 'green', color: 'white', padding: '5px 10px', borderRadius: '4px' }}>Available, Please Update</div>
-                            : <div style={{display:'inline-block',  backgroundColor: 'red', color: 'white', padding: '5 px10px', borderRadius: '4px' }}>No Result Yet</div>,
+                        : response.data?.testResult === "TargetNotDetected"
+                            ? <div style={{
+                                display: 'inline-block',
+                                backgroundColor: '#5bc0de',
+                                color: 'white',
+                                padding: '5px 10px',
+                                borderRadius: '4px'
+                            }}>TargetNotDetected</div> : response.data?.testResult
+                                ? <div style={{
+                                    display: 'inline-block',
+                                    backgroundColor: 'green',
+                                    color: 'white',
+                                    padding: '5px 10px',
+                                    borderRadius: '4px'
+                                }}>Available, Please Update</div>
+                                : <div style={{
+                                    display: 'inline-block',
+                                    backgroundColor: 'red',
+                                    color: 'white',
+                                    padding: '5px 10px',
+                                    borderRadius: '4px'
+                                }}>No Result Yet</div>,
 
                     // Use a different key for dateResultReceived
                     [`${row.sampleNumber}_dateReceived`]: row.dateResultReceived
