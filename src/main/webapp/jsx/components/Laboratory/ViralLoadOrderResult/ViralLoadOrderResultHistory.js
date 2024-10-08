@@ -57,14 +57,65 @@ const LabHistory = (props) => {
   const [open, setOpen] = React.useState(false)
   const [saving, setSaving] = useState(false)
   const [record, setRecord] = useState(null)
+    const [results, setResults] = useState({});
    const toggle = () => setOpen(!open);
+
     useEffect(() => {
-      //CheckLabModule();
+        // Trigger data load if props.orderList changes
+        if (props.orderList.length > 0) {
+            props.orderList.forEach((row) => {
+                fetchTestResult(row);
+            });
+        }
     }, [props.orderList]);
 
-      const onClickHome = (row, actionType) =>{  
-        // props.setActiveContent({...props.activeContent, route:'pharmacy', activeTab:"hsitory"})
-         props.setActiveContent({...props.activeContent, route:'lab-view-viral-load-order-result', id:row.id, activeTab:"", actionType:actionType, obj:row})
+// fetch Test Result from lims
+    const fetchTestResult = async (row) => {
+        try {
+            if (row.sampleNumber) {
+                const modifiedSampleNumber = row.sampleNumber.replace(/\//g, "_");
+                const response = await axios.get(`${baseUrl}lims/sample/result/${modifiedSampleNumber}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            // Update the results state, mapping the result by sample number
+                setResults((prevResults) => ({
+                    ...prevResults,
+                    // Use row.sampleNumber for test result
+                    [`${row.sampleNumber}_result`]: row.result
+                        ? row.result
+                        : response.data?.testResult
+                            ? <div style={{ display:'inline-block', backgroundColor: 'green', color: 'white', padding: '5px 10px', borderRadius: '4px' }}>Available, Please Update</div>
+                            : <div style={{display:'inline-block',  backgroundColor: 'red', color: 'white', padding: '5 px10px', borderRadius: '4px' }}>No Result Yet</div>,
+
+                    // Use a different key for dateResultReceived
+                    [`${row.sampleNumber}_dateReceived`]: row.dateResultReceived
+                        ? row.dateResultReceived
+                        : response.data?.resultDate
+                            ? 'Result Date Available'
+                            : 'No Date Available'
+                }));
+            } else {
+                setResults((prevResults) => ({
+                    ...prevResults,
+                    [`${row.sampleNumber}_result`]: row.result || 'No Result Yet',
+                    [`${row.sampleNumber}_dateReceived`]: row.dateResultReceived || 'No Date Available'
+                }));
+            }
+        } catch (error) {
+            console.error("Error fetching test result:", error);
+            setResults((prevResults) => ({
+                ...prevResults,
+                [`${row.sampleNumber}_result`]: row.result || '',
+                [`${row.sampleNumber}_dateReceived`]: row.dateResultReceived || ''
+            }));
+        }
+    };
+
+const onClickHome = (row, actionType) =>{
+       const testResult = results[row.sample] || '';
+         props.setActiveContent({...props.activeContent, route:'lab-view-viral-load-order-result', id:row.id, activeTab:"", actionType:actionType, obj:{
+             ...row, testResult: testResult }
+             })
      }
 
      const LoadDeletePage = (row) =>{ 
@@ -112,7 +163,6 @@ const LabHistory = (props) => {
                   { title: "Lab Number", field: "labNumber", filtering: false },
                   { title: "Sample Number", field: "sampleNumber", filtering: false },
                   { title: "Date Sample Collected", field: "sampleCollectionDate", filtering: false },
-                  
                   { title: "Date Result Received", field: "dateResultReceived", filtering: false },
                   { title: "Result", field: "result", filtering: false },
                   { title: "VL Indication", field: "viralLoadIndication", filtering: false },
@@ -126,13 +176,11 @@ const LabHistory = (props) => {
                     testName: row.labTestName,
                     labNumber: row.labNumber,
                     sampleNumber: row.sampleNumber,
-                    sampleCollectionDate: row.sampleCollectionDate,    
-                    
-                    dateResultReceived: row.dateResultReceived, 
-                    result: row.result,
+                    sampleCollectionDate: row.sampleCollectionDate,
+                    dateResultReceived: results[`${row.sampleNumber}_dateReceived`] || row.dateResultReceived || "No Date Available",
+                    result: results[`${row.sampleNumber}_result`] || row.result || 'No Result Yet',
                     viralLoadIndication: row.viralLoadIndicationName,
-                    Action: 
-                    
+                    Action:
                     <div>
                               <Menu.Menu position='right'  >
                               <Menu.Item >

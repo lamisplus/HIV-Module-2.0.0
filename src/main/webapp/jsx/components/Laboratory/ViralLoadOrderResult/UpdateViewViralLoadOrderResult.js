@@ -153,6 +153,38 @@ const Laboratory = (props) => {
             });
         
     }
+
+    useEffect(() => {
+        const fetchTestResult = (sampleNumber) => {
+            if (!sampleNumber) return;
+            const modifiedSampleNumber = sampleNumber.replace(/\//g, "_");
+            axios.get(`${baseUrl}lims/sample/result/${modifiedSampleNumber}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+      .then((response) => {
+          const data = response.data
+          const formatttedResultDate = data?.resultDate ? moment(data.resultDate).format('YYYY-MM-DDTHH:mm'): '';
+            setTests((prevTests) => ({
+                ...prevTests,
+                result: data?.testResult || '',
+                dateAssayedBy: data?.assayDate || '',
+                dateResultReceived: formatttedResultDate || '',
+                assayedBy: data?.testedBy || ''
+            }));
+        })
+            .catch((error) => {
+                console.error("Error fetching test result:", error); // Log any errors
+            });
+    };
+    // Make sure activeContent.obj is available before making the API call
+    if (props.activeContent?.obj?.sampleNumber) {
+        setShowResult(true)
+        fetchTestResult(props.activeContent.obj.sampleNumber); // Call the API with sampleNumber
+    }
+    console.log("Active Content Object:", props.activeContent?.obj);
+}, [props.activeContent]);
+
+
     //Get list of LabNumbers
     const PCRLabList =()=>{
         axios
@@ -315,9 +347,7 @@ const Laboratory = (props) => {
         }
     }
 
-    const Back = (row, actionType) =>{  
-        // props.setActiveContent({...props.activeContent, route:'pharmacy', activeTab:"hsitory"})
-        
+    const Back = (row, actionType) =>{
         props.setActiveContent({...props.activeContent, route:'laboratoryViralLoadOrderResult', id:row.id, activeTab:"history", actionType:"", obj:{}})
      }
   

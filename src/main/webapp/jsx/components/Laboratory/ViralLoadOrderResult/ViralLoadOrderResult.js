@@ -286,17 +286,8 @@ const Laboratory = (props) => {
             const dateResultReceived = moment(e.target.value).format("YYYY-MM-DD HH:MM:SS")   //Math.abs(e.target.value)
             setTests ({...tests,  [e.target.name]: dateResultReceived});
         }
-        // if(e.target.name==='pcrLabName'){
-        //     setTests ({...tests,  [e.target.name]: e.target.value});
-        // }
-        //setTests ({...tests,  [e.target.name]: e.target.value});
-                      
     }
-    const handleInputChangeLabNumber = e => {
-        labNumberOption=e.target.value
-        setLabNumberOption(labNumberOption)
-                      
-    }
+
     const handleInputChangeTest = e => {
         setErrors({...temp, [e.target.name]:""})//reset the error message to empty once the field as value
         
