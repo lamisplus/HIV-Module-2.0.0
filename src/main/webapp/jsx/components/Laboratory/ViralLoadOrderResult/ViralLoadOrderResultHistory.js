@@ -59,13 +59,18 @@ const LabHistory = (props) => {
   const [record, setRecord] = useState(null)
     const [results, setResults] = useState({});
    const toggle = () => setOpen(!open);
+   const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        // Trigger data load if props.orderList changes
         if (props.orderList.length > 0) {
-            props.orderList.forEach((row) => {
-                fetchTestResult(row);
-            });
+            setLoading(true);
+            const fetchAllResults = async () => {
+                for (let row of props.orderList) {
+                    await fetchTestResult(row);
+                }
+                setLoading(false);
+            };
+            fetchAllResults();
         }
     }, [props.orderList]);
 
@@ -188,7 +193,7 @@ const onClickHome = (row, actionType) =>{
                   { title: "Action", field: "Action", filtering: false },
 
                 ]}
-                //isLoading={loading}
+                isLoading={loading}
                 data={ props.orderList.map((row) => ({
                     //Id: manager.id,
                     testGroup:row.labTestGroupName,
