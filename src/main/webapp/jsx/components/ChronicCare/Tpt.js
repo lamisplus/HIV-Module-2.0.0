@@ -753,7 +753,7 @@ const TPT = (props) => {
                                     {props.tpt.endedTpt === 'Yes' && (<>
                                         <div className="form-group mb-3 col-md-6">
                                             <FormGroup>
-                                                <Label>Outcome of TPT</Label>
+                                                <Label>TPT Outcome</Label>
                                                 <InputGroup>
                                                     <Input
                                                         type="select"
