@@ -414,17 +414,6 @@ const ChronicCare = (props) => {
     if(tbObj.specimentCollectedStatus === "Yes"){
       temp.specimentSent = tbObj.specimentSent ? '' : "This field is required.";
     }
-    // if(tbObj.specimentSent === "Yes"){
-      // temp.dateSpecimenSent = tbObj.dateSpecimenSent ? '' : "This field is required.";
-      // temp.specimenType = tbObj.specimenType ? '' : "This field is required.";
-      // temp.diagnosticTestDone = tbObj.diagnosticTestDone ? '' : "This field is required.";
-    // }
-    if(tbObj.diagnosticTestType !== ''){
-      temp.tbTestResult = tbObj.tbTestResult ? '' : "This field is required.";
-    }
-    if(tbObj.tbTestResult !== ''){
-      temp.tbTestResult = tbObj.tbTestResult ? '' : "This field is required.";
-    }
     if(tbObj.diagnosticTestDone==='Yes'){
       temp.dateOfDiagnosticTest = tbObj.dateOfDiagnosticTest ? '' : "This field is required.";
       temp.diagnosticTestType = tbObj.diagnosticTestType ? '' : "This field is required.";
@@ -478,12 +467,6 @@ const ChronicCare = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
-
-    // if (tbObj.tbTreatment === "") {
-    //   showErrorMessage("TB & IPT Screening is not filled for patient");
-    //   setSaving(false);
-    //   return;
-    // }
 
     // Set up observation object
     observation.personId = patientObj.id;

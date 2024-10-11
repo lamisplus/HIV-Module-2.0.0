@@ -164,60 +164,15 @@ const TPT = (props) => {
             });
     };
 
-    const PATIENT_ENCOUNTER = () => {
-        // if(hasMounted){
-        axios.get(`${baseUrl}hiv/patients/${props.patientObj.id}/history/activities`, {
-            headers: {Authorization: `Bearer ${token}`},
-        })
-            .then((response) => {
-                let patientEncounters = response.data;
-                // Filter encounters to find ones with the name 'Chronic Care'
-                const chronicCareEncounters = patientEncounters.filter(
-                    (encounter) => encounter.name === 'Chronic Care'
-                );
-                if (chronicCareEncounters.length > 0) {
-                    const latestEncounter = chronicCareEncounters.reduce((prev, current) =>
-                        new Date(prev.date) > new Date(current.date) ? prev : current
-                    );
-                    setCareAndSupportEncounterDate(latestEncounter.date);
-                } else {
-                    setCareAndSupportEncounterDate('');
-                }
-            })
-            .catch((error) => {
-                console.error('Error fetching patient encounters:', error);
-            });
-        // }
-    };
-
-    // Effect that calls when hasCareAndSupportEncounter has a value
-    useEffect(() => {
-        if (careAndSupportEncounterDate) {
-            axios.get(`${baseUrl}observation/tpt-completion-date?personUuid=${props.patientObj.personUuid}&dateOfObservation=${careAndSupportEncounterDate}`, {
-                headers: {Authorization: `Bearer ${token}`},
-            })
-                .then((response) => {
-                    setTptCompletionDate(response.data)
-                    props.setTpt({
-                        ...props.tpt,
-                        dateOfTptCompleted: response.data,
-                    });
-                })
-                .catch((error) => {
-                    console.error('Error fetching support encounter data:', error);
-                });
-        }
-    }, [careAndSupportEncounterDate]);
-
-
     useEffect(() => {
         TB_TREATMENT_TYPE();
         TB_TREATMENT_OUTCOME();
         CLINIC_VISIT_LEVEL_OF_ADHERENCE();
-        PATIENT_ENCOUNTER();
         AdultRegimenLine();
         ChildRegimenLine();
     }, []);
+
+
 
     // TPT Logic
     useEffect(() => {
@@ -227,7 +182,6 @@ const TPT = (props) => {
                     ...props.tpt,
                     eligibilityTpt: "No",
                     tptPreventionOutcome: "TPT Completed",
-                    dateOfTptCompleted: tptCompletionDate ? tptCompletionDate : "",
                     contractionForTpt: "",
                 });
             } else if (props.tpt.currentlyOnTpt === 'Yes' && props.tpt.everCompletedTpt === "No") {
@@ -318,10 +272,26 @@ const TPT = (props) => {
             .catch((error) => {
             });
     };
-// console.log("Tpt object :", props.tpt)
+
     const handleTpt = (e) => {
         const {name, value} = e.target;
-        if (name === 'tbTreatment' || value === '') {
+        if (name === 'everCompletedTpt' && value === "Yes" ) {
+            if(careAndSupportEncounterDate !== ""){
+                props.setTpt({
+                    ...props.tpt,
+                    [name]: value,
+                    dateOfTptCompleted: careAndSupportEncounterDate
+                });
+            }
+        } else if (name === 'everCompletedTpt' && value === "No") {
+            // Reset date if "No" is selected
+            props.setTpt({
+                ...props.tpt,
+                [name]: value,
+                dateOfTptCompleted: ''
+            });
+        }
+        else if (name === 'tbTreatment' || value === '') {
             props.setTpt({
                 ...props.tpt,
                 [name]: value,
@@ -351,7 +321,8 @@ const TPT = (props) => {
                 dateTptStarted: "",
                 tptRegimen: "",
             });
-        } else if (name === 'everCompletedTpt' || value === '') {
+        }
+        else if (name === 'everCompletedTpt' || value === '') {
             props.setTpt({
                 ...props.tpt,
                 [name]: value,
@@ -361,11 +332,16 @@ const TPT = (props) => {
                 liverSymptoms: "",
                 neurologicSymptoms: "",
                 rash: '',
+                endedTpt:'',
                 contractionForTpt: '',
                 chronicAlcohol: '',
                 dateOfTptCompleted: '',
+                hepatotoxicityEffectSeverity:'',
+                hypersensitivityReactionEffect:'',
+                hypersensitivityReactionEffectSeverity:''
             });
-        } else if (name === 'currentlyOnTpt' || value === '') {
+        }
+        else if (name === 'currentlyOnTpt' || value === '') {
             props.setTpt({
                 ...props.tpt,
                 [name]: value,
@@ -439,6 +415,39 @@ const TPT = (props) => {
             props.setTpt({...props.tpt, [e.target.name]: e.target.value});
         }
     }
+
+
+    const PATIENT_ENCOUNTER = () => {
+        axios
+            .get(`${baseUrl}observation/person/${props.patientObj.id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then((response) => {
+                const data = response.data;
+                // Filter records where type is "Chronic Care" and everCompletedTpt is 'Yes', if it exists
+                const filteredRecords = data.filter(
+                    (item) =>
+                        item.type === "Chronic Care" &&
+                        item.data?.tptMonitoring?.everCompletedTpt === 'Yes'
+                );
+                if (filteredRecords.length > 0) {
+                    const mostRecentRecord = filteredRecords.sort(
+                        (a, b) => new Date(b.dateOfObservation) - new Date(a.dateOfObservation)
+                    )[0];
+                    const { dateOfTptCompleted } = mostRecentRecord.data.tptMonitoring || {};
+                    setCareAndSupportEncounterDate(dateOfTptCompleted)
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching patient encounters:', error);
+            });
+    };
+
+    useEffect(() => {
+        PATIENT_ENCOUNTER();
+    }, []);
+
+
     return (
         <>
             <Card className={classes.root}>
@@ -486,6 +495,8 @@ const TPT = (props) => {
                                                 id="dateOfTptCompleted"
                                                 onChange={handleTpt}
                                                 value={props.tpt.dateOfTptCompleted}
+                                                min={props.patientObj.dateOfBirth}
+                                                max={moment(new Date()).format("YYYY-MM-DD")}
                                                 // disabled={props.action === "view" ? true : false}
                                                 disabled={props.action === "view" || tptCompletionDate !== ""}
                                                 onKeyPress={(e) => e.preventDefault()}
@@ -729,7 +740,7 @@ const TPT = (props) => {
                             <br/>
                             <hr/>
                             <br/>
-                            {tptCompletionDate ? <></> : (<>
+                            {props.tpt.everCompletedTpt === "Yes" ? <> </> : (<>
                                     <h3>TPT Monitoring</h3>
                                     <div className="form-group mb-3 col-md-6">
                                         <FormGroup>

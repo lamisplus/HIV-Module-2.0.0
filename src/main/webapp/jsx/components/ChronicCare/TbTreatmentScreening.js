@@ -98,12 +98,6 @@ const TbTreatmentScreening = (props) => {
   const [tbDiagnosticTestType, setTbDiagnosticTestType] = useState([]);
   const [chestXrayTest, setChestXrayTest] = useState([]);
   const [treatmentType, setTreatmentType] = useState([]);
-  const handleEligibility = (e) => {
-    // props.setEligibility({
-    //   ...props.eligibility,
-    //   [e.target.name]: e.target.value,
-    // });
-  };
   useEffect(() => {
     TB_DIAGNOSTIC_TEST_TYPE();
     TB_SPECIMEN_TYPE();
@@ -249,7 +243,8 @@ const TbTreatmentScreening = (props) => {
                       id="dateSpecimenSent"
                       value={props.tbObj.dateSpecimenSent}
                       onChange={props.handleInputChange}
-                      min={props.dateOfObservation}
+                      // min={props.dateOfObservation}
+                        min ={props.dateOfBirth}
                       max={moment(new Date()).format("YYYY-MM-DD")}
                       // disabled={props.action === "view" ? true : false}
                       onKeyPress={(e) => e.preventDefault()}
@@ -378,11 +373,11 @@ const TbTreatmentScreening = (props) => {
                       <option value="Incomplete">Incomplete</option>
                     </Input>
                   </InputGroup>
-                  {errors.tbTestResult !== "" ? (
-                      <span className={classes.error}>{errors.tbTestResult}</span>
-                  ) : (
-                      ""
-                  )}
+                  {/*{errors.tbTestResult !== "" ? (*/}
+                  {/*    <span className={classes.error}>{errors.tbTestResult}</span>*/}
+                  {/*) : (*/}
+                  {/*    ""*/}
+                  {/*)}*/}
                 </FormGroup>
               </div> 
               </>)}

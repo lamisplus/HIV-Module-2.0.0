@@ -231,7 +231,6 @@ const BasicInfo = (props) => {
                 <div className=" mb-3 col-md-4">
                   <FormGroup>
                     <Label>Body Weight</Label>
-                    {console.log(nutritionEducation)}
                     <InputGroup>
                       <Input
                         type="number"

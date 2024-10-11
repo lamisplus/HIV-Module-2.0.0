@@ -100,6 +100,7 @@ const Laboratory = (props) => {
   let testsOptions = [];
   const [chronicCareTestResult, setChronicCareTestResult] = useState("")
   const [userHasChanged, setUserHasChanged] = useState(false);
+  const [tptMonitorng, setTptMonitoring ] = useState({})
   let temp = { ...errors };
   const [tests, setTests] = useState({
     comments: "",
@@ -216,6 +217,7 @@ const Laboratory = (props) => {
             const mostRecentRecord = filteredRecords.sort(
                 (a, b) => new Date(b.dateOfObservation) - new Date(a.dateOfObservation)
             )[0];
+            setTptMonitoring(mostRecentRecord.data.tptMonitoring)
             const { diagnosticTestType } = mostRecentRecord.data.tptMonitoring;
             if (diagnosticTestType === "TB-LAMP") {
               setChronicCareTestResult("TB LAMP");
@@ -227,6 +229,9 @@ const Laboratory = (props) => {
               setChronicCareTestResult("AFB smear microscopy");
             } else if (diagnosticTestType === "Cobas") {
               setChronicCareTestResult("Cobas");
+            }
+            else if (diagnosticTestType === "GeneXpert") {
+              setChronicCareTestResult("Gene Xpert");
             }
           } else {
             setChronicCareTestResult("");
@@ -247,13 +252,15 @@ const Laboratory = (props) => {
       const matchedOption = labTestOptions.find(
           (option) => option.label === chronicCareTestResult
       );
-      // Auto-populate the select field if the matched option exists
       if (matchedOption) {
         setSelectedOption(matchedOption);
         setTests((prevObject) => ({
           ...prevObject,
           labTestGroupId: matchedOption.testGroupId,
           labTestId: matchedOption.value,
+          result: tptMonitorng.tbTestResult,
+          sampleCollectionDate: moment((tptMonitorng.dateSpecimenSent)).format("YYYY-MM-DDTHH:mm"),
+          dateResultReceived : moment(tptMonitorng.DateDiagnosticTestResultReceived).format("YYYY-MM-DDTHH:mm")
         }));
       }
     }
