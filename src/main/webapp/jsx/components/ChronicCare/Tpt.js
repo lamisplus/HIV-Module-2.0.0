@@ -275,23 +275,30 @@ const TPT = (props) => {
 
     const handleTpt = (e) => {
         const {name, value} = e.target;
-        if (name === 'everCompletedTpt' && value === "Yes" ) {
-            if(careAndSupportEncounterDate !== ""){
+        if (name === 'everCompletedTpt') {
+            if (value === "Yes") {
+                if (careAndSupportEncounterDate !== "") {
+                    props.setTpt({
+                        ...props.tpt,
+                        [name]: value,
+                        dateOfTptCompleted: careAndSupportEncounterDate,
+                    });
+                } else {
+                    props.setTpt({
+                        ...props.tpt,
+                        [name]: value,
+                    });
+                }
+            } else if (value === "No") {
                 props.setTpt({
                     ...props.tpt,
                     [name]: value,
-                    dateOfTptCompleted: careAndSupportEncounterDate
+                    dateOfTptCompleted: '', // Clear date if "No" is selected
                 });
             }
-        } else if (name === 'everCompletedTpt' && value === "No") {
-            // Reset date if "No" is selected
-            props.setTpt({
-                ...props.tpt,
-                [name]: value,
-                dateOfTptCompleted: ''
-            });
         }
-        else if (name === 'tbTreatment' || value === '') {
+        else
+            if (name === 'tbTreatment' || value === '') {
             props.setTpt({
                 ...props.tpt,
                 [name]: value,
@@ -447,7 +454,7 @@ const TPT = (props) => {
         PATIENT_ENCOUNTER();
     }, []);
 
-
+// console.log("props.tbt", props.tpt)
     return (
         <>
             <Card className={classes.root}>
