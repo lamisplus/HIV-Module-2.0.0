@@ -340,7 +340,7 @@ const Pharmacy = (props) => {
             })
             .then((response) => {
                 setChildRegimenLine(
-                    response.data.filter((x) => x.id === 3 || x.id === 4)
+                    response.data.filter((x) => x.id === 3 || x.id === 4 || x.id === 16)
                 );
                 setChildrenOI(
                     response.data.filter((x) => x.id === 15 || x.id === 9 || x.id === 8)
