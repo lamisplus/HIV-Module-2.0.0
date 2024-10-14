@@ -105,8 +105,6 @@ const ArtCommencement = (props) => {
   const [viraLoadStart, setViraLoadStart] = useState(false);
   const [errors, setErrors] = useState({});
   let temp = { ...errors };
-  //const [tbStatus, setTbStatus] = useState([]);
-  //const [regimenLine, setRegimenLine] = useState([]);
   const [regimenType, setRegimenType] = useState([]);
   const [pregnancyStatus, setpregnancyStatus] = useState([]);
   const [functionalStatus, setFunctionalStatus] = useState([]);
@@ -228,7 +226,7 @@ const ArtCommencement = (props) => {
       })
       .then((response) => {
         const artRegimenChildren = response.data.filter(
-          (x) => x.id === 3 || x.id === 4
+          (x) => x.id === 3 || x.id === 4 || x.id === 16
         );
         setChildRegimenLine(artRegimenChildren);
       })

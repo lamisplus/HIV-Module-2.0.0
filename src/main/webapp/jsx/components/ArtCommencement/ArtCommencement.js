@@ -159,7 +159,6 @@ const ArtCommencement = (props) => {
                { headers: {"Authorization" : `Bearer ${token}`} }
            )
            .then((response) => {
-               
                setRegimenLine(response.data);
            })
            .catch((error) => {

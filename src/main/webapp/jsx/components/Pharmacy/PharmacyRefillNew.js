@@ -107,7 +107,7 @@ const Pharmacy = (props) => {
     const [otherDrugs, setOtherDrugs] = useState([]);
     const [iptType, setIPT_TYPE] = useState([]);
     const [regimenTypeOther, setRegimenTypeOther] = useState([]);
-    const [iptEligibilty, setIptEligibilty] = useState("");
+    const [iptEligibilty, setIptEligibilty] = useState({});
     const [lastChronicCare, setLastChronicCare] = useState(null);
     const [dsdDevolvement, setDsdDevolvement] = useState(null);
     const [clientDsdStatus, setClientDsdStatus] = useState("");
@@ -183,11 +183,6 @@ const Pharmacy = (props) => {
         GetIptEligibilty();
     }, [selectedOption, regimenType.length > 0, objValues.refillPeriod]);
 
-    useEffect(() => {
-        if (iptEligibilty.IPTEligibility === true && tptCareAndSupportRegimen !== "") {
-            handleSelectedRegimenOI({target: {value: 15}});
-        }
-    }, [iptEligibilty.IPTEligibility, tptCareAndSupportRegimen]);
 
     const GetPatientDTOObj = () => {
         axios
@@ -285,8 +280,6 @@ const Pharmacy = (props) => {
         GetCareAndSupportTptRegimen();
     }, [objValues.visitDate]);
 
-    // console.log(" tpt regimen: ", tptCareAndSupportRegimen)
-    // console.log("objValue", objValues)
 
     // get all pharamcy by patient Id
     const getAllPharmacyByPatientId = () => {
@@ -297,7 +290,6 @@ const Pharmacy = (props) => {
             )
             .then((response) => {
                 const patientRegimenList = response.data;
-                // console.log("patientRegimenList : ", response.data)
                 setGetAllPharmacyByPatientIdReponse(patientRegimenList);
             })
             .catch((error) => {
@@ -592,7 +584,6 @@ const Pharmacy = (props) => {
         let drugId = id;
         if (drugId !== "" || drugId !== null) {
             setShowRegimenOI(true);
-
             async function getCharacters(drugId) {
                 try {
                     const response = await axios.get(
@@ -606,7 +597,6 @@ const Pharmacy = (props) => {
                                 return x;
                             }
                         });
-
                         const drugObj = [
                             {
                                 dispense: "",
@@ -809,6 +799,9 @@ const Pharmacy = (props) => {
         if (regimenId !== "") {
             RegimenDrugOI(regimenId);
             setShowRegimenOI(true);
+        } else if (iptEligibilty.IPTEligibility === true && tptCareAndSupportRegimen !== "") {
+            RegimenDrugOI("115")
+            setShowRegimenOI(true);
         } else {
             setRegimenTypeOI([]);
             setShowRegimenOI(false);
@@ -908,23 +901,6 @@ const Pharmacy = (props) => {
             setObjValues({...objValues, [e.target.name]: true});
         }
     };
-    // const handleFormChange = (index, event) => {
-    //   let data = [...regimenDrug];
-    //   data[index][event.target.name] = event.target.value;
-    //   data[index]["prescribed"] =
-    //     data[index]["frequency"] * data[index]["duration"];
-    //   setRegimenDrug(data);
-    // };
-    //Validations of the forms
-    // const validateDrugDispense = () => {
-    //   temp.dispense = regimenDrug[0].dispense ? "" : "This field is required";
-    //   temp.frequency = regimenDrug[0].frequency ? "" : "This field is required";
-    //
-    //   setErrors({
-    //     ...temp,
-    //   });
-    //   return Object.values(temp).every((x) => x == "");
-    // };
 
     const handleFormChange = (index, event) => {
         let data = [...regimenDrug];
@@ -1153,6 +1129,17 @@ const Pharmacy = (props) => {
         return prev + +duration;
     }, 0);
 
+    useEffect(() => {
+        const triggerRegimenDrugOI = async () => {
+            if (iptEligibilty.IPTEligibility === true && tptCareAndSupportRegimen !== "") {
+                handleSelectedRegimenOI({target: {value: 15}});
+                await RegimenDrugOI(tptCareAndSupportRegimen);
+            }
+        };
+        triggerRegimenDrugOI();
+    }, [iptEligibilty, tptCareAndSupportRegimen]);
+
+
     return (
         <div>
             <div className="row">
@@ -1349,46 +1336,6 @@ const Pharmacy = (props) => {
                                             )}
                                         </FormGroup>
                                     </div>
-                                    {/* <div className="mt-4 col-md-2" >
-                      
-                        <div className="form-check custom-checkbox ml-1 ">
-                            <input
-                            type="radio"
-                            className="form-check-input"                       
-                            name="switch"
-                            id="switch"
-                            value="switch"
-                            onChange={handleCheckBox}
-                            style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                            />
-                            <label
-                            className="form-check-label"
-                            htmlFor="basic_checkbox_1"
-                            >
-                            Switch
-                            </label>
-                        </div>
-                   
-                </div>
-                <div className="mt-4 col-md-2">        
-                        <div className="form-check custom-checkbox ml-1 ">
-                            <input
-                            type="radio"
-                            className="form-check-input"                       
-                            name="switch"
-                            id="switch"
-                            value="Substitution"
-                            onChange={handleCheckBox}
-                            style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                            />
-                            <label
-                            className="form-check-label"
-                            htmlFor="basic_checkbox_1"
-                            >
-                            Substitution
-                            </label>
-                        </div>
-                </div> */}
                                     <div className="form-group mb-3 col-md-4">
                                         <FormGroup>
                                             <Label>Substitution/Switch </Label>
@@ -1501,51 +1448,6 @@ const Pharmacy = (props) => {
                                         </div>
                                     )}
                                 </div>
-
-                                {/*<div className="form-group mb-3 col-md-6">*/}
-                                {/*  <FormGroup>*/}
-                                {/*    <Label>DSD Model</Label>*/}
-                                {/*    <Input*/}
-                                {/*      type="select"*/}
-                                {/*      name="dsdModel"*/}
-                                {/*      id="dsdModel"*/}
-                                {/*      value={objValues.dsdModel}*/}
-                                {/*      onChange={handleInputChange}*/}
-                                {/*      style={{*/}
-                                {/*        border: "1px solid #014D88",*/}
-                                {/*        borderRadius: "0.25rem",*/}
-                                {/*      }}*/}
-                                {/*    >*/}
-                                {/*      <option value="">Select </option>*/}
-                                {/*      <option value="Facility">Facility </option>*/}
-                                {/*      <option value="Community">Community </option>*/}
-                                {/*    </Input>*/}
-                                {/*  </FormGroup>*/}
-                                {/*</div>*/}
-                                {/*<div className="form-group mb-3 col-md-6">*/}
-                                {/*  <FormGroup>*/}
-                                {/*    <Label>DSD Model Type</Label>*/}
-                                {/*    <Input*/}
-                                {/*      type="select"*/}
-                                {/*      name="dsdModelType"*/}
-                                {/*      id="dsdModelType"*/}
-                                {/*      value={objValues.dsdModelType}*/}
-                                {/*      onChange={handleInputChange}*/}
-                                {/*      style={{*/}
-                                {/*        border: "1px solid #014D88",*/}
-                                {/*        borderRadius: "0.25rem",*/}
-                                {/*      }}*/}
-                                {/*    >*/}
-                                {/*      <option value="">Select </option>*/}
-                                {/*      {dsdModelType.map((value) => (*/}
-                                {/*        <option key={value.code} value={value.code}>*/}
-                                {/*          {value.display}*/}
-                                {/*        </option>*/}
-                                {/*      ))}*/}
-                                {/*    </Input>*/}
-                                {/*  </FormGroup>*/}
-                                {/*</div>*/}
-
                                 {eacStatusObj &&
                                     eacStatusObj.eacsession &&
                                     eacStatusObj.eacsession !== "Default" && ( //This is to display current EAC of a patient if they have a session that is currently opened
@@ -1914,7 +1816,6 @@ const Pharmacy = (props) => {
                                             <option value="">Select</option>
                                             {patientAge > 15 && (
                                                 <>
-                                                    {/* If IPTEligibility is true */}
                                                     {iptEligibilty.IPTEligibility === true ? (
                                                         <>
                                                             {/* If tpeCareAndSupport is also true, show only x.id === 15 */}
@@ -1955,16 +1856,33 @@ const Pharmacy = (props) => {
                                             )}
                                             {patientAge <= 15 && (
                                                 <>
-                                                    {iptEligibilty.IPTEligibility === true ? ( //Logic to check for TPT eligibility to filter TPT drugs for children
+                                                    {iptEligibilty.IPTEligibility === true ? (
                                                         <>
-                                                            {oIRegimenLine.map((value) => (
-                                                                <option key={value.id} value={value.id}>
-                                                                    {value.description}
-                                                                </option>
-                                                            ))}
+                                                            {/* If tpeCareAndSupport is also true, show only x.id === 15 */}
+                                                            {tptCareAndSupportRegimen !== "" ? (
+                                                                <>
+                                                                    {oIRegimenLine
+                                                                        .filter((x) => x.id === 15) // Only show option with id 15
+                                                                        .map((value) => (
+                                                                            <option key={value.id} value={value.id}>
+                                                                                {value.description}
+                                                                            </option>
+                                                                        ))}
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    {/* Otherwise, show all options */}
+                                                                    {oIRegimenLine.map((value) => (
+                                                                        <option key={value.id} value={value.id}>
+                                                                            {value.description}
+                                                                        </option>
+                                                                    ))}
+                                                                </>
+                                                            )}
                                                         </>
                                                     ) : (
                                                         <>
+                                                            {/* If IPTEligibility is false, exclude id === 15 */}
                                                             {oIRegimenLine
                                                                 .filter((x) => x.id !== 15)
                                                                 .map((value) => (
@@ -1983,12 +1901,16 @@ const Pharmacy = (props) => {
                                 <div className="form-group mb-3 col-xs-6 col-sm-6 col-md-6 col-lg-6">
                                     <FormGroup>
                                         <Label>Drugs</Label>
-
                                         <Input
                                             type="select"
                                             name="regimenId"
                                             id="regimenId"
-                                            value={objValues.regimenId}
+                                            // value={objValues.regimenId}
+                                            value={
+                                                iptEligibilty.IPTEligibility === true && tptCareAndSupportRegimen !== ""
+                                                    ? tptCareAndSupportRegimen
+                                                    : objValues.regimenId
+                                            }
                                             onChange={handleSelectedRegimenCombinationOI}
                                             style={{
                                                 border: "1px solid #014D88",

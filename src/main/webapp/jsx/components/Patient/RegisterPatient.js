@@ -783,8 +783,7 @@ const UserRegistration = (props) => {
     }
   };
 
-   console.log("UserDTO", userDetail);
-   console.log("BasicDTO", basicInfo);
+
    const alphabetOnly = (value) => {
      const result = value.replace(/[^a-z]/gi, "");
      return result;
