@@ -621,24 +621,6 @@ const ArtCommencement = (props) => {
                   </div>
                 </>
               )}
-
-              {/* <div className="form-group mb-3 col-md-4">
-                        <FormGroup>
-                        <Label for="cd4">CD4 at start of ART </Label>
-                        <Input
-                            type="text"
-                            name="cd4"
-                            id="cd4"
-                            min={0}
-                            onChange={handleInputChange}
-                            value={objValues.cd4}
-                            style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                            
-                        />
-                        
-                        </FormGroup>
-                    </div>
-                 */}
               <div className="form-group mb-3 col-md-4">
                 <FormGroup>
                   <Label for="cd4Percentage">CD4%</Label>

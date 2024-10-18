@@ -84,15 +84,10 @@ const Laboratory = (props) => {
   const [buttonHidden, setButtonHidden] = useState(false);
   const [moduleStatus, setModuleStatus] = useState("0");
   const [testGroup, setTestGroup] = useState([]);
-  //const [test, setTest] = useState([]);
-  //const [vlRequired, setVlRequired]=useState(false)
   const [priority, setPriority] = useState([]);
   const [eacStatusObj, setEacStatusObj] = useState();
-  //const [labNumberOption, setLabNumberOption] = useState("")
-  //const [currentVisit, setCurrentVisit]=useState(true)
   const [vLIndication, setVLIndication] = useState([]);
   const [testOrderList, setTestOrderList] = useState([]); //Test Order List
-  //const [showVLIndication, setShowVLIndication] = useState(false);
   const [labNumbers, setLabNumbers] = useState([]); //
   const [selectedOption, setSelectedOption] = useState([]);
   const [labTestOptions, setLabTestOptions] = useState([]);
@@ -102,6 +97,7 @@ const Laboratory = (props) => {
   const [userHasChanged, setUserHasChanged] = useState(false);
   const [tptMonitorng, setTptMonitoring ] = useState({})
   let temp = { ...errors };
+  const [cd4CountObj, setCd4CountObj] = useState({cd4CountType:"", SQC4CountValue:"", FCCd4CountValue: ""})
   const [tests, setTests] = useState({
     comments: "",
     dateAssayed: "",
@@ -324,17 +320,35 @@ const Laboratory = (props) => {
     if (tests.labTestId !== 65 && tests.labTestId !== 50) {
       setTests((prevTests) => ({ ...prevTests, result: "" }));
     }
+    if(tests.labTestId !== 1){
+      setCd4CountObj({cd4CountType:"", SQC4CountValue:"", FCCd4CountValue: ""})
+    }
   }, [tests.labTestId]);
+
+  useEffect(()=>{
+    if(tests.labTestId === 1){
+      setTests({...tests, result: cd4CountObj.FCCd4CountValue !== "" ? cd4CountObj.FCCd4CountValue : cd4CountObj.SQC4CountValue })
+    }
+  },[cd4CountObj])
 
   const handleInputChange = (e) => {
     setErrors({ ...temp, [e.target.name]: "" });
     if (e.target.name === "labNumber") {
       const onlyPositiveNumber = e.target.value;
       setTests({ ...tests, [e.target.name]: onlyPositiveNumber });
-    } else {
+    }else if(e.target.name === "cd4CountType"){
+      setCd4CountObj({...cd4CountObj, [e.target.name]: e.target.value})
+    } else if(e.target.name === "SQC4CountValue"){
+      setCd4CountObj({...cd4CountObj, SQC4CountValue:e.target.value, FCCd4CountValue: ""})
+    }else if(e.target.name === "FCCd4CountValue"){
+      setCd4CountObj({...cd4CountObj,SQC4CountValue:"", FCCd4CountValue: e.target.value})
+    }
+    else {
       setTests({ ...tests, [e.target.name]: e.target.value });
     }
   };
+
+
 
   const addOrder = (e) => {
     if (validate()) {
@@ -597,6 +611,67 @@ const Laboratory = (props) => {
                        )}
                      </FormGroup>
                    </Col>
+                   {/*cd4 count type */}
+                   {tests.labTestId === 1 && <>
+                     <Col md={4} className="form-group mb-3">
+                       <FormGroup>
+                         <Label>CD4 Count (Type)</Label>
+                         <select
+                             className="form-control"
+                             name="cd4CountType"
+                             id="cd4CountType"
+                             value={cd4CountObj.cd4CountType}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.2rem",
+                             }}
+                         >
+                           <option value={""}></option>
+                           <option value="Semi-Quantitative">Semi-Quantitative</option>
+                           <option value="Flow Cyteometry">Flow Cytometry</option>
+                         </select>
+                       </FormGroup>
+                       {/* </div> */}
+                     </Col>
+                   </>}
+                   { cd4CountObj.cd4CountType === "Semi-Quantitative" && (<Col md={4} className="form-group mb-3">
+                     <FormGroup>
+                       <Label>CD4 Count Value(Semi-Quantitative)</Label>
+                       <select
+                           className="form-control"
+                           name="SQC4CountValue"
+                           id="SQC4CountValue"
+                           value={cd4CountObj.SQC4CountValue}
+                           onChange={handleInputChange}
+                           style={{
+                             border: "1px solid #014D88",
+                             borderRadius: "0.2rem",
+                           }}
+                       >
+                         <option value={""}></option>
+                         <option value="<200">{"<200"}</option>
+                         <option value=">=200">{">=200"}</option>
+                       </select>
+                     </FormGroup>
+                   </Col>)}
+                   { cd4CountObj.cd4CountType === "Flow Cyteometry" && (<Col md={4} className="form-group mb-3">
+                       <FormGroup>
+                         <Label for="">CD4 Count Value (Flow Cytometry)</Label>
+                         <Input
+                             type="number"
+                             min={1}
+                             name="FCCd4CountValue"
+                             id="FCCd4CountValue"
+                             value={cd4CountObj.FCCd4CountValue}
+                             onChange={handleInputChange}
+                             style={{
+                               border: "1px solid #014D88",
+                               borderRadius: "0.25rem",
+                             }}
+                         />
+                       </FormGroup>
+                   </Col>)}
                    {/* Indications */}
                    <>
                      <Col md={4} className="form-group mb-3">
@@ -604,14 +679,14 @@ const Laboratory = (props) => {
                        <FormGroup>
                          <Label>
                            Lab Order Indication{" "}
-                           <span style={{ color: "red" }}> *</span>
+                           <span style={{color: "red"}}> *</span>
                          </Label>
                          <select
-                           className="form-control"
-                           name="labOrderIndication"
-                           id="labOrderIndication"
-                           value={tests.labOrderIndication}
-                           onChange={handleInputChange}
+                             className="form-control"
+                             name="labOrderIndication"
+                             id="labOrderIndication"
+                             value={tests.labOrderIndication}
+                             onChange={handleInputChange}
                            style={{
                              border: "1px solid #014D88",
                              borderRadius: "0.2rem",
@@ -1498,33 +1573,31 @@ const Laboratory = (props) => {
                         </>
                       )
 
-                   : tests.labTestId === 50 ? (
+                   : tests.labTestId === 1 ? (
                      <>
                        <Col md={4} className="form-group mb-3">
                          <FormGroup>
                            <Label>
                              Result{" "}
                              {tests.dateResultReceived !== "" ? (
-                               <span style={{ color: "red" }}> *</span>
+                                 <span style={{ color: "red" }}> *</span>
                              ) : (
-                               ""
+                                 ""
                              )}
                            </Label>
-                           <select
-                             className="form-control"
-                             name="result"
-                             id="result"
-                             value={tests.result}
-                             onChange={handleInputChange}
-                             style={{
-                               border: "1px solid #014D88",
-                               borderRadius: "0.2rem",
-                             }}
-                           >
-                             <option value={""}>Select</option>
-                             <option value="<200">{"<200"}</option>
-                             <option value=">=200">{">=200"}</option>
-                           </select>
+                           <Input
+                               className="form-control"
+                               type="text"
+                               name="result"
+                               id="result"
+                               value={tests.result}
+                               onChange={handleInputChange}
+                               style={{
+                                 border: "1px solid #014D88",
+                                 borderRadius: "0.25rem",
+                               }}
+                               required
+                           />
                          </FormGroup>
                        </Col>
                      </>

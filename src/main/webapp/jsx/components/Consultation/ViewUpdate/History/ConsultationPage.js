@@ -210,7 +210,6 @@ const ClinicVisit = (props) => {
     tbPrevention: "",
     arvdrugsRegimen: {},
     viralLoadOrder: {},
-    tbPrevention: "",
     pregnancyStatus: "",
   });
   const [vital, setVitalSignDto] = useState({
@@ -387,7 +386,7 @@ const ClinicVisit = (props) => {
       })
       .then((response) => {
         setChildRegimenLine(
-          response.data.filter((x) => x.id === 3 || x.id === 4)
+          response.data.filter((x) => x.id === 3 || x.id === 4 ||  x.id === 16)
         );
       })
       .catch((error) => {});

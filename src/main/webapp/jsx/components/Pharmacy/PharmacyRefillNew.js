@@ -584,6 +584,7 @@ const Pharmacy = (props) => {
         let drugId = id;
         if (drugId !== "" || drugId !== null) {
             setShowRegimenOI(true);
+
             async function getCharacters(drugId) {
                 try {
                     const response = await axios.get(
@@ -1254,11 +1255,6 @@ const Pharmacy = (props) => {
                                                     </FormGroup>
                                                 )}
                                             </div>
-                                            {/* <div className="form-group mb-3 mt-2 col-md-3">
-                    <FormGroup>
-                        <Label >Pregnant Status  : Yes</Label>                                    
-                    </FormGroup>
-                </div> */}
                                         </div>
                                     </>
                                 )}
