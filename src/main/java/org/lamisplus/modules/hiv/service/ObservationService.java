@@ -263,16 +263,6 @@ public class ObservationService {
         if (observations.isEmpty()) {
             return null;
         }
-        List<String> drugs = Arrays.asList(
-                "Isoniazid-(INH) 100mg",
-                "Isoniazid-(INH) 300mg",
-                "Isoniazid 100mg",
-                "Isoniazid 300mg",
-                "Isoniazid(300mg)/Pyridoxine(25mg)/Cotrimoxazole(960mg)",
-                "Isoniazid and Rifapentine-(3HP)",
-                "Isoniazid and Rifampicin-(3HR)"
-        );
-
         for (String jsonString : observations) {
             JsonNode json = new ObjectMapper().readTree(jsonString);
 

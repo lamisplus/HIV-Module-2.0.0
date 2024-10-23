@@ -214,7 +214,7 @@ const EnrollmentOtz = (props) => {
     formik.setValues({
       ...formik?.values,
       dateEnrolledIntoOtz: e?.target?.value,
-      dateDone: "",
+      dateDone: e?.target?.value
     });
   };
 
@@ -396,10 +396,12 @@ const EnrollmentOtz = (props) => {
                       {...{
                         max: moment(Date.now()).format("YYYY-MM-DD"),
                       }}
-                      value={formik?.values?.dateDone}
+                      // value={formik?.values?.dateDone}
+                      value={moment(props?.activeContent?.currentLabResult?.dateResultReceived).format("YYYY-MM-DD")}
                       onChange={formik?.handleChange}
                       onBlur={formik?.handleBlur}
-                      disabled={!formik?.values?.dateEnrolledIntoOtz}
+                      // disabled={!formik?.values?.dateEnrolledIntoOtz}
+                      disabled
                       style={{
                         border: "1px solid #014D88",
                         borderRadius: "0.25rem",
