@@ -165,67 +165,50 @@ function PatientCard(props) {
         setShowModal({show: false, message: ''});
     };
 
-    // This function checks if a patient has completed their Tuberculosis Preventive Treatment (TPT) and displays a modal message if necessary
+
     useEffect(() => {
         axios.get(`${baseUrl}observation/tpt-completion-status-info?personUuid=${patientObj.personUuid}`, {
-            headers: {Authorization: `Bearer ${token}`}
+            headers: { Authorization: `Bearer ${token}` }
         })
             .then(response => {
-                const data = response.data;
-                if (data !== null) {
-                    if ('outComeOfIpt' in data.observationData.tptMonitoring && data.observationData.tptMonitoring.outComeOfIpt !== '') {
-                        setShowModal({ show: false, message:''});
+                const drugsOfInterest = [
+                    "Isoniazid-(INH) 100mg",
+                    "Isoniazid-(INH) 300mg",
+                    "Isoniazid 100mg",
+                    "Isoniazid 300mg",
+                    "Isoniazid(300mg)/Pyridoxine(25mg)/Cotrimoxazole(960mg)",
+                    "Isoniazid and Rifapentine-(3HP)",
+                    "Isoniazid and Rifampicin-(3HR)"
+                ];
+
+                const matchingObject = response.data.find(item =>
+                    item.pharmacyData.regimens.some(regimen =>
+                        drugsOfInterest.includes(regimen.name)
+                    )
+                );
+
+                if (matchingObject) {
+                    const { observationData, pharmacyData, visitDate } = matchingObject;
+                    if (observationData.tptMonitoring.outComeOfIpt !== '') {
+                        setShowModal({ show: false, message: '' });
+                        return;
                     }
+                    const regimenNames = pharmacyData.regimens.map(regimen => regimen.regimenName);
+                    const visitDateObj = new Date(visitDate);
+                    const today = new Date();
+                    const differenceInDays = Math.floor((today - visitDateObj) / (1000 * 3600 * 24));
 
-                    else {
-                        const regimenNames = data.pharmacyData.regimens.map(regimen => regimen.regimenName);
-                        const visitDate = new Date(response.data.visitDate);
-                        const today = new Date();
-                        const differenceInDays = (today - visitDate) / (1000 * 3600 * 24);
-                        if (regimenNames.includes('Isoniazid-(INH) 300mg') && differenceInDays >= 180) {
-                            setShowModal({
-                                show: true,
-                                message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: Please update Outcome of TPT `
-                            });
-                        } else if (regimenNames.includes('Isoniazid-(INH) 100mg') && differenceInDays >= 180) {
-                            setShowModal({
-                                show: true,
-                                message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: Please update Outcome of TPT `
-                            });
-
-                        }else if (regimenNames.includes('Isoniazid 100mg') && differenceInDays >= 180) {
-                            setShowModal({
-                                show: true,
-                                message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: Please update Outcome of TPT `
-                            });
-                        }
-                        else if (regimenNames.includes('Isoniazid 300mg') && differenceInDays >= 180) {
-                            setShowModal({
-                                show: true,
-                                message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: Please update Outcome of TPT `
-                            });
-                        }
-                        else if (regimenNames.includes('Isoniazid(300mg)/Pyridoxine(25mg)/Cotrimoxazole(960mg)') && differenceInDays >= 180) {
-                            setShowModal({
-                                show: true,
-                                message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: Please update Outcome of TPT `
-                            });
-                        } else if (regimenNames.includes('Isoniazid and Rifapentine-(3HP)') && differenceInDays >= 90) {
-                            setShowModal({
-                                show: true,
-                                message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 90 days ago: Please update Outcome of TPT `
-                            });
-                        } else if (regimenNames.includes('Isoniazid and Rifampicin-(3HR)') && differenceInDays >= 90) {
-                            setShowModal({
-                                show: true,
-                                message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 90 days ago: Please update Outcome of TPT `
-                            });
-                        } else {
-                            setShowModal({show: false, message: ''});
-                        }
+                    if (differenceInDays >= 180 && regimenNames.some(name =>
+                        ["Isoniazid-(INH) 300mg", "Isoniazid-(INH) 100mg", "Isoniazid 100mg", "Isoniazid 300mg", "Isoniazid(300mg)/Pyridoxine(25mg)/Cotrimoxazole(960mg)"].includes(name))) {
+                        setShowModal({ show: true, message: `Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 180 days ago: Please update Outcome of TPT` });
+                    } else if (differenceInDays >= 90 && regimenNames.some(name =>
+                        ["Isoniazid and Rifapentine-(3HP)", "Isoniazid and Rifampicin-(3HR)"].includes(name))) {
+                        setShowModal({ show: true, message:` Patient ID: ${patientObj.hospitalNumber} was initiated on TPT 90 days ago: Please update Outcome of TPT` });
+                    } else {
+                        setShowModal({ show: false, message: '' });
                     }
                 } else {
-                    setShowModal({show: false, message: ''});
+                    setShowModal({ show: false, message: '' });
                 }
             })
             .catch(error => {

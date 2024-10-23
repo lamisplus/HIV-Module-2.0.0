@@ -65,8 +65,8 @@ public class ObservationController {
     }
 
     @GetMapping("/tpt-completion-status-info")
-    public ResponseEntity<TPtCompletionStatusInfoDTO> getTptCompletionStatusInformation(@RequestParam String personUuid) throws JsonProcessingException {
-        TPtCompletionStatusInfoDTO response = observationService.getTptCompletionStatusInformation(personUuid);
+    public ResponseEntity<List<TPtCompletionStatusInfoDTO>> getTptCompletionStatusInformation(@RequestParam String personUuid) throws JsonProcessingException {
+        List<TPtCompletionStatusInfoDTO> response = observationService.getTptCompletionStatusInformation(personUuid);
         return ResponseEntity.ok(response);
     }
 

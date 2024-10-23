@@ -111,88 +111,6 @@ public class ObservationService {
     }
 
 
-//    public ObservationDto createAnObservation(ObservationDto observationDto) throws RecordExistException {
-//        try {
-//            log.info("saving an observation of type {}", observationDto.getType());
-//            Long personId = observationDto.getPersonId();
-//            Person person = getPerson(personId);
-//            Long orgId = currentUserOrganizationService.getCurrentUserOrganization();
-//            boolean anExistingClinicalEvaluation = getAnExistingClinicalEvaluationType("Clinical evaluation", person, orgId).isEmpty();
-//            List<Observation> personObservations =
-//                    observationRepository.getAllByPersonAndFacilityId(person, person.getFacilityId());
-//            if (!anExistingClinicalEvaluation && observationDto.getType().equals("Clinical evaluation")) {
-//                throw new RecordExistException(Observation.class, "type", observationDto.getType());
-//            }
-//
-//            boolean sameEncounterObservation = personObservations
-//                    .stream()
-//                    .anyMatch(o -> o.getType().equals(observationDto.getType())
-//                            && o.getDateOfObservation().equals(observationDto.getDateOfObservation()));
-//            if(sameEncounterObservation){
-//                throw new RecordExistException(Observation.class, "date of observation", ""+observationDto.getDateOfObservation());
-//            }
-//
-//            processAndUpdateIptFromPharmacy(observationDto, person);
-//            observationDto.setFacilityId(orgId);
-//            Visit visit = handleHIVisitEncounter.processAndCreateVisit(personId, observationDto.getDateOfObservation());
-//            if (visit != null) {
-//                observationDto.setVisitId(visit.getId());
-//            }
-//            log.info("appending additional info and saving observation of type {}", observationDto.getType());
-//            appendAdditionalInfoAndSaveObservation(observationDto, person, visit);
-//            log.info("observation save successfully ");
-//            return observationDto;
-//
-//        } catch (RecordExistException e) {
-//            // Handle RecordExistException
-//            log.error("Record already exists: " + e.getMessage());
-//            throw e; // Rethrow the exception if needed
-//
-//        } catch (Exception e) {
-//            // Handle other exceptions
-//            log.error("An error occurred while saving an observation");
-//            log.error("Error message: " + e.getMessage());
-//            throw new IllegalStateException("An error occurred while saving " + e.getMessage());
-//        }
-//    }
-//    public ObservationDto createAnObservation(ObservationDto observationDto) {
-//       try {
-//           log.info("saving an observation of type {}", observationDto.getType());
-//           Long personId = observationDto.getPersonId();
-//           Person person = getPerson(personId);
-//           Long orgId = currentUserOrganizationService.getCurrentUserOrganization();
-//           boolean anExistingClinicalEvaluation = getAnExistingClinicalEvaluationType("Clinical evaluation", person, orgId).isEmpty();
-//           List<Observation> personObservations =
-//                   observationRepository.getAllByPersonAndFacilityId(person, person.getFacilityId());
-//           if (!anExistingClinicalEvaluation && observationDto.getType().equals("Clinical evaluation")) {
-//               throw new RecordExistException(Observation.class, "type", observationDto.getType());
-//           }
-//
-//           boolean sameEncounterObservation = personObservations
-//                   .stream()
-//                   .anyMatch(o -> o.getType().equals(observationDto.getType())
-//                           && o.getDateOfObservation().equals(observationDto.getDateOfObservation()));
-//           if(sameEncounterObservation){
-//               throw new RecordExistException(Observation.class, "date of observation", ""+observationDto.getDateOfObservation());
-//           }
-//
-//           processAndUpdateIptFromPharmacy(observationDto, person);
-//           observationDto.setFacilityId(orgId);
-//           Visit visit = handleHIVisitEncounter.processAndCreateVisit(personId, observationDto.getDateOfObservation());
-//           if (visit != null) {
-//               observationDto.setVisitId(visit.getId());
-//           }
-//           log.info("appending additional info and saving observation of type {}", observationDto.getType());
-//           appendAdditionalInfoAndSaveObservation(observationDto, person, visit);
-//           log.info("observation save successfully ");
-//           return observationDto;
-//       }catch (Exception e) {
-//           log.error("An error occurred while saving an observation");
-//           log.error("error message: " + e.getMessage());
-//           throw new IllegalStateException("An error occurred while saving "+e.getMessage());
-//       }
-//    }
-
     private void appendAdditionalInfoAndSaveObservation(ObservationDto observationDto, Person person, Visit visit) {
         Observation observation = new Observation();
         BeanUtils.copyProperties(observationDto, observation);
@@ -324,7 +242,7 @@ public class ObservationService {
     }
 
 
-    public TPtCompletionStatusInfoDTO getTptCompletionStatusInformation(String personUuid) throws JsonProcessingException {
+    public List<TPtCompletionStatusInfoDTO> getTptCompletionStatusInformation(String personUuid) throws JsonProcessingException {
         String sqlQuery = "SELECT row_to_json(t) AS object " +
                 "FROM ( " +
                 "    SELECT hap.visit_date as visitdate, ho.data as observationdata, hap.extra as pharmacydata " +
@@ -340,16 +258,34 @@ public class ObservationService {
         query.setParameter("personUuid", personUuid);
 
         List<String> observations = query.getResultList();
+        List<TPtCompletionStatusInfoDTO> resultList = new ArrayList<>();
+
         if (observations.isEmpty()) {
             return null;
         }
-        String jsonString = observations.get(0);
-        JsonNode json = new ObjectMapper().readTree(jsonString);
-        TPtCompletionStatusInfoDTO response = new TPtCompletionStatusInfoDTO();
-        response.setVisitDate(json.get("visitdate").asText());
-        response.setObservationData(json.get("observationdata"));
-        response.setPharmacyData(json.get("pharmacydata"));
-        return response;
+        List<String> drugs = Arrays.asList(
+                "Isoniazid-(INH) 100mg",
+                "Isoniazid-(INH) 300mg",
+                "Isoniazid 100mg",
+                "Isoniazid 300mg",
+                "Isoniazid(300mg)/Pyridoxine(25mg)/Cotrimoxazole(960mg)",
+                "Isoniazid and Rifapentine-(3HP)",
+                "Isoniazid and Rifampicin-(3HR)"
+        );
+
+        for (String jsonString : observations) {
+            JsonNode json = new ObjectMapper().readTree(jsonString);
+
+            TPtCompletionStatusInfoDTO response = new TPtCompletionStatusInfoDTO();
+            response.setVisitDate(json.get("visitdate").asText());
+            response.setObservationData(json.get("observationdata"));
+            response.setPharmacyData(json.get("pharmacydata"));
+
+            resultList.add(response);
+        }
+        return resultList;
+
+
     }
 
 
