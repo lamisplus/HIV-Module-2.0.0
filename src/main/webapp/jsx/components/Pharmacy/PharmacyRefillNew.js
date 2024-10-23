@@ -246,7 +246,7 @@ const Pharmacy = (props) => {
     };
 
     const GetCareAndSupportTptRegimen = () => {
-        if (!objValues.visitDate) return; // Only proceed if visitDate is set
+        if (!objValues.visitDate) return;
         axios
             .get(`${baseUrl}observation/person/${props.patientObj.id}`, {
                 headers: {Authorization: `Bearer ${token}`}, // Add token here
@@ -309,15 +309,12 @@ const Pharmacy = (props) => {
             )
             .then((response) => {
                 const currentRegimenObj = response.data;
-                //setCurrentRegimenValue(currentRegimenObj.regimenType.id)
                 objValues.regimen = currentRegimenObj.regimenType.id;
                 RegimenType(currentRegimenObj.regimenType.id);
                 objValues.regimenId = currentRegimenObj.id;
                 //regimenName
                 RegimenDrug(currentRegimenObj.id);
-                //RegimenDrug(regimenId)
                 setShowRegimen(true);
-                //regimenDrug
             })
             .catch((error) => {
             });
@@ -723,17 +720,14 @@ const Pharmacy = (props) => {
             DsdModelType(value);
             setObjValues({...objValues, [name]: value});
         }
-        // Check if the input field being changed is the encounter date field
         if (name === "visitDate") {
             // Check if the entered encounter date already exists in the list of visit dates
             const encounterDateExists = getAllPharmacyByPatientIdReponse.some(
                 (visit) => visit.visitDate === value
             );
-
             if (encounterDateExists) {
                 temp[name] = "The refill date selected is taken";
             } else {
-                // If the encounter date does not exist, clear the error message
                 delete temp[name];
             }
         }
@@ -802,7 +796,7 @@ const Pharmacy = (props) => {
             setShowRegimenOI(true);
         } else if (iptEligibilty.IPTEligibility === true && tptCareAndSupportRegimen !== "") {
             RegimenDrugOI("115")
-            setShowRegimenOI(true);
+            // setShowRegimenOI(true);
         } else {
             setRegimenTypeOI([]);
             setShowRegimenOI(false);
@@ -928,6 +922,7 @@ const Pharmacy = (props) => {
         return Object.values(temp).every((x) => x == "");
     };
 
+
     const addDrug = (e) => {
         if (validateDrugDispense()) {
             setRegimenDrugList([...regimenDrugList, ...regimenDrug]);
@@ -945,6 +940,9 @@ const Pharmacy = (props) => {
             ];
             setRegimenDrug([]);
             setShowRegimen(false);
+            if (iptEligibilty.IPTEligibility === true && tptCareAndSupportRegimen !== ""){
+                RegimenDrugOI("115")
+            }
         } else {
             toast.error("All fields are required");
         }
@@ -964,9 +962,14 @@ const Pharmacy = (props) => {
                     regimenName: "",
                 },
             ];
+
             setRegimenDrug([]);
             setShowRegimenTB(false);
-        } else {
+            if (iptEligibilty.IPTEligibility === true && tptCareAndSupportRegimen !== ""){
+                RegimenDrugOI("115")
+            }
+        }
+        else {
             toast.error("All fields are required");
         }
     };
@@ -988,7 +991,8 @@ const Pharmacy = (props) => {
             ];
             setRegimenDrug([]);
             setShowRegimenOI(false);
-        } else {
+        }
+        else {
             toast.error("All fields are required");
         }
     };
@@ -1009,6 +1013,9 @@ const Pharmacy = (props) => {
             ];
             setRegimenDrug([]);
             setShowRegimenOthers(false);
+            if (iptEligibilty.IPTEligibility === true && tptCareAndSupportRegimen !== ""){
+                RegimenDrugOI("115")
+            }
         } else {
             toast.error("All fields are required");
         }
