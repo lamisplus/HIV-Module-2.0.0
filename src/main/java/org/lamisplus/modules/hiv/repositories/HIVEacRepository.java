@@ -169,7 +169,7 @@ public interface HIVEacRepository extends JpaRepository<HIVEac, Long> {
 			"\t\t\tjsonb_array_elements(h.extra->'regimens') with ordinality p(pharmacy_object)\n" +
 			"\t\t\tINNER JOIN hiv_regimen hr ON hr.description=pharmacy_object ->> 'regimenName'\\:\\:VARCHAR\n" +
 			"\t\t\t INNER JOIN hiv_regimen_type hrt ON hrt.id=hr.regimen_type_id\n" +
-			"\t\t\t WHERE hrt.id IN (1,2,3,4,14))r\n" +
+			"\t\t\t WHERE hrt.id IN (1,2,3,4,14,16))r\n" +
 			"\t\t\t\n" +
 			"\t\t\t INNER JOIN (SELECT hap.person_uuid, MAX(visit_date) AS MAXDATE FROM hiv_art_pharmacy hap\n" +
 			"\t\t\tINNER JOIN hiv_enrollment h ON h.person_uuid=hap.person_uuid  WHERE h.archived=0\n" +
@@ -1106,7 +1106,7 @@ public interface HIVEacRepository extends JpaRepository<HIVEac, Long> {
 		"LEFT JOIN hiv_regimen hr ON hr.description = pharmacy_object ->> 'regimenName'\\:\\: VARCHAR\n" +
 		"LEFT JOIN hiv_regimen_type hrt ON hrt.id = hr.regimen_type_id\n" +
 		"WHERE\n" +
-		"hrt.id IN (1,2,3,4,14)\n" +
+		"hrt.id IN (1,2,3,4,14,16)\n" +
 		"AND h.archived = 0\n" +
 		"AND visit_date >= ?2\n" +
 		"AND visit_date <= ?3\n" +
@@ -1354,7 +1354,7 @@ public interface HIVEacRepository extends JpaRepository<HIVEac, Long> {
 		"public.hiv_art_pharmacy_regimens AS hapr\n" +
 		"INNER JOIN hiv_regimen AS hr ON hapr.regimens_id = hr.id\n" +
 		"WHERE\n" +
-		"hr.regimen_type_id IN (1,2,3,4,14)\n" +
+		"hr.regimen_type_id IN (1,2,3,4,14,16)\n" +
 		"GROUP BY\n" +
 		"art_pharmacy_id,\n" +
 		"regimens_id,\n" +
@@ -1362,7 +1362,7 @@ public interface HIVEacRepository extends JpaRepository<HIVEac, Long> {
 		") AS hapr ON hap.id = hapr.art_pharmacy_id\n" +
 		"INNER JOIN hiv_regimen AS hivreg ON hapr.regimens_id = hivreg.id\n" +
 		"INNER JOIN hiv_regimen_type AS hivregtype ON hivreg.regimen_type_id = hivregtype.id\n" +
-		"AND hivreg.regimen_type_id IN (1,2,3,4,14) \n" +
+		"AND hivreg.regimen_type_id IN (1,2,3,4,14,16) \n" +
 		"ORDER BY\n" +
 		"person_uuid,\n" +
 		"visit_date\n" +

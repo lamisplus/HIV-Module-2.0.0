@@ -569,9 +569,7 @@ function SubMenu(props) {
                              {
                                  (props.patientObj.sex === "Female" ||
                                      props.patientObj.sex === "FEMALE" ||
-                                     props.patientObj.sex === "female") &&
-                                 props.patientObj.age >= 15 &&
-                                 props.patientObj.age <= 40 && (
+                                     props.patientObj.sex === "female") && (
                                      <Menu.Item
                                          onClick={() => loadCervicalCancer(patientObj)}
                                          name="cancer"

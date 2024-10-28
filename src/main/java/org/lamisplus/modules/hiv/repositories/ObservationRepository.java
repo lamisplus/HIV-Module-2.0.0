@@ -189,7 +189,7 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
             "                  INNER JOIN public.hiv_regimen r on r.id = pr.regimens_id\n" +
             "                  INNER JOIN public.hiv_regimen_type rt on rt.id = r.regimen_type_id\n" +
             "                        left JOIN base_application_codeset ds_model on ds_model.code = p.dsd_model_type \n" +
-            "                        WHERE r.regimen_type_id in (1,2,3,4,14)\n" +
+            "                        WHERE r.regimen_type_id in (1,2,3,4,14,16)\n" +
             "                          AND  p.archived = 0) p where rn = 1\n" +
             "             ) pharmacy ON ca.person_uuid = pharmacy.person_uuid40\n" +
             "                        WHERE p.facility_id = :facility_id AND p.archived = 0\n" +

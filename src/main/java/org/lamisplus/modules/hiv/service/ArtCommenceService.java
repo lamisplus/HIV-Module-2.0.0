@@ -141,7 +141,6 @@ public class ArtCommenceService {
 		artClinical.setArchived(0);
 		String cd4Count = artClinicalCommenceDto.getCd4();
 		if(cd4Count != null){
-			System.out.println(" cd4:  "+ cd4Count);
 			artClinical.setCd4(Long.parseLong(cd4Count));
 		}
 		return convertArtToResponseDto(artClinicalRepository.save(artClinical));

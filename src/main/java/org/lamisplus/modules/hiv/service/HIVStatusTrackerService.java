@@ -57,27 +57,8 @@ public class HIVStatusTrackerService {
 
     private final ApplicationCodesetService applicationCodesetService;
 
-
-//    public HIVStatusTrackerDto registerHIVStatusTracker(HIVStatusTrackerDto hivStatusTrackerDto) {
-//        System.out.println("------------------------------I got to registerHIVStatusTracker method---------------------");
-//        Long personId = hivStatusTrackerDto.getPersonId();
-//        Person existPerson = getPerson(personId);
-//        HIVStatusTracker hivStatusTracker = convertDtoToEntity(hivStatusTrackerDto);
-//        Visit visit = hivVisitEncounter.processAndCreateVisit(personId, hivStatusTrackerDto.getStatusDate());
-//        hivStatusTracker.setVisit(visit);
-//        hivStatusTracker.setArchived(0);
-//        hivStatusTracker.setUuid(UUID.randomUUID().toString());
-//        hivStatusTracker.setAuto(false);
-//        hivStatusTracker.setPerson(existPerson);
-//        log.info("Creating ART Status Starts here");
-//        HIVStatusTracker statusTracker = hivStatusTrackerRepository.save(hivStatusTracker);
-//        log.info("This is Status Tracker " + statusTracker);
-//        return  null;
-//    }
-
     public HIVStatusTrackerDto registerHIVStatusTracker(HIVStatusTrackerDto hivStatusTrackerDto) {
         if (hivStatusTrackerDto != null) {
-            System.out.println("------------------------------I got to registerHIVStatusTracker method---------------------");
             Long personId = hivStatusTrackerDto.getPersonId();
             Person existPerson = getPerson(personId);
             HIVStatusTracker hivStatusTracker = convertDtoToEntity(hivStatusTrackerDto);
@@ -177,7 +158,6 @@ public class HIVStatusTrackerService {
                 .getOneArtPharmaciesByPersonAndArchived(statusTracker.getPerson().getUuid(), 0);
 
         artPharmacy.ifPresent(p -> statusDate.set(p.getNextAppointment()));
-       System.out.println("+++++++++statusTracker.getHivStatus++++++==:"+ statusTracker.getHivStatus());
         List<String> staticStatus = Arrays.asList("Stopped Treatment", "Died (Confirmed)", "ART Transfer Out", "HIV_NEGATIVE", "ART Transfer In" );
         if (staticStatus.contains(statusTracker.getHivStatus())) {
             if (statusTracker.getHivStatus().equalsIgnoreCase(HIV_NEGATIVE)) {

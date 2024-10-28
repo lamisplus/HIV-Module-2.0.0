@@ -16,7 +16,6 @@ import { QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 
 export default function App() {
-  console.log("Myself")
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
