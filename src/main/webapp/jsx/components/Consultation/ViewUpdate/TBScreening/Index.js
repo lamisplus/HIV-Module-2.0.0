@@ -333,25 +333,26 @@ const TBScreeningForm = (props) => {
         <div className="form-group mb-3 col-md-6">
           <FormGroup>
             <Label>Patient TB Status</Label>
+            <span style={{color: "red"}}> *</span>
             <Input
-              type="select"
-              // name="tcareCardPatientTbStatus"
-              // id="careCardPatientTbStatus"
-              name="tbStatusId"
-              id="tbStatusId"
-              value={props.tbObj.tbStatusId}
-              // value={props.tbObj.careCardPatientTbStatus}
-              onChange={handleInputChange}
-              style={{ border: "1px solid #014D88", borderRadius: "0.25rem" }}
-              disabled={!props.enableUpdate}
+                type="select"
+                // name="tcareCardPatientTbStatus"
+                // id="careCardPatientTbStatus"
+                name="tbStatusId"
+                id="tbStatusId"
+                value={props.tbObj.tbStatusId}
+                // value={props.tbObj.careCardPatientTbStatus}
+                onChange={handleInputChange}
+                style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}
+                disabled={!props.enableUpdate}
             >
-              <option value="">Select </option>
+              <option value="">Select</option>
               {tbStatus &&
-                tbStatus.map((tb) => (
-                  <option key={tb.id} value={tb.id}>
-                    {tb.display}
-                  </option>
-                ))}
+                  tbStatus.map((tb) => (
+                      <option key={tb.id} value={tb.id}>
+                        {tb.display}
+                      </option>
+                  ))}
             </Input>
           </FormGroup>
           {/*{props.errors.careCardPatientTbStatus !== "" ? (*/}
