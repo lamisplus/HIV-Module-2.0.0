@@ -19,6 +19,23 @@ public interface HIVEacRepository extends JpaRepository<HIVEac, Long> {
 	Optional<HIVEac>  getHIVEacByPersonAndLabNumber(Person person, String labNumber);
 	
 	
+//	@Query(value = "select * from\n" +
+//			"(\n" +
+//			"    select a.patient_id as patientId\n" +
+//			"         , b.id as testResultId\n" +
+//			"         , d.group_name as testGroup\n" +
+//			"         , c.lab_test_name as testName\n" +
+//			"         , a.lab_number as labNumber\n" +
+//			"         , b.date_result_reported resultDate\n" +
+//			"         ,CAST(b.result_reported as int) as  result\n" +
+//			"    from laboratory_test a\n" +
+//			"             inner join laboratory_result b on a.id=b.test_id\n" +
+//			"             inner join laboratory_labtest c on a.lab_test_id=c.id\n" +
+//			"             inner join laboratory_labtestgroup d on a.lab_test_group_id=d.id\n" +
+//			"    where c.lab_test_name = 'Viral Load' and b.result_reported != '' and b.result_reported ~ '^[0-9]+$'\n" +
+//			") a where result > 1000 and a.patientId = ?1", nativeQuery = true)
+//	List<LabEacInfo> getPatientAllEacs(Long personId);
+
 	@Query(value = "select * from\n" +
 			"(\n" +
 			"    select a.patient_id as patientId\n" +
@@ -27,7 +44,7 @@ public interface HIVEacRepository extends JpaRepository<HIVEac, Long> {
 			"         , c.lab_test_name as testName\n" +
 			"         , a.lab_number as labNumber\n" +
 			"         , b.date_result_reported resultDate\n" +
-			"         ,CAST(b.result_reported as int) as  result\n" +
+			"         , CAST(b.result_reported as bigint) as result\n" +
 			"    from laboratory_test a\n" +
 			"             inner join laboratory_result b on a.id=b.test_id\n" +
 			"             inner join laboratory_labtest c on a.lab_test_id=c.id\n" +
