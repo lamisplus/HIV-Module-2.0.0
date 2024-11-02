@@ -85,7 +85,7 @@
         <dependency>
             <groupId>org.lamisplus.modules</groupId>
             <artifactId>patient</artifactId>
-            <version>1.0.0</version>
+            <version>2.0.7</version>
         </dependency>
 
         <dependency>
@@ -232,6 +232,39 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- Dependencies used by the IIT ML Model -->
+        <dependency>
+            <groupId>org.tukaani</groupId>
+            <artifactId>xz</artifactId>
+            <version>1.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jpmml</groupId>
+            <artifactId>pmml-evaluator-moxy</artifactId>
+            <version>1.6.6</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.activation</groupId>
+            <artifactId>jakarta.activation-api</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.dhatim</groupId>
+            <artifactId>fastexcel</artifactId>
+            <version>0.18.4</version>
+        </dependency>
+        <!-- End of dependencies used by the IIT ML Model -->
     </dependencies>
 
     <build>
@@ -267,56 +300,34 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
-           <plugin>
-				<groupId>com.github.eirslett</groupId>
-				<artifactId>frontend-maven-plugin</artifactId>
-				<version>1.12.1</version>
-				<executions>
-<!--					<execution>-->
-<!--						<id>install node and npm</id>-->
-<!--						<goals>-->
-<!--							<goal>install-node-and-npm</goal>-->
-<!--						</goals>-->
-<!--						<configuration>-->
-<!--							<nodeVersion>v16.13.2</nodeVersion>-->
-<!--							<npmVersion>8.1.2</npmVersion>-->
-<!--						</configuration>-->
-<!--					</execution>-->
-<!--					 <execution>-->
-<!--						<id>npm install</id>-->
-<!--						<goals>-->
-<!--							<goal>npm</goal>-->
-<!--						</goals>-->
-<!--						<configuration>-->
-<!--							<arguments>install</arguments>-->
-<!--						</configuration>-->
-<!--					</execution>-->
-<!--					<execution>-->
-<!--						<id>npm run build</id>-->
-<!--						<goals>-->
-<!--							<goal>npm</goal>-->
-<!--						</goals>-->
-<!--						<configuration>-->
-<!--							<arguments>run build</arguments>-->
-<!--						</configuration>-->
-<!--					</execution>-->
-				</executions>
-			</plugin>
             <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <target>
-                                <copy todir="${project.build.directory}/classes/views/static/hiv">
-                                    <fileset dir="${project.basedir}/build"/>
-                                </copy>
-                            </target>
-                        </configuration>
+                        <phase>package</phase>
                         <goals>
-                            <goal>run</goal>
+                            <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.tukaani:xz</include>
+                                    <include>org.jpmml:*</include>
+                                    <inclued>org.apache.commons:commons-math3</inclued>
+                                    <inclued>org.eclipse.persistence:*</inclued>
+                                    <include>jakarta.xml.bind:jakarta.xml.bind-api</include>
+                                    <include>com.sun.activation:jakarta.activation</include>
+                                    <include>jakarta.activation:jakarta.activation-api</include>
+                                    <include>org.glassfish.jaxb:jaxb-runtime</include>
+                                    <include>org.glassfish.jaxb:jaxb-core</include>
+                                    <include>org.glassfish.jaxb:txw2</include>
+                                    <include>com.sun.istack:istack-commons-runtime</include>
+                                    <include>org.dhatim:fastexcel</include>
+                                    <include>com.github.rzymek:opczip</include>
+                                </includes>
+                            </artifactSet>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
