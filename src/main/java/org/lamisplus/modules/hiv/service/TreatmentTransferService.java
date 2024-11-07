@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -115,7 +117,7 @@ public class TreatmentTransferService {
         hivStatusTracker.setHivStatus(finalStatus);
         hivStatusTracker.setUuid(UUID.randomUUID().toString());
         hivStatusTracker.setCreatedDate(LocalDateTime.now());
-        hivStatusTracker.setStatusDate(LocalDate.now());
+        hivStatusTracker.setStatusDate(LocalDate.parse(dto.getEncounterDate()));
         hivStatusTrackerRepository.save(hivStatusTracker);
     }
 
@@ -156,14 +158,43 @@ public class TreatmentTransferService {
     }
 
     private ObservationDto createObservation(TransferPatientDto transferPatientDto, ApplicationCodeSet codeSet1) {
-//        log.info("Inside createObservation");
         ObservationDto observationDto = new ObservationDto();
         observationDto.setPersonId(transferPatientDto.getPatientId());
         observationDto.setVisitId(null);
         observationDto.setType(codeSet1.getDisplay());
-        observationDto.setDateOfObservation(LocalDate.now());
+        observationDto.setDateOfObservation(LocalDate.parse(transferPatientDto.getEncounterDate()));
         observationDto.setFacilityId(transferPatientDto.getFacilityId());
         observationDto.setData(mapTransferPatientInfoToDto(transferPatientDto));
         return observationService.createAnObservation(observationDto);
     }
+
+    public boolean checkTransferStatus(String personUuid, LocalDate encounterDate) {
+        String formattedDate = encounterDate.format(DateTimeFormatter.ISO_DATE);
+        return observationRepository.hasTransferOnDate(personUuid, formattedDate);
+    }
+
+    public boolean isTransferOutEncounterOver24Hours(String personUuid) {
+        return observationRepository.findMostRecentTransferOut(personUuid)
+                .map(observation -> {
+                    String encounterDateStr = observation.getData().get("encounterDate").toString();
+                    if (encounterDateStr == null) {
+                        log.error("Encounter date is missing for personUuid: {}", personUuid);
+                        return false;
+                    }
+                    try {
+                        encounterDateStr = encounterDateStr.replaceAll("^\"|\"$", "").trim();
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Adjust as needed
+                        LocalDateTime encounterDateTime = LocalDate.parse(encounterDateStr, formatter).atStartOfDay();
+                        LocalDateTime twentyFourHoursAgo = LocalDateTime.now().minusHours(24);
+                        return encounterDateTime.isBefore(twentyFourHoursAgo);
+                    } catch (DateTimeParseException e) {
+                        log.error("Error parsing encounter date for personUuid: {}. Date string: {}", personUuid, encounterDateStr, e);
+                        return false;
+                    }
+                })
+                .orElse(false);
+    }
+
+
+
 }

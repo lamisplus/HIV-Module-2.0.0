@@ -114,7 +114,7 @@ const DashboardFilledTransferForm = (props) => {
   ]);
 
   const [info, setInfo] = useState({});
-
+  const [hasExistingTransfer, setHasExistingTransfer] = useState(false);
   const [payload, setPayload] = useState({
     height: "",
     weight: "",
@@ -415,8 +415,40 @@ const DashboardFilledTransferForm = (props) => {
   }, [transferInfo.height, transferInfo.weight]);
 
   const handleInputChange = (e) => {
+    const {name, value} = e.target
     setErrors({ ...temp, [e.target.name]: "" });
     setPayload({ ...payload, [e.target.name]: e.target.value });
+    if (name === "encounterDate" && value) {
+      checkExistingTransfer(value);
+    }
+
+  };
+
+  // Function to check existing transfer
+  const checkExistingTransfer = async (date) => {
+    try {
+      const response = await axios.get(`${baseUrl}treatment-transfers/check-transfer`, {
+        params: {
+          personUuid: patientObj?.personUuid,
+          encounterDate: date
+        },
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const hasTransfer = response.data.hasTransfer
+      setHasExistingTransfer(hasTransfer)
+      if (hasTransfer) {
+        setErrors(prev => ({
+          ...prev,
+          encounterDate: "The selected date is already used for transfer in or out"
+        }));
+      }
+    } catch (error) {
+      console.error("Error checking transfer status:", error);
+      setErrors(prev => ({
+        ...prev,
+        encounterDate: "Error validating date"
+      }));
+    }
   };
 
   const handleInputChangeLocation = (e) => {
@@ -460,45 +492,15 @@ const DashboardFilledTransferForm = (props) => {
     reasonForDefaulting: "",
     reasonForDefaultingOthers: "",
   });
-// console.log("payload", payload)
-
-  //Validations of the forms
-  // const validate = () => {
-  //   temp.reasonForTransfer = payload.reasonForTransfer
-  //     ? ""
-  //     : "This field is required";
-  //   temp.modeOfHIVTest = payload.modeOfHIVTest ? "" : "This field is required";
-  //   setErrors({
-  //     ...temp,
-  //   });
-  //   return Object.values(temp).every((x) => x == "");
-  // };
 
   const validate = async () => {
     temp.reasonForTransfer = payload.reasonForTransfer !== "" ? "" : "This field is required";
     temp.modeOfHIVTest = payload.modeOfHIVTest !== "" ? "" : "This field is required";
     temp.encounterDate = payload.encounterDate !== "" ? "" : "This field is required";
+    // if(hasExistingTransfer){
+    //   temp.encounterDate = 'The selected date is already used for transfer in or out'
+    // }
 
-    if (payload.encounterDate !== "") {
-      try {
-        const response = await axios.get(
-            `${baseUrl}treatment-transfers/validate-encounter-date?personUuid=${patientObj?.personUuid}&encounterDate=${payload.encounterDate}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-        );
-        if (response.data === 'Date is valid.') {
-          temp.encounterDate = '';
-        } else if (response.data === 'The selected date is already used for transfer in or out.') {
-          temp.encounterDate = "The selected date is already used for transfer in or out";
-        } else {
-          temp.encounterDate = "An unexpected error occurred";
-        }
-      } catch (error) {
-        console.error('Error validating date:', error);
-        temp.encounterDate = 'The selected date is already used for transfer in or out';
-      }
-    }
     setErrors({
       ...temp,
     });

@@ -279,7 +279,24 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
             @Param("dateOfObservation") LocalDate dateOfObservation
           );
 
+    @Query(value = "SELECT EXISTS (" +
+            "SELECT 1 FROM hiv_observation " +
+            "WHERE person_uuid = :personUuid " +
+            "AND type IN ('ART Transfer In', 'ART Transfer Out') " +
+            "AND data->>'encounterDate' = :encounterDate" +
+            ") as has_transfer",
+            nativeQuery = true)
+    boolean hasTransferOnDate(@Param("personUuid") String personUuid,
+                              @Param("encounterDate") String encounterDate);
 
-
+    @Query(value =
+            "SELECT * FROM hiv_observation " +
+                    "WHERE person_uuid = :personUuid " +
+                    "AND type = 'ART Transfer Out' " +
+                    "AND data->>'encounterDate' IS NOT NULL " +
+                    "ORDER BY CAST(data->>'encounterDate' AS DATE) DESC " +
+                    "LIMIT 1",
+            nativeQuery = true)
+    Optional<Observation> findMostRecentTransferOut(@Param("personUuid") String personUuid);
 
 }

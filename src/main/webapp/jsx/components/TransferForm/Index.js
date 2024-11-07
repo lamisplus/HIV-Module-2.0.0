@@ -112,6 +112,7 @@ const Tracking = (props) => {
     const [isPatientTransferredOut, setIsPatientTransferredOut] = useState(false);
     const [patientCurrentStatus, setPatientCurrentStatus] = useState(patientObj.currentStatus);
     const [currentMedication, setCurrentMedication] = useState([]);
+    const [hasExistingTransfer, setHasExistingTransfer] = useState(false);
     const [payload, setPayload] = useState({
         height: "",
         weight: "",
@@ -341,8 +342,41 @@ const Tracking = (props) => {
     }, [transferInfo]);
 
     const handleInputChange = (e) => {
+        const {name, value} = e.target
         setErrors({ ...temp, [e.target.name]: "" });
         setPayload({ ...payload, [e.target.name]: e.target.value });
+        // Check for transfer when encounter date changes
+        if (name === "encounterDate" && value) {
+            checkExistingTransfer(value);
+        }
+
+    };
+
+    // Function to check existing transfer
+    const checkExistingTransfer = async (date) => {
+        try {
+            const response = await axios.get(`${baseUrl}treatment-transfers/check-transfer`, {
+                params: {
+                    personUuid: patientObj?.personUuid,
+                    encounterDate: date
+                },
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const hasTransfer = response.data.hasTransfer
+            setHasExistingTransfer(hasTransfer)
+            if (hasTransfer) {
+                setErrors(prev => ({
+                    ...prev,
+                    encounterDate: "The selected date is already used for transfer in or out"
+                }));
+            }
+        } catch (error) {
+            console.error("Error checking transfer status:", error);
+            setErrors(prev => ({
+                ...prev,
+                encounterDate: "Error validating date"
+            }));
+        }
     };
 
 
@@ -355,53 +389,12 @@ const Tracking = (props) => {
         reasonForDefaultingOthers: "",
     });
 
-
-    const handleInputChangeAttempt = (e) => {
-
-        setErrors({ ...temp, [e.target.name]: "" });
-        setAttempt({ ...attempt, [e.target.name]: e.target.value });
-    };
-
-    //Validations of the forms
-    // const validate = () => {
-    //     temp.reasonForTransfer = payload.reasonForTransfer
-    //         ? ""
-    //         : "This field is required";
-    //     temp.modeOfHIVTest = payload.modeOfHIVTest ? "" : "This field is required";
-    //     temp.encounterDate = payload.encounterDate ? "" : "This field is required";
-    //     setErrors({
-    //         ...temp,
-    //     });
-    //     // console.log("temp", temp)
-    //     return Object.values(temp).every((x) => x == "");
-    // };
-
-
-
     const validate = async () => {
         temp.reasonForTransfer = payload.reasonForTransfer !== "" ? "" : "This field is required";
         temp.modeOfHIVTest = payload.modeOfHIVTest !== "" ? "" : "This field is required";
         temp.encounterDate = payload.encounterDate !== "" ? "" : "This field is required";
-
-        if (payload.encounterDate !== "") {
-            try {
-                const response = await axios.get(
-                    `${baseUrl}treatment-transfers/validate-encounter-date?personUuid=${patientObj?.personUuid}&encounterDate=${payload.encounterDate}`,
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
-                if (response.data === 'Date is valid.') {
-                    temp.encounterDate = '';
-                } else if (response.data === 'The selected date is already used for transfer in or out.') {
-                    temp.encounterDate = "The selected date is already used for transfer in or out";
-                } else {
-                    temp.encounterDate = "An unexpected error occurred";
-                }
-            } catch (error) {
-                console.error('Error validating date:', error);
-                temp.encounterDate = 'The selected date is already used for transfer in or out';
-            }
+        if(hasExistingTransfer){
+            temp.encounterDate = 'The selected date is already used for transfer in or out'
         }
 
         setErrors({
@@ -410,19 +403,6 @@ const Tracking = (props) => {
         return Object.values(temp).every((x) => !x);
     };
 
-    /**** Submit Button Processing  */
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     if (validate()) {
-    //         payload.bmi = BMI;
-    //         payload.currentMedication = currentMedication;
-    //         payload.labResult = labResult;
-    //         payload.currentStatus = patientCurrentStatus;
-    //         postTransferForm(payload);
-    //     } else {
-    //         window.scroll(0, 0);
-    //     }
-    // };
 
     const handleSubmit = async (e) => {
             e.preventDefault();
@@ -458,10 +438,9 @@ const Tracking = (props) => {
                                             id="encounterDate"
                                             onChange={handleInputChange}
                                             value={payload.encounterDate}
-                                            //min= {moment(objValues.dateOfLastViralLoad).format("YYYY-MM-DD") }
                                             max={moment(new Date()).format("YYYY-MM-DD")}
                                             style={{
-                                                border: "1px solid #014D88",
+                                                border: `1px solid ${hasExistingTransfer ? "red" : "#014D88"}`,
                                                 borderRadius: "0.25rem",
                                             }}
                                             onKeyPress={(e) => e.preventDefault()}
