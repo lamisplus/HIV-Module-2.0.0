@@ -787,7 +787,39 @@ const Laboratory = (props) => {
                                                 </FormGroup>
                                             </div>
                                         </>
-                                    ) : tests.labTestId === 69 ? (
+                                    ) :
+                                        tests.labTestId === 50 ? (
+                                                <>
+                                                    <Col md={4} className="form-group mb-3">
+                                                        <FormGroup>
+                                                            <Label>
+                                                                Result{" "}
+                                                                {tests.dateResultReceived !== "" ? (
+                                                                    <span style={{ color: "red" }}> *</span>
+                                                                ) : (
+                                                                    ""
+                                                                )}
+                                                            </Label>
+                                                            <select
+                                                                className="form-control"
+                                                                name="result"
+                                                                id="result"
+                                                                value={tests.result}
+                                                                onChange={handleInputChange}
+                                                                style={{
+                                                                    border: "1px solid #014D88",
+                                                                    borderRadius: "0.2rem",
+                                                                }}
+                                                            >
+                                                                <option value={""}></option>
+                                                                <option value="<200">{"<200"}</option>
+                                                                <option value=">=200">{">=200"}</option>
+                                                            </select>
+                                                        </FormGroup>
+                                                    </Col>
+                                                </>
+                                            )
+                                        : tests.labTestId === 69 ? (
                                         <>
                                             <div className="form-group col-md-3">
                                                 <FormGroup>

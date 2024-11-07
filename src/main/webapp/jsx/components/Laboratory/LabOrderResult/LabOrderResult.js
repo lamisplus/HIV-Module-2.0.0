@@ -313,11 +313,12 @@ const Laboratory = (props) => {
       labTestGroupId: e.testGroupId,
       labTestId: e.value,
     }));
+    console.log("object ", selectedOption )
   };
 
   useEffect(() => {
     // Clear result when labTestId changes
-    if (tests.labTestId !== 65 && tests.labTestId !== 50) {
+    if (tests.labTestId !== 65 ) {
       setTests((prevTests) => ({ ...prevTests, result: "" }));
     }
     if(tests.labTestId !== 1){
@@ -963,9 +964,39 @@ const Laboratory = (props) => {
                          </FormGroup>
                        </Col>
                      </>
-                   )
-
-                   //start
+                   ) :
+                       tests.labTestId === 50 ? (
+                               <>
+                                 <Col md={4} className="form-group mb-3">
+                                   <FormGroup>
+                                     <Label>
+                                       Result{" "}
+                                       {tests.dateResultReceived !== "" ? (
+                                           <span style={{ color: "red" }}> *</span>
+                                       ) : (
+                                           ""
+                                       )}
+                                     </Label>
+                                     <select
+                                         className="form-control"
+                                         name="result"
+                                         id="result"
+                                         value={tests.result}
+                                         onChange={handleInputChange}
+                                         style={{
+                                           border: "1px solid #014D88",
+                                           borderRadius: "0.2rem",
+                                         }}
+                                     >
+                                       <option value={""}></option>
+                                       <option value="<200">{"<200"}</option>
+                                       <option value=">=200">{">=200"}</option>
+                                     </select>
+                                   </FormGroup>
+                                 </Col>
+                               </>
+                           )
+                           //start
                    : tests.labTestId === 82 ||
                      tests.labTestId === 83 ||
                      tests.labTestId === 84 ||
