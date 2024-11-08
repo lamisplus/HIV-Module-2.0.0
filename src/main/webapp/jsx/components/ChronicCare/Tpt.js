@@ -435,14 +435,14 @@ const TPT = (props) => {
                 const filteredRecords = data.filter(
                     (item) =>
                         item.type === "Chronic Care" &&
-                        item.data?.tptMonitoring?.everCompletedTpt === 'Yes'
+                        item.data?.tptMonitoring?.endedTpt === 'Yes'
                 );
                 if (filteredRecords.length > 0) {
                     const mostRecentRecord = filteredRecords.sort(
                         (a, b) => new Date(b.dateOfObservation) - new Date(a.dateOfObservation)
                     )[0];
-                    const { dateOfTptCompleted } = mostRecentRecord.data.tptMonitoring || {};
-                    setCareAndSupportEncounterDate(dateOfTptCompleted)
+                    const { dateTptEnded  } = mostRecentRecord.data.tptMonitoring || {};
+                    setCareAndSupportEncounterDate(dateTptEnded)
                 }
             })
             .catch((error) => {
@@ -454,7 +454,6 @@ const TPT = (props) => {
         PATIENT_ENCOUNTER();
     }, []);
 
-// console.log("props.tbt", props.tpt)
     return (
         <>
             <Card className={classes.root}>
@@ -504,7 +503,6 @@ const TPT = (props) => {
                                                 value={props.tpt.dateOfTptCompleted}
                                                 min={props.patientObj.dateOfBirth}
                                                 max={moment(new Date()).format("YYYY-MM-DD")}
-                                                // disabled={props.action === "view" ? true : false}
                                                 disabled={props.action === "view" || tptCompletionDate !== ""}
                                                 onKeyPress={(e) => e.preventDefault()}
                                             >

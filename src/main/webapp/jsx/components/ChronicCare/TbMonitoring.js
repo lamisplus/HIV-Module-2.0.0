@@ -4,26 +4,21 @@ import {
   FormGroup,
   Label,
   CardBody,
-  Spinner,
   Input,
-  Form,
   InputGroup,
 } from "reactstrap";
 import * as moment from "moment";
 import { makeStyles } from "@material-ui/core/styles";
 import { Card } from "@material-ui/core";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "react-widgets/dist/css/react-widgets.css";
-import { useHistory } from "react-router-dom";
-// import {TiArrowBack} from 'react-icons/ti'
 import { token, url as baseUrl } from "../../../api";
 import "react-phone-input-2/lib/style.css";
 import "semantic-ui-css/semantic.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import "react-widgets/dist/css/react-widgets.css";
 import "react-phone-input-2/lib/style.css";
-import { Button } from "semantic-ui-react";
+
 
 const useStyles = makeStyles((theme) => ({
   card: {
