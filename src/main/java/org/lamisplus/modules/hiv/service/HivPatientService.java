@@ -113,7 +113,8 @@ public class HivPatientService {
         Page<PatientProjection> persons = null;
 
         if (searchValue != null && !StringUtils.isBlank(searchValue) && !searchValue.equalsIgnoreCase("null")) {
-            searchValue = searchValue.replaceAll("\\s|,", "");
+//            searchValue = searchValue.replaceAll("\\s|,", "");
+            searchValue = searchValue.trim().replace(" ", "").replace(",", "");
             String queryParam = "%" + searchValue + "%";
             persons = enrollmentRepository.getPatientsByFacilityBySearchParam(facilityId, queryParam, pageable);
         } else {
@@ -126,7 +127,8 @@ public class HivPatientService {
     public PageDTO getHivEnrolledPatients(String searchValue, Pageable pageable) {
         Long facilityId = currentUserOrganizationService.getCurrentUserOrganization();
         if(!String.valueOf(searchValue).equals("null") && !searchValue.equals("*")){
-            searchValue = searchValue.replaceAll("\\s", "");
+//            searchValue = searchValue.replaceAll("\\s", "");
+            searchValue = searchValue.trim().replace(" ", "").replace(",", "");
             String queryParam = "%"+searchValue+"%";
             Page<PatientProjection> persons =
                     enrollmentRepository.getEnrolledPatientsByFacilityBySearchParam(facilityId, queryParam, pageable);

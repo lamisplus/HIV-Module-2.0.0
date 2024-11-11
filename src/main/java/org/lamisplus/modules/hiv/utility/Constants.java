@@ -9,4 +9,6 @@ public class Constants {
     public final static String CODE_SET_GROUP = "HIV_STATUS";
     public final static String WEB_SOURCE = "Web";
     public static final String MOBILE_SOURCE = "Mobile";
+    public static final String HIV_NEGATIVE = "HIV_NEGATIVE";
+    public static final String DAY_MONTH_YEAR = "dd MMM, yyyy";
 }

@@ -112,7 +112,7 @@ public class StatusManagementService {
 
 		if (patientNegativeStatus.isPresent() && staticStatus.contains(patientNegativeStatus.get().getHivStatus())) {
 			String hivStatus = patientNegativeStatus.get().getHivStatus();
-				String finalStatus = hivStatus.replaceAll("_", " ").toUpperCase();
+				String finalStatus = hivStatus.replace("_", " ").toUpperCase();
 				if(finalStatus.contains("DEATH") || finalStatus.contains("Died")) finalStatus = "DIED";
 				return new HIVInterQuarterStatus(patientNegativeStatus.get().getStatusDate(), finalStatus);
 		}
