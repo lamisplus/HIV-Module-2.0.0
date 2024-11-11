@@ -1121,8 +1121,8 @@ const Laboratory = (props) => {
                              }}
                            >
                              <option value={""}>Select</option>
-                             <option value="AFB Positive">AFB Positive</option>
-                             <option value="AFB Negative">AFB Negative</option>
+                             <option value="Positive">AFB Positive</option>
+                             <option value="Negative">AFB Negative</option>
                            </select>
                          </FormGroup>
                        </Col>
