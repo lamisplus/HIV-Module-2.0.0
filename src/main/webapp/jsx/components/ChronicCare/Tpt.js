@@ -275,6 +275,8 @@ const TPT = (props) => {
 
     const handleTpt = (e) => {
         const {name, value} = e.target;
+
+
         if (name === 'everCompletedTpt') {
             if (value === "Yes") {
                 if (careAndSupportEncounterDate !== "") {
@@ -298,7 +300,7 @@ const TPT = (props) => {
             }
         }
         else
-            if (name === 'tbTreatment' || value === '') {
+            if (name === 'tbTreatment' && value === '') {
             props.setTpt({
                 ...props.tpt,
                 [name]: value,
@@ -329,7 +331,7 @@ const TPT = (props) => {
                 tptRegimen: "",
             });
         }
-        else if (name === 'everCompletedTpt' || value === '') {
+        else if (name === 'everCompletedTpt' && value === '') {
             props.setTpt({
                 ...props.tpt,
                 [name]: value,
@@ -348,7 +350,7 @@ const TPT = (props) => {
                 hypersensitivityReactionEffectSeverity:''
             });
         }
-        else if (name === 'currentlyOnTpt' || value === '') {
+        else if (name === 'currentlyOnTpt' && value === '') {
             props.setTpt({
                 ...props.tpt,
                 [name]: value,
@@ -370,7 +372,7 @@ const TPT = (props) => {
                 weight: "",
                 enrolledOnTpt: ""
             });
-        } else if (name === 'endedTpt' || value === '') {
+        } else if (name === 'endedTpt' && value === '') {
             props.setTpt({
                 ...props.tpt,
                 [name]: value,
@@ -378,7 +380,7 @@ const TPT = (props) => {
                 dateTptEnded: "",
                 tbSideEffect: "",
             });
-        } else if (name === 'tbSideEffect' || value === '') {
+        } else if (name === 'tbSideEffect' && value === '') {
             props.setTpt({
                 ...props.tpt,
                 [name]: value,
@@ -387,31 +389,31 @@ const TPT = (props) => {
                 neurologicSymptomsEffect: "",
                 giUpsetEffectSeverity: ""
             });
-        } else if (name === 'giUpsetEffect' || value === '') {
+        } else if (name === 'giUpsetEffect' && value === '') {
             props.setTpt({
                 ...props.tpt,
                 [name]: value,
                 giUpsetEffectSeverity: ""
             });
-        } else if (name === 'neurologicSymptomsEffect' || value === '') {
+        } else if (name === 'neurologicSymptomsEffect' && value === '') {
             props.setTpt({
                 ...props.tpt,
                 [name]: value,
                 neurologicSymptomsEffectSeverity: ''
             });
-        } else if (name === 'hepatotoxicityEffect' || value === '') {
+        } else if (name === 'hepatotoxicityEffect' && value === '') {
             props.setTpt({
                 ...props.tpt,
                 [name]: value,
                 hepatotoxicityEffectSeverity: ''
             });
-        } else if (name === 'hypersensitivityReactionEffect' || value === '') {
+        } else if (name === 'hypersensitivityReactionEffect' && value === '') {
             props.setTpt({
                 ...props.tpt,
                 [name]: value,
                 hypersensitivityReactionEffectSeverity: ''
             });
-        } else if (name === 'enrolledOnTpt' || value === '') {
+        } else if (name === 'enrolledOnTpt' && value === '') {
             props.setTpt({
                 ...props.tpt,
                 [name]: value,
@@ -419,7 +421,7 @@ const TPT = (props) => {
                 tptRegimen: ""
             });
         } else {
-            props.setTpt({...props.tpt, [e.target.name]: e.target.value});
+            props.setTpt({...props.tpt, [name]: value});
         }
     }
 

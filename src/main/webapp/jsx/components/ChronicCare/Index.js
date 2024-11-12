@@ -335,16 +335,14 @@ const ChronicCare = (props) => {
       );
 
       if (response.data) {
-        //console.log("Got here" + response.data["isHypertensive"]);
-
-        //To get the latest Chronic Hypertensive response
         setHypertensive(response.data["isHypertensive"]);
       }
-    } catch (error) {
-      // Handle error here
+    } catch (error) {// Handle error here
       //console.error(error);
     }
   };
+
+
 
   const GetChronicCareData = () => {
     //function to get chronic care data check if record exist using date for validation
@@ -356,11 +354,6 @@ const ChronicCare = (props) => {
         const DateObj = response.data.filter((x) => x.type === "Chronic Care");
         if (response.data) {
           setChronicDateExist(DateObj);
-
-          //To get the lastest Chronic Hyptensive response
-          //const hypensiveResponse = DateObj.length-1
-          //setHypertensive(DateObj[hypensiveResponse].data.chronicCondition.hypertensive)
-          //console.log(DateObj[hypensiveResponse].data.chronicCondition.hypertensive);
         }
       })
       .catch((error) => {});
@@ -461,9 +454,6 @@ const ChronicCare = (props) => {
     toast.success(message, { position: toast.POSITION.BOTTOM_CENTER });
   };
 
-// console.log(errors)
-
-  // console.log("temp", temp)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
