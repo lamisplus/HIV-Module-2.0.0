@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import liquibase.pro.packaged.I;
 import org.jetbrains.annotations.NotNull;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
 import org.lamisplus.modules.hiv.domain.dto.ClientDetailDTOForTracking;
@@ -49,7 +48,6 @@ public class DsdDevolvementService {
     public DsdDevolvementDTO saveDsdDevolvement(DsdDevolvementDTO dto) throws IOException {
         DsdDevolvement dsdDevolvement = convertDsdDevolvementDtoToEntity(dto);
         LocalDate dateDevolved = dto.getDateDevolved();
-        Long personId = dto.getPersonId();
         String dsdType = dto.getDsdType();
         String personUuid = dsdDevolvement.getPerson().getUuid();
         boolean isDevolvedSameDay = dsdDevolvementRepository.existsByPersonIdAndDateDevolved(personUuid, dateDevolved);
@@ -83,7 +81,7 @@ public class DsdDevolvementService {
     }
 
 
-    public DsdDevolvementDTO getDevolvementById(Long id) throws IOException {
+    public DsdDevolvementDTO getDevolvementById(Long id) {
         return convertEntityToDsdDevolvementDto(getDevolvement(id));
     }
 
@@ -104,15 +102,14 @@ public class DsdDevolvementService {
 
     public Optional<PatientCurrentViralLoad> getPatientCurrentViralLoadByPersonUuid(String personUuid) {
         try {
-            Optional<PatientCurrentViralLoad> patientCurrentViralLoad = dsdDevolvementRepository.findViralLoadByPersonUuid(personUuid);
-            return patientCurrentViralLoad;
+            return dsdDevolvementRepository.findViralLoadByPersonUuid(personUuid);
         } catch (Exception e) {
             e.printStackTrace();
             return Optional.empty();
         }
     }
 
-    public String deleteById(Long id) throws IOException {
+    public String deleteById(Long id) {
         DsdDevolvement existDevolvement = getDevolvement(id);
         existDevolvement.setArchived(1);
         dsdDevolvementRepository.save(existDevolvement);
