@@ -1,11 +1,12 @@
 package org.lamisplus.modules.hiv.service;
 
-import jakarta.xml.bind.JAXBException;
+import com.opencsv.CSVReader;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.lang3.StringUtils;
@@ -17,14 +18,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.xml.sax.SAXException;
 
-import javax.annotation.PostConstruct;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -127,8 +123,9 @@ public class IITMlService {
         }
     }
 
+    private final static List<Facility> facilities;
     private final JdbcTemplate jdbcTemplate;
-    private Evaluator evaluator;
+    private static Evaluator evaluator;
 
     public IITResult evaluate(AgeGroup ageGroup,
                               Gender gender,
@@ -169,7 +166,7 @@ public class IITMlService {
         }
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("ageGroup", ageGroup.category);
-        parameters.put("gender", gender.category);
+        parameters.put("Gender", gender.category);
         parameters.put("Marital.Status", maritalStatus.category);
         parameters.put("Education", education.category);
         parameters.put("Occupation", occupation.category);
@@ -181,7 +178,7 @@ public class IITMlService {
         Map<String, String> facilityAttributes = getFacilityAttributes(facility);
         parameters.put("Facility.Type", facilityAttributes.get("Facility.Type"));
         parameters.put("Service.Level", facilityAttributes.get("Service.Level"));
-        parameters.put("ownership", facilityAttributes.get("Ownership"));
+        parameters.put("ownership", facilityAttributes.get("ownership"));
         parameters.put("Population.Setting", facilityAttributes.get("Population.Setting"));
         parameters.put("State", facilityAttributes.get("State"));
 
@@ -223,17 +220,21 @@ public class IITMlService {
         );
     }
 
-    private Map<String, String> getFacilityAttributes(Long facility) {
+    private Map<String, String> getFacilityAttributes(Long id) {
+        if (!facilities.stream().map(Facility::getId).collect(Collectors.toList()).contains(id)) {
+            throw new IllegalArgumentException("Could not find a matching facility with the provided ID");
+        }
         Map<String, String> facilityAttributes = new HashMap<>();
-        String state = getFacilityState(facility);
-        if (!StringUtils.equals(state, "Akwa Ibom") || !StringUtils.equals(state, "Cross River")) {
+        String state = getFacilityState(id);
+        if (!StringUtils.equals(state, "Akwa Ibom") && !StringUtils.equals(state, "Cross River")) {
             throw new IllegalArgumentException("Only data from Akwa Ibom and Cross River are supported");
         }
+        Facility facility = facilities.stream().filter(f -> f.getId().equals(id)).findFirst().get();
         facilityAttributes.put("State", state);
-        /* parameters.put("Facility.Type", randomValue(List.of("Primary Health Centre/Clinic", "Cottage Hospital", "Faith Base Clinics", "General Hospital", "Health Clinic", "Health Post", "Primary Health Centre/Clinic", "Tertiary Hospital")));
-        parameters.put("Service.Level", randomValue(List.of("Primary", "Secondary", "Tertiary")));
-        parameters.put("ownership", randomValue(List.of("Private", "Public", "Private For Profit", "Private Not For Profit")));
-        parameters.put("Population.Setting", randomValue(List.of("Rural", "Urban")));*/
+        facilityAttributes.put("Facility.Type", facility.type);
+        facilityAttributes.put("Service.Level", facility.level);
+        facilityAttributes.put("ownership", facility.ownership);
+        facilityAttributes.put("Population.Setting", facility.population);
 
         return facilityAttributes;
     }
@@ -243,14 +244,14 @@ public class IITMlService {
                 .parallel()
                 .map(candidate -> {
                     IITResult result = evaluate(
-                            AgeGroup.valueOf(candidate.categorizedAge),
-                            Gender.valueOf(candidate.gender),
-                            MaritalStatus.valueOf(candidate.maritalStatus),
-                            Education.valueOf(candidate.education),
-                            Occupation.valueOf(candidate.occupation),
-                            ClinicStage.valueOf(candidate.clinicalStage),
-                            TBStatus.valueOf(candidate.tbStatus),
-                            EntryPoint.valueOf(candidate.entryPoint),
+                            fromCategory(AgeGroup.class, candidate.categorizedAge),
+                            fromCategory(Gender.class, candidate.gender),
+                            fromCategory(MaritalStatus.class, candidate.maritalStatus),
+                            fromCategory(Education.class, candidate.education),
+                            fromCategory(Occupation.class, candidate.occupation),
+                            fromCategory(ClinicStage.class, candidate.clinicalStage),
+                            fromCategory(TBStatus.class, candidate.tbStatus),
+                            fromCategory(EntryPoint.class, candidate.entryPoint),
                             lgaDiff(candidate).equals("1") ? Boolean.TRUE : lgaDiff(candidate).equals("0") ? false : null,
                             facility
                     );
@@ -280,7 +281,7 @@ public class IITMlService {
                 "   LEFT JOIN case_manager cm ON cm.id = case_manager_id " +
                 "WHERE is_commencement = true AND p.archived = 0 AND c.archived = 0 AND h.archived = 0 AND regimen_id IS NOT NULL " +
                 "   AND p.id = ?";
-        return jdbcTemplate.queryForObject(query, Candidate.class, patientId);
+        return jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(Candidate.class), patientId);
     }
 
     private List<Candidate> selectCandidates(Long facility, LocalDate start, LocalDate end) {
@@ -305,7 +306,7 @@ public class IITMlService {
                 ") " +
                 "SELECT * FROM Candidates";
 
-        return jdbcTemplate.query(query, new BeanPropertyRowMapper<Candidate>(), facility, start, end);
+        return jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Candidate.class), facility, start, end);
     }
 
     private ByteArrayOutputStream generateReport(String facility, LocalDate startDate, LocalDate endDate, List<Candidate> candidates) throws Exception {
@@ -454,7 +455,7 @@ public class IITMlService {
 
     @Getter
     @Setter
-    private static class Candidate {
+    public static class Candidate {
         private String firstName;
         private String surname;
         private String otherName;
@@ -488,6 +489,7 @@ public class IITMlService {
                 } else if (age < 20) {
                     categorizedAge = "14-20";
                 } else if (age <= 35) {
+                    //Age 21 was mapped to category 20-35 in the model training; will be corrected in subsequent updates
                     categorizedAge = "20-35";
                 } else {
                     categorizedAge = ">35";
@@ -520,8 +522,11 @@ public class IITMlService {
         }
 
         public void setClinicalStage(String stage) {
-            if (Arrays.stream(ClinicStage.values()).map(s -> s.category).collect(Collectors.toList()).contains(stage)) {
-                this.clinicalStage = stage;
+            ClinicStage clinicStage = Arrays.stream(ClinicStage.values())
+                    .filter(s -> StringUtils.equalsIgnoreCase(s.category, stage))
+                    .findFirst().orElse(null);
+            if (clinicStage != null) {
+                this.clinicalStage = clinicStage.category;
             } else {
                 this.clinicalStage = "N/A";
             }
@@ -544,10 +549,20 @@ public class IITMlService {
         }
     }
 
-    @PostConstruct
-    public void init() {
+    @Getter
+    @Setter
+    public static class Facility {
+        private Long id;
+        private String name;
+        private String type;
+        private String level;
+        private String ownership;
+        private String population;
+    }
+
+    static {
         new Thread(() -> {
-            try (InputStream in = new ClassPathResource("IIT.pmml.xz").getInputStream();
+            try (InputStream in = new ClassPathResource("installers/hiv/ml/IIT.pmml.xz").getInputStream();
                  BufferedInputStream inputBuffer = new BufferedInputStream(in);
                  CompressorInputStream decompressor = new CompressorStreamFactory()
                          .createCompressorInputStream(inputBuffer)) {
@@ -556,10 +571,25 @@ public class IITMlService {
                         .load(decompressor)
                         .build();
                 evaluator.verify();
-            } catch (CompressorException | IOException | ParserConfigurationException | SAXException |
-                     JAXBException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        });
+        }).start();
+
+        CSVReader csvReader = null;
+        try {
+            URL url = IITMlService.class.getClassLoader().getResource("installers/hiv/ml/facilities.csv");
+            assert url != null;
+            csvReader = new CSVReader(new InputStreamReader(url.openStream()));
+        } catch (FileNotFoundException ignored) {
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        assert csvReader != null;
+        CsvToBean<Facility> cb = new CsvToBeanBuilder<Facility>(csvReader)
+                .withType(Facility.class)
+                .build();
+
+        facilities = cb.parse();
     }
 }
