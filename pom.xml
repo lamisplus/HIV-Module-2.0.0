@@ -241,7 +241,7 @@
         </dependency>
         <dependency>
             <groupId>org.jpmml</groupId>
-            <artifactId>pmml-evaluator-moxy</artifactId>
+            <artifactId>pmml-evaluator</artifactId>
             <version>1.6.6</version>
         </dependency>
         <dependency>
@@ -263,6 +263,16 @@
             <groupId>org.dhatim</groupId>
             <artifactId>fastexcel</artifactId>
             <version>0.18.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.9</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.3.1-jre</version>
         </dependency>
         <!-- End of dependencies used by the IIT ML Model -->
     </dependencies>
@@ -315,7 +325,6 @@
                                     <include>org.tukaani:xz</include>
                                     <include>org.jpmml:*</include>
                                     <inclued>org.apache.commons:commons-math3</inclued>
-                                    <inclued>org.eclipse.persistence:*</inclued>
                                     <include>jakarta.xml.bind:jakarta.xml.bind-api</include>
                                     <include>com.sun.activation:jakarta.activation</include>
                                     <include>jakarta.activation:jakarta.activation-api</include>
@@ -325,8 +334,44 @@
                                     <include>com.sun.istack:istack-commons-runtime</include>
                                     <include>org.dhatim:fastexcel</include>
                                     <include>com.github.rzymek:opczip</include>
+                                    <include>com.opencsv:opencsv</include>
+                                    <include>org.apache.commons:commons-lang3</include>
+                                    <include>org.apache.commons:commons-text</include>
+                                    <include>commons-beanutils:commons-beanutils</include>
+                                    <include>commons-logging:commons-logging</include>
+                                    <include>commons-collections:commons-collections</include>
+                                    <include>org.apache.commons:commons-collections4</include>
+                                    <include>org.apache.commons:commons-compress</include>
+                                    <include>com.google.guava:guava</include>
+                                    <include>com.google.guava:failureaccess</include>
                                 </includes>
                             </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.glassfish.jaxb.</pattern>
+                                    <shadedPattern>shaded.org.glassfish.jaxb.</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache.commons.</pattern>
+                                    <shadedPattern>shaded.org.apache.commons.</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>jakarta.</pattern>
+                                    <shadedPattern>shaded.jakarta.</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.sun.</pattern>
+                                    <shadedPattern>shaded.com.sun.</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>javax.activation.</pattern>
+                                    <shadedPattern>shaded.javax.activation.</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.google.</pattern>
+                                    <shadedPattern>shaded.com.google.</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
