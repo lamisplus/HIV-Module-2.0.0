@@ -76,7 +76,7 @@ public class StatusManagementService {
 	private Quarter getQuarter(int startMonth, int year, String quarterName) {
 		LocalDate start = LocalDate.of(year, startMonth, 1);
 		LocalDate end = start.plusMonths(3).minusDays(1);
-		log.info("endDate:{}", end);
+//		log.info("endDate:{}", end);
 		return new Quarter(start, end, quarterName);
 		
 	}
@@ -112,7 +112,7 @@ public class StatusManagementService {
 
 		if (patientNegativeStatus.isPresent() && staticStatus.contains(patientNegativeStatus.get().getHivStatus())) {
 			String hivStatus = patientNegativeStatus.get().getHivStatus();
-				String finalStatus = hivStatus.replaceAll("_", " ").toUpperCase();
+				String finalStatus = hivStatus.replace("_", " ").toUpperCase();
 				if(finalStatus.contains("DEATH") || finalStatus.contains("Died")) finalStatus = "DIED";
 				return new HIVInterQuarterStatus(patientNegativeStatus.get().getStatusDate(), finalStatus);
 		}

@@ -153,6 +153,38 @@ const Laboratory = (props) => {
             });
         
     }
+
+    useEffect(() => {
+        const fetchTestResult = (sampleNumber) => {
+            if (!sampleNumber) return;
+            const modifiedSampleNumber = sampleNumber.replace(/\//g, "_");
+            axios.get(`${baseUrl}lims/sample/result/${modifiedSampleNumber}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+      .then((response) => {
+          const data = response.data
+          const formatttedResultDate = data?.resultDate ? moment(data.resultDate).format('YYYY-MM-DDTHH:mm'): '';
+            setTests((prevTests) => ({
+                ...prevTests,
+                result: data?.testResult || '',
+                dateAssayedBy: data?.assayDate || '',
+                dateResultReceived: formatttedResultDate || '',
+                assayedBy: data?.testedBy || ''
+            }));
+        })
+            .catch((error) => {
+                console.error("Error fetching test result:", error); // Log any errors
+            });
+    };
+    // Make sure activeContent.obj is available before making the API call
+    if (props.activeContent?.obj?.sampleNumber) {
+        setShowResult(true)
+        fetchTestResult(props.activeContent.obj.sampleNumber); // Call the API with sampleNumber
+    }
+    console.log("Active Content Object:", props.activeContent?.obj);
+}, [props.activeContent]);
+
+
     //Get list of LabNumbers
     const PCRLabList =()=>{
         axios
@@ -315,9 +347,7 @@ const Laboratory = (props) => {
         }
     }
 
-    const Back = (row, actionType) =>{  
-        // props.setActiveContent({...props.activeContent, route:'pharmacy', activeTab:"hsitory"})
-        
+    const Back = (row, actionType) =>{
         props.setActiveContent({...props.activeContent, route:'laboratoryViralLoadOrderResult', id:row.id, activeTab:"history", actionType:"", obj:{}})
      }
   
@@ -475,6 +505,7 @@ const Laboratory = (props) => {
                                         max= {moment(new Date()).format("YYYY-MM-DD") }
                                         style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                         disabled={disabledField}
+                                        onKeyPress={(e) => e.preventDefault()}
                                     />
                                     {errors.dateOrderBy !=="" ? (
                                         <span className={classes.error}>{errors.dateOrderBy}</span>
@@ -514,6 +545,7 @@ const Laboratory = (props) => {
                                 max= {moment(new Date()).format("YYYY-MM-DD") }
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 disabled={disabledField}
+                                onKeyPress={(e) => e.preventDefault()}
                             />
                             {errors.sampleCollectionDate !=="" ? (
                                 <span className={classes.error}>{errors.sampleCollectionDate}</span>
@@ -577,6 +609,7 @@ const Laboratory = (props) => {
                                         max= {moment(new Date()).format("YYYY-MM-DD") }
                                         style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                         disabled={disabledField}
+                                        onKeyPress={(e) => e.preventDefault()}
                                     />
                                     {errors.dateAssayedBy !=="" ? (
                                         <span className={classes.error}>{errors.dateAssayedBy}</span>
@@ -597,6 +630,7 @@ const Laboratory = (props) => {
                                         max= {moment(new Date()).format("YYYY-MM-DD HH:MM:SS")}
                                         style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                         disabled={disabledField}
+                                        onKeyPress={(e) => e.preventDefault()}
                                     />
                                     {errors.dateResultReceived !=="" ? (
                                         <span className={classes.error}>{errors.dateResultReceived}</span>
@@ -769,6 +803,7 @@ const Laboratory = (props) => {
                                 onChange={handleInputChange}
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 disabled={disabledField}
+                                onKeyPress={(e) => e.preventDefault()}
                             />
                             {errors.dateSampleLoggedRemotely !=="" ? (
                                 <span className={classes.error}>{errors.dateSampleLoggedRemotely}</span>
@@ -790,6 +825,7 @@ const Laboratory = (props) => {
                                 max= {moment(new Date()).format("YYYY-MM-DD") }
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 disabled={disabledField}
+                                onKeyPress={(e) => e.preventDefault()}
                             />
                             {errors.dateReceivedAtPcrLab !=="" ? (
                                 <span className={classes.error}>{errors.dateReceivedAtPcrLab}</span>
@@ -830,6 +866,7 @@ const Laboratory = (props) => {
                                 max= {moment(new Date()).format("YYYY-MM-DD") }
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 disabled={disabledField}
+                                onKeyPress={(e) => e.preventDefault()}
                             />
                             {errors.dateCheckedBy !=="" ? (
                                 <span className={classes.error}>{errors.dateCheckedBy}</span>
@@ -869,6 +906,7 @@ const Laboratory = (props) => {
                                 max= {moment(new Date()).format("YYYY-MM-DD") }
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 disabled={disabledField}
+                                onKeyPress={(e) => e.preventDefault()}
                             />
                             {errors.dateApproved !=="" ? (
                                 <span className={classes.error}>{errors.dateApproved}</span>

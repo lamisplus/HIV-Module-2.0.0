@@ -19,6 +19,23 @@ public interface HIVEacRepository extends JpaRepository<HIVEac, Long> {
 	Optional<HIVEac>  getHIVEacByPersonAndLabNumber(Person person, String labNumber);
 	
 	
+//	@Query(value = "select * from\n" +
+//			"(\n" +
+//			"    select a.patient_id as patientId\n" +
+//			"         , b.id as testResultId\n" +
+//			"         , d.group_name as testGroup\n" +
+//			"         , c.lab_test_name as testName\n" +
+//			"         , a.lab_number as labNumber\n" +
+//			"         , b.date_result_reported resultDate\n" +
+//			"         ,CAST(b.result_reported as int) as  result\n" +
+//			"    from laboratory_test a\n" +
+//			"             inner join laboratory_result b on a.id=b.test_id\n" +
+//			"             inner join laboratory_labtest c on a.lab_test_id=c.id\n" +
+//			"             inner join laboratory_labtestgroup d on a.lab_test_group_id=d.id\n" +
+//			"    where c.lab_test_name = 'Viral Load' and b.result_reported != '' and b.result_reported ~ '^[0-9]+$'\n" +
+//			") a where result > 1000 and a.patientId = ?1", nativeQuery = true)
+//	List<LabEacInfo> getPatientAllEacs(Long personId);
+
 	@Query(value = "select * from\n" +
 			"(\n" +
 			"    select a.patient_id as patientId\n" +
@@ -27,7 +44,7 @@ public interface HIVEacRepository extends JpaRepository<HIVEac, Long> {
 			"         , c.lab_test_name as testName\n" +
 			"         , a.lab_number as labNumber\n" +
 			"         , b.date_result_reported resultDate\n" +
-			"         ,CAST(b.result_reported as int) as  result\n" +
+			"         , CAST(b.result_reported as bigint) as result\n" +
 			"    from laboratory_test a\n" +
 			"             inner join laboratory_result b on a.id=b.test_id\n" +
 			"             inner join laboratory_labtest c on a.lab_test_id=c.id\n" +
@@ -92,7 +109,7 @@ public interface HIVEacRepository extends JpaRepository<HIVEac, Long> {
 			"from laboratory_test a\n" +
 			"inner join laboratory_result b on a.id=b.test_id\n" +
 			"inner join laboratory_labtest c on a.lab_test_id=c.id\n" +
-			"INNER JOIN base_organisation_unit_identifier oi ON oi.organisation_unit_id=a.facility_id\n" +
+			"INNER JOIN base_organisation_unit_identifier oi ON oi.organisation_unit_id=a.facility_id AND oi.name = 'DATIM_ID'\n" +
 			"inner join laboratory_sample d on a.id=d.test_id\n" +
 			"where c.lab_test_name = 'Viral Load' and b.result_reported != '' and a.facility_id =?1",
 			nativeQuery = true)
@@ -169,7 +186,7 @@ public interface HIVEacRepository extends JpaRepository<HIVEac, Long> {
 			"\t\t\tjsonb_array_elements(h.extra->'regimens') with ordinality p(pharmacy_object)\n" +
 			"\t\t\tINNER JOIN hiv_regimen hr ON hr.description=pharmacy_object ->> 'regimenName'\\:\\:VARCHAR\n" +
 			"\t\t\t INNER JOIN hiv_regimen_type hrt ON hrt.id=hr.regimen_type_id\n" +
-			"\t\t\t WHERE hrt.id IN (1,2,3,4,14))r\n" +
+			"\t\t\t WHERE hrt.id IN (1,2,3,4,14,16))r\n" +
 			"\t\t\t\n" +
 			"\t\t\t INNER JOIN (SELECT hap.person_uuid, MAX(visit_date) AS MAXDATE FROM hiv_art_pharmacy hap\n" +
 			"\t\t\tINNER JOIN hiv_enrollment h ON h.person_uuid=hap.person_uuid  WHERE h.archived=0\n" +
@@ -1106,7 +1123,7 @@ public interface HIVEacRepository extends JpaRepository<HIVEac, Long> {
 		"LEFT JOIN hiv_regimen hr ON hr.description = pharmacy_object ->> 'regimenName'\\:\\: VARCHAR\n" +
 		"LEFT JOIN hiv_regimen_type hrt ON hrt.id = hr.regimen_type_id\n" +
 		"WHERE\n" +
-		"hrt.id IN (1,2,3,4,14)\n" +
+		"hrt.id IN (1,2,3,4,14,16)\n" +
 		"AND h.archived = 0\n" +
 		"AND visit_date >= ?2\n" +
 		"AND visit_date <= ?3\n" +
@@ -1354,7 +1371,7 @@ public interface HIVEacRepository extends JpaRepository<HIVEac, Long> {
 		"public.hiv_art_pharmacy_regimens AS hapr\n" +
 		"INNER JOIN hiv_regimen AS hr ON hapr.regimens_id = hr.id\n" +
 		"WHERE\n" +
-		"hr.regimen_type_id IN (1,2,3,4,14)\n" +
+		"hr.regimen_type_id IN (1,2,3,4,14,16)\n" +
 		"GROUP BY\n" +
 		"art_pharmacy_id,\n" +
 		"regimens_id,\n" +
@@ -1362,7 +1379,7 @@ public interface HIVEacRepository extends JpaRepository<HIVEac, Long> {
 		") AS hapr ON hap.id = hapr.art_pharmacy_id\n" +
 		"INNER JOIN hiv_regimen AS hivreg ON hapr.regimens_id = hivreg.id\n" +
 		"INNER JOIN hiv_regimen_type AS hivregtype ON hivreg.regimen_type_id = hivregtype.id\n" +
-		"AND hivreg.regimen_type_id IN (1,2,3,4,14) \n" +
+		"AND hivreg.regimen_type_id IN (1,2,3,4,14,16) \n" +
 		"ORDER BY\n" +
 		"person_uuid,\n" +
 		"visit_date\n" +
