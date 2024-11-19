@@ -108,9 +108,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Patients = (props) => {
-  //const [patientList, setPatientList] = useState([])
   const [showPPI, setShowPPI] = useState(true);
-  //const [loading, setLoading] = useState(true)
   const handleCheckBox = (e) => {
     if (e.target.checked) {
       setShowPPI(false);
@@ -125,7 +123,6 @@ const Patients = (props) => {
         icons={tableIcons}
         title="Find Patient"
         columns={[
-          // { title: " ID", field: "Id" },
           {
             title: "Patient Name",
             field: "name",
@@ -138,8 +135,6 @@ const Patients = (props) => {
           },
           { title: "Sex", field: "sex", filtering: false },
           { title: "Age", field: "age", filtering: false },
-          //{ title: "Enrollment Status", field: "v_status", filtering: false },
-          //{ title: "ART Number", field: "v_status", filtering: false },
           { title: "ART Status", field: "status", filtering: false },
           { title: "Actions", field: "actions", filtering: false },
         ]}
@@ -155,33 +150,6 @@ const Patients = (props) => {
                 resolve({
                   data: result.data.records.map((row) => ({
                     name:
-                      // row.currentStatus !== "Not Enrolled" ? (
-                      //   <>
-                      //     <Link
-                      //       to={{
-                      //         pathname: "/patient-history",
-                      //         state: { patientObj: row },
-                      //       }}
-                      //       title={"Click to view patient dashboard"}
-                      //     >
-                      //       {" "}
-                      //       {row.firstName + " " + row.surname}
-                      //     </Link>
-                      //   </>
-                      // ) : (
-                      //   <>
-                      //     <Link
-                      //       to={{
-                      //         pathname: "/enroll-patient",
-                      //         state: { patientId: row.id, patientObj: row },
-                      //       }}
-                      //       title={"Enroll Patient"}
-                      //     >
-                      //       {" "}
-                      //       {row.firstName + " " + row.surname}
-                      //     </Link>
-                      //   </>
-                      // ),
                      row.firstName + " " + row.surname,
                     hospital_number: row.hospitalNumber,
                     sex: row.sex,
@@ -313,7 +281,7 @@ const Patients = (props) => {
           searchFieldAlignment: "left",
           pageSizeOptions: [10, 20, 100],
           pageSize: 10,
-          debounceInterval: 400,
+          debounceInterval: 300,
         }}
         components={{
           Toolbar: (props) => (

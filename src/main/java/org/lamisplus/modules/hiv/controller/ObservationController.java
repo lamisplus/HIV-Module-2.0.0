@@ -1,7 +1,6 @@
 package org.lamisplus.modules.hiv.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lamisplus.modules.hiv.domain.dto.ObservationDto;
@@ -24,7 +23,6 @@ import java.util.Optional;
 public class ObservationController {
 
     private final ObservationService observationService;
-    private final ObjectMapper objectMapper;
     private final ObservationRepository observationRepository;
 
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -69,7 +67,6 @@ public class ObservationController {
         List<TPtCompletionStatusInfoDTO> response = observationService.getTptCompletionStatusInformation(personUuid);
         return ResponseEntity.ok(response);
     }
-
 
     @GetMapping("/tpt-completion-date")
     public ResponseEntity<String> getTptCompletionDate(@RequestParam String personUuid, @RequestParam LocalDate dateOfObservation) {

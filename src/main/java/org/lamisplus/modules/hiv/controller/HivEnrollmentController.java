@@ -1,6 +1,5 @@
 package org.lamisplus.modules.hiv.controller;
 
-import com.google.common.base.Stopwatch;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lamisplus.modules.base.domain.dto.PageDTO;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +26,6 @@ public class HivEnrollmentController {
     private final HivPatientService patientService;
 
     private final PatientActivityService patientActivityService;
-
 
     @PostMapping(value = "enrollment", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HivEnrollmentDTO> createHivEnrollment(@RequestBody HivEnrollmentDTO hiv) {
@@ -53,20 +50,16 @@ public class HivEnrollmentController {
     ) {
         return ResponseEntity.ok (patientService.getHivEnrolledPatients(searchValue, PageRequest.of(pageNo, pageSize)));
     }
-    
-    
+
     @GetMapping(value = "patients", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PageDTO> getHivPatient(
             @RequestParam (required = false ) String searchValue,
             @RequestParam(defaultValue = "0") Integer pageNo,
             @RequestParam(defaultValue = "10") Integer pageSize) {
-        Stopwatch stopwatch = Stopwatch.createStarted();
         PageDTO hivPatients = patientService.getHivPatients(searchValue, PageRequest.of(pageNo, pageSize));
-//        log.info("total time taken to load 10 records :{}", stopwatch.elapsed().toMillis());
         return ResponseEntity.ok (hivPatients);
     }
-    
-  
+
     
     @GetMapping(value = "patients/iit", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PageDTO> getIItHivPatient(
@@ -113,7 +106,6 @@ public class HivEnrollmentController {
         return ResponseEntity.accepted ().build ();
     }
 
-
     @GetMapping("/patients/{patientId}/activities")
     public List<TimelineVm> getActivities(@PathVariable Long patientId, @RequestParam(required = false, defaultValue = "false") Boolean full) {
         return patientActivityService.getTimelineVms (patientId, full);
@@ -125,7 +117,6 @@ public class HivEnrollmentController {
 
     @GetMapping(value = "patient/enrollment/unique-id-exists")
     public ResponseEntity<?> uniqueIdExists(@RequestParam("personUuid") Optional<String> personUuid, @RequestParam("uniqueId") String uniqueId){
-
         return hivEnrollmentService.uniqueIdExists(
                 personUuid,
                 uniqueId).isPresent()

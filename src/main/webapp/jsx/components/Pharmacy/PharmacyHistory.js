@@ -139,7 +139,6 @@ const PharmacyHistory = (props) => {
             icons={tableIcons}
               title="Pharmacy History"
               columns={[
-              // { title: " ID", field: "Id" },
                 {
                   title: "Visit Date",
                   field: "visitDate",
@@ -155,12 +154,6 @@ const PharmacyHistory = (props) => {
                   ),
                   filtering: false,
               },
-               // { title: "Quantity", field: "regimenQuantity", filtering: false },
-                // { title: "isDevolve", field: "isDevolve", filtering: false },
-                // { title: "DSDModel", field: "dsdModel", filtering: false },
-                // { title: "MMD Type", field: "mmdType", filtering: false },
-                // { title: "Prescription Error", field: "prescriptionError", filtering: false },
-                // { title: "ADR Screened", field: "adverseDrugReactions", filtering: false },
                 { title: "Action", field: "Action", filtering: false },
 
               ]}
@@ -178,11 +171,7 @@ const PharmacyHistory = (props) => {
                                 </ul>
                     
                                 ),  
-                  regimenQuantity: "", 
-                //   isDevolve: row.isDevolve, 
-                //   mmdType: row.mmdType, 
-                //   prescriptionError: row.prescriptionError===false? "NO":"YES", 
-                //   adverseDrugReactions: row.adrScreened===false? "NO":"YES",                   
+                  regimenQuantity: "",
                   Action:<div>
                             <Menu.Menu position='right'  >
                             <Menu.Item >
