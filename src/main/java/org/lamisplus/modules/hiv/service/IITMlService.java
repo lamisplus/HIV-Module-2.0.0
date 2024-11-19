@@ -15,6 +15,7 @@ import org.jpmml.evaluator.Evaluator;
 import org.jpmml.evaluator.EvaluatorUtil;
 import org.jpmml.evaluator.LoadingModelEvaluatorBuilder;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -203,7 +204,7 @@ public class IITMlService {
     public IITResult computeIITChance(Long patient) {
         Candidate candidate = patientAsCandidate(patient);
         if (candidate == null) {
-            throw new IllegalArgumentException("Could not find a matching patient with the provided ID");
+            throw new IllegalArgumentException("Could not find a matching patient with the provided ID or patient has not been commenced on HIV");
         }
 
         return evaluate(
@@ -281,7 +282,11 @@ public class IITMlService {
                 "   LEFT JOIN case_manager cm ON cm.id = case_manager_id " +
                 "WHERE is_commencement = true AND p.archived = 0 AND c.archived = 0 AND h.archived = 0 AND regimen_id IS NOT NULL " +
                 "   AND p.id = ?";
-        return jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(Candidate.class), patientId);
+        try {
+            return jdbcTemplate.queryForObject(query, new BeanPropertyRowMapper<>(Candidate.class), patientId);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private List<Candidate> selectCandidates(Long facility, LocalDate start, LocalDate end) {
