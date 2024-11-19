@@ -10,7 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransferPatientDto {
-
     private String Id;
     private Long patientId;
     private String personUuid;

@@ -13,7 +13,6 @@ import org.lamisplus.modules.hiv.domain.entity.HIVStatusTracker;
 import org.lamisplus.modules.hiv.domain.entity.HivEnrollment;
 import org.lamisplus.modules.hiv.domain.entity.Observation;
 import org.lamisplus.modules.hiv.repositories.HIVStatusTrackerRepository;
-import org.lamisplus.modules.hiv.repositories.HivEnrollmentRepository;
 import org.lamisplus.modules.hiv.repositories.ObservationRepository;
 import org.lamisplus.modules.hiv.utility.Constants;
 import org.springframework.beans.BeanUtils;
@@ -24,7 +23,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -39,15 +37,11 @@ public class TreatmentTransferService {
     private final HIVStatusTrackerRepository hivStatusTrackerRepository;
     private final CurrentUserOrganizationService currentUserOrganizationService;
 
-
-
     public TransferPatientInfo getTransferPatientInfo(String patientUuid, Long facilityId) {
-        TransferPatientInfo patient = observationRepository.getTransferPatientInfo(patientUuid, currentUserOrganizationService.getCurrentUserOrganization()).get();
-        return patient;
+        return observationRepository.getTransferPatientInfo(patientUuid, currentUserOrganizationService.getCurrentUserOrganization()).get();
     }
 
-
-    public  List<LatestLabResult> retrieveTransferPatientLabResult(Long facilityId, String uuid) {
+    public List<LatestLabResult> retrieveTransferPatientLabResult(Long facilityId, String uuid) {
         try {
             if (uuid != null && facilityId != null) {
                 return observationRepository.getPatientLabResults(facilityId, uuid);
@@ -71,13 +65,6 @@ public class TreatmentTransferService {
         }
     }
 
-
-    /**
-     * check patient hiv status before form was submitted
-     * if dead, return a message that patient is dead
-     * if not  register form, save information in the observation table
-     * change the patient hiv_status_tracker to transfer out
-     */
     public ObservationDto registerTransferPatientInfo(TransferPatientDto dto) throws Exception {
         if (dto == null) {
             throw new IllegalArgumentException("TransferPatientInfo is null");
@@ -85,7 +72,6 @@ public class TreatmentTransferService {
         String status = dto.getCurrentStatus().equalsIgnoreCase("ART TRANSFER OUT") ? "ART Transfer In" : "ART Transfer Out";
         ApplicationCodeSet codeSet = applicationCodesetRepository.findByDisplayAndCodesetGroup(status, Constants.CODE_SET_GROUP)
                 .orElseThrow(() -> new EntityNotFoundException(ApplicationCodeSet.class, "display", status));
-//        log.info("patientUuid: {}", dto.getPersonUuid());
         Boolean existsRecordWithDiedStatus = hivStatusTrackerRepository.existsRecordWithDiedStatus(dto.getPersonUuid());
         if (existsRecordWithDiedStatus) {
             throw new Exception("Patient is confirmed dead");
@@ -103,7 +89,7 @@ public class TreatmentTransferService {
         HivEnrollmentDTO enrollment = hivEnrollmentService.getHivEnrollmentByPersonIdAndArchived(dto.getPatientId())
                 .orElseThrow(() -> new EntityNotFoundException(HivEnrollment.class, "personId", "" + dto.getPatientId()));
         enrollment.setStatusAtRegistrationId(codeSet.getId());
-        if(dto.getCurrentStatus().equalsIgnoreCase("ART Transfer Out")){
+        if (dto.getCurrentStatus().equalsIgnoreCase("ART Transfer Out")) {
             enrollment.setEntryPointId(21L);
         }
         hivEnrollmentService.updateHivEnrollment(enrollment.getId(), enrollment);
@@ -194,7 +180,6 @@ public class TreatmentTransferService {
                 })
                 .orElse(false);
     }
-
 
 
 }

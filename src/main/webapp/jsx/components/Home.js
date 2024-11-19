@@ -1,8 +1,6 @@
 import React, { useState, Fragment, useEffect } from "react";
 import { Row, Col, Card, Tab, Tabs } from "react-bootstrap";
 import Dashboard from "./Patient/PatientList";
-import VisualisationHome from "./Visualisation/Index";
-import LostToFollowUp from "./Patient/PatientListIit";
 import ArtPatients from "./Patient/ArtPatients";
 import Ovc from "./Ovc/Index";
 import { Link } from "react-router-dom";
@@ -11,7 +9,6 @@ import { url as baseUrl } from "../../api";
 import { FaUserPlus } from "react-icons/fa";
 import { token } from "../../api";
 import axios from "axios";
-//import PageTitle from "./../layouts/PageTitle";
 const divStyle = {
   borderRadius: "2px",
   fontSize: 14,
@@ -83,9 +80,6 @@ const Home = () => {
                   <Tab eventKey="list" title="OVC Linkage">
                     <Ovc />
                   </Tab>
-                  {/* <Tab eventKey="visualization" title="Data Visualisation">
-                    <VisualisationHome />
-                  </Tab> */}
                 </Tabs>
               </div>
             </Card.Body>

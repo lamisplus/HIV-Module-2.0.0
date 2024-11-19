@@ -5,11 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lamisplus.modules.hiv.domain.dto.CurrentRegimenInfoDTO;
 import org.lamisplus.modules.hiv.domain.dto.RegisterArtPharmacyDTO;
-import org.lamisplus.modules.hiv.domain.dto.TPtCompletionStatusInfoDTO;
 import org.lamisplus.modules.hiv.domain.entity.Regimen;
-import org.lamisplus.modules.hiv.repositories.ArtPharmacyRepository;
 import org.lamisplus.modules.hiv.service.ArtPharmacyService;
-import org.lamisplus.modules.hiv.service.DsdDevolvementService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,10 +22,6 @@ import java.util.List;
 @RequestMapping("/api/v1/hiv/art/pharmacy")
 public class ArtPharmacyController {
     private final ArtPharmacyService artPharmacyService;
-    
-    private  final ArtPharmacyRepository repository;
-
-    private final DsdDevolvementService  dsdDevolvementService;
 
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<RegisterArtPharmacyDTO> registerArtPharmacy(@RequestBody RegisterArtPharmacyDTO registerArtPharmacyDto) throws IOException {
