@@ -1,18 +1,11 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment, useEffect, lazy, Suspense } from "react";
 import { Row, Col, Card, Tab, Tabs } from "react-bootstrap";
-import Dashboard from "./Patient/PatientList";
-import CheckedInPatients from "./Patient/CheckedInPatients";
-import VisualisationHome from "./Visualisation/Index";
-import LostToFollowUp from "./Patient/PatientListIit";
-import ArtPatients from "./Patient/ArtPatients";
-import Ovc from "./Ovc/Index";
-import { Link } from "react-router-dom";
-import Button from "@material-ui/core/Button";
-import { url as baseUrl } from "../../api";
-import { FaUserPlus } from "react-icons/fa";
-import { token } from "../../api";
-import axios from "axios";
-//import PageTitle from "./../layouts/PageTitle";
+import LoadingSpinner from "../../reuseables/Loading";
+const Dashboard = lazy(() => import("./Patient/PatientList"));
+const CheckedInPatients = lazy(() => import("./Patient/CheckedInPatients"));
+const ArtPatients = lazy(() => import("./Patient/ArtPatients"));
+const Ovc = lazy(() => import("./Ovc/Index"));
+
 const divStyle = {
   borderRadius: "2px",
   fontSize: 14,
@@ -20,34 +13,12 @@ const divStyle = {
 
 const Home = () => {
   const [key, setKey] = useState("home");
+  const [activeTab, setActiveTab] = useState("home");
 
-  const getPermissions = async () => {
-    await axios
-      .get(`${baseUrl}account`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        localStorage.setItem("permissions", response.data.permissions);
-      })
-      .catch((error) => {});
+  const handleTabSelect = (k) => {
+    setKey(k);
+    setActiveTab(k);
   };
-
-  const fetchFacilityId = () => {
-    axios
-      .get(`${baseUrl}account`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        const organisationUnitId = response.data.currentOrganisationUnitId;
-        localStorage.setItem("facId", organisationUnitId);
-      })
-      .catch((error) => {});
-  };
-
-  useEffect(() => {
-    getPermissions();
-    fetchFacilityId();
-  }, []);
 
   return (
     <Fragment>
@@ -61,48 +32,42 @@ const Home = () => {
           </li>
         </ol>
       </div>
-      <Link to={"register-patient"}>
-        <Button
-          variant="contained"
-          color="primary"
-          className=" float-end mb-10"
-          startIcon={<FaUserPlus size="10" />}
-          style={{ backgroundColor: "#014d88" }}
-        >
-          <span style={{ textTransform: "capitalize" }}>New Patient</span>
-        </Button>
-      </Link>
       <br />
       <br />
       <Row>
         <Col xl={12}>
           <Card style={divStyle}>
             <Card.Body>
-              {/* <!-- Nav tabs --> */}
               <div className="custom-tab-1">
                 <Tabs
                   id="controlled-tab-example"
                   activeKey={key}
-                  onSelect={(k) => setKey(k)}
+                  onSelect={handleTabSelect}
                   className="mb-3"
                 >
                   <Tab eventKey="home" title="Find Patients">
-                    <Dashboard />
+                    <Suspense fallback={<LoadingSpinner />}>
+                      {activeTab === "home" && <Dashboard />}
+                    </Suspense>
                   </Tab>
 
                   <Tab eventKey="checkedIn" title="Checked-In Patients">
-                    <CheckedInPatients />
+                    <Suspense fallback={<LoadingSpinner />}>
+                      {activeTab === "checkedIn" && <CheckedInPatients />}
+                    </Suspense>
                   </Tab>
 
                   <Tab eventKey="art-patients" title="ART Patients">
-                    <ArtPatients />
+                    <Suspense fallback={<LoadingSpinner />}>
+                      {activeTab === "art-patients" && <ArtPatients />}
+                    </Suspense>
                   </Tab>
+
                   <Tab eventKey="list" title="OVC Linkage">
-                    <Ovc />
+                    <Suspense fallback={<LoadingSpinner />}>
+                      {activeTab === "list" && <Ovc />}
+                    </Suspense>
                   </Tab>
-                  {/* <Tab eventKey="visualization" title="Data Visualisation">
-                    <VisualisationHome />
-                  </Tab> */}
                 </Tabs>
               </div>
             </Card.Body>

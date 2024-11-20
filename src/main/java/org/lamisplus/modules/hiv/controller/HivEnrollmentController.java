@@ -39,12 +39,12 @@ public class HivEnrollmentController {
     public ResponseEntity<List<HivPatientDto>> getAllHivEnrollments() {
         return ResponseEntity.ok (hivEnrollmentService.getAll ());
     }
-    
+
     @GetMapping(value = "non-biometric-patient/enrollment/{facilityId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PatientDTO>> getNonBiometricHivEnrollmentPatients(@PathVariable("facilityId") Long facilityId) {
         return ResponseEntity.ok (patientService.getHivEnrolledNonBiometricPatients(facilityId));
     }
-    
+
     @GetMapping(value = "patient/enrollment/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PageDTO> getHivEnrollmentList(
             @RequestParam (required = false ) String searchValue,
@@ -53,8 +53,8 @@ public class HivEnrollmentController {
     ) {
         return ResponseEntity.ok (patientService.getHivEnrolledPatients(searchValue, PageRequest.of(pageNo, pageSize)));
     }
-    
-    
+
+
     @GetMapping(value = "patients", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PageDTO> getHivPatient(
             @RequestParam (required = false ) String searchValue,
@@ -62,12 +62,11 @@ public class HivEnrollmentController {
             @RequestParam(defaultValue = "10") Integer pageSize) {
         Stopwatch stopwatch = Stopwatch.createStarted();
         PageDTO hivPatients = patientService.getHivPatients(searchValue, PageRequest.of(pageNo, pageSize));
-//        log.info("total time taken to load 10 records :{}", stopwatch.elapsed().toMillis());
         return ResponseEntity.ok (hivPatients);
     }
-    
-  
-    
+
+
+
     @GetMapping(value = "patients/iit", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PageDTO> getIItHivPatient(
             @RequestParam (required = false ) String searchValue,

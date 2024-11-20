@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, memo } from "react";
 import MaterialTable, { MTableToolbar } from "material-table";
 import Import from "./Import";
 import axios from "axios";
@@ -38,6 +38,8 @@ import SystemUpdateAltIcon from "@mui/icons-material/SystemUpdateAlt";
 import moment from "moment";
 //import { FaUserPlus } from "react-icons/fa";
 import { TiArrowForward } from "react-icons/ti";
+import CustomTable from "../../../reuseables/CustomTable";
+import { useLinkageData } from "../../../hooks/useLinkageData";
 
 //Dtate Picker package
 Moment.locale("en");
@@ -110,22 +112,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Patient = (props) => {
+const Patient = () => {
   const [showPPI, setShowPPI] = useState(true);
   const [modal, setModal] = useState(false);
+  const { fetchLinkages } = useLinkageData(baseUrl, token);
+
   const toggle = () => setModal(!modal);
 
   const handleCheckBox = (e) => {
-    if (e.target.checked) {
-      setShowPPI(false);
-    } else {
-      setShowPPI(true);
-    }
+    setShowPPI(!e.target.checked);
   };
 
   const exportFile = async () => {
     try {
-      const response = await axios
+      await axios
         .get(`${baseUrl}linkages/export`, {
           headers: { Authorization: `Bearer ${token}` },
         })
@@ -140,13 +140,84 @@ const Patient = (props) => {
     } catch (e) {}
   };
 
-    const formattedDate = (inputDate) => {
-      const dateObject = new Date(inputDate);
-      const year = dateObject.getFullYear();
-      const month = String(dateObject.getMonth() + 1).padStart(2, "0");
-      const day = String(dateObject.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
-    };
+  const columns = useMemo(
+    () => [
+      {
+        title: "Patient Name",
+        field: "name",
+        hidden: showPPI,
+      },
+      { title: "Art Number", field: "artNumber", filtering: false },
+      {
+        title: "Care giver other name",
+        field: "caregiverOtherName",
+        filtering: false,
+      },
+      {
+        title: "Care giver surname",
+        field: "caregiverSurname",
+        filtering: false,
+      },
+      { title: "CBO Name", field: "cboName", filtering: false },
+      {
+        title: "Enrolled In OVC Program",
+        field: "enrolledInOvcProgram",
+        filtering: false,
+      },
+      { title: "Created Date", field: "createdDate", filtering: false },
+      {
+        title: "Actions",
+        field: "actions",
+        render: (rowData) => (
+          <Link
+            to={{
+              pathname: "/register-patient",
+              state: { patientObj: rowData.originalData },
+            }}
+          >
+            <ButtonGroup
+              variant="contained"
+              aria-label="split button"
+              style={{
+                backgroundColor: "rgb(153, 46, 98)",
+                height: "30px",
+                width: "215px",
+              }}
+              size="large"
+            >
+              <Button
+                color="primary"
+                size="small"
+                aria-label="select merge strategy"
+                aria-haspopup="menu"
+                style={{
+                  backgroundColor: "rgb(153, 46, 98)",
+                }}
+              >
+                <MdDashboard />
+              </Button>
+              <Button
+                style={{
+                  backgroundColor: "rgb(153, 46, 98)",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "12px",
+                    color: "#fff",
+                    fontWeight: "bolder",
+                  }}
+                >
+                  Enroll Beneficiary
+                </span>
+              </Button>
+            </ButtonGroup>
+          </Link>
+        ),
+      },
+    ],
+    [showPPI]
+  );
 
   return (
     <>
@@ -154,17 +225,17 @@ const Patient = (props) => {
         <Button
           variant="contained"
           color="primary"
-          className=" float-right mr-1"
+          className="float-right mr-1"
           startIcon={<IosShareIcon />}
           style={{ backgroundColor: "rgb(153, 46, 98)" }}
           onClick={exportFile}
         >
           <span style={{ textTransform: "capitalize" }}>Export </span>
-        </Button>{" "}
+        </Button>
         <Button
           variant="contained"
           color="primary"
-          className=" float-right mr-1"
+          className="float-right mr-1"
           startIcon={<SystemUpdateAltIcon />}
           style={{ backgroundColor: "rgb(153, 46, 98)" }}
           onClick={toggle}
@@ -173,152 +244,13 @@ const Patient = (props) => {
         </Button>
         <br />
         <br />
-        <MaterialTable
-          icons={tableIcons}
+        <CustomTable
           title="OVC Beneficiaries"
-          columns={[
-            {
-              title: "Patient Name",
-              field: "name",
-              hidden: showPPI,
-            },
-            { title: "Art Number", field: "artNumber", filtering: false },
-            {
-              title: "Care giver other name",
-              field: "caregiverOtherName",
-              filtering: false,
-            },
-            {
-              title: "Care giver surname",
-              field: "caregiverSurname",
-              filtering: false,
-            },
-            { title: "CBO Name", field: "cboName", filtering: false },
-            //{ title: "ART Number", field: "v_status", filtering: false },
-            {
-              title: "Enrolled In OVC Program",
-              field: "enrolledInOvcProgram",
-              filtering: false,
-            },
-            { title: "Created Date", field: "createdDate", filtering: false },
-            { title: "Actions", field: "actions", filtering: false },
-          ]}
-          data={(query) =>
-            new Promise((resolve, reject) =>
-              axios
-                .get(`${baseUrl}linkages`, {
-                  headers: { Authorization: `Bearer ${token}` },
-                })
-                .then((response) => response)
-                .then((result) => {
-                  console.log(result)
-                  resolve({
-                    data: result.data.map((row) => ({
-                      name: row.lastName,
-                      artNumber: row.artNumber,
-                      caregiverOtherName: row.caregiverOtherName,
-                      caregiverSurname: row.caregiverSurname,
-                      cboName: row.cboName,
-                      enrolledInOvcProgram: row.enrolledInOvcProgram,
-                      createdDate: formattedDate(row.createdDate),
-                      actions: (
-                        <Link
-                          to={{
-                            pathname: "/register-patient",
-                            state: { patientObj: row },
-                          }}
-                        >
-                          <ButtonGroup
-                            variant="contained"
-                            aria-label="split button"
-                            style={{
-                              backgroundColor: "rgb(153, 46, 98)",
-                              height: "30px",
-                              width: "215px",
-                            }}
-                            size="large"
-                          >
-                            <Button
-                              color="primary"
-                              size="small"
-                              aria-label="select merge strategy"
-                              aria-haspopup="menu"
-                              style={{
-                                backgroundColor: "rgb(153, 46, 98)",
-                              }}
-                            >
-                              <MdDashboard />
-                            </Button>
-                            <Button
-                              style={{
-                                backgroundColor: "rgb(153, 46, 98)",
-                              }}
-                            >
-                              <span
-                                style={{
-                                  fontSize: "12px",
-                                  color: "#fff",
-                                  fontWeight: "bolder",
-                                }}
-                              >
-                                Enroll Beneficiary
-                              </span>
-                            </Button>
-                          </ButtonGroup>
-                        </Link>
-                      ),
-                    })),
-                  });
-                })
-            )
-          }
-          options={{
-            search: true,
-            headerStyle: {
-              backgroundColor: "#014d88",
-              color: "#fff",
-            },
-            searchFieldStyle: {
-              width: "200%",
-              margingLeft: "250px",
-            },
-            filtering: false,
-            exportButton: false,
-            searchFieldAlignment: "left",
-            pageSizeOptions: [10, 20, 100],
-            pageSize: 10,
-            debounceInterval: 400,
-          }}
-          components={{
-            Toolbar: (props) => (
-              <div>
-                <div className="form-check custom-checkbox  float-left mt-4 ml-3 ">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    name="showPP!"
-                    id="showPP"
-                    value="showPP"
-                    checked={showPPI === true ? false : true}
-                    onChange={handleCheckBox}
-                    style={{
-                      border: "1px solid #014D88",
-                      borderRadius: "0.25rem",
-                    }}
-                  />
-                  <label
-                    className="form-check-label"
-                    htmlFor="basic_checkbox_1"
-                  >
-                    <b style={{ color: "#014d88", fontWeight: "bold" }}>
-                      SHOW PII
-                    </b>
-                  </label>
-                </div>
-                <MTableToolbar {...props} />
-              </div>
-            ),
-          }}
+          columns={columns}
+          data={fetchLinkages}
+          icons={tableIcons}
+          showPPI={showPPI}
+          onPPIChange={handleCheckBox}
         />
       </div>
       <Import modal={modal} toggle={toggle} />
@@ -326,4 +258,4 @@ const Patient = (props) => {
   );
 };
 
-export default Patient;
+export default memo(Patient);

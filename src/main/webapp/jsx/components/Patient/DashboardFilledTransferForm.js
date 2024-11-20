@@ -16,6 +16,7 @@ import moment from "moment";
 import { Spinner } from "reactstrap";
 import { Icon, List, Label as LabelSui } from "semantic-ui-react";
 import Select from "react-select";
+import { getFacilityId } from "../../../utils/localstorage";
 
 // import moment from "moment";
 
@@ -101,7 +102,7 @@ const DashboardFilledTransferForm = (props) => {
   const [showSelectdropdown, setShowSelectdropdown] = useState(false);
 
   const [currentMedication, setCurrentMedication] = useState([]);
-  const [facId, setFacId] = useState(localStorage.getItem("facId"));
+  const [facId, setFacId] = useState(null);
   const [attemptList, setAttemptList] = useState([]);
   const[observationType, setObservationType] = useState("")
   // const [selectedLga, setSelectedLga] = useState("");
@@ -174,6 +175,14 @@ const DashboardFilledTransferForm = (props) => {
   const [selectedState, setSelectedState] = useState({});
   const [selectedFacility, setSelectedFacility] = useState({});
   const [selectedLga, setSelectedLga] = useState({});
+
+    useEffect(() => {
+      const init = async () => {
+        const facilityId = getFacilityId();
+        setFacId(facilityId);
+      };
+      init();
+    }, []);
 
   const loadStates1 = () => {
     axios
@@ -290,8 +299,8 @@ const DashboardFilledTransferForm = (props) => {
   };
 
   const getBasedlineCD4Count = () => {
-    // let facId = localStorage.getItem("faciltyId");
-    // /patient_baseline_cd4/{facilityId}/{patientUuid
+
+
     axios
       .get(`${baseUrl}patient_baseline_cd4/${facId}/${patientObj.personUuid}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -508,7 +517,7 @@ const DashboardFilledTransferForm = (props) => {
 
   /**** Submit Button Processing  */
   const handleSubmit = async (e) => {
-    let facId = localStorage.getItem("faciltyId");
+
     e.preventDefault();
     if (await validate()) {
       payload.bmi = BMI;

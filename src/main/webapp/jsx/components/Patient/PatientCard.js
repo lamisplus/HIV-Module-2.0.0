@@ -62,7 +62,7 @@ const styles = (theme) => ({
 
 function PatientCard(props) {
   const { classes } = props;
-  console.log(props);
+
 
   const patientObject = props.patientObj1;
   const [status, setStatus] = useState("show");

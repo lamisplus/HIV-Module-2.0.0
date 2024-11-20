@@ -24,9 +24,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "react-widgets/dist/css/react-widgets.css";
 import "react-phone-input-2/lib/style.css";
 import { calculate_age_to_number } from "../../../utils";
-import { h } from "preact";
-import useFacilityId from "../../../hooks/useFacilityId";
-import { el } from "date-fns/locale";
+import { getFacilityId } from "../../../utils/localstorage";
 const useStyles = makeStyles((theme) => ({
   card: {
     margin: theme.spacing(20),
@@ -100,7 +98,15 @@ const Eligibility = (props) => {
   const [who, setWho] = useState([]);
   const [artStatus, setArtStatus] = useState([]);
   const [lastCd4Result, setLastCd4Result] = useState({});
-  const getFacilityId = useFacilityId(baseUrl, token);
+
+
+  useEffect(() => {
+    const init = async () => {
+      const facilityId = getFacilityId();
+      setFacilityId(facilityId);
+    };
+    init();
+  }, []);
 
   const handleEligibility = (e) => {
     props.setEligibility({
@@ -108,13 +114,15 @@ const Eligibility = (props) => {
       [e.target.name]: e.target.value,
     });
   };
+
   useEffect(() => {
     CHRONIC_CARE_CLIENT_TYPE();
     PREGNANCY_STATUS();
     ART_STATUS();
     WHO_STAGING_CRITERIA();
     getLastCD4Result();
-  }, [getFacilityId]);
+  }, [facilityId]);
+
   const CHRONIC_CARE_CLIENT_TYPE = () => {
     axios
       .get(`${baseUrl}application-codesets/v2/CHRONIC_CARE_CLIENT_TYPE`, {
@@ -168,7 +176,7 @@ const Eligibility = (props) => {
   const getLastCD4Result = () => {
     axios
       .get(
-        `${baseUrl}laboratory/cs/page/load/${props.patientObj.id}/${getFacilityId}`,
+        `${baseUrl}laboratory/cs/page/load/${props.patientObj.id}/${facilityId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -182,7 +190,7 @@ const Eligibility = (props) => {
       });
   };
 
-    console.log("Eligibility ", lastCd4Result);
+
 
   useEffect(() => {
     // Update props.eligibility.lastCd4Result with the value of lastCd4Result.cd4?.resultReported
@@ -199,8 +207,6 @@ const Eligibility = (props) => {
   const formattedDate = (inputDate) => {
 
   
-  
-    console.log("Eligibility ", lastCd4Result)
     const dateObject = new Date(inputDate);
       if (isNaN(dateObject)) {
         return ""; 

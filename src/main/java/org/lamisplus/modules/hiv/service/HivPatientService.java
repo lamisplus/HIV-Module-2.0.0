@@ -22,6 +22,7 @@ import org.lamisplus.modules.patient.repository.PersonRepository;
 import org.lamisplus.modules.patient.service.PersonService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -107,24 +108,34 @@ public class HivPatientService {
         List<HivPatientDto> content = getNonIitPersons(persons);
         return getPageDto(persons, content);
     }
-    
+
     public PageDTO getHivPatients(String searchValue, Pageable pageable) {
         Long facilityId = currentUserOrganizationService.getCurrentUserOrganization();
-//        log.info("searchValue is {}", searchValue);
-        Page<PatientProjection> persons = null;
+        Page<PatientProjection> persons;
 
-       if(searchValue != null && !StringUtils.isBlank(searchValue) && !searchValue.equalsIgnoreCase("null")){
-            searchValue = searchValue.replaceAll("\\s", "");
-            searchValue = searchValue.replaceAll(",", "");
+        if (searchValue != null && !StringUtils.isBlank(searchValue) && !searchValue.equalsIgnoreCase("null")) {
+            String queryParam = "%" + searchValue.replaceAll("\\s", "").replaceAll(",", "") + "%";
+            persons = getPatientsByFacilityBySearchParam(facilityId, queryParam, pageable);
+        } else {
+            List<PatientProjection> content = enrollmentRepository.findPatientsByFacilityId(
+                    facilityId,
+                    pageable.getPageSize(),
+                    (int) pageable.getOffset()
+            );
 
-            String queryParam = "%" + searchValue + "%";
-            persons = enrollmentRepository.getPatientsByFacilityBySearchParam(facilityId, queryParam, pageable);
-            //log.info("person searched size is {}", persons.getSize());
-           return getPageDTO(persons);
+            Long total = enrollmentRepository.countPatientsByFacilityId(facilityId); // Using the new method
+            persons = new PageImpl<>(content, pageable, total);
         }
-       persons = enrollmentRepository.getPatientsByFacilityId(facilityId, pageable);
-       //log.info("person not searched size is {}", persons.getSize());
-       return getPageDTO(persons);
+
+        return getPageDTO(persons);
+    }
+
+    private Page<PatientProjection> getPatientsByFacilityBySearchParam(Long facilityId, String searchParam, Pageable pageable) {
+        return enrollmentRepository.getPatientsByFacilityBySearchParam(
+                facilityId,
+                searchParam,
+                pageable
+        );
     }
     
     

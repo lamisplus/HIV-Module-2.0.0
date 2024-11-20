@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import MaterialTable from "material-table";
 import axios from "axios";
 import { url as baseUrl, token } from "./../../../api";
@@ -32,6 +32,9 @@ import "@reach/menu-button/styles.css";
 import { Label } from "semantic-ui-react";
 
 import Spinner from "react-bootstrap/Spinner";
+import { usePermissions } from "../../../hooks/usePermissions";
+import { useCheckedInPatientData } from "../../../hooks/useCheckedInPatientData";
+import CustomTable from "../../../reuseables/CustomTable";
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -101,173 +104,148 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CheckedInPatients = (props) => {
-  const permissions = localStorage.getItem("permissions")?.split(",");
-  const [patientList, setPatientList] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { hasPermission } = usePermissions();
 
-  const getServiceCode = () => {
-    setLoading(true);
-    axios
-      .get(`${baseUrl}opd-setting`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        let data = response.data;
-        let hivCode = data.find(
-          (item) => item.moduleServiceName.toUpperCase() === "HIV"
-        )?.moduleServiceCode;
-        if (hivCode !== null || hivCode !== null) {
-          patients(hivCode);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-      });
+  const [showPPI, setShowPPI] = useState(true);
+  const { fetchPatients } = useCheckedInPatientData(baseUrl, token);
+
+  const permissions = useMemo(
+    () => ({
+      canSeeEnrollButton: hasPermission("HIV Enrollment Register"),
+    }),
+    [hasPermission]
+  );
+
+  const handleCheckBox = (e) => {
+    setShowPPI(!e.target.checked);
   };
 
-  useEffect(() => {
-    getServiceCode();
-  }, []);
-  ///GET LIST OF Patients
-  async function patients(hivCode) {
-    axios
-      .get(`${baseUrl}patient/checked-in-by-service/${hivCode}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        setPatientList(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-      });
-  }
+  const columns = useMemo(
+    () => [
+      {
+        title: "Patient Name",
+        field: "fullname",
+        hidden: showPPI,
+      },
+      {
+        title: "Hospital Number",
+        field: "hospitalNumber",
+      },
+      { title: "Sex", field: "sex" },
+      { title: "Age", field: "age" },
+      {
+        title: "Biometrics",
+        field: "biometrics",
+        render: (rowData) =>
+          rowData.biometric === "Yes" ? (
+            <Label color="green" size="mini">
+              Biometric Captured
+            </Label>
+          ) : (
+            <Label color="red" size="mini">
+              No Biometric
+            </Label>
+          ),
+      },
+      { title: "Check-In Date", field: "checkInDate" },
+      {
+        title: "ART Status",
+        field: "status",
+        render: () => (
+          <Label color="blue" size="mini">
+            Not Enrolled
+          </Label>
+        ),
+      },
+      {
+        title: "Actions",
+        field: "actions",
+        render: (rowData) => (
+          <div>
+            {permissions.canSeeEnrollButton && rowData.biometric === "Yes" && (
+              <Link
+                to={{
+                  pathname: "/enroll-patient",
+                  state: { patientId: rowData.id, patientObj: rowData },
+                }}
+              >
+                <ButtonGroup
+                  variant="contained"
+                  aria-label="split button"
+                  style={{
+                    backgroundColor: "rgb(153, 46, 98)",
+                    height: "30px",
+                    width: "215px",
+                  }}
+                  size="large"
+                >
+                  <Button
+                    color="primary"
+                    size="small"
+                    aria-label="select merge strategy"
+                    aria-haspopup="menu"
+                    style={{
+                      backgroundColor: "rgb(153, 46, 98)",
+                    }}
+                  >
+                    <TiArrowForward />
+                  </Button>
+                  <Button
+                    style={{
+                      backgroundColor: "rgb(153, 46, 98)",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "12px",
+                        color: "#fff",
+                        fontWeight: "bolder",
+                      }}
+                    >
+                      Enroll Patient
+                    </span>
+                  </Button>
+                </ButtonGroup>
+              </Link>
+            )}
+          </div>
+        ),
+      },
+    ],
+    [showPPI, permissions.canSeeEnrollButton]
+  );
 
-  const getHospitalNumber = (identifier) => {
-    const identifiers = identifier;
-    const hospitalNumber = identifiers.identifier.find(
-      (obj) => obj.type == "HospitalNumber"
-    );
-    return hospitalNumber ? hospitalNumber.value : "";
+  const getData = async (query) => {
+    try {
+      const data = await fetchPatients(query);
+      const reversedData = [...(data || [])].reverse();
+
+      return {
+        data: reversedData,
+        page: query?.page || 0,
+        totalCount: reversedData.length || 0,
+      };
+    } catch (error) {
+      return {
+        data: [],
+        page: 0,
+        totalCount: 0,
+      };
+    }
   };
 
   return (
     <div>
       <Card>
         <CardBody>
-          {loading && <Spinner animation="border" />}
-          <MaterialTable
+          {/* Notification modal and pulse */}
+          <CustomTable
+            title="HIV Checked In Patients"
+            columns={columns}
+            data={getData}
             icons={tableIcons}
-            title="HIV Checked In Patients "
-            columns={[
-              // { title: " ID", field: "Id" },
-              {
-                title: "Patient Name",
-                field: "name",
-              },
-              {
-                title: "Hospital Number",
-                field: "hospital_number",
-                filtering: false,
-              },
-              { title: "Sex", field: "sex", filtering: false },
-              { title: "Age", field: "age", filtering: false },
-              { title: "Biometrics", field: "biometrics", filtering: false },
-              { title: "ART Status", field: "status", filtering: false },
-              { title: "Actions", field: "actions", filtering: false },
-            ]}
-            data={patientList.reverse().map((row) => ({
-              name: row.fullname,
-              hospital_number: row.hospitalNumber,
-              sex: row.sex,
-              age: row.age,
-              biometrics:
-                row.biometric === "Yes" ? (
-                  <Label color="green" size="mini">
-                    {`Biometric Captured`}
-                  </Label>
-                ) : (
-                  <Label color="red" size="mini">
-                    {`No Biometric`}
-                  </Label>
-                ),
-              status: (
-                <Label color="blue" size="mini">
-                  {`Not Enrolled`}
-                </Label>
-              ),
-
-              actions: (
-                <div>
-                  {permissions?.includes("HIV Enrollment Register") &&
-                    row.biometric === "Yes" && (
-                      <>
-                        <Link
-                          to={{
-                            pathname: "/enroll-patient",
-                            state: { patientId: row.id, patientObj: row },
-                          }}
-                        >
-                          <ButtonGroup
-                            variant="contained"
-                            aria-label="split button"
-                            style={{
-                              backgroundColor: "rgb(153, 46, 98)",
-                              height: "30px",
-                              width: "215px",
-                            }}
-                            size="large"
-                          >
-                            <Button
-                              color="primary"
-                              size="small"
-                              aria-label="select merge strategy"
-                              aria-haspopup="menu"
-                              style={{
-                                backgroundColor: "rgb(153, 46, 98)",
-                              }}
-                            >
-                              <TiArrowForward />
-                            </Button>
-                            <Button
-                              style={{
-                                backgroundColor: "rgb(153, 46, 98)",
-                              }}
-                            >
-                              <span
-                                style={{
-                                  fontSize: "12px",
-                                  color: "#fff",
-                                  fontWeight: "bolder",
-                                }}
-                              >
-                                Enroll Patient
-                              </span>
-                            </Button>
-                          </ButtonGroup>
-                        </Link>
-                      </>
-                    )}
-                </div>
-              ),
-            }))}
-            options={{
-              search: true,
-              headerStyle: {
-                backgroundColor: "#014d88",
-                color: "#fff",
-              },
-              searchFieldStyle: {
-                width: "200%",
-                margingLeft: "250px",
-              },
-              filtering: false,
-              exportButton: false,
-              searchFieldAlignment: "left",
-              pageSizeOptions: [10, 20, 100],
-              pageSize: 10,
-              debounceInterval: 400,
-            }}
+            showPPI={showPPI}
+            onPPIChange={handleCheckBox}
           />
         </CardBody>
       </Card>
@@ -275,4 +253,4 @@ const CheckedInPatients = (props) => {
   );
 };
 
-export default CheckedInPatients;
+export default memo(CheckedInPatients);

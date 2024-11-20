@@ -39,6 +39,7 @@
     "@y0c/react-datepicker": "^1.0.4",
     "apexcharts": "^3.22.2",
     "axios": "^0.21.1",
+    "cross-env": "^7.0.3",
     "bootstrap": "^4.6.1",
     "bootstrap-daterangepicker": "^3.1.0",
     "bootstrap-switch-button-react": "^1.2.0",
@@ -126,9 +127,9 @@
     "yup": "^0.32.8"
   },
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
+    "start": "cross-env react-scripts --openssl-legacy-provider start",
     "jsreport": "jsreport-start",
-    "build": "react-scripts --openssl-legacy-provider build && xcopy /s /y build src\\main\\resources\\views\\static\\hiv",
+    "build": "cross-env react-scripts --openssl-legacy-provider build && xcopy /s /y build src\\main\\resources\\views\\static\\hiv",
     "serve": "serve -s build",
     "run-build": "react-scripts build && serve",
     "test": "react-scripts test --env=jsdom",

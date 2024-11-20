@@ -25,7 +25,6 @@ import "react-widgets/dist/css/react-widgets.css";
 import "react-phone-input-2/lib/style.css";
 import { calculate_age_to_number } from "../../../utils";
 import { h } from "preact";
-import useFacilityId from "../../../hooks/useFacilityId";
 import { el } from "date-fns/locale";
 const useStyles = makeStyles((theme) => ({
   card: {
