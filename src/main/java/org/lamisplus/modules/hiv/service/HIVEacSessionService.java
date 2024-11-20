@@ -15,9 +15,7 @@ import org.springframework.stereotype.Service;
 import reactor.util.UUIDUtils;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,7 +75,6 @@ public class HIVEacSessionService {
 	public void deleteEacSessionById(Long id) {
 		HIVEacSession eacSession = getEacSession(id);
 		eacSession.setArchived(1);
-		List<HIVEacSession> eacSessionList = hiveacSessionRepository.getAllSessionInEac(eacSession.getEac().getUuid());
 		hiveacSessionRepository.save(eacSession);
 	}
 	

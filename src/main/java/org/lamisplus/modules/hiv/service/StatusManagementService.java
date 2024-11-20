@@ -156,6 +156,7 @@ public class StatusManagementService {
 
     }
 
+
     public HIVStatusDisplay getClientReportingStatus(Long personId) {
         Person person = personRepository.findById(personId)
                 .orElseThrow(() -> new EntityNotFoundException(Person.class, "id", String.valueOf(personId)));
@@ -166,10 +167,10 @@ public class StatusManagementService {
                 getClientPreviousInternalQuarterStatus(currentDate, personUuid);
 
         EnrollmentStatus enrollmentStatus = getEnrollmentStatus(personUuid);
-        //ACTIVE, IIT, null
+        // ACTIVE, IIT, null
         HIVInterQuarterStatus clientCurrentInternalQuarterStatus =
                 getClientCurrentInternalQuarterStatus(personUuid, currentDate);
-        //ACTIVE, IIT, null
+        // ACTIVE, IIT, null
         if (clientPreviousInternalQuarterStatus == null) {
             if (clientCurrentInternalQuarterStatus != null) {
                 return new HIVStatusDisplay(clientCurrentInternalQuarterStatus.getDate(),
@@ -179,7 +180,8 @@ public class StatusManagementService {
         }
         boolean isRestart = isRestart(clientPreviousInternalQuarterStatus, clientCurrentInternalQuarterStatus);
         if (isRestart) {
-            return new HIVStatusDisplay(clientCurrentInternalQuarterStatus.getDate(), "ACTIVE RESTART", currentQuarter.getEnd());
+            return new HIVStatusDisplay(clientCurrentInternalQuarterStatus != null ? clientCurrentInternalQuarterStatus.getDate() : null,
+                    "ACTIVE RESTART", currentQuarter.getEnd());
         }
         if (clientCurrentInternalQuarterStatus != null) {
             return new HIVStatusDisplay(clientCurrentInternalQuarterStatus.getDate(),

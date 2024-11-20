@@ -8,9 +8,9 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import liquibase.pro.packaged.I;
 import org.jetbrains.annotations.NotNull;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
+import org.lamisplus.modules.hiv.apiError.ApiError;
 import org.lamisplus.modules.hiv.domain.dto.ClientDetailDTOForTracking;
 import org.lamisplus.modules.hiv.domain.dto.CurrentViralLoadDTO;
 import org.lamisplus.modules.hiv.domain.dto.DsdDevolvementDTO;
@@ -49,13 +49,12 @@ public class DsdDevolvementService {
     public DsdDevolvementDTO saveDsdDevolvement(DsdDevolvementDTO dto) throws IOException {
         DsdDevolvement dsdDevolvement = convertDsdDevolvementDtoToEntity(dto);
         LocalDate dateDevolved = dto.getDateDevolved();
-        Long personId = dto.getPersonId();
         String dsdType = dto.getDsdType();
         String personUuid = dsdDevolvement.getPerson().getUuid();
         boolean isDevolvedSameDay = dsdDevolvementRepository.existsByPersonIdAndDateDevolved(personUuid, dateDevolved);
         boolean isDevolvedSameDsdType = dsdDevolvementRepository.existsByPersonIdAndDsdType(personUuid, dsdType);
         if (isDevolvedSameDay || isDevolvedSameDsdType) {
-            throw new IllegalArgumentException("Patient has been devolved on the same day or on the same dsd type");
+            throw new ApiError("Patient has been devolved on the same day or on the same dsd type");
         }
         dsdDevolvement.setUuid(UUID.randomUUID().toString());
         dsdDevolvement.setLatitude(dto.getLatitude());
@@ -72,7 +71,6 @@ public class DsdDevolvementService {
         return count > 0;
     }
 
-
     public DsdDevolvementDTO updateDsdDevolvement(Long id, DsdDevolvementDTO dto) throws IOException {
         DsdDevolvement existDevolvement = getDevolvement(id);
         DsdDevolvement dsdDevolvement = convertDsdDevolvementDtoToEntity(dto);
@@ -82,8 +80,7 @@ public class DsdDevolvementService {
         return convertEntityToDsdDevolvementDto(dsdDevolvementRepository.save(dsdDevolvement));
     }
 
-
-    public DsdDevolvementDTO getDevolvementById(Long id) throws IOException {
+    public DsdDevolvementDTO getDevolvementById(Long id) {
         return convertEntityToDsdDevolvementDto(getDevolvement(id));
     }
 
@@ -104,21 +101,19 @@ public class DsdDevolvementService {
 
     public Optional<PatientCurrentViralLoad> getPatientCurrentViralLoadByPersonUuid(String personUuid) {
         try {
-            Optional<PatientCurrentViralLoad> patientCurrentViralLoad = dsdDevolvementRepository.findViralLoadByPersonUuid(personUuid);
-            return patientCurrentViralLoad;
+            return dsdDevolvementRepository.findViralLoadByPersonUuid(personUuid);
         } catch (Exception e) {
             e.printStackTrace();
             return Optional.empty();
         }
     }
 
-    public String deleteById(Long id) throws IOException {
+    public String deleteById(Long id) {
         DsdDevolvement existDevolvement = getDevolvement(id);
         existDevolvement.setArchived(1);
         dsdDevolvementRepository.save(existDevolvement);
         return "Successfully deleted record";
     }
-
 
     //implement model mapper
     private Optional<CurrentViralLoadDTO> convertEntityTocurrentViralLoadDto(Optional<CurrentViralLoad> entity) {
@@ -129,7 +124,7 @@ public class DsdDevolvementService {
             dto.setViralLoadResultDate(entity.get().getViralLoadResultDate());
             dto.setViralLoadTestResult(entity.get().getViralLoadTestResult());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error converting entity to current Viral load Dto: {}", e.getMessage(), e);
         }
         return Optional.of(dto);
     }
@@ -143,8 +138,8 @@ public class DsdDevolvementService {
             dsdDevolvement.setPerson(person);
             dsdDevolvement.setFacilityId(organizationUtil.getCurrentUserOrganization());
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error converting entity to DTO: " + e.getMessage(), e);
+            log.error("Error converting DTO to entity: {}", e.getMessage(), e);
+            throw new ApiError("Error converting entity to DTO: " + e.getMessage(), e);
         }
         return dsdDevolvement;
     }
@@ -155,11 +150,10 @@ public class DsdDevolvementService {
             BeanUtils.copyProperties(entity, dto);
             dto.setPersonId(entity.getPerson().getId());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error converting entity to DTO: {}", e.getMessage(), e);
         }
         return dto;
     }
-
 
     //helper functions
     private DsdDevolvement getDevolvement(Long id) {
@@ -184,7 +178,7 @@ public class DsdDevolvementService {
         try {
             return dsdDevolvementRepository.getClientDetailsForTracking(personUuid);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error getting client Details for Tracking: {}", e.getMessage(), e);
             return Optional.empty();
         }
     }
