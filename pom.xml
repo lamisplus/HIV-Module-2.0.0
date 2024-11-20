@@ -348,6 +348,14 @@
                             </artifactSet>
                             <relocations>
                                 <relocation>
+                                    <pattern>org.jpmml.</pattern>
+                                    <shadedPattern>shaded.org.jpmml.</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.dmg.</pattern>
+                                    <shadedPattern>shaded.org.dmg.</shadedPattern>
+                                </relocation>
+                                <relocation>
                                     <pattern>org.glassfish.jaxb.</pattern>
                                     <shadedPattern>shaded.org.glassfish.jaxb.</shadedPattern>
                                 </relocation>
