@@ -1,26 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
+import {withStyles} from "@material-ui/core/styles";
 //import classNames from 'classnames';
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 //import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import ButtonMui from "@material-ui/core/Button";
-import { TiArrowBack } from "react-icons/ti";
+import {TiArrowBack} from "react-icons/ti";
 import Badge from 'react-bootstrap/Badge';
 
-import { Label, Sticky } from "semantic-ui-react";
+import {Label, Sticky} from "semantic-ui-react";
 import "semantic-ui-css/semantic.min.css";
-import { Col, Row } from "reactstrap";
+import {Col, Row} from "reactstrap";
 import Moment from "moment";
 import momentLocalizer from "react-widgets-moment";
-import moment from "moment";
 import axios from "axios";
-import { url as baseUrl, token } from "./../../../api";
+import {token, url as baseUrl} from "./../../../api";
 import Typography from "@material-ui/core/Typography";
-import { calculate_age } from "../../../utils";
+import {calculate_age} from "../../../utils";
 //Dtate Picker package
 Moment.locale("en");
 momentLocalizer();
@@ -70,22 +69,19 @@ function PatientCard(props) {
   const [patientFlag, setPatientFlag] = useState({});
 
   const getHospitalNumber = (identifier) => {
-    const identifiers = identifier;
-    const hospitalNumber = identifiers.identifier.find(
-      (obj) => obj.type == "HospitalNumber"
+    const hospitalNumber = identifier.identifier.find(
+      (obj) => obj.type === "HospitalNumber"
     );
     return hospitalNumber ? hospitalNumber.value : "";
   };
   const getPhoneNumber = (identifier) => {
-    const identifiers = identifier;
-    const phoneNumber = identifiers.contactPoint.find(
+    const phoneNumber = identifier.contactPoint.find(
       (obj) => obj.type === "phone"
     );
     return phoneNumber ? phoneNumber.value : "";
   };
   const getAddress = (identifier) => {
-    const identifiers = identifier;
-    const address = identifiers.address.find((obj) => obj.city);
+    const address = identifier.address.find((obj) => obj.city);
     const houseAddress =
       address && address.line[0] !== null ? address.line[0] : "";
     const landMark =
@@ -96,11 +92,13 @@ function PatientCard(props) {
   const fetchPatientFlags = () => {
     axios.get(`${baseUrl}hiv/patient-flag/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
-    }).then((response) => {
-      setPatientFlag(response.data);
-      console.log(setPatientFlag)
-    }
-    )
+    })
+        .then((response) => {
+          setPatientFlag(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching patient flag:", error);
+        });
   }
   
   useEffect(() => {

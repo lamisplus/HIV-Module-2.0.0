@@ -124,8 +124,13 @@ public class HivEnrollmentController {
     }
 
     @GetMapping(value = "patient-flag/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<FlagPatientDto> getHivPatientFlagById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok (patientService.getPatientMeta (id));
+    public ResponseEntity<?> getHivPatientFlagById(@PathVariable("id") Long id) {
+        try {
+            return ResponseEntity.ok(patientService.getPatientMeta(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while fetching the patient flag.");
+        }
     }
 
 }
