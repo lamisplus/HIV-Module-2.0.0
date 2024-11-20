@@ -26,6 +26,7 @@ public interface HivEnrollmentRepository extends JpaRepository<HivEnrollment, Lo
             "WHERE person_uuid = ?1 ",nativeQuery = true)
     Optional<EnrollmentStatus> getHivEnrollmentStatusByPersonUuid(String uuid);
 
+//    Refactored Query
     @Query(value = "WITH filtered_patients AS (\n" +
             "    SELECT p.* FROM patient_person p\n" +
             "    WHERE p.archived = 0 \n" +

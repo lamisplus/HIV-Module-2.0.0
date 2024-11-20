@@ -11,12 +11,12 @@ export const usePatientSocket = (baseUrl, token, onDataUpdate) => {
     let isMounted = true;
 
     const setupSocket = () => {
-      if (socketRef.current) return; // Prevent multiple socket instances
+      if (socketRef.current) return; 
 
       socketRef.current = io(`${baseUrl}`, {
         transports: ["websocket"],
         auth: { token },
-        reconnection: false, // We'll handle reconnection manually
+        reconnection: false, 
       });
 
       socketRef.current.on("connect", () => {
