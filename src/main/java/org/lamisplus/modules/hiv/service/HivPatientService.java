@@ -21,11 +21,13 @@ import org.lamisplus.modules.patient.repository.PersonRepository;
 import org.lamisplus.modules.patient.service.PersonService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
 import org.lamisplus.modules.hiv.utility.Constants;
 
 @Service
@@ -35,8 +37,6 @@ public class HivPatientService {
     private final ARTClinicalRepository artClinicalRepository;
 
     private final ArtCommenceService commenceService;
-
-    private final ArtClinicVisitService artClinicVisitService;
 
     private final PersonService personService;
 
@@ -50,37 +50,37 @@ public class HivPatientService {
 
     private final ObservationRepository observationRepository;
 
-    private final  PatientActivityService patientActivityService;
-    
-    private final  StatusManagementService statusManagementService;
-    
-    private  final HivEnrollmentRepository enrollmentRepository;
+    private final PatientActivityService patientActivityService;
+
+    private final StatusManagementService statusManagementService;
+
+    private final HivEnrollmentRepository enrollmentRepository;
 
     private final PatientFlagRepository patientFlagRepository;
 
     public HivEnrollmentDTO registerAndEnrollHivPatient(HivPatientEnrollmentDto hivPatientEnrollmentDto) {
-        HivEnrollmentDTO hivEnrollmentDto = hivPatientEnrollmentDto.getHivEnrollment ();
-        Long personId = hivPatientEnrollmentDto.getPerson ().getId ();
-        processAndSavePatient (hivPatientEnrollmentDto, hivEnrollmentDto, personId);
-        hivEnrollmentDto.setFacilityId (currentUserOrganizationService.getCurrentUserOrganization ());
-        return hivEnrollmentService.createHivEnrollment (hivEnrollmentDto);
+        HivEnrollmentDTO hivEnrollmentDto = hivPatientEnrollmentDto.getHivEnrollment();
+        Long personId = hivPatientEnrollmentDto.getPerson().getId();
+        processAndSavePatient(hivPatientEnrollmentDto, hivEnrollmentDto, personId);
+        hivEnrollmentDto.setFacilityId(currentUserOrganizationService.getCurrentUserOrganization());
+        return hivEnrollmentService.createHivEnrollment(hivEnrollmentDto);
     }
 
 
     private void processAndSavePatient(HivPatientEnrollmentDto hivPatientEnrollmentDto, HivEnrollmentDTO hivEnrollmentDto, Long personId) {
         if (personId == null) {
-            PersonResponseDto person = personService.createPerson (hivPatientEnrollmentDto.getPerson ());
-            hivEnrollmentDto.setPersonId (person.getId ());
+            PersonResponseDto person = personService.createPerson(hivPatientEnrollmentDto.getPerson());
+            hivEnrollmentDto.setPersonId(person.getId());
         } else {
-            hivEnrollmentDto.setPersonId (personId);
+            hivEnrollmentDto.setPersonId(personId);
         }
     }
 
     public List<HivPatientDto> getHivCheckedInPatients() {
-        return personService.getCheckedInPersonsByServiceCodeAndVisitId ("hiv-code")
-                .stream ()
-                .map (p -> convertPersonHivPatientDto (p.getId ()))
-                .collect (Collectors.toList ());
+        return personService.getCheckedInPersonsByServiceCodeAndVisitId("hiv-code")
+                .stream()
+                .map(p -> convertPersonHivPatientDto(p.getId()))
+                .collect(Collectors.toList());
     }
 
     public PageDTO getHivPatientsPage(String searchValue, Pageable pageable) {
@@ -99,20 +99,34 @@ public class HivPatientService {
         Long facilityId = currentUserOrganizationService.getCurrentUserOrganization();
         Page<PatientProjection> persons;
 
-        if (StringUtils.isNotBlank(searchValue) && !"null".equalsIgnoreCase(searchValue)) {
-            String queryParam = "%" + searchValue.trim().replace(" ", "").replace(",", "") + "%";
-            persons = enrollmentRepository.getPatientsByFacilityBySearchParam(facilityId, queryParam, pageable);
+        if (searchValue != null && !StringUtils.isBlank(searchValue) && !searchValue.equalsIgnoreCase("null")) {
+            String queryParam = "%" + searchValue.replaceAll("\\s", "").replace(",", "") + "%";
+            persons = getPatientsByFacilityBySearchParam(facilityId, queryParam, pageable);
         } else {
-            persons = enrollmentRepository.getPatientsByFacilityId(facilityId, pageable);
+            List<PatientProjection> content = enrollmentRepository.findPatientsByFacilityId(
+                    facilityId,
+                    pageable.getPageSize(),
+                    (int) pageable.getOffset()
+            );
+            Long total = enrollmentRepository.countPatientsByFacilityId(facilityId); // Using the new method
+            persons = new PageImpl<>(content, pageable, total);
         }
         return getPageDTO(persons);
     }
 
+    private Page<PatientProjection> getPatientsByFacilityBySearchParam(Long facilityId, String searchParam, Pageable pageable) {
+        return enrollmentRepository.getPatientsByFacilityBySearchParam(
+                facilityId,
+                searchParam,
+                pageable
+        );
+    }
+
     public PageDTO getHivEnrolledPatients(String searchValue, Pageable pageable) {
         Long facilityId = currentUserOrganizationService.getCurrentUserOrganization();
-        if(!String.valueOf(searchValue).equals("null") && !searchValue.equals("*")){
-            searchValue = searchValue.trim().replace(" ", "").replace(",", "");
-            String queryParam = "%"+searchValue+"%";
+        if (!String.valueOf(searchValue).equals("null") && !searchValue.equals("*")) {
+            searchValue = searchValue.replaceAll("\\s", "");
+            String queryParam = "%" + searchValue + "%";
             Page<PatientProjection> persons =
                     enrollmentRepository.getEnrolledPatientsByFacilityBySearchParam(facilityId, queryParam, pageable);
             return getPageDTO(persons);
@@ -121,23 +135,23 @@ public class HivPatientService {
         return getPageDTO(persons);
     }
 
-    public  List<PatientDTO> getHivEnrolledNonBiometricPatients(Long facilityId) {
-        List<PatientDTO> nonBiometricPatients  = new ArrayList<PatientDTO>();
+    public List<PatientDTO> getHivEnrolledNonBiometricPatients(Long facilityId) {
+        List<PatientDTO> nonBiometricPatients = new ArrayList<>();
         try {
             HashSet<String> negativeStatusTable = getNegativeStatusTable();
-             nonBiometricPatients = enrollmentRepository.getEnrolledPatientsByFacilityMobile(facilityId)
+            nonBiometricPatients = enrollmentRepository.getEnrolledPatientsByFacilityMobile(facilityId)
                     .stream()
                     .map(this::getPatientDTOBuild)
                     .filter(p -> !(negativeStatusTable.contains(p.getCurrentStatus())))
                     .collect(Collectors.toList());
-        }catch(Exception e){
+        } catch (Exception e) {
             log.error("An error occurred when fetching non-biometric patients error:=> {}", e.getMessage());
         }
         return nonBiometricPatients;
     }
-    
+
     private static HashSet<String> getNegativeStatusTable() {
-        HashSet<String> negativeStatus = new HashSet<String>();
+        HashSet<String> negativeStatus = new HashSet<>();
         negativeStatus.add("DIED");
         negativeStatus.add("ART TRANSFER OUT");
         negativeStatus.add("ART Transfer Out");
@@ -146,7 +160,7 @@ public class HivPatientService {
         negativeStatus.add("IIT");
         return negativeStatus;
     }
-    
+
     private PageDTO getPageDTO(Page<PatientProjection> persons) {
         List<PatientDTO> patientDTOList = persons.getContent()
                 .stream()
@@ -154,8 +168,8 @@ public class HivPatientService {
                 .collect(Collectors.toList());
         return getPageDto(persons, patientDTOList);
     }
-    
-    private  PatientDTO getPatientDTOBuild(PatientProjection p) {
+
+    private PatientDTO getPatientDTOBuild(PatientProjection p) {
         PatientDTO patientDTO = PatientDTO.builder()
                 .age(p.getAge())
                 .dateOfBirth(p.getDateOfBirth())
@@ -177,34 +191,34 @@ public class HivPatientService {
                 .build();
         patientDTO.setCommenced(p.getCommenced() != null);
         patientDTO.setBiometricStatus(p.getBiometricStatus() != null);
-        if(p.getCommenced() != null && p.getCommenced()){
+        if (p.getCommenced() != null && p.getCommenced()) {
             String currentStatus = statusManagementService.getCurrentStatus(p.getId());
             patientDTO.setCurrentStatus(currentStatus);
-        }else if(p.getIsEnrolled()){
+        } else if (Boolean.TRUE.equals(p.getIsEnrolled())) {
             patientDTO.setCurrentStatus(p.getEnrollmentStatus());
-        }else{
+        } else {
             patientDTO.setCurrentStatus("Not Enrolled");
         }
         List<Observation> clinicalEvaluationAndMentalHealth =
                 observationRepository.getClinicalEvaluationAndMentalHealth(p.getPersonUuid());
-        if(clinicalEvaluationAndMentalHealth.size() >= 2){
+        if (clinicalEvaluationAndMentalHealth.size() >= 2) {
             patientDTO.setMentalHealth(true);
             patientDTO.setClinicalEvaluation(true);
         }
-        if(clinicalEvaluationAndMentalHealth.size() == 1){
+        if (clinicalEvaluationAndMentalHealth.size() == 1) {
             String observationType = clinicalEvaluationAndMentalHealth.get(0).getType();
-            if(observationType.equalsIgnoreCase("Mental health")){
+            if (observationType.equalsIgnoreCase("Mental health")) {
                 patientDTO.setMentalHealth(true);
             }
-            
-            if(observationType.equalsIgnoreCase("Clinical evaluation")){
+
+            if (observationType.equalsIgnoreCase("Clinical evaluation")) {
                 patientDTO.setClinicalEvaluation(true);
             }
         }
         return patientDTO;
     }
-    
-    
+
+
     @NotNull
     private List<HivPatientDto> getNonIitPersons(Page<Person> persons) {
         return persons.getContent()
@@ -215,9 +229,9 @@ public class HivPatientService {
                 .map(person -> convertPersonHivPatientDto(person.getId()))
                 .collect(Collectors.toList());
     }
-    
-    private  PageDTO getPageDto(Page<?> persons, List<?> content) {
-       return PageDTO.builder()
+
+    private PageDTO getPageDto(Page<?> persons, List<?> content) {
+        return PageDTO.builder()
                 .pageNumber(persons.getNumber())
                 .pageSize(persons.getSize())
                 .totalPages(persons.getTotalPages())
@@ -225,10 +239,10 @@ public class HivPatientService {
                 .records(content)
                 .build();
     }
-    
-    public  PageDTO  getIITHivPatients(String searchValue, Pageable pageable) {
+
+    public PageDTO getIITHivPatients(String searchValue, Pageable pageable) {
         Long facilityId = currentUserOrganizationService.getCurrentUserOrganization();
-        if(searchValue != null && !searchValue.isEmpty()) {
+        if (searchValue != null && !searchValue.isEmpty()) {
             Page<Person> persons = personRepository.findAllPersonBySearchParameters(searchValue, 0, facilityId, pageable);
             List<HivPatientDto> content = getPersonIit(persons);
             return PageDTO.builder()
@@ -248,9 +262,9 @@ public class HivPatientService {
                 .totalRecords(persons.getTotalElements())
                 .records(content)
                 .build();
-        
+
     }
-    
+
     @NotNull
     private List<HivPatientDto> getPersonIit(Page<Person> persons) {
         return persons.getContent()
@@ -263,91 +277,83 @@ public class HivPatientService {
                 .filter(p -> p.getCurrentStatus().equals("IIT"))
                 .collect(Collectors.toList());
     }
-    
+
     public HivPatientDto getHivPatientById(Long personId) {
-        return convertPersonHivPatientDto (personId);
+        return convertPersonHivPatientDto(personId);
     }
 
 
     private HivPatientDto convertPersonHivPatientDto(Long personId) {
-        if (Boolean.TRUE.equals (personService.isPersonExist (personId))) {
-            Person person = getPerson (personId);
-            PersonResponseDto bioData = personService.getPersonById (personId);
+        if (Boolean.TRUE.equals(personService.isPersonExist(personId))) {
+            Person person = getPerson(personId);
+            PersonResponseDto bioData = personService.getPersonById(personId);
             Optional<HivEnrollmentDTO> enrollment =
-                    hivEnrollmentService.getHivEnrollmentByPersonIdAndArchived (bioData.getId ());
+                    hivEnrollmentService.getHivEnrollmentByPersonIdAndArchived(bioData.getId());
             Optional<ARTClinical> artCommencement =
                     artClinicalRepository.findTopByPersonAndIsCommencementIsTrueAndArchived(person, 0);
-            HivPatientDto hivPatientDto = new HivPatientDto ();
-            BeanUtils.copyProperties (bioData, hivPatientDto);
+            HivPatientDto hivPatientDto = new HivPatientDto();
+            BeanUtils.copyProperties(bioData, hivPatientDto);
             hivPatientDto.setCreateBy(person.getCreatedBy());
-            addEnrollmentInfo (enrollment, hivPatientDto);
-            addArtCommencementInfo (person.getId (), artCommencement, hivPatientDto);
+            addEnrollmentInfo(enrollment, hivPatientDto);
+            addArtCommencementInfo(person.getId(), artCommencement, hivPatientDto);
             processAndSetObservationStatus(person, hivPatientDto);
             return hivPatientDto;
         }
         return null;
     }
 
-
-    private void addArtClinicalInfo(List<ARTClinical> artClinics, HivPatientDto hivPatientDto) {
-        hivPatientDto.setArtClinicVisits (artClinics.stream ()
-                        .filter(Objects::nonNull)
-                        .map (artClinicVisitService::convertToClinicVisitDto).collect (Collectors.toList ()));
-    }
-
-
     private void addArtCommencementInfo(Long personId, Optional<ARTClinical> artCommencement, HivPatientDto hivPatientDto) {
-        if (artCommencement.isPresent ()) {
-            hivPatientDto.setCommenced (true);
+        if (artCommencement.isPresent()) {
+            hivPatientDto.setCommenced(true);
             ARTClinicalCommenceDto artClinicalCommenceDto =
                     commenceService.convertArtToResponseDto(artCommencement.get());
             hivPatientDto.setArtCommence(artClinicalCommenceDto);
-            hivPatientDto.setCurrentStatus (statusManagementService.getCurrentStatus(personId));
+            hivPatientDto.setCurrentStatus(statusManagementService.getCurrentStatus(personId));
         }
     }
 
 
     private void addEnrollmentInfo(Optional<HivEnrollmentDTO> enrollment, HivPatientDto hivPatientDto) {
-        if (enrollment.isPresent ()) {
-            hivPatientDto.setEnrolled (true);
-            Long enrollStatus = enrollment.get ().getStatusAtRegistrationId ();
-            if(enrollStatus !=  null){
-                Optional<ApplicationCodeSet> status = applicationCodesetRepository.findById (enrollStatus);
+        if (enrollment.isPresent()) {
+            hivPatientDto.setEnrolled(true);
+            Long enrollStatus = enrollment.get().getStatusAtRegistrationId();
+            if (enrollStatus != null) {
+                Optional<ApplicationCodeSet> status = applicationCodesetRepository.findById(enrollStatus);
                 status.ifPresent(applicationCodeSet -> hivPatientDto.setCurrentStatus(applicationCodeSet.getDisplay()));
-            }else {
+            } else {
                 hivPatientDto.setCurrentStatus("Enrolled but status not known");
             }
             hivPatientDto.setEnrollment(enrollment.get());
         } else {
-            hivPatientDto.setCurrentStatus ("Not Enrolled");
+            hivPatientDto.setCurrentStatus("Not Enrolled");
         }
     }
 
     public Person getPerson(Long personId) {
-        return personRepository.findById (personId)
-                .orElseThrow (() -> new EntityNotFoundException (Person.class, "id", String.valueOf (personId)));
+        return personRepository.findById(personId)
+                .orElseThrow(() -> new EntityNotFoundException(Person.class, "id", String.valueOf(personId)));
     }
 
     private void processAndSetObservationStatus(Person person, HivPatientDto hivPatientDto) {
-        Long orgId = currentUserOrganizationService.getCurrentUserOrganization ();
-        List<Observation> observationList = observationRepository.getAllByPersonAndFacilityIdAndArchived (person, orgId, Constants.UNARCHIVED);
-        if (!observationList.isEmpty ()) {
+        Long orgId = currentUserOrganizationService.getCurrentUserOrganization();
+        List<Observation> observationList = observationRepository.getAllByPersonAndFacilityIdAndArchived(person, orgId, Constants.UNARCHIVED);
+        if (!observationList.isEmpty()) {
             observationList
-                    .stream ()
-                    .filter (observation -> observation.getArchived () != 1)
-                    .forEach (observation -> {
-                if (observation.getType ().contains ("Clinical")) {
-                    hivPatientDto.setClinicalEvaluation (true);
-                }
-                if (observation.getType ().contains ("Mental")) {
-                    hivPatientDto.setMentalHealth (true);
-                }
-            });
+                    .stream()
+                    .filter(observation -> observation.getArchived() != 1)
+                    .forEach(observation -> {
+                        if (observation.getType().contains("Clinical")) {
+                            hivPatientDto.setClinicalEvaluation(true);
+                        }
+                        if (observation.getType().contains("Mental")) {
+                            hivPatientDto.setMentalHealth(true);
+                        }
+                    });
         }
     }
 
     public List<PatientActivity> getHivPatientActivitiesById(Long id) {
-        return   patientActivityService.getActivities(id);
+        return patientActivityService.getActivities(id);
     }
 
     public FlagPatientDto getPatientMeta(Long personId) {
@@ -355,8 +361,7 @@ public class HivPatientService {
         Long facilityId = currentUserOrganizationService.getCurrentUserOrganization();
         Optional<Integer> patientFlagsParams = patientFlagRepository.getPatientFlagsParameter(facilityId);
         Integer suppressionValue = patientFlagsParams.orElse(null);
-        FlagPatientDto getPa = artClinicalRepository.getPatientMetaData(personIdd, facilityId, suppressionValue);
-        return getPa;
+        return artClinicalRepository.getPatientMetaData(personIdd, facilityId, suppressionValue);
     }
 
 }
