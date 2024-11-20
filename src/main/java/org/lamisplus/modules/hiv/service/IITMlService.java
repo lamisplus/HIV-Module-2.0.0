@@ -576,6 +576,7 @@ public class IITMlService {
                         .load(decompressor)
                         .build();
                 evaluator.verify();
+                System.out.println("Evaluate initialized");
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -596,5 +597,6 @@ public class IITMlService {
                 .build();
 
         facilities = cb.parse();
+        System.out.printf("Facilities loaded: %s\n", facilities);
     }
 }
