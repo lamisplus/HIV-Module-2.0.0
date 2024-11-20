@@ -7,7 +7,7 @@ import org.springframework.core.annotation.Order;
 @Order(15)
 @Installer(name = "new-regimen-installer",
         description = "Installer for new regimens",
-        version = 1)
+        version = 2)
 public class NewRegimenInstaller extends AcrossLiquibaseInstaller {
     public NewRegimenInstaller() {
         super("classpath:installers/hiv/schema/new-regimen.xml");
