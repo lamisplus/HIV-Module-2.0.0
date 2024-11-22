@@ -621,7 +621,6 @@ const Laboratory = (props) => {
                                 value={tests.sampleCollectionDate}
                                 onChange={handleInputChange}
                                 min={tests.dateOrderBy!==null && tests.dateOrderBy!==''? moment(tests.dateOrderBy).format("YYYY-MM-DD HH:MM:SS") :moment(enrollDate).format("YYYY-MM-DD HH:MM:SS")}
-                                //min={eacStatusObj && eacStatusObj.eacsession && eacStatusObj.eacsession!=='Default' ? eacStatusObj.eacsessionDate :enrollDate}
                                 max= {moment(new Date()).format("YYYY-MM-DD HH:MM:SS")}
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 required
@@ -720,7 +719,7 @@ const Laboratory = (props) => {
                                     <Label for="priority">Result <span style={{ color:"red"}}> *</span></Label>
                                     <InputGroup>
                                     <Input
-                                        type="number"
+                                        type="text"
                                         name="result"
                                         id="result"
                                         value={tests.result}

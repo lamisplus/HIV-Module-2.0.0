@@ -163,25 +163,24 @@ const Laboratory = (props) => {
         })
       .then((response) => {
           const data = response.data
-          const formatttedResultDate = data?.resultDate ? moment(data.resultDate).format('YYYY-MM-DDTHH:mm'): '';
+          const formattedResultDate = data?.resultDate ? moment(data.resultDate).format('YYYY-MM-DDTHH:mm'): '';
             setTests((prevTests) => ({
                 ...prevTests,
                 result: data?.testResult || '',
                 dateAssayedBy: data?.assayDate || '',
-                dateResultReceived: formatttedResultDate || '',
+                dateResultReceived: formattedResultDate || '',
                 assayedBy: data?.testedBy || ''
             }));
         })
             .catch((error) => {
-                console.error("Error fetching test result:", error); // Log any errors
+                console.error("Error fetching test result:", error);
             });
     };
-    // Make sure activeContent.obj is available before making the API call
     if (props.activeContent?.obj?.sampleNumber) {
         setShowResult(true)
-        fetchTestResult(props.activeContent.obj.sampleNumber); // Call the API with sampleNumber
+        fetchTestResult(props.activeContent.obj.sampleNumber);
     }
-    console.log("Active Content Object:", props.activeContent?.obj);
+    // console.log("Active Content Object:", props.activeContent?.obj);
 }, [props.activeContent]);
 
 
@@ -195,7 +194,6 @@ const Laboratory = (props) => {
                 setPcrs(response.data);
             })
             .catch((error) => {
-            
             });
         
     }
@@ -642,7 +640,7 @@ const Laboratory = (props) => {
                                     <Label for="priority">Result <span style={{ color:"red"}}> *</span></Label>
                                     <InputGroup>
                                     <Input
-                                        type="number"
+                                        type="text"
                                         name="result"
                                         id="result"
                                         value={tests.result}
@@ -750,27 +748,6 @@ const Laboratory = (props) => {
                         </FormGroup>
                     )}
                     </Col>
-                    
-                    {/* <Col md={6} className="form-group mb-3">
-                                <FormGroup>
-                                    <Label for="encounterDate">Date Collected *</Label>
-                                    <Input
-                                        type="date"
-                                        name="dateCollectedBy"
-                                        id="dateCollectedBy"
-                                        value={tests.dateCollectedBy}
-                                        min={tests.sampleCollectionDate!==''? tests.sampleCollectionDate :moment(new Date()).format("YYYY-MM-DD")}
-                                        onChange={handleInputChange}
-                                        //min={tests.sampleCollectionDate}
-                                        max= {tests.dateResultReceived!==''? tests.dateResultReceived :moment(new Date()).format("YYYY-MM-DD") }
-                                        style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                                        required
-                                    />
-                                    {errors.dateCollectedBy !=="" ? (
-                                        <span className={classes.error}>{errors.dateCollectedBy}</span>
-                                    ) : "" }
-                                </FormGroup>
-                    </Col> */}
                     <Col md={6} className="form-group mb-3">
                         <FormGroup>
                             <Label for="encounterDate">Sample logged remotely </Label>
