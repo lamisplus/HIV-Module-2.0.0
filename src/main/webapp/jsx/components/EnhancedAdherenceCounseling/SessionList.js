@@ -121,7 +121,6 @@ const LabHistory = (props) => {
                 if(sessionList.length>=3){
                     setShowOutComeButton(true)
                 }
-                   
             })
             .catch((error) => {  
                 setLoading(false)  
@@ -200,13 +199,11 @@ const LabHistory = (props) => {
                 <span style={{ textTransform: "capitalize" }}>Outcome</span>
             </ButtonMui>
             )}
-             {props.activeContent.obj.status!=='COMPLETED' && props.activeContent.obj.status!=='STOPPED' && (
+             {props.activeContent.obj.status!=='COMPLETED' && props.activeContent.obj.status!=='STOPPED' && sessionList.length <= 5 && (
             <ButtonMui
                 variant="contained"
                 color="primary"
                 className=" float-end ms-2 mr-2 mt-2 "
-                //startIcon={<FaUserPlus size="10"/>}
-                //startIcon={<TiArrowBack  />}
                 onClick={AddNewSession}
                 style={{backgroundColor:"#014D88", color:'#fff', height:'35px'}}
 
