@@ -159,7 +159,6 @@ const ArtCommencement = (props) => {
                { headers: {"Authorization" : `Bearer ${token}`} }
            )
            .then((response) => {
-               
                setRegimenLine(response.data);
            })
            .catch((error) => {
@@ -383,7 +382,7 @@ const ArtCommencement = (props) => {
                                         <FormGroup>
                                         <Label for="artDate">ART Start Date  * </Label>
                                         <Input
-                                            type="date"
+                                             type="date" onKeyPress={(e) => e.preventDefault()}
                                             name="visitDate"
                                             id="visitDate"
                                             onChange={handleInputChange}
@@ -525,7 +524,7 @@ const ArtCommencement = (props) => {
                                         <FormGroup>
                                         <Label >Date of Viral Load at Start of ART</Label>
                                         <Input
-                                            type="date"
+                                             type="date" onKeyPress={(e) => e.preventDefault()}
                                             name="dateOfViralLoadAtStartOfArt"
                                             id="dateOfViralLoadAtStartOfArt"
                                             max= {moment(new Date()).format("YYYY-MM-DD") }
@@ -625,7 +624,7 @@ const ArtCommencement = (props) => {
                                             <FormGroup>
                                             <Label >LMP</Label>
                                             <Input
-                                                type="date"
+                                                 type="date" onKeyPress={(e) => e.preventDefault()}
                                                 name="LMPDate"
                                                 id="LMPDate"
                                                 onChange={handleInputChange}
@@ -806,7 +805,7 @@ const ArtCommencement = (props) => {
 
                                     <div className="form-group mb-3 col-md-12">
                                         <FormGroup>
-                                        <Label >Clinical Notes</Label>
+                                        <Label >Comment</Label>
                                         <Input
                                             type="textarea"
                                             name="clinicalNote"

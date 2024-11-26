@@ -286,17 +286,8 @@ const Laboratory = (props) => {
             const dateResultReceived = moment(e.target.value).format("YYYY-MM-DD HH:MM:SS")   //Math.abs(e.target.value)
             setTests ({...tests,  [e.target.name]: dateResultReceived});
         }
-        // if(e.target.name==='pcrLabName'){
-        //     setTests ({...tests,  [e.target.name]: e.target.value});
-        // }
-        //setTests ({...tests,  [e.target.name]: e.target.value});
-                      
     }
-    const handleInputChangeLabNumber = e => {
-        labNumberOption=e.target.value
-        setLabNumberOption(labNumberOption)
-                      
-    }
+
     const handleInputChangeTest = e => {
         setErrors({...temp, [e.target.name]:""})//reset the error message to empty once the field as value
         
@@ -594,6 +585,7 @@ const Laboratory = (props) => {
                                         max= {moment(new Date()).format("YYYY-MM-DD") }
                                         style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                         required
+                                        onKeyPress={(e) => e.preventDefault()}
                                     />
                                     {errors.dateOrderBy !=="" ? (
                                         <span className={classes.error}>{errors.dateOrderBy}</span>
@@ -633,6 +625,7 @@ const Laboratory = (props) => {
                                 max= {moment(new Date()).format("YYYY-MM-DD HH:MM:SS")}
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 required
+                                onKeyPress={(e) => e.preventDefault()}
                             />
                             {errors.sampleCollectionDate !=="" ? (
                                 <span className={classes.error}>{errors.sampleCollectionDate}</span>
@@ -694,6 +687,7 @@ const Laboratory = (props) => {
                                         max= {tests.dateResultReceived!==''? tests.dateResultReceived :moment(new Date()).format("YYYY-MM-DD") }
                                         style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                         required
+                                        onKeyPress={(e) => e.preventDefault()}
                                     />
                                     {errors.dateAssayedBy !=="" ? (
                                         <span className={classes.error}>{errors.dateAssayedBy}</span>
@@ -714,6 +708,7 @@ const Laboratory = (props) => {
                                         max= {moment(new Date()).format("YYYY-MM-DD HH:MM:SS")}
                                         style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                         required
+                                        onKeyPress={(e) => e.preventDefault()}
                                     />
                                     {errors.dateResultReceived !=="" ? (
                                         <span className={classes.error}>{errors.dateResultReceived}</span>
@@ -866,6 +861,7 @@ const Laboratory = (props) => {
                                 onChange={handleInputChange}
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 required
+                                onKeyPress={(e) => e.preventDefault()}
                             />
                             {errors.dateSampleLoggedRemotely !=="" ? (
                                 <span className={classes.error}>{errors.dateSampleLoggedRemotely}</span>
@@ -887,6 +883,7 @@ const Laboratory = (props) => {
                                 max= {moment(new Date()).format("YYYY-MM-DD HH:MM:SS")}
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 required
+                                onKeyPress={(e) => e.preventDefault()}
                             />
                             {errors.dateReceivedAtPcrLab !=="" ? (
                                 <span className={classes.error}>{errors.dateReceivedAtPcrLab}</span>
@@ -927,6 +924,7 @@ const Laboratory = (props) => {
                                 max= {moment(new Date()).format("YYYY-MM-DD") }
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 required
+                                onKeyPress={(e) => e.preventDefault()}
                             />
                             {errors.dateCheckedBy !=="" ? (
                                 <span className={classes.error}>{errors.dateCheckedBy}</span>
@@ -966,6 +964,7 @@ const Laboratory = (props) => {
                                 max= {moment(new Date()).format("YYYY-MM-DD") }
                                 style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
                                 required
+                                onKeyPress={(e) => e.preventDefault()}
                             />
                             {errors.dateApproved !=="" ? (
                                 <span className={classes.error}>{errors.dateApproved}</span>
