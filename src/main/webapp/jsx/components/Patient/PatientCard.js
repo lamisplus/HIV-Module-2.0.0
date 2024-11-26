@@ -66,9 +66,8 @@ function PatientCard(props) {
   const patientObject = props.patientObj1;
 
   const id = props.patientObj.id;
-
   const [patientFlag, setPatientFlag] = useState({});
-
+  const [patientMlValue, setPatientMlValue] = useState({"iit":null,"chance":null});
   const getHospitalNumber = (identifier) => {
     const identifiers = identifier;
     const hospitalNumber = identifiers.identifier.find(
@@ -102,9 +101,21 @@ function PatientCard(props) {
     }
     )
   }
+//GEt patient IIT-ML Model Report for patient
+  const fetchPatientMlReport = () => {
+    axios.get(`${baseUrl}hiv/iit-ml/patient/${id}/iit-report`, {
+      headers: { Authorization: `Bearer ${token}` },
+    }).then((response) => {
+      console.log("my code is here", response.data);
+        setPatientMlValue(response.data);
+          console.log(patientMlValue);
+        }
+    )
+  }
   
   useEffect(() => {
     fetchPatientFlags(id);
+    fetchPatientMlReport(id);
   }, [])
 
   return (
@@ -227,7 +238,7 @@ function PatientCard(props) {
                         <Typography variant="caption">
                           <Label
                             size={"medium"}
-                            style={{ width: '210px', height: '50', justifyContent: 'space-between', alignItems: 'center' }}
+                            style={{ width: '210px', height: '50', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}
                           >
                             <Label.Detail style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', text: 'center' }}>
                               {
@@ -246,7 +257,31 @@ function PatientCard(props) {
                             </Label.Detail>
                           </Label>
                         </Typography>
+                        <br/>
+                        <div>
+                          <Typography variant="caption">
+                            <Label
+                                color={"teal"}
+                                size={"medium"}
+                                style={{ width: '210px', height: '50', justifyContent: '', alignItems: 'left', marginBottom: '10px' }}
+                            >
+                              IIT-ML PREDICTION
+                              <br/>
+
+                              <Label.Detail style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', text: 'center', marginBottom: '4px' }}>
+                                IIT Percentage : {patientMlValue.chance===null ? "" : patientMlValue.chance}
+                              </Label.Detail>
+
+                              <Label.Detail style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', text: 'center' }}>
+                                Chance of IIT: {patientMlValue.iit===null ? null : patientMlValue.iit===true?"True": "False"}
+                              </Label.Detail>
+                            </Label>
+
+                          </Typography>
+                        </div>
+
                       </Col>
+
                       <Col md={4} className={classes.root2} style={{ marginBottom: '6px' }}>
                         <Typography variant="caption">
                           <Label
@@ -265,7 +300,7 @@ function PatientCard(props) {
                           </Label>
                         </Typography>
                       </Col>
-                      <Col md={12}>
+                      <Col md={12} className={classes.root2}>
                         <div>
                           <Typography variant="caption">
                             <Label color={"teal"} size={"mini"}>
@@ -274,7 +309,7 @@ function PatientCard(props) {
                           </Typography>
                         </div>
                       </Col>
-                      <Col md={12}>
+                      <Col md={12} className={classes.root2}>
                         {/* {biometricStatus===true ? (
                           <> */}
                         <div>
@@ -303,6 +338,7 @@ function PatientCard(props) {
                               
                           </>
                       } */}
+
                       </Col>
                     </>
                   ) : (
