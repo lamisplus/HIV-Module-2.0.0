@@ -26,44 +26,43 @@ public interface HivEnrollmentRepository extends JpaRepository<HivEnrollment, Lo
             "WHERE person_uuid = ?1 ",nativeQuery = true)
     Optional<EnrollmentStatus> getHivEnrollmentStatusByPersonUuid(String uuid);
 
-//    Refactored Query
-    @Query(value = "WITH filtered_patients AS (\n" +
-            "    SELECT p.* FROM patient_person p\n" +
-            "    WHERE p.archived = 0 \n" +
-            "    AND p.facility_id = ?1\n" +
-            "    AND NOT EXISTS (\n" +
-            "        SELECT 1 FROM hiv_enrollment e WHERE e.person_uuid = p.uuid\n" +
-            "    )\n" +
-            ")\n" +
-            "SELECT \n" +
-            "    fp.id AS id,\n" +
-            "    fp.created_by as createBy,\n" +
-            "    fp.date_of_registration as dateOfRegistration,\n" +
-            "    fp.first_name as firstName,\n" +
-            "    fp.surname AS surname,\n" +
-            "    fp.other_name AS otherName,\n" +
-            "    fp.hospital_number AS hospitalNumber,\n" +
-            "    CAST(EXTRACT(YEAR from AGE(NOW(), fp.date_of_birth)) AS INTEGER) AS age,\n" +
-            "    INITCAP(fp.sex) AS gender,\n" +
-            "    fp.date_of_birth AS dateOfBirth,\n" +
-            "    fp.is_date_of_birth_estimated AS isDobEstimated,\n" +
-            "    fp.facility_id as facilityId,\n" +
-            "    fp.uuid as personUuid,\n" +
-            "    false AS isEnrolled,\n" +
-            "    NULL AS targetGroupId,\n" +
-            "    NULL as enrollmentId,\n" +
-            "    NULL as uniqueId,\n" +
-            "    NULL as enrollmentStatus,\n" +
-            "    COALESCE(ca.commenced, false) as commenced,\n" +
-            "    b.biometric_type as biometricStatus\n" +
-            "FROM filtered_patients fp\n" +
-            "LEFT JOIN biometric b ON b.person_uuid = fp.uuid\n" +
-            "LEFT JOIN (\n" +
-            "    SELECT DISTINCT true as commenced, person_uuid\n" +
-            "    FROM hiv_art_clinical\n" +
-            "    WHERE archived = 0 AND is_commencement = true\n" +
-            ") ca ON fp.uuid = ca.person_uuid\n" +
-            "ORDER BY fp.id DESC\n" +
+    @Query(value = "WITH filtered_patients AS ( \n" +
+            "                SELECT p.* FROM patient_person p \n" +
+            "                WHERE p.archived = 0  \n" +
+            "                AND p.facility_id = ?1\n" +
+            "                AND NOT EXISTS ( \n" +
+            "                    SELECT 1 FROM hiv_enrollment e WHERE e.person_uuid = p.uuid \n" +
+            "                ) \n" +
+            "            ) \n" +
+            "            SELECT  \n" +
+            "                fp.id AS id, \n" +
+            "                fp.created_by as createBy, \n" +
+            "                fp.date_of_registration as dateOfRegistration, \n" +
+            "                fp.first_name as firstName, \n" +
+            "                fp.surname AS surname, \n" +
+            "                fp.other_name AS otherName, \n" +
+            "                fp.hospital_number AS hospitalNumber, \n" +
+            "                CAST(EXTRACT(YEAR from AGE(NOW(), fp.date_of_birth)) AS INTEGER) AS age, \n" +
+            "                INITCAP(fp.sex) AS gender, \n" +
+            "                fp.date_of_birth AS dateOfBirth, \n" +
+            "                fp.is_date_of_birth_estimated AS isDobEstimated, \n" +
+            "                fp.facility_id as facilityId, \n" +
+            "                fp.uuid as personUuid, \n" +
+            "                false AS isEnrolled, \n" +
+            "                NULL AS targetGroupId, \n" +
+            "                NULL as enrollmentId, \n" +
+            "                NULL as uniqueId, \n" +
+            "                NULL as enrollmentStatus, \n" +
+            "                COALESCE(ca.commenced, false) as commenced, \n" +
+            "                b.biometric_type as biometricStatus \n" +
+            "            FROM filtered_patients fp \n" +
+            "            LEFT JOIN biometric b ON b.person_uuid = fp.uuid \n" +
+            "            LEFT JOIN ( \n" +
+            "                SELECT DISTINCT true as commenced, person_uuid \n" +
+            "                FROM hiv_art_clinical \n" +
+            "                WHERE archived = 0 AND is_commencement = true \n" +
+            "            ) ca ON fp.uuid = ca.person_uuid \n" +
+            "            ORDER BY fp.id DESC" +
             "LIMIT ?2 OFFSET ?3",
             nativeQuery = true)
     List<PatientProjection> findPatientsByFacilityId(Long facilityId, int limit, int offset);
@@ -134,9 +133,9 @@ public interface HivEnrollmentRepository extends JpaRepository<HivEnrollment, Lo
             "    )\n" +
             "ORDER BY p.id DESC",
             nativeQuery = true)
-    Page<PatientProjection> getPatientsByFacilityBySearchParam(Long facilityId, String searchParam, Pageable page);
-    
-    
+    Page<PatientProjection> getPatientsByFacilityBySearchParam(Long facilityId, String searchParam,  Pageable page);
+
+
     @Query(value = "SELECT p.id AS id,p.created_by as createBy, p.date_of_registration as dateOfRegistration, p.first_name as firstName, p.surname AS surname, \n" +
             "                         p.other_name AS otherName, \n" +
             "                        p.hospital_number AS hospitalNumber, CAST (EXTRACT(YEAR from AGE(NOW(), date_of_birth)) AS INTEGER) AS age, \n" +
@@ -158,9 +157,9 @@ public interface HivEnrollmentRepository extends JpaRepository<HivEnrollment, Lo
             "                        p.first_name, b.biometric_type, pc.display,p.surname, p.other_name, p.hospital_number, p.date_of_birth \n" +
             "                        ORDER BY p.id DESC",
             nativeQuery = true)
-    Page<PatientProjection> getEnrolledPatientsByFacilityBySearchParam(Long facilityId, String searchParam, Pageable page);
-    
-    
+    Page<PatientProjection> getEnrolledPatientsByFacilityBySearchParam(Long facilityId, String searchParam,  Pageable page);
+
+
     @Query(value = "SELECT p.id AS id,p.created_by as createBy, p.date_of_registration as dateOfRegistration, p.first_name as firstName, p.surname AS surname, \n" +
             "                         p.other_name AS otherName, \n" +
             "                        p.hospital_number AS hospitalNumber, CAST (EXTRACT(YEAR from AGE(NOW(), date_of_birth)) AS INTEGER) AS age, \n" +
@@ -181,7 +180,7 @@ public interface HivEnrollmentRepository extends JpaRepository<HivEnrollment, Lo
             "                        p.first_name, b.biometric_type, pc.display,p.surname, p.other_name, p.hospital_number, p.date_of_birth \n" +
             "                        ORDER BY p.id DESC",
             nativeQuery = true)
-    Page<PatientProjection> getEnrolledPatientsByFacility(Long facilityId, Pageable page);
+    Page<PatientProjection> getEnrolledPatientsByFacility(Long facilityId,  Pageable page);
     
     
     @Query(value = "SELECT p.id AS id,p.created_by as createBy, p.date_of_registration as dateOfRegistration, p.first_name as firstName, p.surname AS surname, \n" +

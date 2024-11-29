@@ -12,8 +12,8 @@ const divStyle = {
 };
 
 const Home = () => {
-  const [key, setKey] = useState("home");
-  const [activeTab, setActiveTab] = useState("home");
+  const [key, setKey] = useState("checkedIn");
+  const [activeTab, setActiveTab] = useState("checkedIn");
 
   const handleTabSelect = (k) => {
     setKey(k);
@@ -45,11 +45,11 @@ const Home = () => {
                   onSelect={handleTabSelect}
                   className="mb-3"
                 >
-                  <Tab eventKey="home" title="Find Patients">
+                  {/* <Tab eventKey="home" title="Find Patients">
                     <Suspense fallback={<LoadingSpinner />}>
                       {activeTab === "home" && <Dashboard />}
                     </Suspense>
-                  </Tab>
+                  </Tab> */}
 
                   <Tab eventKey="checkedIn" title="Checked-In Patients">
                     <Suspense fallback={<LoadingSpinner />}>

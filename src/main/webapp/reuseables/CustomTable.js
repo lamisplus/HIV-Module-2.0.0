@@ -20,7 +20,9 @@ const defaultOptions = {
   debounceInterval: 400,
 };
 
-const CustomTable = ({ title, columns, data, icons, showPPI, onPPIChange }) => {
+const CustomTable = ({ title, columns, data, icons, showPPI, onPPIChange,
+  isLoading
+}) => {
     
   const CustomToolbar = (props) => (
     <div>
@@ -51,6 +53,7 @@ const CustomTable = ({ title, columns, data, icons, showPPI, onPPIChange }) => {
       icons={icons}
       title={title}
       columns={columns}
+      isLoading={isLoading}
       data={data}
       options={defaultOptions}
       components={{

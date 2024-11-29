@@ -4,7 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-    <changeSet id="20241119-002-002" author="basil">
+    <changeSet id="20241124-005-005" author="basil">
         <sql>
             -- Create indexes without WHERE clause first
             CREATE INDEX IF NOT EXISTS idx_patient_person_main

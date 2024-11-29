@@ -21,6 +21,7 @@ const styles = {
 };
 
 const PatientActions = memo(({ patient }) => {
+
   const { currentStatus, id } = patient;
   const isEnrolled = currentStatus !== "Not Enrolled";
 

@@ -109,7 +109,6 @@ public class HivPatientService {
         return getPageDto(persons, content);
     }
 
-//    Refactored Methods for find Patient
     public PageDTO getHivPatients(String searchValue, Pageable pageable) {
         Long facilityId = currentUserOrganizationService.getCurrentUserOrganization();
         Page<PatientProjection> persons;
@@ -124,7 +123,7 @@ public class HivPatientService {
                     (int) pageable.getOffset()
             );
 
-            Long total = enrollmentRepository.countPatientsByFacilityId(facilityId);
+            Long total = enrollmentRepository.countPatientsByFacilityId(facilityId); // Using the new method
             persons = new PageImpl<>(content, pageable, total);
         }
 

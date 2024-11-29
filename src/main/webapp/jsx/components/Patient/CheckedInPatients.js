@@ -104,10 +104,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CheckedInPatients = (props) => {
+
+  const patientObject = props.patientObj1;
+
+
   const { hasPermission } = usePermissions();
 
   const [showPPI, setShowPPI] = useState(true);
   const { fetchPatients } = useCheckedInPatientData(baseUrl, token);
+
+  
 
   const permissions = useMemo(
     () => ({
@@ -147,7 +153,6 @@ const CheckedInPatients = (props) => {
             </Label>
           ),
       },
-      { title: "Check-In Date", field: "checkInDate" },
       {
         title: "ART Status",
         field: "status",
@@ -238,7 +243,6 @@ const CheckedInPatients = (props) => {
     <div>
       <Card>
         <CardBody>
-          {/* Notification modal and pulse */}
           <CustomTable
             title="HIV Checked In Patients"
             columns={columns}

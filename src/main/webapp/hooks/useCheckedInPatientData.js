@@ -6,6 +6,7 @@ export const useCheckedInPatientData = (baseUrl, token) => {
     try {
       const response = await axios.get(`${baseUrl}opd-setting`, {
         headers: { Authorization: `Bearer ${token}` },
+
       });
 
       const data = response.data;

@@ -317,7 +317,7 @@ public class LinkageService {
         try {
             List<LinkageResponseInterface> linkageList = getAllEnrolledOvcClients();
             if (!linkageList.isEmpty()) {
-                String filePath = LINKAGE_EXPORT + File.separator + "ovc_linkage_" + df.format(new java.util.Date()) + ".json";
+                String filePath = LINKAGE_EXPORT + File.separator + "ovc_linkage_" + df.format(new Date()) + ".json";
                 String json = objectToJson(linkageList);
                 writeObjectToFile(json, filePath);
                 return "File exported successfully.";

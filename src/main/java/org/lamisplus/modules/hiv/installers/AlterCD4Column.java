@@ -1,4 +1,4 @@
-//package org.lamisplus.modules.hiv.installers;
+package org.lamisplus.modules.hiv.installers;//package org.lamisplus.modules.hiv.installers;
 //
 //import com.foreach.across.core.annotations.Installer;
 //import com.foreach.across.core.installers.AcrossLiquibaseInstaller;

@@ -9,7 +9,7 @@ import { makeStyles } from "@material-ui/core";
 import { toast } from "react-toastify";
 import { Button } from "semantic-ui-react";
 import { usePermissions } from "../../../hooks/usePermissions";
-import { MenuItem } from "../../../reuseables/MenuItem"
+import { MenuItem } from "../../../reuseables/MenuItem";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -79,6 +79,7 @@ const SubMenu = (props) => {
       canSeeTracking: hasPermission("Client Tracking & Discontinuation Form"),
 
       canSeeTransfer: hasPermission("HIV Care and Treatment Transfer Form"),
+      canSeePatientVisit: hasAnyPermission("view_patient", "all_permissions"),
     }),
     [hasPermission, hasAnyPermission, patientObj]
   );
@@ -107,8 +108,6 @@ const SubMenu = (props) => {
     }),
     [patientObj]
   );
-
-
 
   useEffect(() => {
     const initializeData = async () => {
@@ -231,6 +230,15 @@ const SubMenu = (props) => {
         props.setActiveContent({
           ...props.activeContent,
           route: "chronic-care",
+          activeTab: "home",
+        });
+      },
+
+      loadPatientVisits: () => {
+        setActiveItem("patient-visit");
+        props.setActiveContent({
+          ...props.activeContent,
+          route: "patient-visit",
           activeTab: "home",
         });
       },
@@ -380,6 +388,17 @@ const SubMenu = (props) => {
               >
                 Home
               </MenuItem>
+
+              {permissions.canSeePatientVisit && (
+                <MenuItem
+                  onClick={menuHandlers.loadPatientVisits}
+                  name="patient-visit"
+                  active={activeItem === "patient-visit"}
+                  title="Patient Visits"
+                >
+                  Patient Visits
+                </MenuItem>
+              )}
 
               {permissions.canSeeInitialEvaluation && (
                 <MenuItem
@@ -694,6 +713,17 @@ const SubMenu = (props) => {
                           title="Transfer"
                         >
                           Transfer
+                        </MenuItem>
+                      )}
+
+                      {permissions.canSeePatientVisit && (
+                        <MenuItem
+                          onClick={menuHandlers.loadPatientVisits}
+                          name="patient-visit"
+                          active={activeItem === "patient-visit"}
+                          title="Patient Visits"
+                        >
+                          Patient Visits
                         </MenuItem>
                       )}
                     </>

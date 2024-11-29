@@ -69,6 +69,7 @@ import { getCurrentPatientRecord } from "../../services/getCurrentPatientRecord"
 import { useQuery } from "react-query";
 import { GET_CURRENT_PATIENT_RECORD } from "../../../utils/queryKeys";
 import { toast } from "react-toastify";
+import PatientVisits from "./PatientVisits";
 
 const styles = (theme) => ({
   root: {
@@ -230,7 +231,6 @@ function PatientCard(props) {
               expandedPatientObj={patientObj1}
               art={art}
               activeContent={activeContent}
-              
             />
           </Sticky>
           <br />
@@ -268,6 +268,14 @@ function PatientCard(props) {
           )}
           {activeContent.route === "laboratory" && (
             <Laboratory
+              patientObj={patientObj}
+              setActiveContent={setActiveContent}
+              activeContent={activeContent}
+            />
+          )}
+
+          {activeContent.route === "patient-visit" && (
+            <PatientVisits
               patientObj={patientObj}
               setActiveContent={setActiveContent}
               activeContent={activeContent}
@@ -327,7 +335,6 @@ function PatientCard(props) {
               patientObj={patientObj}
               setActiveContent={setActiveContent}
               activeContent={activeContent}
-              
             />
           )}
           {activeContent.route === "art-commencement" && (
