@@ -61,19 +61,6 @@ const LabHistory = (props) => {
     const toggle = () => setOpen(!open);
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        if (props.orderList.length > 0) {
-            setLoading(true);
-            const fetchAllResults = async () => {
-                for (let row of props.orderList) {
-                    await fetchTestResult(row);
-                }
-                setLoading(false);
-            };
-            fetchAllResults();
-        }
-    }, [props.orderList]);
-
 // fetch Test Result from lims
     const fetchTestResult = async (row) => {
         try {
@@ -82,6 +69,7 @@ const LabHistory = (props) => {
                 const response = await axios.get(`${baseUrl}lims/sample/result/${modifiedSampleNumber}`, {
                     headers: {Authorization: `Bearer ${token}`}
                 });
+                console.log("response data", response.data)
                 // Update the results state, mapping the result by sample number
                 setResults((prevResults) => ({
                     ...prevResults,
@@ -120,6 +108,60 @@ const LabHistory = (props) => {
         }
     };
 
+    // useEffect(() => {
+    //     console.log("I got here 0 :", props.orderList.length)
+    //     if (props.orderList.length > 0) {
+    //         console.log("I got here 1")
+    //         setLoading(true);
+    //         console.log("I got here 2")
+    //         const fetchAllResults = async () => {
+    //             console.log("I got here 3")
+    //             for (let row of props.orderList) {
+    //                 await fetchTestResult(row);
+    //             }
+    //             setLoading(false);
+    //         };
+    //         fetchAllResults();
+    //     }
+    // }, [props.orderList]);
+
+    // useEffect(() => {
+    //     const fetchAllResults = async () => {
+    //         try {
+    //             if (props.orderList && props.orderList.length > 0) {
+    //                 setLoading(true);
+    //                 await Promise.all(props.orderList.map((row) => fetchTestResult(row)));
+    //             }
+    //         } catch (error) {
+    //             console.error("Error fetching all test results:", error);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+    //
+    //     fetchAllResults();
+    // }, [props.orderList]);
+
+    // console.log("I after got here inside useFfect 0")
+
+    useEffect(() => {
+        const fetchAllResults = async () => {
+            if (props.orderList && props.orderList.length > 0) {
+                setLoading(true);
+                try {
+                    await Promise.all(props.orderList.map((row) => fetchTestResult(row)));
+                } catch (error) {
+                    console.error("Error fetching all test results:", error);
+                } finally {
+                    setLoading(false);
+                }
+            } else {
+                setLoading(false);
+            }
+        };
+        fetchAllResults();
+    }, [props.orderList]);
+
     const onClickHome = (row, actionType) => {
         props.setActiveContent({
             ...props.activeContent,
@@ -155,14 +197,17 @@ const LabHistory = (props) => {
                 }
             });
     }
+
     const LoadModal = (row) => {
         toggle()
         setRecord(row)
     }
 
+
     return (
         <div>
             <br/>
+            {loading && <p>Loading...</p>}
             <MaterialTable
                 icons={tableIcons}
                 title="Laboratory Viral Load Order and Result  History"

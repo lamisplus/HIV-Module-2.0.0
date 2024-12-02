@@ -127,7 +127,7 @@ const Patients = (props) => {
           { title: "Unique ID", field: "uniqueId", filtering: false },
           { title: "Sex", field: "sex", filtering: false },
           { title: "Age", field: "age", filtering: false },
-          { title: "ART Status", field: "status", filtering: false },
+          // { title: "ART Status", field: "status", filtering: false },
           { title: "Actions", field: "actions", filtering: false },
         ]}
         data={(query) =>
@@ -172,12 +172,6 @@ const Patients = (props) => {
                     uniqueId: row.uniqueId,
                     sex: row.sex,
                     age: calculate_age(row.dateOfBirth),
-
-                    status: (
-                      <Label color="blue" size="mini">
-                        {row.currentStatus}
-                      </Label>
-                    ),
                     actions: (
                       <div>
                         {row.currentStatus !== "Not Enrolled" ? (

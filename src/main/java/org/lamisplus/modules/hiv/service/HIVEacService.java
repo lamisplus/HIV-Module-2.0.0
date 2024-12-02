@@ -2,7 +2,6 @@ package org.lamisplus.modules.hiv.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.audit4j.core.util.Log;
 import org.lamisplus.modules.base.controller.apierror.EntityNotFoundException;
 import org.lamisplus.modules.base.module.ModuleService;
 import org.lamisplus.modules.hiv.domain.dto.EACPharmacyDisplayDto;
@@ -20,10 +19,7 @@ import org.springframework.stereotype.Service;
 import reactor.util.UUIDUtils;
 
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
