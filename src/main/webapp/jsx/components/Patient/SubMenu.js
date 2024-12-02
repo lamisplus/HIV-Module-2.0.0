@@ -27,15 +27,17 @@ const useStyles = makeStyles((theme) => ({
 function SubMenu(props) {
   const [activeItem, setActiveItem] = useState("recent-history");
   const patientObj = props.patientObj;
+  const [currentStatus, setCurrentStatus] = useState('');
   // console.log("PatientObj", props.patientObj )
   const [isOtzEnrollementDone, setIsOtzEnrollementDone] = useState(null);
   const [labResult, setLabResult] = useState(null);
   const patientCurrentStatus =
-    props.patientObj && props.patientObj.currentStatus === "Died (Confirmed)"
+    props.patientObj && currentStatus === "Died (Confirmed)"
       ? true
       : false;
   const { transferOut } = useStyles();
   const [shouldDeactivateButton, setShouldDeactivateButton] = useState(false);
+  const [isPatientActive, setIsPatientActive] = useState(false);
 
   useEffect(() => {
     if (props.patientObj && props.patientObj !== null) {
@@ -43,6 +45,27 @@ function SubMenu(props) {
       getOldRecordIfExists();
     }
   }, []);
+
+
+  const getCurrentStatus = () => {
+    axios
+        .get(`${baseUrl}hiv/patient-current/${props.patientObj.id}?commenced=${props.patientObj.commenced}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((resp) => {
+          localStorage.setItem('currentStatus', resp.data);
+          setCurrentStatus(resp.data)
+          setIsPatientActive(!resp.data.toLocaleLowerCase().includes("stopped"))
+          //console.log(resp.data)
+        })
+        .catch((error) => {});
+  };
+
+  useEffect(() => {
+    getCurrentStatus()
+  }, []);
+
+
 
   //Get list
   const Observation = () => {
@@ -275,36 +298,10 @@ function SubMenu(props) {
     return false;
   };
 
-  const [isPatientActive, setIsPatientActive] = useState(
-    !props.patientObj.currentStatus.toLocaleLowerCase().includes("stop")
-  );
-
-
-  // const updateCurrentEnrollmentStatus = () => {
-  //   axios
-  //     .post(`${baseUrl}hiv/status/activate-stop_status/${props.patientObj.personUuid}`, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     })
-  //     .then((response) => {
-  //       if (response.status === 204) {
-  //         setIsPatientActive(true);
-  //         toast.success("Patient reactivated succesfully");
-  //       }
-  //       props.setActiveContent({
-  //         ...props.activeContent,
-  //         route: "recent-history",
-  //       });
-  //     })
-  //     .catch((error) => {
-  //       if (error.response && error.response.data) {
-  //         let errorMessage =
-  //           error.response.data && error.response.data.apierror.message !== ""
-  //             ? error.response.data.apierror.message
-  //             : "Something went wrong, please try again";
-  //         toast.error(errorMessage);
-  //       }
-  //     });
-  // };
+  // const [isPatientActive, setIsPatientActive] = useState(
+  //   // !props.storageCurrentStatus.toLocaleLowerCase().includes("stop")
+  //     !currentStatus.toLocaleLowerCase().includes("stop")
+  // );
 
 
   const updateCurrentEnrollmentStatus = () => {
@@ -433,7 +430,7 @@ function SubMenu(props) {
                   (
                <>
                  {
-                   patientObj && (patientObj.currentStatus === "DIED (CONFIRMED)" || patientObj.currentStatus === "ART TRANSFER OUT") ? (
+                   patientObj && (currentStatus === "DIED (CONFIRMED)" || currentStatus === "ART TRANSFER OUT") ? (
                        <Menu size="tiny" style={{
                          backgroundColor: "rgb(153, 46, 98)",
                          color: "#fff"
@@ -446,7 +443,7 @@ function SubMenu(props) {
                          >
                            Home
                          </Menu.Item>
-                         {patientObj.currentStatus === "DIED (CONFIRMED)" && (
+                         {currentStatus === "DIED (CONFIRMED)" && (
                              <Menu.Item
                                  onClick={() => loadTrackingForm(patientObj)}
                                  name="tracking"
@@ -463,7 +460,7 @@ function SubMenu(props) {
                          >
                            History
                          </Menu.Item>
-                         {patientObj.currentStatus === "ART TRANSFER OUT" && (
+                         {currentStatus === "ART TRANSFER OUT" && (
                              <Menu.Item
                                  onClick={() => loadTransferForm(patientObj)}
                                  name="transfer"

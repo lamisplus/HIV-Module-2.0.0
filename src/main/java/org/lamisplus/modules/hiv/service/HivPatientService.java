@@ -188,17 +188,18 @@ public class HivPatientService {
                 .createBy(p.getCreateBy())
                 .uniqueId(p.getUniqueId())
                 .dateOfRegistration(p.getDateOfRegistration())
+//                .currentStatus(p.getStatus())
                 .build();
         patientDTO.setCommenced(p.getCommenced() != null);
         patientDTO.setBiometricStatus(p.getBiometricStatus() != null);
-        if (p.getCommenced() != null && p.getCommenced()) {
-            String currentStatus = statusManagementService.getCurrentStatus(p.getId());
-            patientDTO.setCurrentStatus(currentStatus);
-        } else if (Boolean.TRUE.equals(p.getIsEnrolled())) {
-            patientDTO.setCurrentStatus(p.getEnrollmentStatus());
-        } else {
-            patientDTO.setCurrentStatus("Not Enrolled");
-        }
+//        if (p.getCommenced() != null && p.getCommenced()) {
+//            String currentStatus = statusManagementService.getCurrentStatus(p.getId());
+//            patientDTO.setCurrentStatus(currentStatus);
+//        } else if (Boolean.TRUE.equals(p.getIsEnrolled())) {
+//            patientDTO.setCurrentStatus(p.getEnrollmentStatus());
+//        } else {
+//            patientDTO.setCurrentStatus("Not Enrolled");
+//        }
         List<Observation> clinicalEvaluationAndMentalHealth =
                 observationRepository.getClinicalEvaluationAndMentalHealth(p.getPersonUuid());
         if (clinicalEvaluationAndMentalHealth.size() >= 2) {
@@ -363,5 +364,7 @@ public class HivPatientService {
         Integer suppressionValue = patientFlagsParams.orElse(null);
         return artClinicalRepository.getPatientMetaData(personIdd, facilityId, suppressionValue);
     }
+
+
 
 }
