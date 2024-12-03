@@ -130,7 +130,6 @@ function PatientCard(props) {
                             variant="contained"
                             color="primary"
                             className=" float-end ms-2 mr-2 mt-2"
-                            //startIcon={<FaUserPlus size="10"/>}
                             startIcon={<TiArrowBack />}
                             style={{
                               backgroundColor: "rgb(153, 46, 98)",
@@ -340,8 +339,6 @@ function PatientCard(props) {
                         </div>
                       </Col>
                       <Col md={12}>
-                        {/* {biometricStatus===true ? (
-                          <> */}
                         <div>
                           <Typography variant="caption">
                             <Label
@@ -361,13 +358,6 @@ function PatientCard(props) {
                             </Label>
                           </Typography>
                         </div>
-                        {/* </>
-                          )
-                          :
-                          <>
-                              
-                          </>
-                      } */}
                       </Col>
                     </>
                   ) : (

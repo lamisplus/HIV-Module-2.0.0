@@ -27,8 +27,7 @@ const useStyles = makeStyles((theme) => ({
 function SubMenu(props) {
   const [activeItem, setActiveItem] = useState("recent-history");
   const patientObj = props.patientObj;
-  const [currentStatus, setCurrentStatus] = useState("");
-  // console.log("PatientObj", props.patientObj);
+  const [currentStatus, setCurrentStatus] = useState('');
   const [isOtzEnrollementDone, setIsOtzEnrollementDone] = useState(null);
   const [labResult, setLabResult] = useState(null);
   const patientCurrentStatus =
@@ -37,12 +36,12 @@ function SubMenu(props) {
   const [shouldDeactivateButton, setShouldDeactivateButton] = useState(false);
   const [isPatientActive, setIsPatientActive] = useState(false);
 
-  useEffect(() => {
-    if (props.patientObj && props.patientObj !== null) {
-      Observation();
-      getOldRecordIfExists();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (props.patientObj && props.patientObj !== null) {
+  //     Observation();
+  //     getOldRecordIfExists();
+  //   }
+  // }, []);
 
   const getCurrentStatus = () => {
     axios
@@ -76,41 +75,6 @@ function SubMenu(props) {
       .then((response) => {})
       .catch((error) => {});
   };
-
-  useEffect(() => {
-    const getCurrentLabResult = async (id) => {
-      try {
-        const response = await axios.get(
-          `${baseUrl}laboratory/vl-results/patients/${id}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        const data = response.data;
-        if (data.length > 0) {
-          const lastItem = data[data.length - 1];
-          setLabResult(lastItem);
-        }
-        getOldRecordIfExists();
-      } catch (error) {
-        if (error.response && error.response.data) {
-          const errorMessage =
-            error.response.data.apierror &&
-            error.response.data.apierror.message !== ""
-              ? error.response.data.apierror.message
-              : "Something went wrong, please try again";
-          toast.error(errorMessage);
-        } else {
-          toast.error("Something went wrong. Please try again...");
-        }
-      }
-    };
-
-    if (props?.patientObj?.id) {
-      getCurrentLabResult(props.patientObj.id);
-    }
-  }, [props?.patientObj?.id]);
-
   const loadEAC = (row) => {
     setActiveItem("eac");
     props.setActiveContent({
@@ -272,36 +236,65 @@ function SubMenu(props) {
     props.setActiveContent({ ...props.activeContent, route: "otz-register" });
   };
 
-  const getOldRecordIfExists = () => {
-    axios
-      .get(`${baseUrl}observation/person/${props?.patientObj?.id}`, {
+
+  const fetchObservationData = async (id) => {
+    try {
+      const response = await axios.get(`${baseUrl}observation/person/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        const patientDTO = response?.data;
-        const otzData =
-          patientDTO?.filter?.((item) => item?.type === "Service OTZ")?.[0] ||
-          null;
-        if (otzData) {
-          setIsOtzEnrollementDone(true);
-        } else {
-          setIsOtzEnrollementDone(false);
-        }
-      })
-      .catch((error) => {
-        //
-        setIsOtzEnrollementDone(false);
       });
+      const patientDTO = response?.data;
+      const otzData =
+          patientDTO?.filter?.((item) => item?.type === "Service OTZ")?.[0] || null;
+      if (otzData) {
+        setIsOtzEnrollementDone(true);
+      } else {
+        setIsOtzEnrollementDone(false);
+      }
+    } catch (error) {
+      setIsOtzEnrollementDone(false);
+      throw error; // Re-throw the error to be caught in the calling function
+    }
   };
 
-  const patientIsConfirmedDeadOrIsTransfered = (patient) => {
-    return false;
-  };
+  useEffect(() => {
+    const getCurrentLabResult = async (id) => {
+      try {
+        const response = await axios.get(
+            `${baseUrl}laboratory/vl-results/patients/${id}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+        );
+        const data = response.data;
+        if (data.length > 0) {
+          const lastItem = data[data.length - 1];
+          setLabResult(lastItem);
+        }
+        await fetchObservationData(id);
+      } catch (error) {
+        if (error.response && error.response.data) {
+          const errorMessage =
+              error.response.data.apierror &&
+              error.response.data.apierror.message !== ""
+                  ? error.response.data.apierror.message
+                  : "Something went wrong, please try again";
+          toast.error(errorMessage);
+        } else {
+          toast.error("Something went wrong. Please try again...");
+        }
+      }
+    };
 
-  // const [isPatientActive, setIsPatientActive] = useState(
-  //   // !props.storageCurrentStatus.toLocaleLowerCase().includes("stop")
-  //     !currentStatus.toLocaleLowerCase().includes("stop")
-  // );
+    if (props?.patientObj?.id) {
+      getCurrentLabResult(props.patientObj.id);
+    }
+  }, [props?.patientObj?.id]);
+
+  useEffect(() => {
+    if (props.patientObj && props.patientObj !== null) {
+      fetchObservationData(props.patientObj.id);
+    }
+  }, [props.patientObj]);
 
   const updateCurrentEnrollmentStatus = () => {
     axios
@@ -368,8 +361,6 @@ function SubMenu(props) {
     };
     checkPatientActivities();
   }, []);
-
-  // console.log("Should deactivate button",shouldDeactivateButton)
 
   return (
     <div>
