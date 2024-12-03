@@ -184,7 +184,7 @@ function PatientCard(props) {
           "Isoniazid and Rifampicin-(3HR)",
         ];
 
-        const matchingObject = response.data.find((item) =>
+        const matchingObject = response?.data?.find((item) =>
           item.pharmacyData.regimens.some((regimen) =>
             drugsOfInterest.includes(regimen.name)
           )
