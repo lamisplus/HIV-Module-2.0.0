@@ -156,54 +156,6 @@ const Patients = (props) => {
                     age: calculate_age(row.dateOfBirth),
                     actions: (
                       <div>
-                        {row.currentStatus !== "Not Enrolled" ? (
-                          <>
-                            <Link
-                              to={{
-                                pathname: "/patient-history",
-                                state: { patientObj: row },
-                              }}
-                            >
-                              <ButtonGroup
-                                variant="contained"
-                                aria-label="split button"
-                                style={{
-                                  backgroundColor: "rgb(153, 46, 98)",
-                                  height: "30px",
-                                  width: "215px",
-                                }}
-                                size="large"
-                              >
-                                <Button
-                                  color="primary"
-                                  size="small"
-                                  aria-label="select merge strategy"
-                                  aria-haspopup="menu"
-                                  style={{
-                                    backgroundColor: "rgb(153, 46, 98)",
-                                  }}
-                                >
-                                  <MdDashboard />
-                                </Button>
-                                <Button
-                                  style={{
-                                    backgroundColor: "rgb(153, 46, 98)",
-                                  }}
-                                >
-                                  <span
-                                    style={{
-                                      fontSize: "12px",
-                                      color: "#fff",
-                                      fontWeight: "bolder",
-                                    }}
-                                  >
-                                    Patient Dashboard
-                                  </span>
-                                </Button>
-                              </ButtonGroup>
-                            </Link>
-                          </>
-                        ) : (
                           <>
                             <Link
                               to={{
@@ -250,7 +202,6 @@ const Patients = (props) => {
                               </ButtonGroup>
                             </Link>
                           </>
-                        )}
                       </div>
                     ),
                   })),
