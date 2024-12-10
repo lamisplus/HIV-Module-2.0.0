@@ -27,6 +27,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import { TiArrowForward } from "react-icons/ti";
+import { MdDashboard } from "react-icons/md";
 
 import "@reach/menu-button/styles.css";
 import { Label } from "semantic-ui-react";
@@ -104,16 +105,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CheckedInPatients = (props) => {
-
-  const patientObject = props.patientObj1;
-
-
   const { hasPermission } = usePermissions();
-
   const [showPPI, setShowPPI] = useState(true);
   const { fetchPatients } = useCheckedInPatientData(baseUrl, token);
-
-  
 
   const permissions = useMemo(
     () => ({
@@ -141,9 +135,9 @@ const CheckedInPatients = (props) => {
       { title: "Age", field: "age" },
       {
         title: "Biometrics",
-        field: "biometrics",
+        field: "biometricStatus",
         render: (rowData) =>
-          rowData.biometric === "Yes" ? (
+          rowData.biometricStatus === true ? (
             <Label color="green" size="mini">
               Biometric Captured
             </Label>
@@ -155,66 +149,75 @@ const CheckedInPatients = (props) => {
       },
       {
         title: "ART Status",
-        field: "status",
-        render: () => (
+        field: "currentStatus",
+        render: (rowData) => (
           <Label color="blue" size="mini">
-            Not Enrolled
+            {rowData.currentStatus || "Not Enrolled"}
           </Label>
         ),
       },
       {
         title: "Actions",
         field: "actions",
-        render: (rowData) => (
-          <div>
-            {permissions.canSeeEnrollButton && rowData.biometric === "Yes" && (
-              <Link
-                to={{
-                  pathname: "/enroll-patient",
-                  state: { patientId: rowData.id, patientObj: rowData },
-                }}
-              >
-                <ButtonGroup
-                  variant="contained"
-                  aria-label="split button"
-                  style={{
-                    backgroundColor: "rgb(153, 46, 98)",
-                    height: "30px",
-                    width: "215px",
-                  }}
-                  size="large"
-                >
-                  <Button
-                    color="primary"
-                    size="small"
-                    aria-label="select merge strategy"
-                    aria-haspopup="menu"
-                    style={{
-                      backgroundColor: "rgb(153, 46, 98)",
+        render: (rowData) => {
+          const isEnrolled = rowData.isEnrolled;
+
+          return (
+            <div>
+              {permissions.canSeeEnrollButton &&
+                rowData.biometricStatus === true && (
+                  <Link
+                    to={{
+                      pathname: isEnrolled
+                        ? "/patient-history"
+                        : "/enroll-patient",
+                      state: isEnrolled
+                        ? { patientObj: rowData }
+                        : { patientId: rowData.id, patientObj: rowData },
                     }}
                   >
-                    <TiArrowForward />
-                  </Button>
-                  <Button
-                    style={{
-                      backgroundColor: "rgb(153, 46, 98)",
-                    }}
-                  >
-                    <span
+                    <ButtonGroup
+                      variant="contained"
+                      aria-label="split button"
                       style={{
-                        fontSize: "12px",
-                        color: "#fff",
-                        fontWeight: "bolder",
+                        backgroundColor: "rgb(153, 46, 98)",
+                        height: "30px",
+                        width: "215px",
                       }}
+                      size="large"
                     >
-                      Enroll Patient
-                    </span>
-                  </Button>
-                </ButtonGroup>
-              </Link>
-            )}
-          </div>
-        ),
+                      <Button
+                        color="primary"
+                        size="small"
+                        aria-label="select merge strategy"
+                        aria-haspopup="menu"
+                        style={{
+                          backgroundColor: "rgb(153, 46, 98)",
+                        }}
+                      >
+                        {isEnrolled ? <MdDashboard /> : <TiArrowForward />}
+                      </Button>
+                      <Button
+                        style={{
+                          backgroundColor: "rgb(153, 46, 98)",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: "12px",
+                            color: "#fff",
+                            fontWeight: "bolder",
+                          }}
+                        >
+                          {isEnrolled ? "Patient Dashboard" : "Enroll Patient"}
+                        </span>
+                      </Button>
+                    </ButtonGroup>
+                  </Link>
+                )}
+            </div>
+          );
+        },
       },
     ],
     [showPPI, permissions.canSeeEnrollButton]
