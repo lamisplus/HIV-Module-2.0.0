@@ -37,15 +37,21 @@ public class HIVEacService {
 	private final ModuleService moduleService;
 	
 	private final HIVEacSessionRepository hivEacSessionRepository;
-	
-	
+
 	public List<HIVEacDto> getPatientEAcs(Long patientId) {
 		Person person = personRepository.findById(patientId)
 				.orElseThrow(() -> new EntityNotFoundException(Person.class, "id", String.valueOf(patientId)));
+
 		if (moduleService.exist("Lab")) {
 			List<LabEacInfo> patientAllEacs = hivEacRepository.getPatientAllEacs(patientId);
-			patientAllEacs
+			List<LocalDate> existingDates = hivEacRepository
+					.getAllByPersonAndArchived(person, 0) // Assuming you have a method to fetch by person and archived
 					.stream()
+					.map(HIVEac::getDateOfLastViralLoad)
+					.collect(Collectors.toList());
+			// Filter out LabEacInfo objects with duplicate resultDate
+			patientAllEacs.stream()
+					.filter(labEacInfo -> !existingDates.contains(labEacInfo.getResultDate().toLocalDate()))
 					.map(labEacInfo -> HIVEacDto.builder()
 							.labNumber(labEacInfo.getLabNumber())
 							.dateOfLastViralLoad(labEacInfo.getResultDate().toLocalDate())
@@ -56,12 +62,11 @@ public class HIVEacService {
 							.status("NOT COMMENCED")
 							.personId(patientId).build()
 					)
-					.filter(ln -> !(hivEacRepository.getHIVEacByPersonAndLabNumber(person, ln.getLabNumber()).isPresent()))
 					.map(this::mapDtoEntity)
 					.map(hivEacRepository::save)
 					.collect(Collectors.toList());
-			
 		}
+
 		return hivEacRepository.getAllByPersonAndArchived(person, 0)
 				.stream().map(this::mapEntityDto)
 				.collect(Collectors.toList());
