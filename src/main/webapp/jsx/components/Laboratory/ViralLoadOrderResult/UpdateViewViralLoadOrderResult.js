@@ -166,10 +166,10 @@ const Laboratory = (props) => {
           const formattedResultDate = data?.resultDate ? moment(data.resultDate).format('YYYY-MM-DDTHH:mm'): '';
             setTests((prevTests) => ({
                 ...prevTests,
-                result: data?.testResult || '',
-                dateAssayedBy: data?.assayDate || '',
-                dateResultReceived: formattedResultDate || '',
-                assayedBy: data?.testedBy || ''
+                result: data?.testResult || props.activeContent.obj? props.activeContent.obj?.result : "",
+                dateAssayedBy: data?.assayDate || props.activeContent.obj? props.activeContent.obj?.dateAssayed : "",
+                dateResultReceived: formattedResultDate || props.activeContent.obj? props.activeContent.obj?.dateResultReceived : "",
+                assayedBy: data?.testedBy || props.activeContent.obj? props.activeContent.obj?.assayedBy : ""
             }));
         })
             .catch((error) => {
@@ -348,6 +348,8 @@ const Laboratory = (props) => {
     const Back = (row, actionType) =>{
         props.setActiveContent({...props.activeContent, route:'laboratoryViralLoadOrderResult', id:row.id, activeTab:"history", actionType:"", obj:{}})
      }
+
+     console.log(" active content in view viral load", tests)
   
   return (      
       <div >
