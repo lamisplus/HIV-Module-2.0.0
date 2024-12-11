@@ -104,16 +104,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CheckedInPatients = (props) => {
-
-  const patientObject = props.patientObj1;
-
-
   const { hasPermission } = usePermissions();
-
   const [showPPI, setShowPPI] = useState(true);
   const { fetchPatients } = useCheckedInPatientData(baseUrl, token);
-
-  
 
   const permissions = useMemo(
     () => ({

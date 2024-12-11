@@ -10,7 +10,7 @@ export const useCheckedInPatientData = (baseUrl, token) => {
       });
 
       const data = response.data;
-      const hivCode = data.find(
+      const hivCode = data?.find(
         (item) => item.moduleServiceName.toUpperCase() === "HIV"
       )?.moduleServiceCode;
 
