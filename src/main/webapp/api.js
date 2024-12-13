@@ -4,7 +4,9 @@ export const url =
     : "/api/v1/";
 export const token =
   process.env.NODE_ENV === "development"
-    ? "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJndWVzdEBsYW1pc3BsdXMub3JnIiwiYXV0aCI6IlN1cGVyIEFkbWluIiwibmFtZSI6Ikd1ZXN0IEd1ZXN0IiwiZXhwIjoxNzMzODQyMTI5fQ.J6sH5PBW7UpeEp6q5iEIG7tF2TtZgLrhhCgpslLjYXu7PdXuRiFtGmUS1HOuCZ2KLjMTESqHcoJ6p0E_Ja0S3w"
+    ? "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJndWVzdEBsYW1pc3BsdXMub3JnIiwiYXV0aCI6IlN1cGVyIEFkbWluIiwibmFtZSI6Ikd1ZXN0IEd1ZXN0IiwiZXhwIjoxNzM0MDQyNDgzfQ.CrVcW2al09QapgsBtmsiR6koHEwNP0mDbPaqwSTmJQyWWRDcrCwq59KYe4WIGcKpNOKP9HQ3YD-NWsPf6ucfsA"
     : new URLSearchParams(window.location.search).get("jwt");
 
-export const wsUrl = "http://localhost:8383/websocket"
+export const wsUrl = process.env.NODE_ENV === "development"
+  ? "http://localhost:8383/websocket"
+  : "/websocket";
