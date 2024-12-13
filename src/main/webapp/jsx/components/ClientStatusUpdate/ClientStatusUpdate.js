@@ -75,6 +75,11 @@ const useStyles = makeStyles(theme => ({
 const ClientStatusUpdate = (props) => {
 
     const patientObj = props.patientObj;
+
+     const {
+       currentStatus,
+     } = usePatientStatus(patientObj?.id, patientObj?.commenced);
+
     const enrollDate = patientObj && patientObj.enrollment ? patientObj.enrollment.dateOfRegistration : null
     const [saving, setSaving] = useState(false);
     const [errors, setErrors] = useState({});
@@ -114,7 +119,20 @@ const ClientStatusUpdate = (props) => {
            )
            .then((response) => {
                
-               setHivStatus(response.data.filter((x)=> x.display!=='Lost to Follow Up' && x.display!=='ART Transfer In' && x.display!=='ART Start' && x.display!=='ART Restart' && x.display!=='Pre-ART Transfer In' && x.display!==patientObj.currentStatus && x.display!=='HIV Exposed Status Unknown' && x.display!=='HIV Negative' && x.display!=='HIV+ non ART'));
+               setHivStatus(
+                 response.data.filter(
+                   (x) =>
+                     x.display !== "Lost to Follow Up" &&
+                     x.display !== "ART Transfer In" &&
+                     x.display !== "ART Start" &&
+                     x.display !== "ART Restart" &&
+                     x.display !== "Pre-ART Transfer In" &&
+                     x.display !== currentStatus &&
+                     x.display !== "HIV Exposed Status Unknown" &&
+                     x.display !== "HIV Negative" &&
+                     x.display !== "HIV+ non ART"
+                 )
+               );
            })
            .catch((error) => {
            

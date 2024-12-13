@@ -135,15 +135,15 @@ const Patients = () => {
       },
       { title: "Sex", field: "sex" },
       { title: "Age", field: "age" },
-      {
-        title: "ART Status",
-        field: "status",
-        render: (rowData) => (
-          <Label color="blue" size="mini">
-            {rowData.currentStatus}
-          </Label>
-        ),
-      },
+      // {
+      //   title: "ART Status",
+      //   field: "status",
+      //   render: (rowData) => (
+      //     <Label color="blue" size="mini">
+      //       {rowData.currentStatus}
+      //     </Label>
+      //   ),
+      // },
       {
         title: "Actions",
         field: "actions",

@@ -209,7 +209,7 @@ const CheckedInPatients = (props) => {
                             fontWeight: "bolder",
                           }}
                         >
-                          {isEnrolled ? "Patient Dashboard" : "Enroll Patient"}
+                          {isEnrolled ? "Dashboard" : "Enroll Patient"}
                         </span>
                       </Button>
                     </ButtonGroup>

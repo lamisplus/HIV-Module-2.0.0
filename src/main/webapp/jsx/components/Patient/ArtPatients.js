@@ -123,15 +123,15 @@ const Patients = () => {
         field: "age",
         render: (rowData) => calculate_age(rowData.dateOfBirth),
       },
-      {
-        title: "ART Status",
-        field: "status",
-        render: (rowData) => (
-          <Label color="blue" size="mini">
-            {rowData.currentStatus}
-          </Label>
-        ),
-      },
+      // {
+      //   title: "ART Status",
+      //   field: "status",
+      //   render: (rowData) => (
+      //     <Label color="blue" size="mini">
+      //       {rowData.currentStatus}
+      //     </Label>
+      //   ),
+      // },
       {
         title: "Actions",
         field: "actions",

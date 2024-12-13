@@ -111,9 +111,11 @@ const Tracking = (props) => {
     "PMTCT",
   ]);
   const [isPatientTransferredOut, setIsPatientTransferredOut] = useState(false);
+
   const [patientCurrentStatus, setPatientCurrentStatus] = useState(
-    patientObj.currentStatus
+    localStorage.getItem("currentStatus")
   );
+
   const [currentMedication, setCurrentMedication] = useState([]);
   const [payload, setPayload] = useState({
     height: "",
@@ -160,10 +162,9 @@ const Tracking = (props) => {
     patientAttendedHerFirstVisit: "",
     acknowlegdeReceiveDate: "",
     encounterDate: "",
-    currentStatus: props.patientObj.currentStatus,
+    currentStatus: patientCurrentStatus,
   });
 
-  // console.log("current status", patientCurrentStatus)
 
   const [states1, setStates1] = useState([]);
   const [lgas1, setLGAs1] = useState([]);
@@ -171,6 +172,7 @@ const Tracking = (props) => {
   const [selectedState, setSelectedState] = useState({});
   const [selectedFacility, setSelectedFacility] = useState({});
   const [selectedLga, setSelectedLga] = useState({});
+
   useEffect(() => {
     const init = async () => {
       const facilityId = getFacilityId();
@@ -178,6 +180,18 @@ const Tracking = (props) => {
     };
     init();
   }, []);
+
+  useEffect(() => {
+    loadStates1();
+    getCurrentMedication();
+  }, []);
+
+  useEffect(() => {
+    if (facId) {
+      getTreatmentInfo();
+      getLabResult();
+    }
+  }, [facId]);
 
   // console.log("paylaod", payload)
   const loadStates1 = () => {
@@ -329,13 +343,6 @@ const Tracking = (props) => {
   };
 
   // when component mounts
-
-  useEffect(() => {
-    loadStates1();
-    getTreatmentInfo();
-    getLabResult();
-    getCurrentMedication();
-  }, []);
 
   useEffect(() => {
     const { state, lga, facilityName, ...rest } = transferInfo;

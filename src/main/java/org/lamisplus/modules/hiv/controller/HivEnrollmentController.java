@@ -8,6 +8,7 @@ import org.lamisplus.modules.hiv.domain.dto.*;
 import org.lamisplus.modules.hiv.service.HivEnrollmentService;
 import org.lamisplus.modules.hiv.service.HivPatientService;
 import org.lamisplus.modules.hiv.service.PatientActivityService;
+import org.lamisplus.modules.hiv.service.StatusManagementService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,6 +30,14 @@ public class HivEnrollmentController {
 
     private final PatientActivityService patientActivityService;
 
+    private  final StatusManagementService statusManagementService;
+
+
+@GetMapping(value = "patient-current/{id}")
+public String getPersonCurrentHIVStatus(@PathVariable("id") Long personId, @RequestParam("commenced") Boolean isCommenced)
+{    if (isCommenced.equals(Boolean.TRUE)) {        return statusManagementService.getCurrentStatus(personId);
+}    return "Not Commenced";
+}
 
     @PostMapping(value = "enrollment", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HivEnrollmentDTO> createHivEnrollment(@RequestBody HivEnrollmentDTO hiv) {

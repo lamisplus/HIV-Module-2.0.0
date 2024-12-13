@@ -25,6 +25,8 @@ const PatientActions = memo(({ patient }) => {
   const { currentStatus, id } = patient;
   const isEnrolled = currentStatus !== "Not Enrolled";
 
+
+
   return (
     <Link
       to={{
@@ -40,7 +42,7 @@ const PatientActions = memo(({ patient }) => {
         </Button>
         <Button style={styles.button}>
           <span style={styles.buttonText}>
-            {isEnrolled ? "Patient Dashboard" : "Enroll Patient"}
+            {isEnrolled ? "Dashboard" : "Enroll"}
           </span>
         </Button>
       </ButtonGroup>

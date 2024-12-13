@@ -33,11 +33,43 @@ const SubMenu = (props) => {
   const [isOtzEnrollementDone, setIsOtzEnrollementDone] = useState(null);
   const [labResult, setLabResult] = useState(null);
   const patientCurrentStatus = patientObj?.currentStatus === "Died (Confirmed)";
-  const [isPatientActive, setIsPatientActive] = useState(
-    !patientObj?.currentStatus?.toLowerCase()?.includes("stop")
-  );
+  const [currentStatus, setCurrentStatus] = useState(() => {
+    const savedStatus = localStorage.getItem(`status_${patientObj?.id}`) || "";
+    return savedStatus;
+  });
+  const [statusLoading, setStatusLoading] = useState(false);
+  const [isPatientActive, setIsPatientActive] = useState(() => {
+    const savedStatus = localStorage.getItem(`status_${patientObj?.id}`);
+    return !savedStatus?.toLowerCase()?.includes("stopped");
+  });
 
-  // Memoized permission checks
+  const getCurrentStatus = async () => {
+    if (!patientObj?.id) return;
+    setStatusLoading(true);
+    try {
+      const response = await axios.get(
+        `${baseUrl}hiv/patient-current/${patientObj.id}?commenced=${patientObj.commenced}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const status = response.data || "";
+  
+      localStorage.setItem("currentStatus", status);
+      setCurrentStatus(status);
+      setIsPatientActive(!status?.toLowerCase()?.includes("stopped"));
+      setStatusLoading(false);
+    } catch (error) {
+      console.error("Error fetching patient status:", error);
+      setStatusLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (patientObj?.id) {
+      getCurrentStatus();
+    }
+  }, [patientObj?.id]);
+
   const permissions = useMemo(
     () => ({
       canSeeInitialEvaluation:
@@ -63,18 +95,14 @@ const SubMenu = (props) => {
 
       canSeeEAC: hasPermission("EAC Monitoring Register"),
 
-      canSeeCervicalCancer: (() => {
-        const isFemale = patientObj.sex?.toUpperCase() === "FEMALE";
-        return (
-          isFemale &&
-          hasAnyPermission(
-            "Cervical cancer screening form",
-            "Cervical cancer care Register",
-            "Cervical cancer consent form",
-            "Cervical cancer care card"
-          )
-        );
-      })(),
+      canSeeCervicalCancer:
+        patientObj.sex?.toUpperCase() === "FEMALE" &&
+        hasAnyPermission(
+          "Cervical cancer screening form",
+          "Cervical cancer care Register",
+          "Cervical cancer consent form",
+          "Cervical cancer care card"
+        ),
 
       canSeeTracking: hasPermission("Client Tracking & Discontinuation Form"),
 
@@ -84,7 +112,6 @@ const SubMenu = (props) => {
     [hasPermission, hasAnyPermission, patientObj]
   );
 
-  // Menu state conditions
   const menuConditions = useMemo(
     () => ({
       isInitialMenu:
@@ -95,8 +122,8 @@ const SubMenu = (props) => {
           patientObj.clinicalEvaluation !== true),
 
       isDeadOrTransferred:
-        patientObj.currentStatus === "DIED (CONFIRMED)" ||
-        patientObj.currentStatus === "ART TRANSFER OUT",
+        currentStatus === "DIED (CONFIRMED)" ||
+        currentStatus === "ART TRANSFER OUT",
 
       canShowOTZ:
         (patientObj?.age >= 10 && patientObj?.age <= 23) ||
@@ -106,7 +133,7 @@ const SubMenu = (props) => {
 
       showPediatricChecklist: patientObj.age <= 19,
     }),
-    [patientObj]
+    [patientObj, currentStatus]
   );
 
   useEffect(() => {
@@ -451,7 +478,7 @@ const SubMenu = (props) => {
                     Home
                   </MenuItem>
 
-                  {patientObj.currentStatus === "DIED (CONFIRMED)" &&
+                  {currentStatus === "DIED (CONFIRMED)" &&
                     permissions.canSeeTracking && (
                       <MenuItem
                         onClick={menuHandlers.loadTrackingForm}
@@ -470,7 +497,7 @@ const SubMenu = (props) => {
                     History
                   </MenuItem>
 
-                  {patientObj.currentStatus === "ART TRANSFER OUT" &&
+                  {currentStatus === "ART TRANSFER OUT" &&
                     permissions.canSeeTracking && (
                       <MenuItem
                         onClick={menuHandlers.loadTransferForm}

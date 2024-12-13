@@ -1,4 +1,4 @@
-package org.lamisplus.modules.hiv.config;//package org.lamisplus.modules.hiv.config;
+//package org.lamisplus.modules.hiv.config;
 //
 //import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.fasterxml.jackson.core.type.TypeReference;
