@@ -13,7 +13,8 @@ import EnrollPatientPage from "./main/webapp/jsx/components/Patient/EnrollPatien
 import UpdatePatientEnrollment from "./main/webapp/jsx/components/Patient/UpdatePatientEnrollment";
 import { queryClient } from "./main/webapp/utils/queryClient";
 import { QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
+import CheckedInPatientsAlert from "./main/webapp/jsx/components/Globals/CheckinPatientsAlert";
+
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
       <Router>
         <div>
           <ToastContainer />
+          <CheckedInPatientsAlert/>
 
           <Switch>
             <Route path="/patient-history">
@@ -42,7 +44,6 @@ export default function App() {
           </Switch>
         </div>
       </Router>
-      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   );
 }
