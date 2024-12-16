@@ -113,7 +113,7 @@ const CheckedInPatients = (props) => {
 
   const permissions = useMemo(
     () => ({
-      canSeeEnrollButton: hasPermission("HIV Enrollment Register"),
+      canSeeEnrollButton: hasPermission("hiv_enrollment_register"),
     }),
     [hasPermission]
   );

@@ -74,39 +74,39 @@ const SubMenu = (props) => {
     () => ({
       canSeeInitialEvaluation:
         hasAnyPermission(
-          "Adult Initial Clinical Evaluation",
-          "Pediatric Initial Clinical Evaluation Form"
+          "adult_initial_clinical_evaluation",
+          "pediatric_initial_clinical_evaluation_form"
         ) && !patientObj.clinicalEvaluation,
 
       canSeeCareAndSupport: hasAnyPermission(
-        "Care and Support register",
-        "Care and support checklist"
+        "care_and_support_register",
+        "care_and_support_checklist"
       ),
 
       canSeeLaboratory: hasAnyPermission(
-        "Laboratory Order and Results Form",
-        "Viral Load Order and Result Form",
-        "Viral Load Monitoring Register"
+        "laboratory_order_and_results_form",
+        "viral_load_order_and_result_form",
+        "viral_load_monitoring_register"
       ),
 
-      canSeeCareCard: hasPermission("Care Card"),
+      canSeeCareCard: hasPermission("care_card"),
 
-      canSeePharmacy: hasPermission("Combined Pharmacy Order Form"),
+      canSeePharmacy: hasPermission("combined_pharmacy_order_form"),
 
-      canSeeEAC: hasPermission("EAC Monitoring Register"),
+      canSeeEAC: hasPermission("eac_monitoring_register"),
 
       canSeeCervicalCancer:
         patientObj.sex?.toUpperCase() === "FEMALE" &&
         hasAnyPermission(
-          "Cervical cancer screening form",
-          "Cervical cancer care Register",
-          "Cervical cancer consent form",
-          "Cervical cancer care card"
+          "cervical_cancer_screening_form",
+          "cervical_cancer_care_register",
+          "cervical_cancer_consent_form",
+          "cervical_cancer_care_card"
         ),
 
-      canSeeTracking: hasPermission("Client Tracking & Discontinuation Form"),
+      canSeeTracking: hasPermission("client_tracking_and_discontinuation_form"),
 
-      canSeeTransfer: hasPermission("HIV Care and Treatment Transfer Form"),
+      canSeeTransfer: hasPermission("hiv_care_and_treatment_transfer_form"),
       canSeePatientVisit: hasAnyPermission("view_patient", "all_permissions"),
     }),
     [hasPermission, hasAnyPermission, patientObj]
