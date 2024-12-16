@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, memo } from "react";
 import MaterialTable from "material-table";
 import axios from "axios";
-import { url as baseUrl, token } from "./../../../api";
+import { url as baseUrl, token, wsUrl } from "./../../../api";
 import { calculate_age } from "../../../utils";
 import { forwardRef } from "react";
 import "semantic-ui-css/semantic.min.css";
@@ -31,6 +31,7 @@ import { MdDashboard } from "react-icons/md";
 
 import "@reach/menu-button/styles.css";
 import { Label } from "semantic-ui-react";
+import SockJsClient from "react-stomp";
 
 import Spinner from "react-bootstrap/Spinner";
 import { usePermissions } from "../../../hooks/usePermissions";
@@ -108,6 +109,7 @@ const CheckedInPatients = (props) => {
   const { hasPermission } = usePermissions();
   const [showPPI, setShowPPI] = useState(true);
   const { fetchPatients } = useCheckedInPatientData(baseUrl, token);
+  const [tableRefreshTrigger, setTableRefreshTrigger] = useState(0);
 
   const permissions = useMemo(
     () => ({
@@ -115,6 +117,13 @@ const CheckedInPatients = (props) => {
     }),
     [hasPermission]
   );
+
+  const onMessageReceived = (msg) => {
+    if (msg && msg?.toLowerCase()?.includes("check")) {
+      // Trigger table refresh by updating the refresh trigger state
+      setTableRefreshTrigger((prev) => prev + 1);
+    }
+  };
 
   const handleCheckBox = (e) => {
     setShowPPI(!e.target.checked);
@@ -244,9 +253,16 @@ const CheckedInPatients = (props) => {
 
   return (
     <div>
+      <SockJsClient
+        url={wsUrl}
+        topics={["/topic/checking-in-out-process"]}
+        onMessage={onMessageReceived}
+        debug={true}
+      />
       <Card>
         <CardBody>
           <CustomTable
+            key={tableRefreshTrigger}
             title="HIV Checked In Patients"
             columns={columns}
             data={getData}

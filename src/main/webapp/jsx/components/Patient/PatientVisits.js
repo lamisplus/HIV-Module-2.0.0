@@ -118,7 +118,7 @@ const PatientVisits = (props) => {
         (visit) => !visit.checkOutTime || visit.status === "PENDING"
       );
       setCheckinStatus(hasActiveVisit);
-      setCheckinStatus(hasActiveVisit);
+      // setCheckinStatus(hasActiveVisit);
     } catch (error) {
       toast.error("Failed to fetch patient visits");
     }
@@ -218,15 +218,7 @@ const PatientVisits = (props) => {
   return (
     <div>
       <div className="d-flex justify-content-end mb-3">
-        {/* {permissions.view_patient && !checkinStatus && (
-          <ButtonMui
-            variant="contained"
-            color="primary"
-            onClick={() => setIsCheckinModalOpen(true)}
-          >
-            Check In
-          </ButtonMui>
-        )} */}
+     
 
         {permissions.view_patient && checkinStatus && (
           <ButtonMui
@@ -253,66 +245,6 @@ const PatientVisits = (props) => {
         onPPIChange={(e) => setShowPPI(!e.target.checked)}
       />
 
-      {/* <Modal
-        isOpen={isCheckinModalOpen}
-        toggle={() => setIsCheckinModalOpen(false)}
-        size="lg"
-      >
-        <ModalHeader toggle={() => setIsCheckinModalOpen(false)}>
-          <h5 style={{ fontWeight: "bold", color: "#014d88" }}>Check In</h5>
-        </ModalHeader>
-        <ModalBody>
-          <form onSubmit={handleCheckin}>
-            <Paper style={{ padding: "20px" }}>
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
-                  <FormGroup>
-                    <Label style={{ color: "#014d88", fontWeight: "bold" }}>
-                      Check-in Date *
-                    </Label>
-                    <input
-                      type="datetime-local"
-                      className="form-control"
-                      value={moment(checkinDate).format("YYYY-MM-DDTHH:mm")}
-                      onChange={(e) => setCheckinDate(new Date(e.target.value))}
-                      max={moment().format("YYYY-MM-DDTHH:mm")}
-                    />
-                  </FormGroup>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <FormGroup>
-                    <Label style={{ color: "#014d88", fontWeight: "bold" }}>
-                      Services *
-                    </Label>
-                    <DualListBox
-                      options={services}
-                      selected={selectedServices.selected}
-                      onChange={(selected) => setSelectedServices({ selected })}
-                    />
-                  </FormGroup>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <ButtonMui type="submit" variant="contained" color="primary">
-                    Submit
-                  </ButtonMui>
-                  <ButtonMui
-                    variant="contained"
-                    style={{
-                      backgroundColor: "#992E62",
-                      marginLeft: "10px",
-                    }}
-                    onClick={() => setIsCheckinModalOpen(false)}
-                  >
-                    Cancel
-                  </ButtonMui>
-                </Grid>
-              </Grid>
-            </Paper>
-          </form>
-        </ModalBody>
-      </Modal> */}
 
       <Modal
         isOpen={isCheckoutModalOpen}
