@@ -151,6 +151,8 @@ const DsdServiceForm = (props) => {
     const [payload, setPayLoad] = useState(payLoadObject);
     const [patientDsdRecords, setPatientDsdRecords] = useState([]);
 
+    console.log("payload", payload)
+
     useEffect(() => {
         if (props.activeContent.id) {
             axios
@@ -222,7 +224,7 @@ const DsdServiceForm = (props) => {
                 props.patientObj.sex?.toLowerCase() === "female" && score >= 13
             ) ? "Yes" : "No"
         }));
-    }, [payload.dsdEligibilityAssessment, props.patientObj.sex]);
+    }, [payload?.dsdEligibilityAssessment, props.patientObj.sex]);
 
 
     const submitAssessmentForm = (load) => {
@@ -429,25 +431,25 @@ const DsdServiceForm = (props) => {
     const validate = () => {
         // var temp = { ...errors}
         temp ={};
-        temp.onArtForAtLeast1Year = payload.dsdEligibilityAssessment.onArtForAtLeast1Year ? "" : "This field is required.";
-        temp.goodUnderstandingOfAdherence = payload.dsdEligibilityAssessment.goodUnderstandingOfAdherence ? "" : "This field is required.";
-        temp.clinicallyStableNoOpportunisticInfections = payload.dsdEligibilityAssessment.clinicallyStableNoOpportunisticInfections ? "" : "This field is required.";
-        temp.noADRRequireRegularMonitoring = payload.dsdEligibilityAssessment.noADRRequireRegularMonitoring ? "" : "This field is required.";
-        temp.evidenceOfTreatmentSuccess = payload.dsdEligibilityAssessment.evidenceOfTreatmentSuccess ? "" : "This field is required.";
-        temp.mostRecentVLWithin6Months = payload.dsdEligibilityAssessment.mostRecentVLWithin6Months ? "" : "This field is required.";
-        temp.currentRegimenGreaterThan6Months = payload.dsdEligibilityAssessment.currentRegimenGreaterThan6Months ? "" : "This field is required.";
-        temp.completedTBPreventiveTherapy = payload.dsdEligibilityAssessment.completedTBPreventiveTherapy ? "" : "This field is required.";
-        temp.doesNotHaveTBCoInfection = payload.dsdEligibilityAssessment.doesNotHaveTBCoInfection ? "" : "This field is required.";
+        temp.onArtForAtLeast1Year = payload?.dsdEligibilityAssessment?.onArtForAtLeast1Year ? "" : "This field is required.";
+        temp.goodUnderstandingOfAdherence = payload?.dsdEligibilityAssessment?.goodUnderstandingOfAdherence ? "" : "This field is required.";
+        temp.clinicallyStableNoOpportunisticInfections = payload?.dsdEligibilityAssessment?.clinicallyStableNoOpportunisticInfections ? "" : "This field is required.";
+        temp.noADRRequireRegularMonitoring = payload?.dsdEligibilityAssessment?.noADRRequireRegularMonitoring ? "" : "This field is required.";
+        temp.evidenceOfTreatmentSuccess = payload?.dsdEligibilityAssessment?.evidenceOfTreatmentSuccess ? "" : "This field is required.";
+        temp.mostRecentVLWithin6Months = payload?.dsdEligibilityAssessment?.mostRecentVLWithin6Months ? "" : "This field is required.";
+        temp.currentRegimenGreaterThan6Months = payload?.dsdEligibilityAssessment?.currentRegimenGreaterThan6Months ? "" : "This field is required.";
+        temp.completedTBPreventiveTherapy = payload?.dsdEligibilityAssessment?.completedTBPreventiveTherapy ? "" : "This field is required.";
+        temp.doesNotHaveTBCoInfection = payload?.dsdEligibilityAssessment?.doesNotHaveTBCoInfection ? "" : "This field is required.";
         temp.dateDevolved = payload.dateDevolved ? "" : "This field is required.";
 
 
-        temp.noChildOnArtLessThan3YearsOld = payload.dsdEligibilityAssessment.noChildOnArtLessThan3YearsOld ? "" : "This field is required.";
-        temp.hasNoComorbidities = payload.dsdEligibilityAssessment.hasNoComorbidities ? "" : "This field is required.";
+        temp.noChildOnArtLessThan3YearsOld = payload?.dsdEligibilityAssessment?.noChildOnArtLessThan3YearsOld ? "" : "This field is required.";
+        temp.hasNoComorbidities = payload?.dsdEligibilityAssessment?.hasNoComorbidities ? "" : "This field is required.";
 
 
         if (props.patientObj && props.patientObj?.sex?.toLowerCase() == "female"){
-            temp.notPregnant = payload.dsdEligibilityAssessment.notPregnant ? "" : "This field is required.";
-            temp.notBreastfeeding = payload.dsdEligibilityAssessment.notBreastfeeding ? "" : "This field is required.";
+            temp.notPregnant = payload?.dsdEligibilityAssessment?.notPregnant ? "" : "This field is required.";
+            temp.notBreastfeeding = payload?.dsdEligibilityAssessment?.notBreastfeeding ? "" : "This field is required.";
         }
 
         temp.dsdModel = payload.dsdModel ? "" : "This field is required.";
@@ -461,9 +463,10 @@ const DsdServiceForm = (props) => {
         if(payload.clientReturnToSite && payload.clientReturnToSite === "Yes"){
             temp.dateReturnToSite = payload.dateReturnToSite ? "" : "This field is required.";
             // temp.servicesProvided = payload.servicesProvided ? "" : "This field is required.";
-            temp.serviceProvided = selectedServiceProvided.length !== 0 ? "" : "This field is required.";
+            // temp.serviceProvided = selectedServiceProvided.length !== 0 ? "" : "This field is required.";
         }
         setErrors({...temp});
+        console.log("error", temp)
         return Object.values(temp).every((x) => x === "");
     };
 
@@ -487,7 +490,7 @@ const DsdServiceForm = (props) => {
                                     type="select"
                                     name="onArtForAtLeast1Year"
                                     id="onArtForAtLeast1Year"
-                                    value={payload.dsdEligibilityAssessment.onArtForAtLeast1Year}
+                                    value={payload?.dsdEligibilityAssessment?.onArtForAtLeast1Year ||  ""}
                                     onChange={handleInputChange}
                                     style={{
                                         border: "1px solid #014D88", borderRadius: "0.25rem",
@@ -515,7 +518,7 @@ const DsdServiceForm = (props) => {
                                     type="select"
                                     name="goodUnderstandingOfAdherence"
                                     id="goodUnderstandingOfAdherence"
-                                    value={payload.dsdEligibilityAssessment.goodUnderstandingOfAdherence}
+                                    value={payload?.dsdEligibilityAssessment?.goodUnderstandingOfAdherence || ""}
                                     onChange={handleInputChange}
                                     style={{
                                         border: "1px solid #014D88", borderRadius: "0.25rem",
@@ -543,7 +546,7 @@ const DsdServiceForm = (props) => {
                                     type="select"
                                     name="clinicallyStableNoOpportunisticInfections"
                                     id="clinicallyStableNoOpportunisticInfections"
-                                    value={payload.dsdEligibilityAssessment.clinicallyStableNoOpportunisticInfections}
+                                    value={payload?.dsdEligibilityAssessment?.clinicallyStableNoOpportunisticInfections || ""}
                                     onChange={handleInputChange}
                                     style={{
                                         border: "1px solid #014D88", borderRadius: "0.25rem",
@@ -571,7 +574,7 @@ const DsdServiceForm = (props) => {
                                 </Label>
                                 <Input type="select" name="noADRRequireRegularMonitoring"
                                        id="noADRRequireRegularMonitoring"
-                                       value={payload.dsdEligibilityAssessment.noADRRequireRegularMonitoring}
+                                       value={payload?.dsdEligibilityAssessment?.noADRRequireRegularMonitoring || ""}
                                        onChange={handleInputChange}
                                        disabled={isDisabled}
                                        style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}>
@@ -597,7 +600,7 @@ const DsdServiceForm = (props) => {
                                 <Input type="select"
                                        name="evidenceOfTreatmentSuccess"
                                        id="evidenceOfTreatmentSuccess"
-                                       value={payload.dsdEligibilityAssessment.evidenceOfTreatmentSuccess}
+                                       value={payload?.dsdEligibilityAssessment?.evidenceOfTreatmentSuccess || ""}
                                        onChange={handleInputChange}
                                        disabled={isDisabled}
                                        style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}>
@@ -621,7 +624,7 @@ const DsdServiceForm = (props) => {
                                 <Input type="select"
                                        name="mostRecentVLWithin6Months"
                                        id="mostRecentVLWithin6Months"
-                                       value={payload.dsdEligibilityAssessment.mostRecentVLWithin6Months}
+                                       value={payload?.dsdEligibilityAssessment?.mostRecentVLWithin6Months || ""}
                                        onChange={handleInputChange}
                                        disabled={isDisabled}
                                        style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}>
@@ -645,7 +648,7 @@ const DsdServiceForm = (props) => {
                                 <Input type="select"
                                        name="currentRegimenGreaterThan6Months"
                                        id="currentRegimenGreaterThan6Months"
-                                       value={payload.dsdEligibilityAssessment.currentRegimenGreaterThan6Months}
+                                       value={payload?.dsdEligibilityAssessment?.currentRegimenGreaterThan6Months || ""}
                                        onChange={handleInputChange}
                                        disabled={isDisabled}
                                        style={{border: "1px solid #014D88", borderRadius: "0.25rem"}}>
@@ -670,7 +673,7 @@ const DsdServiceForm = (props) => {
                                     type="select"
                                     name="completedTBPreventiveTherapy"
                                     id="completedTBPreventiveTherapy"
-                                    value={payload.dsdEligibilityAssessment.completedTBPreventiveTherapy}
+                                    value={payload?.dsdEligibilityAssessment?.completedTBPreventiveTherapy || ""}
                                     onChange={handleInputChange}
                                     style={{
                                         border: "1px solid #014D88", borderRadius: "0.25rem",
@@ -698,7 +701,7 @@ const DsdServiceForm = (props) => {
                                     type="select"
                                     name="doesNotHaveTBCoInfection"
                                     id="doesNotHaveTBCoInfection"
-                                    value={payload.dsdEligibilityAssessment.doesNotHaveTBCoInfection}
+                                    value={payload?.dsdEligibilityAssessment?.doesNotHaveTBCoInfection || ""}
                                     onChange={handleInputChange}
                                     style={{
                                         border: "1px solid #014D88", borderRadius: "0.25rem",
@@ -726,7 +729,7 @@ const DsdServiceForm = (props) => {
                                         type="select"
                                         name="notPregnant"
                                         id="notPregrant"
-                                        value={payload.dsdEligibilityAssessment.notPregnant}
+                                        value={payload?.dsdEligibilityAssessment?.notPregnant}
                                         onChange={handleInputChange}
                                         style={{
                                             border: "1px solid #014D88", borderRadius: "0.25rem",
@@ -755,7 +758,7 @@ const DsdServiceForm = (props) => {
                                         type="select"
                                         name="notBreastfeeding"
                                         id="notBreastfeeding"
-                                        value={payload.dsdEligibilityAssessment.notBreastfeeding}
+                                        value={payload?.dsdEligibilityAssessment?.notBreastfeeding || ""}
                                         onChange={handleInputChange}
                                         style={{
                                             border: "1px solid #014D88", borderRadius: "0.25rem",
@@ -783,7 +786,7 @@ const DsdServiceForm = (props) => {
                                     type="select"
                                     name="noChildOnArtLessThan3YearsOld"
                                     id="noChildOnArtLessThan3YearsOld"
-                                    value={payload.dsdEligibilityAssessment.noChildOnArtLessThan3YearsOld}
+                                    value={payload?.dsdEligibilityAssessment?.noChildOnArtLessThan3YearsOld || ""}
                                     onChange={handleInputChange}
                                     style={{
                                         border: "1px solid #014D88", borderRadius: "0.25rem",
@@ -812,7 +815,7 @@ const DsdServiceForm = (props) => {
                                     type="select"
                                     name="hasNoComorbidities"
                                     id="hasNoComorbidities"
-                                    value={payload.dsdEligibilityAssessment.hasNoComorbidities}
+                                    value={payload?.dsdEligibilityAssessment?.hasNoComorbidities || ""}
                                     onChange={handleInputChange}
                                     style={{
                                         border: "1px solid #014D88", borderRadius: "0.25rem",

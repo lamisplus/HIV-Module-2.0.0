@@ -40,7 +40,6 @@ public class PatientActivityService {
 	@NotNull
 	public List<TimelineVm> getTimelineVms(Long patientId, boolean full) {
 		List<PatientActivity> patientActivities = getActivitiesFor(patientId);
-		//Log.info("patientActivities : {}", patientActivities);
 		List<TimelineVm> timeline = new ArrayList<>();
 		
 		Map<String, List<PatientActivity>> activities = patientActivities
@@ -62,7 +61,7 @@ public class PatientActivityService {
 						.compareTo(LocalDate.parse(t1.getDate(), DateTimeFormatter.ofPattern(Constants.DAY_MONTH_YEAR)))
 				)
 				.skip(0)
-				.limit(full ? Long.MAX_VALUE : 3)
+				.limit(full ? Long.MAX_VALUE : 1)
 				.collect(Collectors.toList());
 	}
 	

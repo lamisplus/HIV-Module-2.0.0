@@ -15,13 +15,10 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { url as baseUrl, token } from "../../../api";
-//import { useHistory } from "react-router-dom";
-//import {  Modal, Button } from "react-bootstrap";
 import "react-widgets/dist/css/react-widgets.css";
 import moment from "moment";
 import "react-summernote/dist/react-summernote.css"; // import styles
 import { Spinner } from "reactstrap";
-//import { DateTimePicker } from "react-widgets";
 import { Message } from "semantic-ui-react";
 import { calculate_age_to_number } from "../../../utils";
 
@@ -96,11 +93,9 @@ const useStyles = makeStyles((theme) => ({
 const ArtCommencement = (props) => {
   const patientObj = props.patientObj;
   const [enrollDate, setEnrollDate] = useState("");
-  //let history = useHistory();
   let gender = "";
   const classes = useStyles();
   const [clinicalStage, setClinicalStage] = useState([]);
-  //const [values, setValues] = useState([]);
   const [saving, setSaving] = useState(false);
   const [viraLoadStart, setViraLoadStart] = useState(false);
   const [errors, setErrors] = useState({});
@@ -345,11 +340,6 @@ const ArtCommencement = (props) => {
   const handleInputChangeVitalSignDto = (e) => {
     setErrors({ ...temp, [e.target.name]: "" });
     setVitalSignDto({ ...vital, [e.target.name]: e.target.value });
-    // if(e.target.name==='muac'){
-    //     setVitalSignDto ({...vital,  [e.target.name]: e.target.value});
-    // } else{
-    //     setVitalSignDto ({...vital,  [e.target.name]: e.target.value.replace(/\D/g, '')});
-    // }
   };
   const handleSelecteRegimen = (e) => {
     let regimenID = e.target.value;
@@ -448,15 +438,6 @@ const ArtCommencement = (props) => {
       setVitalClinicalSupport({ ...vitalClinicalSupport, temperature: "" });
     }
   };
-  // const handleInputChangeVitalStart =(e)=>{
-  //     if(e.target.value===true ){
-  //         setViraLoadStart(true)
-  //         setObjValues({...objValues, isViralLoadAtStartOfArt:true})
-  //     }else{
-  //         setObjValues({...objValues, isViralLoadAtStartOfArt:false})
-  //         setViraLoadStart(false)
-  //     }
-  // }
 
   //FORM VALIDATION
   const validate = () => {
@@ -469,72 +450,64 @@ const ArtCommencement = (props) => {
     temp.functionalStatusId = objValues.functionalStatusId
       ? ""
       : "This field is required";
-    //temp.tbStatusId = objValues.tbStatusId ? "" : "This field is required"
     temp.bodyWeight = vital.bodyWeight ? "" : "This field is required";
     temp.height = vital.height ? "" : "This field is required";
-    //temp.systolic = vital.systolic ? "" : "This field is required"
-    //temp.diastolic = vital.diastolic ? "" : "This field is required"
     setErrors({
       ...temp,
     });
     return Object.values(temp).every((x) => x == "");
   };
 
-  /**** Submit Button Processing  */
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validate()) {
-      objValues.personId = props.patientObj.id;
-      vital.encounterDate = objValues.visitDate;
-      vital.personId = props.patientObj.id;
-      objValues.vitalSignDto = vital;
-      objValues.hivEnrollmentId = patientObject && patientObject.enrollment.id;
-      objValues.clinicalStageId = objValues.whoStagingId;
-      if (objValues.pregnancyStatus !== null) {
-        const pregnancyDisplay = pregnancyStatus.find(
+
+  const prepareObjValues = () => {
+    objValues.personId = props.patientObj.id;
+    vital.encounterDate = objValues.visitDate;
+    vital.personId = props.patientObj.id;
+    objValues.vitalSignDto = vital;
+    objValues.hivEnrollmentId = patientObject?.enrollment.id;
+    objValues.clinicalStageId = objValues.whoStagingId;
+    if (objValues.pregnancyStatus !== null) {
+      const pregnancyDisplay = pregnancyStatus.find(
           (x) => x.id === parseInt(objValues.pregnancyStatus)
-        );
-        objValues.pregnancyStatus = pregnancyDisplay.display;
-      }
-      // else{
-      //     objValues.pregnancyStatus = objValues.pregnancyStatus
-      // }
-      //Logic for cd4 value
-      if (objValues.cd4Type === "Flow Cyteometry") {
-        objValues.cd4 = objValues.cd4Count;
-      }
-      setSaving(true);
-      axios
+      );
+      objValues.pregnancyStatus = pregnancyDisplay.display;
+    }
+    if (objValues.cd4Type === "Flow Cyteometry") {
+      objValues.cd4 = objValues.cd4Count;
+    }
+  };
+
+  const saveData = () => {
+    axios
         .post(`${baseUrl}hiv/art/commencement/`, objValues, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
           setSaving(false);
-          //props.setArt(true)
           props.patientObj.commenced = true;
           toast.success("Record save successful");
           props.setActiveContent({
             ...props.activeContent,
             route: "recent-history",
           });
-          //props.toggle()
-          //props.PatientCurrentStatus()
         })
         .catch((error) => {
           setSaving(false);
-          if (error.response && error.response.data) {
-            let errorMessage =
-              error.response.data.apierror &&
-              error.response.data.apierror.message !== ""
-                ? error.response.data.apierror.message
-                : "Something went wrong, please try again";
-            toast.error(errorMessage);
-          } else {
-            toast.error("Something went wrong. Please try again...");
-          }
+          handleError(error);
         });
+  };
+
+  const handleError = (error) => {
+    if (error.response && error.response.data) {
+      let errorMessage =
+          error.response.data.apierror?.message || "Something went wrong, please try again";
+      toast.error(errorMessage);
+    } else {
+      toast.error("Something went wrong. Please try again...");
     }
   };
+
+
   function BmiCal(bmi) {
     if (bmi < 18.5) {
       return <Message size="mini" color="brown" content="Underweight" />;
@@ -544,6 +517,15 @@ const ArtCommencement = (props) => {
       <Message size="mini" color="blue" content="Overweight/Obese" />;
     }
   }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      prepareObjValues();
+      setSaving(true);
+      saveData();
+    }
+  };
 
   return (
     <div>
@@ -975,31 +957,6 @@ const ArtCommencement = (props) => {
               ) : (
                 ""
               )}
-              {/* <div className="form-group mb-3 col-md-4">
-                        <FormGroup>
-                        <Label >TB Status</Label>
-                        <Input
-                            type="select"
-                            name="tbStatusId"
-                            id="tbStatusId"
-                            value={objValues.tbStatusId}
-                            onChange={handleInputChange}
-                            style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                            required
-                            >
-                                <option value=""> Select</option>
-        
-                                {tbStatus.map((value) => (
-                                    <option key={value.id} value={value.id}>
-                                        {value.display}
-                                    </option>
-                                ))}
-                        </Input>
-                        {errors.tbStatusId !=="" ? (
-                            <span className={classes.error}>{errors.tbStatusId}</span>
-                            ) : "" }
-                        </FormGroup>
-                    </div> */}
               <div className="row">
                 <div className=" mb-3 col-md-4">
                   <FormGroup>

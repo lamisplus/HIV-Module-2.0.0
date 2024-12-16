@@ -120,14 +120,11 @@ const LabHistory = (props) => {
     }
 
 
-    const onClickHome = (row, actionType) =>{  
-        // props.setActiveContent({...props.activeContent, route:'pharmacy', activeTab:"hsitory"})
+    const onClickHome = (row, actionType) =>{
          props.setActiveContent({...props.activeContent, route:'eac-session', id:row.id, activeTab:"history", actionType:actionType, obj:row})
      }
 
     const LoadEacOutCome = (row, actionType) =>{
-        // const row= props.activeContent.obj
-        // const actionType ="history"
         props.setActiveContent({...props.activeContent, route:'eac-outcome', id:row.id, activeTab:"history", actionType:actionType, obj:row})
     }
 
@@ -150,9 +147,6 @@ const LabHistory = (props) => {
           }); 
    }
 
-   //const LabObj = [{"id":16,"orderId":13,"patientId":9,"visitId":0,"labTestGroupId":4,"labTestGroupName":"Others","labTestId":16,"labTestName":"Viral Load","labNumber":"788","sampleCollectionDate":"2022-09-08","dateAssayed":"2022-09-09","result":"78","dateResultReceived":"2022-09-09","comments":"good","viralLoadIndication":297,"viralLoadIndicationName":"Targeted Monitoring"}]
-
-
   return (
     <div>
             <br/>
@@ -171,8 +165,6 @@ const LabHistory = (props) => {
               ]}
               isLoading={loading}
               data={ orderList.map((row) => ({
-                  //Id: manager.id,
-                  //testGroup:row.testGroup,
                   testName: row.testName,
                   labNumber: row.labNumber,
                   lastViralLoad: row.lastViralLoad,    
@@ -191,7 +183,6 @@ const LabHistory = (props) => {
                                      textOverflow: 'ellipsis'
                                  }}
                                  size="large"
-                        // onClick={()=>onClickHome(row, 'view')}
                     >
                     <Button
                     color="primary"

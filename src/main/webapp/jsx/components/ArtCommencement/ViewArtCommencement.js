@@ -11,12 +11,9 @@ import {
 import MatButton from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import SaveIcon from "@material-ui/icons/Save";
-import CancelIcon from "@material-ui/icons/Cancel";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { url as baseUrl, token } from "../../../api";
-//import { useHistory } from "react-router-dom";
-//import {  Modal, Button } from "react-bootstrap";
 import "react-widgets/dist/css/react-widgets.css";
 import moment from "moment";
 import "react-summernote/dist/react-summernote.css"; // import styles
@@ -493,16 +490,14 @@ const ArtCommencement = (props) => {
     temp.functionalStatusId = objValues.functionalStatusId
       ? ""
       : "This field is required";
-    //temp.tbStatusId = objValues.tbStatusId ? "" : "This field is required"
     temp.bodyWeight = vital.bodyWeight ? "" : "This field is required";
     temp.height = vital.height ? "" : "This field is required";
-    //temp.systolic = vital.systolic ? "" : "This field is required"
-    //temp.diastolic = vital.diastolic ? "" : "This field is required"
     setErrors({
       ...temp,
     });
     return Object.values(temp).every((x) => x === "");
   };
+
   /**** Submit Button Processing  */
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -517,8 +512,7 @@ const ArtCommencement = (props) => {
       if (objValues.cd4Type === "Flow Cyteometry") {
         objValues.cd4 = objValues.cd4Count;
       }
-      //Getting pragnancy value from the ID
-
+      //Getting pregnancy value from the ID
       setSaving(true);
       axios
         .put(
@@ -596,22 +590,6 @@ const ArtCommencement = (props) => {
                   )}
                 </FormGroup>
               </div>
-              {/* <div className="form-group mb-3 col-md-4">
-                            <FormGroup>
-                            <Label for="cd4">CD4 at start of ART </Label>
-                            <Input
-                                type="text"
-                                name="cd4"
-                                id="cd4"
-                                onChange={handleInputChange}
-                                value={objValues.cd4}
-                                style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                                disabled={props.activeContent.actionType==='update' ? false :true}
-                            />
-                            
-                            </FormGroup>
-                        </div>
-                     */}
               <div className="form-group mb-3 col-md-4">
                 <FormGroup>
                   <Label for="cd4Percentage">CD4%</Label>
@@ -907,31 +885,6 @@ const ArtCommencement = (props) => {
                   )}
                 </FormGroup>
               </div>
-              {/* <div className="form-group mb-3 col-md-4">
-                            <FormGroup>
-                            <Label >TB Status</Label>
-                            <Input
-                                type="select"
-                                name="tbStatusId"
-                                id="tbStatusId"
-                                value={objValues.tbStatusId}
-                                onChange={handleInputChange}
-                                style={{border: "1px solid #014D88", borderRadius:"0.25rem"}}
-                                required
-                                >
-                                    <option value=""> Select</option>
-            
-                                    {tbStatus.map((value) => (
-                                        <option key={value.id} value={value.id}>
-                                            {value.display}
-                                        </option>
-                                    ))}
-                            </Input>
-                            {errors.tbStatusId !=="" ? (
-                                <span className={classes.error}>{errors.tbStatusId}</span>
-                                ) : "" }
-                            </FormGroup>
-                        </div> */}
               {props.patientObj.sex === "Female" ||
               props.patientObj.sex === "FEMALE" ||
               props.patientObj.sex === "female" ? (
@@ -1551,15 +1504,6 @@ const ArtCommencement = (props) => {
                     </span>
                   )}
                 </MatButton>
-                {/*                         
-                            <MatButton
-                                variant="contained"
-                                className={classes.button}
-                                startIcon={<CancelIcon style={{color:'#fff'}}/>}  
-                                style={{backgroundColor:'#992E62'}}                              
-                            >
-                                <span style={{ textTransform: "capitalize" }}>Cancel</span>
-                            </MatButton> */}
               </>
             ) : (
               ""

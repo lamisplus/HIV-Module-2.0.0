@@ -110,7 +110,11 @@ const Tracking = (props) => {
         "PMTCT",
     ]);
     const [isPatientTransferredOut, setIsPatientTransferredOut] = useState(false);
-    const [patientCurrentStatus, setPatientCurrentStatus] = useState(patientObj.currentStatus);
+    const [patientCurrentStatus, setPatientCurrentStatus] = useState(
+        // patientObj.currentStatus
+    localStorage.getItem("currentStatus")
+    );
+
     const [currentMedication, setCurrentMedication] = useState([]);
     const [hasExistingTransfer, setHasExistingTransfer] = useState(false);
     const [payload, setPayload] = useState({
@@ -158,7 +162,7 @@ const Tracking = (props) => {
         patientAttendedHerFirstVisit: "",
         acknowlegdeReceiveDate: "",
         encounterDate:"",
-        currentStatus: props.patientObj.currentStatus
+        currentStatus: localStorage.getItem("currentStatus")
     });
 
     // console.log("current status", patientCurrentStatus)

@@ -66,43 +66,58 @@ public interface DsdDevolvementRepository extends JpaRepository<DsdDevolvement, 
             nativeQuery = true)
     boolean existsByPersonIdAndDsdType(String personId, String dsdType);
 
-        @Query(value = "SELECT " +
-                "d.dsd_model AS dsdModel, " +
-                "CASE " +
-                "  WHEN d.person_uuid IS NOT NULL THEN 'Yes' " +
-                "  ELSE 'No' " +
-                "END AS dsdStatus, " +
-                "p.duration_in_days AS durationOnArt, " +
-                "p.date_of_last_refill AS dateOfLastRefill, " +
-                "p.dateOfMissedScheduleAppointment " +
-                "FROM " +
-                "( " +
-                "  SELECT " +
-                "    MAX(visit_date) - MIN(visit_date) + 1 AS duration_in_days, " +
-                "    MAX(visit_date) AS date_of_last_refill, " +
-                "    person_uuid, " +
-                "    CASE " +
-                "      WHEN COUNT(*) = 1 AND MAX(next_appointment) < CURRENT_DATE THEN MAX(next_appointment) " +
-                "      WHEN MAX(visit_date) = ( " +
-                "        SELECT MAX(next_appointment) " +
-                "        FROM hiv_art_pharmacy h2 " +
-                "        WHERE h2.person_uuid = h1.person_uuid " +
-                "          AND next_appointment < MAX(h1.next_appointment) " +
-                "      ) THEN NULL " +
-                "      ELSE ( " +
-                "        SELECT MAX(next_appointment) " +
-                "        FROM hiv_art_pharmacy h2 " +
-                "        WHERE h2.person_uuid = h1.person_uuid " +
-                "          AND next_appointment < MAX(h1.next_appointment) " +
-                "      ) " +
-                "    END AS dateOfMissedScheduleAppointment " +
-                "  FROM " +
-                "    hiv_art_pharmacy h1 " +
-                "  GROUP BY " +
-                "    person_uuid " +
-                ") p " +
-                "LEFT JOIN dsd_devolvement d ON p.person_uuid = d.person_uuid " +
-                "WHERE p.person_uuid = :personUuid",
+        @Query(value = "WITH LatestDevolvement AS (\n" +
+                "    SELECT \n" +
+                "        person_uuid, \n" +
+                "        dsd_model, \n" +
+                "        date_devolved\n" +
+                "    FROM \n" +
+                "        dsd_devolvement\n" +
+                "    WHERE \n" +
+                "        person_uuid = '6e8c02d3-3603-4897-94a1-8e874357bfc4'\n" +
+                "    ORDER BY \n" +
+                "        date_devolved DESC\n" +
+                "    LIMIT 1\n" +
+                ")\n" +
+                "SELECT \n" +
+                "    d.dsd_model AS dsdModel, \n" +
+                "    d.date_devolved AS dateDevolved,\n" +
+                "    CASE \n" +
+                "        WHEN d.person_uuid IS NOT NULL THEN 'Yes' \n" +
+                "        ELSE 'No' \n" +
+                "    END AS dsdStatus, \n" +
+                "    p.duration_in_days AS durationOnArt, \n" +
+                "    p.date_of_last_refill AS dateOfLastRefill, \n" +
+                "    p.dateOfMissedScheduleAppointment \n" +
+                "FROM \n" +
+                "    (\n" +
+                "        SELECT \n" +
+                "            MAX(visit_date) - MIN(visit_date) + 1 AS duration_in_days, \n" +
+                "            MAX(visit_date) AS date_of_last_refill, \n" +
+                "            person_uuid, \n" +
+                "            CASE \n" +
+                "                WHEN COUNT(*) = 1 AND MAX(next_appointment) < CURRENT_DATE THEN MAX(next_appointment) \n" +
+                "                WHEN MAX(visit_date) = (\n" +
+                "                    SELECT MAX(next_appointment) \n" +
+                "                    FROM hiv_art_pharmacy h2 \n" +
+                "                    WHERE h2.person_uuid = h1.person_uuid \n" +
+                "                    AND next_appointment < MAX(h1.next_appointment)\n" +
+                "                ) THEN NULL \n" +
+                "                ELSE (\n" +
+                "                    SELECT MAX(next_appointment) \n" +
+                "                    FROM hiv_art_pharmacy h2 \n" +
+                "                    WHERE h2.person_uuid = h1.person_uuid \n" +
+                "                    AND next_appointment < MAX(h1.next_appointment)\n" +
+                "                ) \n" +
+                "            END AS dateOfMissedScheduleAppointment \n" +
+                "        FROM \n" +
+                "            hiv_art_pharmacy h1 \n" +
+                "        GROUP BY \n" +
+                "            person_uuid \n" +
+                "    ) p \n" +
+                "LEFT JOIN LatestDevolvement d ON p.person_uuid = d.person_uuid \n" +
+                "WHERE \n" +
+                " p.person_uuid =?1",
                 nativeQuery = true)
         Optional<ClientDetailDTOForTracking> getClientDetailsForTracking(@Param("personUuid") String personUuid);
 

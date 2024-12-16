@@ -15,15 +15,13 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import MatButton from "@material-ui/core/Button";
 import {makeStyles} from "@material-ui/core/styles";
 import SaveIcon from "@material-ui/icons/Save";
-//import CancelIcon from '@material-ui/icons/Cancel'
 import "react-widgets/dist/css/react-widgets.css";
 import moment from "moment";
 import {Spinner} from "reactstrap";
-//import Select from "react-select";
+
 import {url as baseUrl, token} from "../../../api";
 import {toast} from "react-toastify";
 import {Icon, List, Label as LabelSui} from "semantic-ui-react";
-//import { Icon,Button, } from 'semantic-ui-react'
 import {calculate_age_to_number} from "../../../utils";
 
 const useStyles = makeStyles((theme) => ({
@@ -383,7 +381,6 @@ const Pharmacy = (props) => {
                 headers: {Authorization: `Bearer ${token}`},
             })
             .then((response) => {
-                //const filterRegimen=response.data.filter((x)=> (x.id===1 || x.id===2 || x.id===3 || x.id===4 || x.id===14))
                 const artRegimen = response.data.filter(
                     (x) => x.id === 1 || x.id === 2 || x.id === 14
                 );
@@ -1029,7 +1026,6 @@ const Pharmacy = (props) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         setSaving(true);
-
         const observeDate = lastChronicCare.find(
             (x) => x.dateOfObservation === objValues.visitDate
         );
@@ -1288,26 +1284,6 @@ const Pharmacy = (props) => {
                                             </Input>
                                         </FormGroup>
                                     </div>
-                                    {/* <div className="form-group mb-3 col-md-3">
-                    <FormGroup>
-                      <Label>Refill</Label>
-                      <Input
-                        type="select"
-                        name="refill"
-                        id="refill"
-                        value={objValues.refill}
-                        onChange={handleInputChange}
-                        style={{
-                          border: "1px solid #014D88",
-                          borderRadius: "0.25rem",
-                        }}
-                      >
-                        <option value="">Select </option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No </option>
-                      </Input>
-                    </FormGroup>
-                  </div> */}
                                     <div className="form-group mb-3 col-md-4">
                                         <FormGroup>
                                             <Label for="artDate">

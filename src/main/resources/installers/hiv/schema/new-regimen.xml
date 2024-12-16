@@ -181,5 +181,35 @@
             VALUES (1029, 1008, 100);
         </sql>
     </changeSet>
+    <changeSet failOnError="true" author="Taiwo Gboyegun" id="202402011-002">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM hiv_regimen WHERE description = 'ABC(120mg)/3TC(60mg)+DTG(50mg)'
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO hiv_regimen (id, description, composition, regimen_type_id, active, priority)
+            VALUES (1009, 'ABC(120mg)/3TC(60mg)+DTG(50mg)', 'Abacavir+Lamivudine+Dolutegravir', 3, true, 1);
+        </sql>
+        <sql>
+            INSERT INTO hiv_regimen_resolver (regimensys, regimen)
+            VALUES ('ABC(120mg)/3TC(60mg)+DTG(50mg)', 'ABC+3TC(or FTC)+DTG');
+        </sql>
+        <sql>
+            INSERT INTO hiv_regimen_drug (id, regimen_id, drug_id)
+            VALUES (1029, 1009, 120);
+            INSERT INTO hiv_regimen_drug (id, regimen_id, drug_id)
+            VALUES (1030, 1009, 133);
+            INSERT INTO hiv_regimen_drug (id, regimen_id, drug_id)
+            VALUES (1031, 1009, 122);
+        </sql>
+        <sql>
+            INSERT INTO ndr_code_set(code_set_nm, code, code_description, alt_description, sys_description)
+            VALUES ('ARV_REGIMEN','4b', 'ABC+3TC(or FTC)+DTG', '', '')
+        </sql>
+
+    </changeSet>
+
+
 </databaseChangeLog>
 

@@ -26,17 +26,6 @@ import org.springframework.web.bind.annotation.*;
 public class DsdDevolvementController {
     private final DsdDevolvementService devolvementService;
 
-//    @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-//    ResponseEntity<DsdDevolvementDTO> saveDsdDevolvement(@RequestBody  DsdDevolvementDTO  dto) throws IOException {
-//        try {
-//            return new ResponseEntity<>(devolvementService.saveDsdDevolvement(dto), HttpStatus.OK);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//
-//    }
-
     @GetMapping(value = "/patient/{personId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> checkIfPatientHasBeenDevolved(@PathVariable("personId") String personId) {
         boolean result = devolvementService.checkIfPatientHasBeenDevolved(personId);
