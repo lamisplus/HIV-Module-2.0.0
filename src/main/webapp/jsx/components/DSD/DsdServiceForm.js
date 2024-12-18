@@ -108,7 +108,7 @@ const DsdServiceForm = (props) => {
         dsdAccept: "",
         dsdModel: "",
         dsdType: "",
-        outletName:"",
+        outletName: "",
         comment: "",
         completedBy: "",
         designation: "",
@@ -449,7 +449,6 @@ const DsdServiceForm = (props) => {
     useEffect(() => {
         getServicesProvided();
     }, []);
-
 
 
     /*****  Validation  */
@@ -984,9 +983,6 @@ const DsdServiceForm = (props) => {
                         </div>
 
                     </div>
-
-                    {/*{payload.dsdEligible && payload.dsdEligible === "Yes"  &&*/}
-                    {/*    payload.dsdAccept && payload.dsdAccept === "Yes" && */}
                     <div className="row">
                         <div
                             className="form-group  col-md-12 text-center pt-2 mb-4"
@@ -1175,7 +1171,7 @@ const DsdServiceForm = (props) => {
                         </div>
                         <div className="form-group mb-3 col-md-6">
                             <FormGroup>
-                            <Label for="firstName">
+                                <Label for="firstName">
                                     Completed by {""}
                                 </Label>
                                 <Input
