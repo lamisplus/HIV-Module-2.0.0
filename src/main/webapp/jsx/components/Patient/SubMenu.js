@@ -36,15 +36,8 @@ function SubMenu(props) {
   const { transferOut } = useStyles();
   const [shouldDeactivateButton, setShouldDeactivateButton] = useState(false);
   const [isPatientActive, setIsPatientActive] = useState(true);
-
-  // useEffect(() => {
-  //   if (props.patientObj && props.patientObj !== null) {
-  //     Observation();
-  //     getOldRecordIfExists();
-  //   }
-  // }, []);
-
   const getCurrentStatus = () => {
+    localStorage.removeItem("currentStatus")
     axios
       .get(
         `${baseUrl}hiv/patient-current/${props.patientObj.id}?commenced=${props.patientObj.commenced}`,
@@ -58,7 +51,6 @@ function SubMenu(props) {
         setIsPatientActive(
           resp?.data?.toLocaleLowerCase()?.includes("stopped") ? false : true
         );
-        //console.log(resp.data)
       })
       .catch((error) => {});
   };
@@ -417,9 +409,8 @@ function SubMenu(props) {
               </Menu>
             ) : (
               <>
-                {patientObj &&
-                (currentStatus === "DIED (CONFIRMED)" ||
-                  currentStatus === "ART TRANSFER OUT") ? (
+                {currentStatus === "DIED (CONFIRMED)" ||
+                  currentStatus === "ART TRANSFER OUT" ? (
                   <Menu
                     size="tiny"
                     style={{
