@@ -68,7 +68,7 @@ function PatientCard(props) {
   const id = props.patientObj.id;
 
   const [patientFlag, setPatientFlag] = useState({});
-
+    const [patientMlValue, setPatientMlValue] = useState({"iit":null,"chance":null});
   const getPhoneNumber = (identifier) => {
     const phoneNumber = identifier?.contactPoint?.find(
       (obj) => obj.type === "phone"
@@ -97,8 +97,21 @@ function PatientCard(props) {
       });
   };
 
+    //GEt patient IIT-ML Model Report for patient
+    const fetchPatientMlReport = () => {
+        axios.get(`${baseUrl}hiv/iit-ml/patient/${id}/iit-report`, {
+            headers: { Authorization: `Bearer ${token}` },
+        }).then((response) => {
+                console.log("my code is here", response.data);
+                setPatientMlValue(response.data);
+                console.log(patientMlValue);
+            }
+        )
+    }
+
   useEffect(() => {
     fetchPatientFlags(id);
+    fetchPatientMlReport(id);
   }, []);
 
   return (
@@ -278,6 +291,29 @@ function PatientCard(props) {
                             </Label.Detail>
                           </Label>
                         </Typography>
+                        <br/>
+                        <div>
+                          <Typography variant="caption">
+                            <Label
+                                color={"teal"}
+                                size={"medium"}
+                                style={{ width: '210px', height: '50', justifyContent: '', alignItems: 'left', marginBottom: '10px' }}
+                            >
+                              IIT-ML PREDICTION
+                              <br/>
+
+                              <Label.Detail style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', text: 'center', marginBottom: '4px' }}>
+                                IIT Percentage : {patientMlValue.chance===null ? "" : patientMlValue.chance}
+                              </Label.Detail>
+
+                              <Label.Detail style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', text: 'center' }}>
+                                Chance of IIT: {patientMlValue.iit===null ? null : patientMlValue.iit===true?"True": "False"}
+                              </Label.Detail>
+                            </Label>
+
+                          </Typography>
+                        </div>
+
                       </Col>
                       <Col
                         md={4}
