@@ -119,8 +119,11 @@ const CheckedInPatients = (props) => {
   );
 
   const onMessageReceived = (msg) => {
-    if (msg && msg?.toLowerCase()?.includes("check")) {
-      // Trigger table refresh by updating the refresh trigger state
+    if (
+      msg &&
+      msg?.toLowerCase()?.includes("check") &&
+      msg?.toLowerCase()?.includes("hiv")
+    ) {
       setTableRefreshTrigger((prev) => prev + 1);
     }
   };

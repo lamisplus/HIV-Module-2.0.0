@@ -184,7 +184,7 @@ const PatientVisits = (props) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      toast.success("Check-out successful");
+      // toast.success("Check-out successful");
       setCheckinStatus(false);
       setIsCheckoutModalOpen(false);
       fetchPatientVisits();

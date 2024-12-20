@@ -64,10 +64,14 @@ const CheckedInPatientsAlert = () => {
     };
 
     const onMessageReceived = (msg) => {
-        if (msg && msg?.toLowerCase()?.includes("check")) {
-            showToast(msg, 'messageReceived');
+        if (
+          msg &&
+          msg?.toLowerCase()?.includes("check") &&
+          msg?.toLowerCase()?.includes("hiv")
+        ) {
+          showToast(msg, "messageReceived");
         }
-    };
+      };
 
     const onDisconnected = () => {
         console.log("Disconnected from the server")
