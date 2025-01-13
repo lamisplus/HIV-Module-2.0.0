@@ -197,7 +197,7 @@ const DashboardFilledTransferForm = (props) => {
         }
       })
       .catch((e) => {
-        // console.log("Fetch states error" + e);
+       console.error("Fetch States error" + e);
       });
   };
 
@@ -216,7 +216,7 @@ const DashboardFilledTransferForm = (props) => {
         }
       })
       .catch((e) => {
-        // console.log("Fetch LGA error" + e);
+        console.error("Fetch LGA error" + e);
       });
   };
 
@@ -233,7 +233,7 @@ const DashboardFilledTransferForm = (props) => {
         }
       })
       .catch((e) => {
-        // console.log("Fetch Facilities error" + e);
+        console.error("Fetch Facilities error" + e);
       });
   };
 
@@ -245,8 +245,7 @@ const DashboardFilledTransferForm = (props) => {
       .then((response) => {
         setObservationType(response.data.type)
         setPayload({ ...response.data.data });
-        // console.log("observation", response.data.data)
-        // console.log("observation type", response.data.type)
+       
         setDefaultFacility({
           value: "",
           label: response.data.data.facilityTransferTo,
@@ -469,7 +468,7 @@ const DashboardFilledTransferForm = (props) => {
     reasonForDefaulting: "",
     reasonForDefaultingOthers: "",
   });
-// console.log("payload", payload)
+
 
   //Validations of the forms
   // const validate = () => {

@@ -307,7 +307,7 @@ const ClinicVisit = (props) => {
         setPregnancyStatus(filteredData);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   };
   // CRYPTOCOCCAL_SCREENING_STATUS

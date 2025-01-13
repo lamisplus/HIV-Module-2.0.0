@@ -105,6 +105,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
 const CheckedInPatients = (props) => {
   const { hasPermission } = usePermissions();
   const [showPPI, setShowPPI] = useState(true);
@@ -114,6 +115,7 @@ const CheckedInPatients = (props) => {
   const permissions = useMemo(
     () => ({
       canSeeEnrollButton: hasPermission("hiv_enrollment_register"),
+      canViewDashboard: hasPermission("view_patient"),
     }),
     [hasPermission]
   );
@@ -132,120 +134,188 @@ const CheckedInPatients = (props) => {
     setShowPPI(!e.target.checked);
   };
 
-  const columns = useMemo(
-    () => [
-      {
-        title: "Patient Name",
-        field: "fullname",
-        hidden: showPPI,
-      },
-      {
-        title: "Hospital Number",
-        field: "hospitalNumber",
-      },
-      { title: "Sex", field: "sex" },
-      { title: "Age", field: "age" },
-      {
-        title: "Biometrics",
-        field: "biometricStatus",
-        render: (rowData) =>
-          rowData.biometricStatus === true ? (
-            <Label color="green" size="mini">
-              Biometric Captured
-            </Label>
-          ) : (
-            <Label color="red" size="mini">
-              No Biometric
-            </Label>
-          ),
-      },
-      {
-        title: "ART Status",
-        field: "currentStatus",
-        render: (rowData) => (
-          <Label color="blue" size="mini">
-            {rowData.currentStatus || "Not Enrolled"}
+const columns = useMemo(
+  () => [
+    {
+      title: "Patient Name",
+      field: "fullname",
+      hidden: showPPI,
+    },
+    {
+      title: "Hospital Number",
+      field: "hospitalNumber",
+    },
+    { title: "Sex", field: "sex" },
+    { title: "Age", field: "age" },
+    {
+      title: "Biometrics",
+      field: "biometricStatus",
+      render: (rowData) =>
+        rowData.biometricStatus === true ? (
+          <Label color="green" size="mini">
+            Biometric Captured
+          </Label>
+        ) : (
+          <Label color="red" size="mini">
+            No Biometric
           </Label>
         ),
-      },
-      {
-        title: "Actions",
-        field: "actions",
-        render: (rowData) => {
-          const isEnrolled = rowData.isEnrolled;
+    },
+    {
+      title: "ART Status",
+      field: "currentStatus",
+      render: (rowData) => (
+        <Label color="blue" size="mini">
+          {rowData.currentStatus || "Not Enrolled"}
+        </Label>
+      ),
+    },
+    {
+      title: "Actions",
+      field: "actions",
+      render: (rowData) => {
+        const isEnrolled = rowData.isEnrolled;
 
-          return (
-            <div>
-              {permissions.canSeeEnrollButton &&
-                rowData.biometricStatus === true && (
-                  <Link
-                    to={{
-                      pathname: isEnrolled
-                        ? "/patient-history"
-                        : "/enroll-patient",
-                      state: isEnrolled
-                        ? { patientObj: rowData }
-                        : { patientId: rowData.id, patientObj: rowData },
+        return (
+          <div>
+         
+            {permissions.canSeeEnrollButton &&
+              !isEnrolled &&
+              rowData.biometricStatus === true && (
+                <Link
+                  to={{
+                    pathname: "/enroll-patient",
+                    state: { patientId: rowData.id, patientObj: rowData },
+                  }}
+                >
+                  <ButtonGroup
+                    variant="contained"
+                    aria-label="split button"
+                    style={{
+                      backgroundColor: "rgb(153, 46, 98)",
+                      height: "30px",
+                      width: "215px",
                     }}
+                    size="large"
                   >
-                    <ButtonGroup
-                      variant="contained"
-                      aria-label="split button"
+                    <Button
+                      color="primary"
+                      size="small"
+                      aria-label="select merge strategy"
+                      aria-haspopup="menu"
                       style={{
                         backgroundColor: "rgb(153, 46, 98)",
-                        height: "30px",
-                        width: "215px",
                       }}
-                      size="large"
                     >
-                      <Button
-                        color="primary"
-                        size="small"
-                        aria-label="select merge strategy"
-                        aria-haspopup="menu"
+                      <TiArrowForward />
+                    </Button>
+                    <Button
+                      style={{
+                        backgroundColor: "rgb(153, 46, 98)",
+                      }}
+                    >
+                      <span
                         style={{
-                          backgroundColor: "rgb(153, 46, 98)",
+                          fontSize: "12px",
+                          color: "#fff",
+                          fontWeight: "bolder",
                         }}
                       >
-                        {isEnrolled ? <MdDashboard /> : <TiArrowForward />}
-                      </Button>
-                      <Button
-                        style={{
-                          backgroundColor: "rgb(153, 46, 98)",
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontSize: "12px",
-                            color: "#fff",
-                            fontWeight: "bolder",
-                          }}
-                        >
-                          {isEnrolled ? "Dashboard" : "Enroll Patient"}
-                        </span>
-                      </Button>
-                    </ButtonGroup>
-                  </Link>
-                )}
-            </div>
-          );
-        },
+                        Enroll Patient
+                      </span>
+                    </Button>
+                  </ButtonGroup>
+                </Link>
+              )}
+
+       
+            {permissions.canViewDashboard && isEnrolled && (
+              <Link
+                to={{
+                  pathname: "/patient-history",
+                  state: { patientObj: rowData },
+                }}
+              >
+                <ButtonGroup
+                  variant="contained"
+                  aria-label="split button"
+                  style={{
+                    backgroundColor: "rgb(153, 46, 98)",
+                    height: "30px",
+                    width: "215px",
+                  }}
+                  size="large"
+                >
+                  <Button
+                    color="primary"
+                    size="small"
+                    aria-label="select merge strategy"
+                    aria-haspopup="menu"
+                    style={{
+                      backgroundColor: "rgb(153, 46, 98)",
+                    }}
+                  >
+                    <MdDashboard />
+                  </Button>
+                  <Button
+                    style={{
+                      backgroundColor: "rgb(153, 46, 98)",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "12px",
+                        color: "#fff",
+                        fontWeight: "bolder",
+                      }}
+                    >
+                      Dashboard
+                    </span>
+                  </Button>
+                </ButtonGroup>
+              </Link>
+            )}
+          </div>
+        );
       },
-    ],
-    [showPPI, permissions.canSeeEnrollButton]
-  );
+    },
+  ],
+  [showPPI, permissions.canSeeEnrollButton, permissions.canViewDashboard]
+);
 
   const getData = async (query) => {
     try {
-      const data = await fetchPatients(query);
-      const reversedData = [...(data || [])].reverse();
+      const { search, page, pageSize } = query;
+
+      // Fetch the data
+      const data = await fetchPatients({
+        search,
+        page,
+        pageSize,
+      });
+
+      // If there's a search term, filter the results
+      let filteredData = [...(data || [])];
+
+      if (search) {
+        const searchLower = search.toLowerCase();
+        filteredData = filteredData.filter(
+          (patient) =>
+            patient.fullname?.toLowerCase().includes(searchLower) ||
+            patient.hospitalNumber?.toLowerCase().includes(searchLower)
+        );
+      }
+
+      // Reverse the data for latest first
+      const reversedData = filteredData.reverse();
 
       return {
         data: reversedData,
-        page: query?.page || 0,
+        page: page || 0,
         totalCount: reversedData.length || 0,
       };
     } catch (error) {
+      console.error("Error fetching patient data:", error);
       return {
         data: [],
         page: 0,

@@ -656,7 +656,7 @@ const Tracking = (props) => {
     setAttemptList([...attemptList]);
   };
 
-  console.log("objValues", objValues);
+
   /**** Submit Button Processing  */
   const handleSubmit = (e) => {
     e.preventDefault();

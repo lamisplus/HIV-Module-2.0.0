@@ -556,7 +556,7 @@ const ClinicVisit = (props) => {
         setPregnancyStatus(filteredData);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   };
   //GET VIRAL LOAD INDICATION
@@ -1003,10 +1003,10 @@ const ClinicVisit = (props) => {
     setErrors({
       ...temp,
     });
-    // console.log("temp:", temp);
+
     return Object.values(temp).every((x) => x === "");
   };
-  // console.log("temp", temp)
+
   const handleSelectedTestGroup = (e) => {
     setTests({ ...tests, labTestGroupId: e.target.value });
     const getTestList = testGroup.filter(
@@ -1024,7 +1024,7 @@ const ClinicVisit = (props) => {
     setTests({ ...tests, [e.target.name]: e.target.value });
   };
 
-  // console.log("tb object inside parent", tbObj)
+
 
   /**** Submit Button Processing  */
   const handleSubmit = (e) => {

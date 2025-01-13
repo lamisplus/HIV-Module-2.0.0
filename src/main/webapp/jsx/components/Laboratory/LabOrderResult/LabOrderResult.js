@@ -238,7 +238,7 @@ const Laboratory = (props) => {
   };
 
   const handleInputChangeObject = (e) => {
-    console.log(e);
+    
     setSelectedOption(e);
     setTests((prevObject) => ({
       ...prevObject,

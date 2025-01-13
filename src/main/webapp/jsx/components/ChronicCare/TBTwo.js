@@ -389,7 +389,7 @@ const TbScreening = (props) => {
 
   //Logic for Less than 14 years
   if (age < 14) {
-    console.log("less than 14 years", 14);
+
     useEffect(() => {
       //First Logic 1 Solved
 
@@ -754,8 +754,8 @@ const TbScreening = (props) => {
   // CXR_SCREENING_TYPE	Care and Support form/TB/IPT Screening	X-ray suggestive
   // CXR_SCREENING_TYPE	Care and Support form/TB/IPT Screening	X-ray not suggestive
 
-  // console.log("tbScreeningType", tbScreeningType);
-  console.log("tbScreeningType2", tbScreeningType2);
+
+
 
   const handleInputChange = (e) => {
     props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.value });

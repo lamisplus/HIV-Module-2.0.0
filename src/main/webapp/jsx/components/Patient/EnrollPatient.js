@@ -162,7 +162,7 @@ const UserRegistration = (props) => {
   let patientObj = {};
   patientId = locationState ? locationState.patientId : null;
   patientObj = locationState ? locationState.patientObj : {};
-  //console.log(patientObj);
+
   const [basicInfo, setBasicInfo] = useState(patientObj);
   //objValues.uniqueId=basicInfo.hospitalNumber
   useEffect(() => {
@@ -404,7 +404,7 @@ const UserRegistration = (props) => {
         //console.log(response.data);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   };
 
@@ -420,7 +420,7 @@ const UserRegistration = (props) => {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
-          console.log(response.data);
+          console.error(response.data);
           if (patientObj.visitId !== null && patientObj.status === "PENDING") {
             handleSubmitCheckOut();
           }
@@ -432,7 +432,7 @@ const UserRegistration = (props) => {
           history.push("/");
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
           setSaving(false);
           toast.error("Something went wrong. Please try again...", {
             position: toast.POSITION.BOTTOM_CENTER,
@@ -440,7 +440,7 @@ const UserRegistration = (props) => {
         });
       // }
       // catch (error) {
-      //   console.log(error);
+
       //   setSaving(false);
       //   toast.error("Something went wrong. Please try again...", {
       //     position: toast.POSITION.BOTTOM_CENTER,

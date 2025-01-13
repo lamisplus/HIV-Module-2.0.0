@@ -216,7 +216,7 @@ const DsdServiceForm = (props) => {
           setPayLoad(response.data);
         })
         .catch((error) => {
-          // console.log("error", error);
+      
         });
       // setSelectedServiceProvided(Object.values(payload.serviceProvided));
       setIsUpdateState(true);
@@ -377,7 +377,7 @@ const DsdServiceForm = (props) => {
       payload.serviceProvided = Object.assign({}, selectedServiceProvided);
       submitAssessmentForm(payload);
       // setSaving(true);
-      // console.log("form submitted successfully")
+  
     } else {
       window.scroll(0, 0);
     }
@@ -392,7 +392,7 @@ const DsdServiceForm = (props) => {
         }
       )
       .then((response) => {
-        // console.log("response.data", response.data);
+     
         setPatientDsdRecords(response.data);
       })
       .catch((error) => {
@@ -452,7 +452,7 @@ const DsdServiceForm = (props) => {
         }
       )
       .then((response) => {
-        // console.log("facilitySpoke", response.data);
+        
         setFacilitySpoke(response.data);
         const spokeOptions = response.data.map((facility) => (
           <option key={facility.id} value={facility.spokeName}>

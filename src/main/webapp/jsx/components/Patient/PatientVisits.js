@@ -5,7 +5,9 @@ import axios from "axios";
 import { forwardRef } from "react";
 import { Button, Grid, MenuItem, Paper, TextField } from "@mui/material";
 import { Modal, ModalBody, ModalHeader, FormGroup } from "reactstrap";
-
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DesktopDateTimePicker } from "@mui/x-date-pickers/DesktopDateTimePicker";
 import moment from "moment";
 import { format } from "date-fns";
 import DualListBox from "react-dual-listbox";
@@ -103,88 +105,110 @@ const PatientVisits = (props) => {
     } finally {
       setIsLoading(false);
     }
-
   }, []);
 
-  const fetchPatientVisits = useCallback(async () => {
-    try {
-      const response = await axios.get(
-        `${baseUrl}patient/visit/visit-by-patient/${patientObj.id}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+const fetchPatientVisits = useCallback(async () => {
+  try {
+    const response = await axios.get(
+      `${baseUrl}patient/visit/visit-by-patient/${patientObj.id}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-      setPatientVisits(response.data);
-      const hasActiveVisit = response.data.some(
-        (visit) => !visit.checkOutTime || visit.status === "PENDING"
-      );
-      setCheckinStatus(hasActiveVisit);
-      // setCheckinStatus(hasActiveVisit);
-    } catch (error) {
-      toast.error("Failed to fetch patient visits");
-    }
-  }, [patientObj.id]);
+    const hivVisits = response.data.filter(
+      (visit) => visit.service === "HIV_code"
+    );
+
+
+    setPatientVisits(hivVisits);
+  
+
+    // Update checkinStatus based on pending HIV visits
+    const hasActiveHIVVisit = hivVisits.some(
+      (visit) => visit.service === "HIV_code" && visit.status === "PENDING"
+    );
+    setCheckinStatus(hasActiveHIVVisit);
+  } catch (error) {
+    toast.error("Failed to fetch patient visits");
+  }
+}, [patientObj.id]);
 
   useEffect(() => {
     fetchServices();
     fetchPatientVisits();
   }, [fetchServices, fetchPatientVisits]);
 
-  // const handleCheckin = async (e) => {
-  //   e.preventDefault();
+  const handleCheckin = async (e) => {
+    e.preventDefault();
 
-  //   if (!selectedServices.selected.length) {
-  //     toast.error("Please select at least one service");
-  //     return;
-  //   }
-
-  //   const serviceIds = selectedServices.selected
-  //     .map((code) => {
-  //       const service = allServices.find((s) => s.moduleServiceCode === code);
-  //       return service ? service.id : null;
-  //     })
-  //     .filter((id) => id !== null);
-
-  //   try {
-  //     await axios.post(
-  //       `${baseUrl}patient/visit/checkin`,
-  //       {
-  //         serviceIds,
-  //         visitDto: {
-  //           personId: patientObj.id,
-  //           checkInDate: moment(checkinDate).format("YYYY-MM-DD HH:mm"),
-  //         },
-  //       },
-  //       {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       }
-  //     );
-
-  //     toast.success("Check-in successful");
-  //     setCheckinStatus(true);
-  //     setIsCheckinModalOpen(false);
-  //     fetchPatientVisits();
-  //   } catch (error) {
-  //     toast.error("Check-in failed");
-  //   }
-  // };
-
-  const handleCheckout = async () => {
-    const activeVisit = patientVisits.find(
-      (visit) => visit.status === "PENDING"
-    );
-    if (!activeVisit) {
-      toast.error("No Pending visit found");
+    if (!selectedServices.selected.length) {
+      toast.error("Please select at least one service");
       return;
     }
 
+    const serviceIds = selectedServices.selected
+      .map((code) => {
+        const service = allServices.find((s) => s.moduleServiceCode === code);
+        return service ? service.id : null;
+      })
+      .filter((id) => id !== null);
+
+    try {
+      await axios.post(
+        `${baseUrl}patient/visit/checkin`,
+        {
+          serviceIds,
+          visitDto: {
+            personId: patientObj.id,
+            checkInDate: moment(checkinDate).format("YYYY-MM-DD HH:mm"),
+          },
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      toast.success("Check-in successful");
+      setCheckinStatus(true);
+      setIsCheckinModalOpen(false);
+      fetchPatientVisits();
+    } catch (error) {
+      if (error.response?.data?.apierror) {
+        const apiError = error.response.data.apierror;
+        // Check if it's a service already exists error
+        if (apiError.message?.includes("VisitService already exist")) {
+          toast.error(
+            "Could not check-in. Patient already has an active visit"
+          );
+        }
+        // Generic error message for other API errors
+        else {
+          toast.error(apiError.message || "Check-in failed. Please try again.");
+        }
+      }
+
+      console.error("Check-in error details:", error.response?.data);
+    }
+  };
+
+  const handleCheckout = async () => {
+    const activeVisit = patientVisits.find(
+      (visit) => visit.status === "PENDING" && visit.service === "HIV_code"
+    );
+    if (!activeVisit) {
+      toast.error("No pending HIV visit found");
+      return;
+    }
+    if (activeVisit.service !== "HIV_code") {
+      toast.error("Can only checkout HIV services");
+      return;
+    }
     try {
       await axios.put(
         `${baseUrl}patient/visit/checkout/${activeVisit.id}`,
         { checkOutDate: moment(checkoutDate).format("YYYY-MM-DD HH:mm") },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      // toast.success("Check-out successful");
+      toast.success("Check-out successful");
       setCheckinStatus(false);
       setIsCheckoutModalOpen(false);
       fetchPatientVisits();
@@ -215,37 +239,150 @@ const PatientVisits = (props) => {
     []
   );
 
+
+
   return (
     <div>
       <div className="d-flex justify-content-end mb-3">
-     
-
-        {permissions.view_patient && checkinStatus && (
-          <ButtonMui
-            variant="contained"
-            style={{
-              backgroundColor: "green",
-              color: "white",
-              marginLeft: "10px",
-            }}
-            onClick={() => setIsCheckoutModalOpen(true)}
-          >
-            Check Out
-          </ButtonMui>
-        )}
+        {patientVisits.some(
+          (visit) => visit.service === "HIV_code" && visit.status === "PENDING"
+        )
+          ? // Check Out button only for pending HIV visits
+            permissions.view_patient && (
+              <ButtonMui
+                variant="contained"
+                style={{
+                  backgroundColor: "green",
+                  color: "white",
+                  marginLeft: "10px",
+                }}
+                onClick={() => setIsCheckoutModalOpen(true)}
+              >
+                Check Out
+              </ButtonMui>
+            )
+          : // Check In button when no pending HIV visits
+            permissions.view_patient && (
+              <ButtonMui
+                variant="contained"
+                color="primary"
+                onClick={() => setIsCheckinModalOpen(true)}
+              >
+                Check In
+              </ButtonMui>
+            )}
       </div>
 
       <CustomTable
         title="Patient Visits"
         columns={columns}
-        data={patientVisits}
+        data={patientVisits} 
         icons={tableIcons}
-        // showPPI={showPPI}
         isLoading={isLoading}
         onPPIChange={(e) => setShowPPI(!e.target.checked)}
       />
 
+      <Modal
+        size="lg"
+        style={{ maxWidth: "900px" }}
+        isOpen={isCheckinModalOpen}
+        toggle={() => setIsCheckinModalOpen(false)}
+      >
+        <ModalHeader toggle={() => setIsCheckinModalOpen(false)}>
+          <h5
+            style={{ fontWeight: "bold", fontSize: "30px", color: "#992E62" }}
+          >
+            Select Check-In Service
+          </h5>
+        </ModalHeader>
+        <ModalBody>
+          <form onSubmit={handleCheckin}>
+            <Paper
+              style={{
+                display: "grid",
+                gridRowGap: "20px",
+                padding: "20px",
+                margin: "10px 10px",
+              }}
+            >
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <FormGroup style={{ width: "100%" }}>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <Label
+                        for="post-services"
+                        style={{
+                          color: "#014d88",
+                          fontWeight: "bolder",
+                          fontSize: "18px",
+                        }}
+                      >
+                        Check-In Date *
+                      </Label>
+                      <DesktopDateTimePicker
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            sx={{
+                              input: { fontSize: "14px" },
+                            }}
+                            fullWidth
+                          />
+                        )}
+                        value={checkinDate}
+                        onChange={(newValue) => {
+                          setCheckinDate(newValue);
+                        }}
+                        maxDate={new Date()}
+                        maxTime={new Date()}
+                        style={{ width: "100%" }}
+                      />
+                    </LocalizationProvider>
+                  </FormGroup>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormGroup>
+                    <Label
+                      for="post-services"
+                      style={{
+                        color: "#014d88",
+                        fontWeight: "bolder",
+                        fontSize: "18px",
+                      }}
+                    >
+                      <h5
+                        style={{
+                          fontWeight: "bold",
+                          fontSize: "30px",
+                          color: "#992E62",
+                        }}
+                      >
+                        Check-In Service *
+                      </h5>
+                    </Label>
+                    <DualListBox
+                      options={services}
+                      onChange={(selected) =>
+                        setSelectedServices({ ...selectedServices, selected })
+                      }
+                      selected={selectedServices.selected}
+                    />
+                  </FormGroup>
+                </Grid>
+              </Grid>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Button type="submit" variant="contained" color="primary">
+                    Submit
+                  </Button>
+                </Grid>
+              </Grid>
+            </Paper>
+          </form>
+        </ModalBody>
+      </Modal>
 
+      {/* Checkout Modal */}
       <Modal
         isOpen={isCheckoutModalOpen}
         toggle={() => setIsCheckoutModalOpen(false)}

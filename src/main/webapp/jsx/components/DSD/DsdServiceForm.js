@@ -210,7 +210,7 @@ const DsdServiceForm = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        // console.log("response.data", response.data);
+       
         setDsdModelType(response.data);
       })
       .catch((error) => {});
@@ -394,7 +394,7 @@ const DsdServiceForm = (props) => {
         }
       )
       .then((response) => {
-        // console.log("response.data", response.data);
+ 
         setPatientDsdRecords(response.data);
       })
       .catch((error) => {
@@ -426,7 +426,7 @@ const DsdServiceForm = (props) => {
 
   useEffect(() => {
     getPatientDsdRecords();
-    // console.log("patientObj", props.patientObj);
+
   }, [props.patientObj.id]);
 
   // get services provided
@@ -456,7 +456,7 @@ const DsdServiceForm = (props) => {
         }
       )
       .then((response) => {
-        // console.log("facilitySpoke", response.data);
+       
         setFacilitySpoke(response.data);
         const spokeOptions = response.data.map((facility) => (
           <option key={facility.id} value={facility.spokeName}>

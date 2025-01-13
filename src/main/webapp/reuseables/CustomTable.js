@@ -20,10 +20,15 @@ const defaultOptions = {
   debounceInterval: 400,
 };
 
-const CustomTable = ({ title, columns, data, icons, showPPI, onPPIChange,
-  isLoading
+const CustomTable = ({
+  title,
+  columns,
+  data,
+  icons,
+  showPPI,
+  onPPIChange,
+  isLoading,
 }) => {
-    
   const CustomToolbar = (props) => (
     <div>
       <div className="form-check custom-checkbox float-left mt-4 ml-3">
@@ -53,11 +58,29 @@ const CustomTable = ({ title, columns, data, icons, showPPI, onPPIChange,
       icons={icons}
       title={title}
       columns={columns}
-      isLoading={isLoading}
       data={data}
-      options={defaultOptions}
+      isLoading={isLoading}
+      options={{
+        search: true,
+        filtering: true,
+        headerStyle: {
+          backgroundColor: "#014d88",
+          color: "#fff",
+          fontWeight: "bold",
+        },
+        searchFieldStyle: {
+          width: "300px",
+        },
+        pageSize: 10,
+        pageSizeOptions: [5, 10, 20, 50],
+      }}
       components={{
         Toolbar: CustomToolbar,
+      }}
+      localization={{
+        body: {
+          emptyDataSourceMessage: "No records to display",
+        },
       }}
     />
   );

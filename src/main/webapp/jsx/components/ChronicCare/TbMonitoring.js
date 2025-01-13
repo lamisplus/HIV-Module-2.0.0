@@ -123,12 +123,9 @@ const TBMonitoring = (props) => {
     CLINIC_VISIT_LEVEL_OF_ADHERENCE();
   }, []);
   // TPT Logic
-  useEffect(() => {
-       // console.log(props.tbObj)
 
-  }, []);
 
-  // console.log("TB IN TBMONITORING", props.tbObj)
+
   //Get list of CLINIC_VISIT_LEVEL_OF_ADHERENCE
   const CLINIC_VISIT_LEVEL_OF_ADHERENCE = () => {
     axios

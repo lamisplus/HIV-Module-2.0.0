@@ -157,7 +157,7 @@ const Eligibility = (props) => {
         setPregnancyStatus(filteredData);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   };
   const WHO_STAGING_CRITERIA = () => {

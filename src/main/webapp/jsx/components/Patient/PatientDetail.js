@@ -195,7 +195,7 @@ function PatientCard(props) {
               setPatientObj1(response.data);
             })
             .catch((error) => {
-              console.log(error);
+              console.error(error);
             });
         }, []);
       };

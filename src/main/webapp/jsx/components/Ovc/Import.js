@@ -40,7 +40,7 @@ const Import = (props) => {
         formData,
         config
       );
-      console.log(response);
+
 
       if (response.data === "file not imported successfully") {
         toast.error("File not imported successfully!");
@@ -50,7 +50,7 @@ const Import = (props) => {
 
       props.toggle();
     } catch (error) {
-      console.log(error);
+
       toast.error("An error occurred while importing the file!");
     }
   }

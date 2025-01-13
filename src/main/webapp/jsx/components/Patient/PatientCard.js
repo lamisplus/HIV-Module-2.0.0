@@ -137,7 +137,7 @@ function PatientCard(props) {
       })
       .then((response) => {
         setPatientFlag(response.data);
-        console.log(setPatientFlag);
+      
       });
   };
 

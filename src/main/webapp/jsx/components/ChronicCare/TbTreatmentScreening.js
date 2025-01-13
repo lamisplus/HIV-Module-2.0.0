@@ -93,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
 const TbTreatmentScreening = (props) => {
   const classes = useStyles();
   let errors = props.errors
-  // console.log("TB OB", props.tbObj)
+
   const [tbSpecimenType, setTbSpecimenType] = useState([]);
   const [tbDiagnosticTestType, setTbDiagnosticTestType] = useState([]);
   const [chestXrayTest, setChestXrayTest] = useState([]);

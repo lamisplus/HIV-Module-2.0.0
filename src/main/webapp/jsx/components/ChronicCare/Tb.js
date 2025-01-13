@@ -894,7 +894,7 @@ const TbScreening = (props) => {
       })
       .then((response) => {
         setTbScreeningType(response.data);
-        // console.log(response.data)
+
       })
       .catch((error) => {});
   };
@@ -1188,8 +1188,7 @@ const TbScreening = (props) => {
     }
   };
 
-  // console.log("TB OBJECT IN TB", props.tbObj)
-  // console.log("TB PATIENT AGE", patientAge)
+
 
   return (
     <>

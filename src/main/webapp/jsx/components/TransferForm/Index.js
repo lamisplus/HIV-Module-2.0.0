@@ -193,7 +193,7 @@ const Tracking = (props) => {
     }
   }, [facId]);
 
-  // console.log("paylaod", payload)
+
   const loadStates1 = () => {
     axios
       .get(`${baseUrl}organisation-units/parent-organisation-units/1`, {
@@ -207,7 +207,7 @@ const Tracking = (props) => {
         }
       })
       .catch((e) => {
-        // console.log("Fetch states error" + e);
+        console.error("Fetch states error" + e);
       });
   };
 
@@ -226,7 +226,7 @@ const Tracking = (props) => {
         }
       })
       .catch((e) => {
-        // console.log("Fetch LGA error" + e);
+        console.error("Fetch LGA error" + e);
       });
   };
 
@@ -245,7 +245,7 @@ const Tracking = (props) => {
         }
       })
       .catch((e) => {
-        // console.log("Fetch Facilities error" + e);
+        // console.error("Fetch Facilities error" + e);
       });
   };
 
@@ -379,7 +379,6 @@ const Tracking = (props) => {
   //     setErrors({
   //         ...temp,
   //     });
-  //     // console.log("temp", temp)
   //     return Object.values(temp).every((x) => x == "");
   // };
 

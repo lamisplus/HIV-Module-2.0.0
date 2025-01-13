@@ -137,11 +137,10 @@ const TBScreeningForm = (props) => {
 
   const handleInputChange = (e) => {
     props.setTbObj({ ...props.tbObj, [e.target.name]: e.target.value });
-    // console.log(e.target.value)
+
   };
 
-// console.log("props.careSupportTb", props.careSupportTb)
-//  console.log("obj in tbscreen", props.tbObj)
+
   return (
       <div>
         <div className="row">

@@ -280,7 +280,7 @@ const Pharmacy = (props) => {
       )
       .then((response) => {
         const patientRegimenList = response.data;
-        // console.log("patientRegimenList : ", response.data)
+    
         setGetAllPharmacyByPatientIdReponse(patientRegimenList);
       })
       .catch((error) => {});
@@ -312,7 +312,7 @@ const Pharmacy = (props) => {
       .catch((error) => {});
   };
 
-  // console.log("RegimenType", regimenType);
+
   const patientAge = calculate_age_to_number(patientObj.dateOfBirth); //Age calculation
   //GET ChildRegimenLine
   const ChildRegimenLine = () => {

@@ -308,7 +308,7 @@ const Tracking = (props) => {
   };
 
 
-  // console.log("objValues", objValues);
+
 
   const getBiometricStatus = () => {
     axios
